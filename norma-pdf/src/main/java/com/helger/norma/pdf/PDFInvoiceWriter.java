@@ -493,10 +493,10 @@ public class PDFInvoiceWriter implements IInvoiceWriter <PDFRenderContext>
     aTbl.setHeaderRowCount (1);
     aTbl.addRow (_th (aCtx.label ("section.lines.column.number"), aTH),
                  _th (aCtx.label ("section.lines.column.description"), aTH),
-                 _th (aCtx.label ("section.lines.column.quantity"), aTH),
-                 _th (aCtx.label ("section.lines.column.unitprice"), aTH),
-                 _th (aCtx.label ("section.lines.column.vat"), aTH),
-                 _th (aCtx.label ("section.lines.column.linetotal"), aTH));
+                 _thRight (aCtx.label ("section.lines.column.quantity"), aTH),
+                 _thRight (aCtx.label ("section.lines.column.unitprice"), aTH),
+                 _thRight (aCtx.label ("section.lines.column.vat"), aTH),
+                 _thRight (aCtx.label ("section.lines.column.linetotal"), aTH));
     for (final NormaInvoiceLine aLine : aInvoice.lines ())
     {
       final StringBuilder aDesc = new StringBuilder ();
@@ -515,11 +515,11 @@ public class PDFInvoiceWriter implements IInvoiceWriter <PDFRenderContext>
         aDesc.append ('\n').append (aLine.getNote ());
       aTbl.addRow (_td (_n (aLine.getID ()), aBF),
                    _td (aDesc.toString (), aBF),
-                   _td (_qty (aLine.getQuantity (), aLine.getQuantityUnit ()), aBF),
-                   _td (aLine.getPrice () == null ? "" : _amount (aLine.getPrice ().getNetPrice (), sCurrency, aCtx),
-                        aBF),
-                   _td (_lineVATCell (aLine, aCtx), aBF),
-                   _td (_amount (aLine.getNetAmount (), sCurrency, aCtx), aBF));
+                   _tdRight (_qty (aLine.getQuantity (), aLine.getQuantityUnit ()), aBF),
+                   _tdRight (aLine.getPrice () == null ? "" : _amount (aLine.getPrice ().getNetPrice (), sCurrency, aCtx),
+                             aBF),
+                   _tdRight (_lineVATCell (aLine, aCtx), aBF),
+                   _tdRight (_amount (aLine.getNetAmount (), sCurrency, aCtx), aBF));
     }
     aPS.addElement (aTbl);
     aPS.addElement (new PLSpacerY (8));
@@ -555,28 +555,28 @@ public class PDFInvoiceWriter implements IInvoiceWriter <PDFRenderContext>
     aTbl.setHeaderRowCount (1);
     aTbl.addRow (_th ("", aCtx.getTableHeaderFont ()),
                  _th (aCtx.label ("section.lines.column.description"), aCtx.getTableHeaderFont ()),
-                 _th (aCtx.label ("BT-152"), aCtx.getTableHeaderFont ()),
-                 _th (aCtx.label ("section.lines.column.linetotal"), aCtx.getTableHeaderFont ()));
+                 _thRight (aCtx.label ("BT-152"), aCtx.getTableHeaderFont ()),
+                 _thRight (aCtx.label ("section.lines.column.linetotal"), aCtx.getTableHeaderFont ()));
     for (final NormaDocumentAllowance aA : aInvoice.documentAllowances ())
       aTbl.addRow (_td (aCtx.label ("BG-20"), aBF),
                    _td (_n (aA.getReason ()), aBF),
-                   _td (_n (aA.getVATCategoryCode ()) +
-                        (aA.getVATRate () == null ? "" : " " +
-                                                         NormaFormat.percent (aA.getVATRate (),
-                                                                              aCtx.getLocale (),
-                                                                              aCtx.getFormatOptions ())),
-                        aBF),
-                   _td (_amount (_neg (aA.getAmount ()), sCurrency, aCtx), aBF));
+                   _tdRight (_n (aA.getVATCategoryCode ()) +
+                             (aA.getVATRate () == null ? "" : " " +
+                                                              NormaFormat.percent (aA.getVATRate (),
+                                                                                   aCtx.getLocale (),
+                                                                                   aCtx.getFormatOptions ())),
+                             aBF),
+                   _tdRight (_amount (_neg (aA.getAmount ()), sCurrency, aCtx), aBF));
     for (final NormaDocumentCharge aC : aInvoice.documentCharges ())
       aTbl.addRow (_td (aCtx.label ("BG-21"), aBF),
                    _td (_n (aC.getReason ()), aBF),
-                   _td (_n (aC.getVATCategoryCode ()) +
-                        (aC.getVATRate () == null ? "" : " " +
-                                                         NormaFormat.percent (aC.getVATRate (),
-                                                                              aCtx.getLocale (),
-                                                                              aCtx.getFormatOptions ())),
-                        aBF),
-                   _td (_amount (aC.getAmount (), sCurrency, aCtx), aBF));
+                   _tdRight (_n (aC.getVATCategoryCode ()) +
+                             (aC.getVATRate () == null ? "" : " " +
+                                                              NormaFormat.percent (aC.getVATRate (),
+                                                                                   aCtx.getLocale (),
+                                                                                   aCtx.getFormatOptions ())),
+                             aBF),
+                   _tdRight (_amount (aC.getAmount (), sCurrency, aCtx), aBF));
     aPS.addElement (aTbl);
     aPS.addElement (new PLSpacerY (6));
   }
@@ -793,6 +793,26 @@ public class PDFInvoiceWriter implements IInvoiceWriter <PDFRenderContext>
     if (sText.isEmpty ())
       return new PLTableCell (new PLSpacerX (1f));
     return new PLTableCell (new PLText (sText, aFont).setPadding (new PaddingSpec (3)));
+  }
+
+  /** Right-aligned body cell — used for amounts, quantities and percentages. */
+  @NonNull
+  private static PLTableCell _tdRight (@NonNull final String sText, @NonNull final FontSpec aFont)
+  {
+    if (sText.isEmpty ())
+      return new PLTableCell (new PLSpacerX (1f));
+    return new PLTableCell (new PLText (sText, aFont).setPadding (new PaddingSpec (3))
+                                                     .setHorzAlign (EHorzAlignment.RIGHT));
+  }
+
+  /** Right-aligned header cell — used for numeric column headers above amounts/quantities/rates. */
+  @NonNull
+  private static PLTableCell _thRight (@NonNull final String sText, @NonNull final FontSpec aFont)
+  {
+    if (sText.isEmpty ())
+      return new PLTableCell (new PLSpacerX (1f)).setFillColor (PLColor.gray (0xf0));
+    return new PLTableCell (new PLText (sText, aFont).setPadding (new PaddingSpec (3))
+                                                     .setHorzAlign (EHorzAlignment.RIGHT)).setFillColor (PLColor.gray (0xf0));
   }
 
   private static void _kvRow (@NonNull final PLVBox aVBox,

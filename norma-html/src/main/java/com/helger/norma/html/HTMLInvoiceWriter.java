@@ -933,6 +933,13 @@ public class HTMLInvoiceWriter implements IInvoiceWriter <HTMLRenderContext>
            + "." + p + "lines-table,." + p + "vat-table,." + p + "ac-table{width:100%;border-collapse:collapse;margin-top:.5rem;}"
            + "." + p + "lines-table th,." + p + "vat-table th,." + p + "ac-table th{background:#f5f5f5;text-align:left;padding:.4rem .5rem;border-bottom:1px solid #ccc;}"
            + "." + p + "lines-table td,." + p + "vat-table td,." + p + "ac-table td{padding:.4rem .5rem;border-bottom:1px solid #eee;vertical-align:top;}"
+           // Right-align numeric columns in each table, applies to both <th> and <td>:
+           //   lines-table cols 3..6 = quantity, unit price, VAT, line total
+           //   ac-table cols 3..4 = VAT, amount
+           //   vat-table cols 2..4 = rate, taxable amount, tax amount
+           + "." + p + "lines-table th:nth-child(n+3),." + p + "lines-table td:nth-child(n+3){text-align:right;font-variant-numeric:tabular-nums;}"
+           + "." + p + "ac-table th:nth-child(n+3),." + p + "ac-table td:nth-child(n+3){text-align:right;font-variant-numeric:tabular-nums;}"
+           + "." + p + "vat-table th:nth-child(n+2),." + p + "vat-table td:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums;}"
            + "." + p + "item-name{font-weight:bold;}"
            + "." + p + "item-desc,." + p + "item-attr,." + p + "line-note{color:#555;font-size:.9rem;}"
            + "." + p + "totals-ladder{display:grid;grid-template-columns:1fr auto;row-gap:.25rem;max-width:480px;margin-left:auto;}"

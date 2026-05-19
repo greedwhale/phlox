@@ -63,7 +63,11 @@ public final class HTMLInvoiceWriterTest
           assertTrue ("HTML output empty for " + aRes.getPath () + " / " + aLocale, sHtml.length () > 500);
           assertTrue ("Missing invoice number in HTML for " + aRes.getPath (), sHtml.contains (aModel.getNumber ()));
 
-          final String sOutputPath = "generated/" + StringHelper.trimStart (aRes.getPath (), "external/") + ".html";
+          final String sOutputPath = "generated/" +
+                                     StringHelper.trimStart (aRes.getPath (), "external/") +
+                                     "-" +
+                                     aLocale.getLanguage () +
+                                     ".html";
           SimpleFileIO.writeFile (new File (sOutputPath), sHtml, StandardCharsets.UTF_8);
         }
         nCount++;

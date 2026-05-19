@@ -19,16 +19,18 @@ package com.helger.norma.pdf;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.Locale;
-
-import com.helger.base.io.nonblocking.NonBlockingByteArrayOutputStream;
 
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.helger.base.io.nonblocking.NonBlockingByteArrayOutputStream;
+import com.helger.base.string.StringHelper;
 import com.helger.diagnostics.error.list.ErrorList;
+import com.helger.io.file.SimpleFileIO;
 import com.helger.io.resource.ClassPathResource;
 import com.helger.norma.api.model.NormaInvoice;
 import com.helger.norma.api.watermark.WatermarkSpec;
@@ -63,6 +65,13 @@ public final class PDFInvoiceWriterTest
           final byte [] aBytes = aBaos.toByteArray ();
           assertTrue ("Output is not a PDF: " + aRes.getPath (),
                       aBytes[0] == '%' && aBytes[1] == 'P' && aBytes[2] == 'D' && aBytes[3] == 'F');
+
+          final String sOutputPath = "generated/" +
+                                     StringHelper.trimStart (aRes.getPath (), "external/") +
+                                     "-" +
+                                     aLocale.getLanguage () +
+                                     ".pdf";
+          SimpleFileIO.writeFile (new File (sOutputPath), aBytes);
         }
         nCount++;
       }
