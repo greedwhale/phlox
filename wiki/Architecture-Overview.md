@@ -46,6 +46,7 @@ A `IInvoiceWriter<O>` implementation consumes the `InvoiceModel` plus a `RenderC
 | Intermediate model in `norma-api` | Adding a new source (e.g. UBL 2.4) means one new module; adding a new format (e.g. text/plain) means one new module. No cross-product. |
 | Model carries **all** BGs/BTs | Writers don't need fallback logic for missing slots — they always see a uniform shape; they only check for `null` / empty collections. |
 | Locale held in `RenderContext`, not the model | A single parsed invoice can be rendered in EN and DE without re-reading. |
+| `RenderContext` split into `HTMLRenderContext` / `PDFRenderContext` subclasses | Format-specific knobs (PDF fonts, HTML stylesheets) stay in their own modules and out of `norma-api`. Writer signatures are type-safe — the compiler rejects passing a PDF context to the HTML writer. |
 | No business-rule validation in `norma` | Separation of concerns. `phive-rules-en16931` already does this and is heavy; visualization should not pay that cost. |
 | Programmatic HTML/PDF (not XSLT) | Type safety, reuse of layout primitives, easier to test. Matches the rest of the Helger stack (`ph-oton-html`, `ph-pdf-layout`). |
 
@@ -81,14 +82,15 @@ See [[Maven Module Structure]] for module-by-module details.
 ```java
 // 1. Read
 final IInvoiceReader <InputStream> aReader = UBLInvoiceReader.fromUBL21 ();
-final InvoiceModel aModel = aReader.read (aXMLStream, aErrors);
+final NormaInvoice aModel = aReader.read (aXMLStream, aErrors);
 
-// 2. Configure rendering
-final RenderContext aCtx = new RenderContext ().setLocale (Locale.GERMAN);
+// 2. Configure rendering — typed per output format
+final HTMLRenderContext aHtmlCtx = new HTMLRenderContext ().setLocale (Locale.GERMAN);
+final PDFRenderContext  aPdfCtx  = PDFRenderContext.copyFrom (aHtmlCtx);
 
 // 3. Write (one or more outputs from the same model)
-final String sHTML = new HTMLInvoiceWriter ().writeAsString (aModel, aCtx);
-new PDFInvoiceWriter ().writeTo (aModel, aCtx, aOutputStream);
+final String sHTML = new HTMLInvoiceWriter ().writeAsString (aModel, aHtmlCtx);
+new PDFInvoiceWriter ().writeTo (aModel, aPdfCtx, aOutputStream);
 ```
 
-Each step is independent. A caller that only needs HTML never pulls `ph-pdf-layout` onto its classpath, because `norma-pdf` is in a separate module.
+Each step is independent. A caller that only needs HTML never pulls `ph-pdf-layout` (or `PDFRenderContext`) onto its classpath, because `norma-pdf` is in a separate module.

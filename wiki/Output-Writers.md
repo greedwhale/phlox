@@ -1,42 +1,22 @@
 # Output Writers
 
-A **writer** consumes a `NormaInvoice` plus a `RenderContext` and produces an output artifact. Writers contain all the presentation logic: layout, label lookup, locale-aware formatting.
+A **writer** consumes a `NormaInvoice` plus an output-typed `RenderContext` subclass and produces an output artifact. Writers contain all the presentation logic: layout, label lookup, locale-aware formatting.
 
 ## SPI
 
 ```java
 package com.helger.norma.api.write;
 
-public interface IInvoiceWriter <O>
+public interface IInvoiceWriter <O, CTX extends RenderContext>
 {
   @Nonnull
-  O write (@Nonnull NormaInvoice aInvoice, @Nonnull RenderContext aCtx);
+  O write (@Nonnull NormaInvoice aInvoice, @Nonnull CTX aCtx);
 }
 ```
 
-```java
-package com.helger.norma.api;
+Each writer binds its own `CTX` type so the compiler rejects accidental mixups (e.g. passing a `PDFRenderContext` to the HTML writer).
 
-public final class RenderContext
-{
-  // Locale for labels and number/date formatting (default: Locale.ENGLISH)
-  private Locale m_aLocale = Locale.ENGLISH;
-
-  // Optional override of per-locale number/date formats
-  private NormaFormatOptions m_aFormatOptions;
-
-  // Optional logo to print in the header (binary + mime code)
-  private NormaAttachment m_aLogo;
-
-  // Optional CSS class prefix for HTML writer
-  private String m_sCSSClassPrefix = "norma-";
-
-  // Whether to include EN 16931 BG/BT identifiers as annotations (debug)
-  private boolean m_bAnnotateBTIDs = false;
-}
-```
-
-The same `RenderContext` is consumed by both the HTML writer and the PDF writer.
+The base `RenderContext` lives in `norma-api` and carries only the syntax-neutral knobs (locale, label resolver, logo, format options, annotate-IDs). Output-specific extras live on subclasses defined alongside the writer: `HTMLRenderContext` in `norma-html`, `PDFRenderContext` in `norma-pdf`. See [[Configuration Properties]] for the full setter inventory.
 
 ## Shared layout grammar
 
@@ -92,9 +72,10 @@ Each section is implemented in a `*SectionRenderer` class so the HTML and PDF wr
 
 ### `HTMLInvoiceWriter` (module `norma-html`)
 
-Produces a complete HTML5 document.
+`implements IInvoiceWriter <String, HTMLRenderContext>`. Produces a complete HTML5 document.
 
 ```java
+final HTMLRenderContext aCtx = new HTMLRenderContext ().setLocale (Locale.GERMAN);
 final HCHtml aHtml = new HTMLInvoiceWriter ().writeAsHCHtml (aInvoice, aCtx);
 final String sHTML = HCRenderer.getAsHTMLString (aHtml, HCSettings.getMutableConversionSettings ());
 // or
@@ -105,16 +86,17 @@ Built on `ph-oton-html`:
 
 - Root element: `com.helger.html.hc.html.root.HCHtml` with `HCHead` (CSS) + `HCBody` (layout).
 - Sections built from `HCDiv`, `HCTable`, `HCSpan` (from `ph-oton-html` subpackages).
-- CSS: a single embedded stylesheet (`<style>` in `<head>`) with class names prefixed by `RenderContext.m_sCSSClassPrefix` (default `norma-`). Inline styles only where strictly needed.
+- CSS: a single embedded stylesheet (`<style>` in `<head>`) with class names prefixed by `HTMLRenderContext.m_sCSSClassPrefix` (default `norma-`). Inline styles only where strictly needed. Driven by `setEmbeddedStylesheet(...)` / `setCustomStylesheet(...)` on the context.
 - Rendering: `HCRenderer.getAsHTMLString(...)` for a `String`, `HCRenderer.writeHtmlTo(...)` for streaming output.
 
 **Why HC and not raw strings:** safety (auto-escapes), reuse, no template language to learn. The same approach the Helger stack already uses.
 
 ### `PDFInvoiceWriter` (module `norma-pdf`)
 
-Produces a PDF.
+`implements IInvoiceWriter <Void, PDFRenderContext>`. Produces a PDF.
 
 ```java
+final PDFRenderContext aCtx = new PDFRenderContext ().setLocale (Locale.GERMAN);
 new PDFInvoiceWriter ().writeTo (aInvoice, aCtx, aOutputStream);
 // or
 new PDFInvoiceWriter ().writeTo (aInvoice, aCtx, aOutputFile);
@@ -122,9 +104,9 @@ new PDFInvoiceWriter ().writeTo (aInvoice, aCtx, aOutputFile);
 
 Built on `ph-pdf-layout`:
 
-- Top-level: `com.helger.pdflayout.PageLayoutPDF` containing one `com.helger.pdflayout.base.PLPageSet` (A4 portrait, configurable via `NormaFormatOptions`).
+- Top-level: `com.helger.pdflayout.PageLayoutPDF` containing one `com.helger.pdflayout.base.PLPageSet`. Page size and margins come from `PDFRenderContext.setPageSize(...)` / `.setMargins(...)` (default A4 portrait, 20 mm margins).
 - Layout primitives: `PLVBox`, `PLHBox` for the section grid, `PLTable` for tabular data (invoice lines, VAT breakdown), `PLText` for everything else.
-- Fonts: `com.helger.pdflayout.spec.FontSpec` with a default of Helvetica 10pt; configurable via `NormaFormatOptions`. Bold-Helvetica for headers, regular for body.
+- Fonts: `com.helger.pdflayout.spec.FontSpec` instances on `PDFRenderContext` (`setBodyFont`, `setHeaderFont`, `setTableHeaderFont`). Defaults: Helvetica 10pt body, Helvetica-Bold 12pt section headings.
 - Rendering: `PageLayoutPDF.renderTo(outputStream)` or `.renderTo(file)`.
 
 **Page break policy:** `ph-pdf-layout` handles line-wrapping inside `PLTable` automatically; the writer adds explicit `PLPageBreak` only before the invoice-line table when the header would otherwise crowd it.

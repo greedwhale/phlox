@@ -71,14 +71,19 @@ The contract layer. Contains:
 
 ### `norma-ubl`
 
-Reads UBL 2.1 Invoice and CreditNote documents into a `NormaInvoice`.
+Reads UBL Invoice and CreditNote documents into a `NormaInvoice`. Supports **both** UBL versions that EN 16931 has a syntax binding for:
+
+- **UBL 2.1** — EN 16931:2017 (current edition).
+- **UBL 2.5** — EN 16931:2026 (upcoming edition).
+
+No other UBL versions are in scope. Both bindings live in this single module because the reader logic and field-by-field mapping are nearly identical — see [[Source Readers]] for the rationale.
 
 **Contains:**
 
-- `UBLInvoiceReader implements IInvoiceReader<InputStream>`.
-- Internal helpers for walking the UBL JAXB tree.
+- `UBLInvoiceReader implements IInvoiceReader<InputStream, NormaInvoice>` with `fromUBL21()`, `fromUBL25()`, and `autoDetect()` factory methods.
+- Internal helpers for walking the UBL JAXB tree (shared between the two version bindings).
 
-**Dependencies:** `norma-api`, `com.helger.ubl:ph-ubl21`.
+**Dependencies:** `norma-api`, `com.helger.ubl:ph-ubl21`, `com.helger.ubl:ph-ubl25`.
 
 ### `norma-cii`
 
@@ -136,7 +141,7 @@ Auto-detects source syntax (UBL vs CII) from the root element.
 | Decision | Rationale |
 |----------|-----------|
 | `api` separate from readers/writers | A consumer that only writes HTML for UBL pulls `norma-api` + `norma-ubl` + `norma-html` (≈ ph-commons + ph-ubl21 + ph-oton-html), not the world. |
-| Readers split per syntax (not per version) | Future UBL 2.2/2.3/2.4 modules can be added without touching UBL 2.1. Patterns mirror `en16931-cii2ubl`. |
+| Readers split per syntax (not per version) | `norma-ubl` handles UBL 2.1 (EN 16931:2017) and UBL 2.5 (EN 16931:2026) together — those are the only two UBL versions EN 16931 has a binding for, and their reader logic is shared. CII binding lives in its own module. |
 | Writers split per format | Adding a text/plain or DOCX writer is one module with no cross-cutting changes. |
 | CLI in its own module | The fat JAR is awkward and shouldn't be on consumers' classpaths. Same shape as `en16931-cii2ubl-cli`. |
 

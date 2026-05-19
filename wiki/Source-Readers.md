@@ -22,16 +22,27 @@ public interface IInvoiceReader <SRC>
 
 ### `UBLInvoiceReader` (module `norma-ubl`)
 
-Reads UBL 2.1 `Invoice` and `CreditNote` documents.
+Reads UBL `Invoice` and `CreditNote` documents. The module supports **the two UBL versions that EN 16931 has a syntax binding for**:
+
+| UBL version | EN 16931 edition | ph-ubl artifact |
+|-------------|------------------|-----------------|
+| **UBL 2.1** | EN 16931:2017 (current) | `com.helger.ubl:ph-ubl21` |
+| **UBL 2.5** | EN 16931:2026 (upcoming) | `com.helger.ubl:ph-ubl25` |
+
+No other UBL versions are in scope — EN 16931 only specifies bindings for these two, so anything else (2.2 / 2.3 / 2.4) is irrelevant for EN 16931 visualization. Both bindings live in **the same `norma-ubl` module**: the reader logic is nearly identical, the BG/BT field set is identical (the EN 16931 semantic model itself does not change between editions), and the only differences are which JAXB classes are imported and a handful of element-name updates that EN 16931:2026 introduces.
 
 ```java
-final InvoiceModel aModel = UBLInvoiceReader.fromUBL21 ().read (aXMLStream, aErrors);
+// EN 16931:2017 binding
+final NormaInvoice aModel = UBLInvoiceReader.fromUBL21 ().read (aXMLStream, aErrors);
+
+// EN 16931:2026 binding
+final NormaInvoice aModel = UBLInvoiceReader.fromUBL25 ().read (aXMLStream, aErrors);
 ```
 
 Internally:
 
-1. Sniff the root element (`Invoice` vs `CreditNote`) to pick the right marshaller.
-2. Use `com.helger.ubl21.UBL21Marshaller.invoice().read(...)` or `.creditNote().read(...)` to obtain `oasis.names.specification.ubl.schema.xsd.invoice_21.InvoiceType` / `creditnote_21.CreditNoteType`.
+1. Sniff the root element (`Invoice` vs `CreditNote`) to pick the right marshaller variant for the chosen UBL version.
+2. Use `com.helger.ubl21.UBL21Marshaller.invoice().read(...)` / `.creditNote().read(...)` — or the equivalent `UBL25Marshaller` calls — to obtain the typed JAXB object (`oasis.names.specification.ubl.schema.xsd.invoice_21.InvoiceType` / `creditnote_21.CreditNoteType`, or the `_25` variants).
 3. Walk the JAXB tree and populate the model. Element paths come from the **UBL Invoice** and **UBL Credit Note** columns of the EN 16931 three-way mapping (`../en16931-cii2ubl/docs/en16931-3way-mapping.md`).
 
 **Credit-Note-specific paths.** A handful of BTs sit at different element paths in `CreditNote` than in `Invoice` — see the "Key Differences" section of the mapping doc. The reader handles them with a small dispatch helper that takes the appropriate JAXB type. Notable cases:
@@ -41,14 +52,14 @@ Internally:
 - BG-25 — `InvoiceLine` vs `CreditNoteLine`.
 - BT-129 — `InvoicedQuantity` vs `CreditedQuantity`.
 
-**UBL versions.** Only UBL 2.1 is in the initial release because that is the EN 16931 baseline. Adding 2.2/2.3/2.4 later is a copy-and-tweak of `UBLInvoiceReader`, mirroring how `en16931-cii2ubl` maintains four parallel converter classes.
+**Auto-detection.** `UBLInvoiceReader.autoDetect()` reads `cbc:UBLVersionID` from the document and routes to the matching binding; it falls back to UBL 2.1 when the element is absent (which is common in EN 16931:2017 instances).
 
 ### `CIIInvoiceReader` (module `norma-cii`)
 
 Reads CII D16B `CrossIndustryInvoice` documents.
 
 ```java
-final InvoiceModel aModel = new CIIInvoiceReader ().read (aXMLStream, aErrors);
+final NormaInvoice aModel = new CIIInvoiceReader ().read (aXMLStream, aErrors);
 ```
 
 Internally:

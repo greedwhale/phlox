@@ -36,7 +36,7 @@ The intermediate model is the heart of the design: every reader populates the sa
 
 | Concern | Supported |
 |---------|-----------|
-| Source syntax | UBL 2.1 Invoice, UBL 2.1 CreditNote, CII D16B |
+| Source syntax | UBL 2.1 Invoice + CreditNote (EN 16931:2017) and CII D16B; UBL 2.5 (EN 16931:2026) planned for 0.3.0 |
 | Output format | HTML5, PDF |
 | Languages | English (`en`), German (`de`) |
 | EN 16931 coverage | All BGs (BG-1..BG-32) and BTs (BT-1..BT-165) |
