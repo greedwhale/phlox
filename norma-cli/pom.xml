@@ -73,6 +73,15 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>de.thetaphi</groupId>
+        <artifactId>forbiddenapis</artifactId>
+        <configuration>
+          <!-- CLI module legitimately uses System.in / System.out / System.err and
+               buffered I/O for stdin handling. -->
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
         <configuration>

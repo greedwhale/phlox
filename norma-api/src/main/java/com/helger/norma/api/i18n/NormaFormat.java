@@ -19,7 +19,6 @@ package com.helger.norma.api.i18n;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Currency;
 import java.util.Locale;
@@ -27,6 +26,8 @@ import java.util.Locale;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import com.helger.datetime.format.EDTFormatterMode;
+import com.helger.datetime.format.PDTFormatter;
 import com.helger.norma.api.NormaFormatOptions;
 
 /**
@@ -59,7 +60,7 @@ public final class NormaFormat
       return "";
     final FormatStyle eStyle = aOptions != null && aOptions.getDateStyle () != null ? aOptions.getDateStyle ()
                                                                                     : FormatStyle.MEDIUM;
-    return aDate.format (DateTimeFormatter.ofLocalizedDate (eStyle).withLocale (aLocale));
+    return PDTFormatter.getFormatterDate (eStyle, aLocale, EDTFormatterMode.PRINT).format (aDate);
   }
 
   /**

@@ -22,7 +22,9 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-20 DOCUMENT LEVEL ALLOWANCE. BT-92..BT-98.
+ * BG-20 DOCUMENT LEVEL ALLOWANCE (0..n). Carries BT-92 (allowance amount), BT-93 (base
+ * amount), BT-94 (percentage), BT-95 (VAT category code), BT-96 (VAT rate), BT-97 (reason text)
+ * and BT-98 (reason code).
  *
  * @author Philip Helger
  */
@@ -36,15 +38,24 @@ public class NormaDocumentAllowance
   private String m_sReason;
   private String m_sReasonCode;
 
+  /** Create an empty document-level allowance. */
   public NormaDocumentAllowance ()
   {}
 
+  /** @return Allowance amount (BT-92). May be {@code null}. */
   @Nullable
   public BigDecimal getAmount ()
   {
     return m_aAmount;
   }
 
+  /**
+   * Set the allowance amount (BT-92).
+   *
+   * @param aAmount
+   *        Amount; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaDocumentAllowance setAmount (@Nullable final BigDecimal aAmount)
   {
@@ -52,12 +63,20 @@ public class NormaDocumentAllowance
     return this;
   }
 
+  /** @return Allowance base amount (BT-93). May be {@code null}. */
   @Nullable
   public BigDecimal getBaseAmount ()
   {
     return m_aBaseAmount;
   }
 
+  /**
+   * Set the allowance base amount (BT-93).
+   *
+   * @param aBaseAmount
+   *        Base amount; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaDocumentAllowance setBaseAmount (@Nullable final BigDecimal aBaseAmount)
   {
@@ -65,12 +84,20 @@ public class NormaDocumentAllowance
     return this;
   }
 
+  /** @return Allowance percentage (BT-94). May be {@code null}. */
   @Nullable
   public BigDecimal getPercentage ()
   {
     return m_aPercentage;
   }
 
+  /**
+   * Set the allowance percentage (BT-94).
+   *
+   * @param aPercentage
+   *        Percentage as a {@link BigDecimal} (e.g. {@code 10} for 10 %); may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaDocumentAllowance setPercentage (@Nullable final BigDecimal aPercentage)
   {
@@ -78,12 +105,20 @@ public class NormaDocumentAllowance
     return this;
   }
 
+  /** @return VAT category code (BT-95) — UNTDID 5305. May be {@code null}. */
   @Nullable
   public String getVATCategoryCode ()
   {
     return m_sVATCategoryCode;
   }
 
+  /**
+   * Set the VAT category code (BT-95).
+   *
+   * @param sVATCategoryCode
+   *        UNTDID 5305 code; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaDocumentAllowance setVATCategoryCode (@Nullable final String sVATCategoryCode)
   {
@@ -91,12 +126,20 @@ public class NormaDocumentAllowance
     return this;
   }
 
+  /** @return VAT rate (BT-96). May be {@code null}. */
   @Nullable
   public BigDecimal getVATRate ()
   {
     return m_aVATRate;
   }
 
+  /**
+   * Set the VAT rate (BT-96).
+   *
+   * @param aVATRate
+   *        Rate as a {@link BigDecimal} (e.g. {@code 19} for 19 %); may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaDocumentAllowance setVATRate (@Nullable final BigDecimal aVATRate)
   {
@@ -104,12 +147,20 @@ public class NormaDocumentAllowance
     return this;
   }
 
+  /** @return Allowance reason text (BT-97). May be {@code null}. */
   @Nullable
   public String getReason ()
   {
     return m_sReason;
   }
 
+  /**
+   * Set the allowance reason text (BT-97).
+   *
+   * @param sReason
+   *        Reason text; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaDocumentAllowance setReason (@Nullable final String sReason)
   {
@@ -117,12 +168,20 @@ public class NormaDocumentAllowance
     return this;
   }
 
+  /** @return Allowance reason code (BT-98) — UNTDID 5189. May be {@code null}. */
   @Nullable
   public String getReasonCode ()
   {
     return m_sReasonCode;
   }
 
+  /**
+   * Set the allowance reason code (BT-98).
+   *
+   * @param sReasonCode
+   *        UNTDID 5189 code; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaDocumentAllowance setReasonCode (@Nullable final String sReasonCode)
   {

@@ -22,7 +22,9 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-23 VAT BREAKDOWN. BT-116..BT-121.
+ * BG-23 VAT BREAKDOWN (1..n). Carries BT-116 (taxable amount), BT-117 (tax amount), BT-118
+ * (VAT category code), BT-119 (VAT rate), BT-120 (exemption reason text) and BT-121
+ * (exemption reason code).
  *
  * @author Philip Helger
  */
@@ -35,15 +37,24 @@ public class NormaVATBreakdown
   private String m_sExemptionReason;
   private String m_sExemptionReasonCode;
 
+  /** Create an empty VAT breakdown. */
   public NormaVATBreakdown ()
   {}
 
+  /** @return VAT category taxable amount (BT-116). May be {@code null}. */
   @Nullable
   public BigDecimal getTaxableAmount ()
   {
     return m_aTaxableAmount;
   }
 
+  /**
+   * Set the VAT category taxable amount (BT-116).
+   *
+   * @param aTaxableAmount
+   *        Amount; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaVATBreakdown setTaxableAmount (@Nullable final BigDecimal aTaxableAmount)
   {
@@ -51,12 +62,20 @@ public class NormaVATBreakdown
     return this;
   }
 
+  /** @return VAT category tax amount (BT-117). May be {@code null}. */
   @Nullable
   public BigDecimal getTaxAmount ()
   {
     return m_aTaxAmount;
   }
 
+  /**
+   * Set the VAT category tax amount (BT-117).
+   *
+   * @param aTaxAmount
+   *        Amount; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaVATBreakdown setTaxAmount (@Nullable final BigDecimal aTaxAmount)
   {
@@ -64,12 +83,20 @@ public class NormaVATBreakdown
     return this;
   }
 
+  /** @return VAT category code (BT-118) — UNTDID 5305. May be {@code null}. */
   @Nullable
   public String getCategoryCode ()
   {
     return m_sCategoryCode;
   }
 
+  /**
+   * Set the VAT category code (BT-118).
+   *
+   * @param sCategoryCode
+   *        UNTDID 5305 code; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaVATBreakdown setCategoryCode (@Nullable final String sCategoryCode)
   {
@@ -77,12 +104,20 @@ public class NormaVATBreakdown
     return this;
   }
 
+  /** @return VAT category rate (BT-119). May be {@code null}. */
   @Nullable
   public BigDecimal getRate ()
   {
     return m_aRate;
   }
 
+  /**
+   * Set the VAT category rate (BT-119).
+   *
+   * @param aRate
+   *        Rate as a {@link BigDecimal} (e.g. {@code 19} for 19 %); may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaVATBreakdown setRate (@Nullable final BigDecimal aRate)
   {
@@ -90,12 +125,20 @@ public class NormaVATBreakdown
     return this;
   }
 
+  /** @return VAT exemption reason text (BT-120). May be {@code null}. */
   @Nullable
   public String getExemptionReason ()
   {
     return m_sExemptionReason;
   }
 
+  /**
+   * Set the VAT exemption reason text (BT-120).
+   *
+   * @param sExemptionReason
+   *        Reason text; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaVATBreakdown setExemptionReason (@Nullable final String sExemptionReason)
   {
@@ -103,12 +146,20 @@ public class NormaVATBreakdown
     return this;
   }
 
+  /** @return VAT exemption reason code (BT-121). May be {@code null}. */
   @Nullable
   public String getExemptionReasonCode ()
   {
     return m_sExemptionReasonCode;
   }
 
+  /**
+   * Set the VAT exemption reason code (BT-121).
+   *
+   * @param sExemptionReasonCode
+   *        Reason code; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaVATBreakdown setExemptionReasonCode (@Nullable final String sExemptionReasonCode)
   {

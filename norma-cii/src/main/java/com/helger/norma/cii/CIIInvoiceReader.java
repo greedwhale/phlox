@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.jspecify.annotations.NonNull;
@@ -128,7 +129,7 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
                                                                      "458",
                                                                      "532");
 
-  private static final DateTimeFormatter CII_DATE_FORMAT = DateTimeFormatter.ofPattern ("yyyyMMdd");
+  private static final DateTimeFormatter CII_DATE_FORMAT = DateTimeFormatter.ofPattern ("yyyyMMdd", Locale.ROOT);
 
   public CIIInvoiceReader ()
   {}

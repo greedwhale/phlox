@@ -19,9 +19,10 @@ package com.helger.norma.pdf;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Locale;
+
+import com.helger.base.io.nonblocking.NonBlockingByteArrayOutputStream;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -55,7 +56,7 @@ public final class PDFInvoiceWriterTest
         {
           final PDFRenderContext aCtx = new PDFRenderContext ().setLocale (aLocale)
                                                                .setUserWatermark (WatermarkSpec.text ("DRAFT"));
-          final ByteArrayOutputStream aBaos = new ByteArrayOutputStream ();
+          final NonBlockingByteArrayOutputStream aBaos = new NonBlockingByteArrayOutputStream ();
           aWriter.writeTo (aModel, aCtx, aBaos);
           assertTrue ("Empty PDF for " + aRes.getPath () + " / " + aLocale, aBaos.size () > 500);
           // Confirm header: PDF magic

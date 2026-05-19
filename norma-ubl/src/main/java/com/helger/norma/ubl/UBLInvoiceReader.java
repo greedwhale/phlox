@@ -149,11 +149,11 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       return null;
     }
 
-    final InvoiceType aInvoice = UBL21Marshaller.invoice ().read (new java.io.ByteArrayInputStream (aBytes));
+    final InvoiceType aInvoice = UBL21Marshaller.invoice ().read (new com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream (aBytes));
     if (aInvoice != null)
       return readInvoice (aInvoice);
 
-    final CreditNoteType aCreditNote = UBL21Marshaller.creditNote ().read (new java.io.ByteArrayInputStream (aBytes));
+    final CreditNoteType aCreditNote = UBL21Marshaller.creditNote ().read (new com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream (aBytes));
     if (aCreditNote != null)
       return readCreditNote (aCreditNote);
 
