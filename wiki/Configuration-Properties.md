@@ -7,14 +7,14 @@ This page lists every knob a caller can turn.
 ## Context-class hierarchy
 
 ```
-RenderContext               (norma-api — syntax-neutral knobs only)
+AbstractRenderContext       (norma-api — syntax-neutral knobs only; abstract)
    ├─ HTMLRenderContext     (norma-html — adds CSS/stylesheet options)
    └─ PDFRenderContext      (norma-pdf  — adds page-size/margin/font options)
 ```
 
 Each writer's `write(...)` accepts its own context subtype, so the compiler rejects accidental mixups like passing a `PDFRenderContext` to the HTML writer. The base class lives in `norma-api` so it never pulls `ph-pdf-layout` or `ph-oton-html` types onto the API classpath.
 
-## `RenderContext` (norma-api)
+## `AbstractRenderContext` (norma-api)
 
 Shared by every writer.
 
