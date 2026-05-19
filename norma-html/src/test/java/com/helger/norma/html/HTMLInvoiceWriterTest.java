@@ -19,14 +19,18 @@ package com.helger.norma.html;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.helger.base.string.StringHelper;
 import com.helger.diagnostics.error.list.ErrorList;
+import com.helger.io.file.SimpleFileIO;
 import com.helger.io.resource.ClassPathResource;
 import com.helger.norma.api.model.NormaInvoice;
 import com.helger.norma.api.watermark.WatermarkSpec;
@@ -58,6 +62,9 @@ public final class HTMLInvoiceWriterTest
           assertNotNull (sHtml);
           assertTrue ("HTML output empty for " + aRes.getPath () + " / " + aLocale, sHtml.length () > 500);
           assertTrue ("Missing invoice number in HTML for " + aRes.getPath (), sHtml.contains (aModel.getNumber ()));
+
+          final String sOutputPath = "generated/" + StringHelper.trimStart (aRes.getPath (), "external/") + ".html";
+          SimpleFileIO.writeFile (new File (sOutputPath), sHtml, StandardCharsets.UTF_8);
         }
         nCount++;
       }

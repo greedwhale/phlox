@@ -1,6 +1,7 @@
 .claude/
 .settings/
-target
+generated/
+target/
 
 .classpath
 .DS_Store
