@@ -49,7 +49,9 @@ public final class NormaProgramWatermark
   {}
 
   /**
-   * Set the library-wide program watermark.
+   * Replace (or with {@code null}, suppress) the library-wide program watermark. Typically
+   * called once at JVM startup; the commercial distribution invokes this from a static
+   * initializer behind a license check.
    *
    * @param aSpec
    *        The new watermark spec, or {@code null} to suppress the watermark entirely.
@@ -59,16 +61,14 @@ public final class NormaProgramWatermark
     s_aActive = aSpec;
   }
 
-  /**
-   * @return The currently active program watermark spec, or {@code null} if suppressed.
-   */
+  /** @return The currently active program watermark spec, or {@code null} if suppressed. */
   @Nullable
   public static WatermarkSpec getInstance ()
   {
     return s_aActive;
   }
 
-  /** Restore the open-source default (only useful for tests). */
+  /** Restore the open-source default watermark. Useful for tests that mutated the instance. */
   public static void resetToOpenSourceDefault ()
   {
     s_aActive = OPEN_SOURCE_DEFAULT;

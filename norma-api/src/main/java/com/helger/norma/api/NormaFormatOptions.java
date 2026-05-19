@@ -38,6 +38,7 @@ public class NormaFormatOptions
   private int m_nPercentFractionDigits = DEFAULT_PERCENT_FRACTION_DIGITS;
   private ENegativeStyle m_eNegativeStyle = DEFAULT_NEGATIVE_STYLE;
 
+  /** Create a new instance with default options. */
   public NormaFormatOptions ()
   {}
 
@@ -48,12 +49,20 @@ public class NormaFormatOptions
     return new NormaFormatOptions ();
   }
 
+  /** @return The date format style (MEDIUM by default). Never {@code null}. */
   @NonNull
   public FormatStyle getDateStyle ()
   {
     return m_eDateStyle;
   }
 
+  /**
+   * Set the date format style.
+   *
+   * @param eDateStyle
+   *        Date format style; never {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaFormatOptions setDateStyle (@NonNull final FormatStyle eDateStyle)
   {
@@ -61,12 +70,23 @@ public class NormaFormatOptions
     return this;
   }
 
+  /**
+   * @return Override for the number of fraction digits used when formatting amounts. When
+   *         {@code null} (the default), the currency's natural fraction-digits count is used.
+   */
   @Nullable
   public Integer getAmountFractionDigits ()
   {
     return m_aAmountFractionDigits;
   }
 
+  /**
+   * Override the number of fraction digits used when formatting amounts.
+   *
+   * @param aAmountFractionDigits
+   *        Digit count or {@code null} to use the currency default.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaFormatOptions setAmountFractionDigits (@Nullable final Integer aAmountFractionDigits)
   {
@@ -74,11 +94,19 @@ public class NormaFormatOptions
     return this;
   }
 
+  /** @return Fraction digits for percentage values (default {@value #DEFAULT_PERCENT_FRACTION_DIGITS}). */
   public int getPercentFractionDigits ()
   {
     return m_nPercentFractionDigits;
   }
 
+  /**
+   * Set the fraction digits for percentage values.
+   *
+   * @param nPercentFractionDigits
+   *        Digit count (≥ 0).
+   * @return this for chaining.
+   */
   @NonNull
   public NormaFormatOptions setPercentFractionDigits (final int nPercentFractionDigits)
   {
@@ -86,12 +114,20 @@ public class NormaFormatOptions
     return this;
   }
 
+  /** @return The negative-amount style (minus-sign by default). Never {@code null}. */
   @NonNull
   public ENegativeStyle getNegativeStyle ()
   {
     return m_eNegativeStyle;
   }
 
+  /**
+   * Set the negative-amount style.
+   *
+   * @param eNegativeStyle
+   *        Negative style; never {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaFormatOptions setNegativeStyle (@NonNull final ENegativeStyle eNegativeStyle)
   {

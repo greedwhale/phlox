@@ -22,7 +22,9 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-27 INVOICE LINE ALLOWANCE. BT-136..BT-140.
+ * BG-27 INVOICE LINE ALLOWANCE (0..n on a line). Carries BT-136 (allowance amount), BT-137
+ * (base amount), BT-138 (percentage), BT-139 (reason text) and BT-140 (reason code). VAT
+ * details are not repeated here because line-level VAT applies to the whole line (see BG-30).
  *
  * @author Philip Helger
  */
@@ -34,15 +36,24 @@ public class NormaLineAllowance
   private String m_sReason;
   private String m_sReasonCode;
 
+  /** Create an empty line allowance. */
   public NormaLineAllowance ()
   {}
 
+  /** @return Line allowance amount (BT-136). May be {@code null}. */
   @Nullable
   public BigDecimal getAmount ()
   {
     return m_aAmount;
   }
 
+  /**
+   * Set the line allowance amount (BT-136).
+   *
+   * @param aAmount
+   *        Amount; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaLineAllowance setAmount (@Nullable final BigDecimal aAmount)
   {
@@ -50,12 +61,20 @@ public class NormaLineAllowance
     return this;
   }
 
+  /** @return Line allowance base amount (BT-137). May be {@code null}. */
   @Nullable
   public BigDecimal getBaseAmount ()
   {
     return m_aBaseAmount;
   }
 
+  /**
+   * Set the line allowance base amount (BT-137).
+   *
+   * @param aBaseAmount
+   *        Base amount; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaLineAllowance setBaseAmount (@Nullable final BigDecimal aBaseAmount)
   {
@@ -63,12 +82,20 @@ public class NormaLineAllowance
     return this;
   }
 
+  /** @return Line allowance percentage (BT-138). May be {@code null}. */
   @Nullable
   public BigDecimal getPercentage ()
   {
     return m_aPercentage;
   }
 
+  /**
+   * Set the line allowance percentage (BT-138).
+   *
+   * @param aPercentage
+   *        Percentage as a {@link BigDecimal}; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaLineAllowance setPercentage (@Nullable final BigDecimal aPercentage)
   {
@@ -76,12 +103,20 @@ public class NormaLineAllowance
     return this;
   }
 
+  /** @return Line allowance reason text (BT-139). May be {@code null}. */
   @Nullable
   public String getReason ()
   {
     return m_sReason;
   }
 
+  /**
+   * Set the line allowance reason text (BT-139).
+   *
+   * @param sReason
+   *        Reason text; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaLineAllowance setReason (@Nullable final String sReason)
   {
@@ -89,12 +124,20 @@ public class NormaLineAllowance
     return this;
   }
 
+  /** @return Line allowance reason code (BT-140) — UNTDID 5189. May be {@code null}. */
   @Nullable
   public String getReasonCode ()
   {
     return m_sReasonCode;
   }
 
+  /**
+   * Set the line allowance reason code (BT-140).
+   *
+   * @param sReasonCode
+   *        UNTDID 5189 code; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaLineAllowance setReasonCode (@Nullable final String sReasonCode)
   {

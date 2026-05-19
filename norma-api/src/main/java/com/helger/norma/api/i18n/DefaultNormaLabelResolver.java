@@ -33,10 +33,16 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultNormaLabelResolver implements INormaLabelResolver
 {
+  /** Resource bundle base name for BG/BT labels and section titles. */
   public static final String BUNDLE_LABELS = "norma-labels";
+  /** Resource bundle base name for code-list value descriptions. */
   public static final String BUNDLE_CODELISTS = "norma-codelists";
 
   private static final Logger LOGGER = LoggerFactory.getLogger (DefaultNormaLabelResolver.class);
+
+  /** Create a new resolver. */
+  public DefaultNormaLabelResolver ()
+  {}
 
   @Override
   @NonNull

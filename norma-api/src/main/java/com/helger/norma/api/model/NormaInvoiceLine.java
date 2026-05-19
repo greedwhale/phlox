@@ -26,7 +26,12 @@ import com.helger.collection.commons.CommonsArrayList;
 import com.helger.collection.commons.ICommonsList;
 
 /**
- * BG-25 INVOICE LINE plus nested BG-26..BG-32. BT-126..BT-133 plus all the line-level groups.
+ * BG-25 INVOICE LINE (1..n) plus all the nested line-level groups (BG-26 invoice line period,
+ * BG-27 line allowances, BG-28 line charges, BG-29 price details, BG-30 line VAT, BG-31 item
+ * information with BG-32 item attributes). Carries BT-126 (line identifier), BT-127 (line note),
+ * BT-128/BT-128-1 (line object identifier), BT-129 (quantity), BT-130 (quantity unit),
+ * BT-131 (line net amount), BT-132 (referenced purchase order line) and BT-133 (line buyer
+ * accounting reference).
  *
  * @author Philip Helger
  */
@@ -47,15 +52,24 @@ public class NormaInvoiceLine
   private NormaLineVAT m_aLineVAT;
   private NormaItem m_aItem;
 
+  /** Create an empty invoice line. */
   public NormaInvoiceLine ()
   {}
 
+  /** @return Invoice line identifier (BT-126). May be {@code null}. */
   @Nullable
   public String getID ()
   {
     return m_sID;
   }
 
+  /**
+   * Set the invoice line identifier (BT-126).
+   *
+   * @param sID
+   *        Line ID; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoiceLine setID (@Nullable final String sID)
   {
@@ -63,12 +77,20 @@ public class NormaInvoiceLine
     return this;
   }
 
+  /** @return Invoice line note (BT-127). May be {@code null}. */
   @Nullable
   public String getNote ()
   {
     return m_sNote;
   }
 
+  /**
+   * Set the invoice line note (BT-127).
+   *
+   * @param sNote
+   *        Note text; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoiceLine setNote (@Nullable final String sNote)
   {
@@ -76,12 +98,20 @@ public class NormaInvoiceLine
     return this;
   }
 
+  /** @return Invoice line object identifier (BT-128 with BT-128-1 scheme ID). May be {@code null}. */
   @Nullable
   public NormaIdentifier getObjectIdentifier ()
   {
     return m_aObjectIdentifier;
   }
 
+  /**
+   * Set the invoice line object identifier (BT-128 / BT-128-1).
+   *
+   * @param aObjectIdentifier
+   *        Identifier; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoiceLine setObjectIdentifier (@Nullable final NormaIdentifier aObjectIdentifier)
   {
@@ -89,12 +119,20 @@ public class NormaInvoiceLine
     return this;
   }
 
+  /** @return Invoiced quantity (BT-129) — credit-note credited quantity also stored here. May be {@code null}. */
   @Nullable
   public BigDecimal getQuantity ()
   {
     return m_aQuantity;
   }
 
+  /**
+   * Set the invoiced quantity (BT-129).
+   *
+   * @param aQuantity
+   *        Quantity; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoiceLine setQuantity (@Nullable final BigDecimal aQuantity)
   {
@@ -102,12 +140,20 @@ public class NormaInvoiceLine
     return this;
   }
 
+  /** @return Invoiced quantity unit of measure (BT-130) — UN/ECE Rec 20/21. May be {@code null}. */
   @Nullable
   public String getQuantityUnit ()
   {
     return m_sQuantityUnit;
   }
 
+  /**
+   * Set the invoiced quantity unit of measure (BT-130).
+   *
+   * @param sQuantityUnit
+   *        Unit code; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoiceLine setQuantityUnit (@Nullable final String sQuantityUnit)
   {
@@ -115,12 +161,20 @@ public class NormaInvoiceLine
     return this;
   }
 
+  /** @return Invoice line net amount (BT-131). May be {@code null}. */
   @Nullable
   public BigDecimal getNetAmount ()
   {
     return m_aNetAmount;
   }
 
+  /**
+   * Set the invoice line net amount (BT-131).
+   *
+   * @param aNetAmount
+   *        Net amount; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoiceLine setNetAmount (@Nullable final BigDecimal aNetAmount)
   {
@@ -128,12 +182,20 @@ public class NormaInvoiceLine
     return this;
   }
 
+  /** @return Referenced purchase order line reference (BT-132). May be {@code null}. */
   @Nullable
   public String getPurchaseOrderLineRef ()
   {
     return m_sPurchaseOrderLineRef;
   }
 
+  /**
+   * Set the referenced purchase order line reference (BT-132).
+   *
+   * @param sPurchaseOrderLineRef
+   *        PO line reference; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoiceLine setPurchaseOrderLineRef (@Nullable final String sPurchaseOrderLineRef)
   {
@@ -141,12 +203,20 @@ public class NormaInvoiceLine
     return this;
   }
 
+  /** @return Invoice line buyer accounting reference (BT-133). May be {@code null}. */
   @Nullable
   public String getAccountingCost ()
   {
     return m_sAccountingCost;
   }
 
+  /**
+   * Set the invoice line buyer accounting reference (BT-133).
+   *
+   * @param sAccountingCost
+   *        Accounting cost reference; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoiceLine setAccountingCost (@Nullable final String sAccountingCost)
   {
@@ -154,12 +224,20 @@ public class NormaInvoiceLine
     return this;
   }
 
+  /** @return Invoice line period (BG-26 — BT-134 / BT-135). May be {@code null}. */
   @Nullable
   public NormaInvoicingPeriod getPeriod ()
   {
     return m_aPeriod;
   }
 
+  /**
+   * Set the invoice line period (BG-26).
+   *
+   * @param aPeriod
+   *        Period; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoiceLine setPeriod (@Nullable final NormaInvoicingPeriod aPeriod)
   {
@@ -167,6 +245,10 @@ public class NormaInvoiceLine
     return this;
   }
 
+  /**
+   * @return Mutable list of line allowances (BG-27). Never {@code null}; empty when none are
+   *         present.
+   */
   @NonNull
   @ReturnsMutableObject
   public ICommonsList <NormaLineAllowance> allowances ()
@@ -174,6 +256,10 @@ public class NormaInvoiceLine
     return m_aAllowances;
   }
 
+  /**
+   * @return Mutable list of line charges (BG-28). Never {@code null}; empty when none are
+   *         present.
+   */
   @NonNull
   @ReturnsMutableObject
   public ICommonsList <NormaLineCharge> charges ()
@@ -181,12 +267,20 @@ public class NormaInvoiceLine
     return m_aCharges;
   }
 
+  /** @return Price details (BG-29). May be {@code null}. */
   @Nullable
   public NormaPriceDetails getPrice ()
   {
     return m_aPrice;
   }
 
+  /**
+   * Set the price details (BG-29).
+   *
+   * @param aPrice
+   *        Price details; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoiceLine setPrice (@Nullable final NormaPriceDetails aPrice)
   {
@@ -194,12 +288,20 @@ public class NormaInvoiceLine
     return this;
   }
 
+  /** @return Line VAT information (BG-30). May be {@code null}. */
   @Nullable
   public NormaLineVAT getLineVAT ()
   {
     return m_aLineVAT;
   }
 
+  /**
+   * Set the line VAT information (BG-30).
+   *
+   * @param aLineVAT
+   *        Line VAT; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoiceLine setLineVAT (@Nullable final NormaLineVAT aLineVAT)
   {
@@ -207,12 +309,20 @@ public class NormaInvoiceLine
     return this;
   }
 
+  /** @return Item information (BG-31). May be {@code null}. */
   @Nullable
   public NormaItem getItem ()
   {
     return m_aItem;
   }
 
+  /**
+   * Set the item information (BG-31).
+   *
+   * @param aItem
+   *        Item; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoiceLine setItem (@Nullable final NormaItem aItem)
   {

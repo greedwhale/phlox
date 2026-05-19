@@ -58,15 +58,24 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
   private boolean m_bIncludeEmptySections = DEFAULT_INCLUDE_EMPTY_SECTIONS;
   private WatermarkSpec m_aUserWatermark;
 
+  /** Subclass-only constructor. */
   protected AbstractRenderContext ()
   {}
 
+  /** @return The target locale for labels and locale-driven formatting. Never {@code null}. */
   @NonNull
   public Locale getLocale ()
   {
     return m_aLocale;
   }
 
+  /**
+   * Set the target locale.
+   *
+   * @param aLocale
+   *        Locale; never {@code null}.
+   * @return this for chaining (typed as the concrete subclass).
+   */
   @NonNull
   public IMPLTYPE setLocale (@NonNull final Locale aLocale)
   {
@@ -74,12 +83,20 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
     return thisAsT ();
   }
 
+  /** @return The per-call format options. Never {@code null}. */
   @NonNull
   public NormaFormatOptions getFormatOptions ()
   {
     return m_aFormatOptions;
   }
 
+  /**
+   * Set the format options.
+   *
+   * @param aFormatOptions
+   *        Format options; never {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public IMPLTYPE setFormatOptions (@NonNull final NormaFormatOptions aFormatOptions)
   {
@@ -87,12 +104,20 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
     return thisAsT ();
   }
 
+  /** @return The optional logo to render in the page header. May be {@code null}. */
   @Nullable
   public NormaAttachment getLogo ()
   {
     return m_aLogo;
   }
 
+  /**
+   * Set the optional logo to render in the page header.
+   *
+   * @param aLogo
+   *        Logo image; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public IMPLTYPE setLogo (@Nullable final NormaAttachment aLogo)
   {
@@ -100,12 +125,20 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
     return thisAsT ();
   }
 
+  /** @return The label resolver in use. Never {@code null}. */
   @NonNull
   public INormaLabelResolver getLabelResolver ()
   {
     return m_aLabelResolver;
   }
 
+  /**
+   * Replace the label resolver.
+   *
+   * @param aLabelResolver
+   *        Resolver; never {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public IMPLTYPE setLabelResolver (@NonNull final INormaLabelResolver aLabelResolver)
   {
@@ -113,11 +146,19 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
     return thisAsT ();
   }
 
+  /** @return {@code true} when labels should be suffixed with their BT/BG ID (debug aid). */
   public boolean isAnnotateBTIDs ()
   {
     return m_bAnnotateBTIDs;
   }
 
+  /**
+   * Set whether labels should be suffixed with their BT/BG ID (debug aid).
+   *
+   * @param bAnnotateBTIDs
+   *        {@code true} to annotate.
+   * @return this for chaining.
+   */
   @NonNull
   public IMPLTYPE setAnnotateBTIDs (final boolean bAnnotateBTIDs)
   {
@@ -125,11 +166,19 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
     return thisAsT ();
   }
 
+  /** @return {@code true} when section headings should be rendered even when empty. */
   public boolean isIncludeEmptySections ()
   {
     return m_bIncludeEmptySections;
   }
 
+  /**
+   * Set whether section headings should be rendered even when empty.
+   *
+   * @param bIncludeEmptySections
+   *        {@code true} to include empty sections.
+   * @return this for chaining.
+   */
   @NonNull
   public IMPLTYPE setIncludeEmptySections (final boolean bIncludeEmptySections)
   {
@@ -137,12 +186,20 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
     return thisAsT ();
   }
 
+  /** @return The optional user watermark (e.g. "DRAFT"). May be {@code null}. */
   @Nullable
   public WatermarkSpec getUserWatermark ()
   {
     return m_aUserWatermark;
   }
 
+  /**
+   * Set the optional user watermark drawn on every output page.
+   *
+   * @param aUserWatermark
+   *        Watermark spec; may be {@code null} for no user watermark.
+   * @return this for chaining.
+   */
   @NonNull
   public IMPLTYPE setUserWatermark (@Nullable final WatermarkSpec aUserWatermark)
   {

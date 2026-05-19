@@ -22,7 +22,9 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-28 INVOICE LINE CHARGE. BT-141..BT-145. Same shape as {@link NormaLineAllowance}.
+ * BG-28 INVOICE LINE CHARGE (0..n on a line). Carries BT-141 (charge amount), BT-142 (base
+ * amount), BT-143 (percentage), BT-144 (reason text) and BT-145 (reason code). Same shape as
+ * {@link NormaLineAllowance}.
  *
  * @author Philip Helger
  */
@@ -34,15 +36,24 @@ public class NormaLineCharge
   private String m_sReason;
   private String m_sReasonCode;
 
+  /** Create an empty line charge. */
   public NormaLineCharge ()
   {}
 
+  /** @return Line charge amount (BT-141). May be {@code null}. */
   @Nullable
   public BigDecimal getAmount ()
   {
     return m_aAmount;
   }
 
+  /**
+   * Set the line charge amount (BT-141).
+   *
+   * @param aAmount
+   *        Amount; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaLineCharge setAmount (@Nullable final BigDecimal aAmount)
   {
@@ -50,12 +61,20 @@ public class NormaLineCharge
     return this;
   }
 
+  /** @return Line charge base amount (BT-142). May be {@code null}. */
   @Nullable
   public BigDecimal getBaseAmount ()
   {
     return m_aBaseAmount;
   }
 
+  /**
+   * Set the line charge base amount (BT-142).
+   *
+   * @param aBaseAmount
+   *        Base amount; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaLineCharge setBaseAmount (@Nullable final BigDecimal aBaseAmount)
   {
@@ -63,12 +82,20 @@ public class NormaLineCharge
     return this;
   }
 
+  /** @return Line charge percentage (BT-143). May be {@code null}. */
   @Nullable
   public BigDecimal getPercentage ()
   {
     return m_aPercentage;
   }
 
+  /**
+   * Set the line charge percentage (BT-143).
+   *
+   * @param aPercentage
+   *        Percentage as a {@link BigDecimal}; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaLineCharge setPercentage (@Nullable final BigDecimal aPercentage)
   {
@@ -76,12 +103,20 @@ public class NormaLineCharge
     return this;
   }
 
+  /** @return Line charge reason text (BT-144). May be {@code null}. */
   @Nullable
   public String getReason ()
   {
     return m_sReason;
   }
 
+  /**
+   * Set the line charge reason text (BT-144).
+   *
+   * @param sReason
+   *        Reason text; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaLineCharge setReason (@Nullable final String sReason)
   {
@@ -89,12 +124,20 @@ public class NormaLineCharge
     return this;
   }
 
+  /** @return Line charge reason code (BT-145) — UNTDID 7161. May be {@code null}. */
   @Nullable
   public String getReasonCode ()
   {
     return m_sReasonCode;
   }
 
+  /**
+   * Set the line charge reason code (BT-145).
+   *
+   * @param sReasonCode
+   *        UNTDID 7161 code; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaLineCharge setReasonCode (@Nullable final String sReasonCode)
   {

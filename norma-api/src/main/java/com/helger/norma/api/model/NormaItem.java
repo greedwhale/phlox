@@ -24,7 +24,10 @@ import com.helger.collection.commons.CommonsArrayList;
 import com.helger.collection.commons.ICommonsList;
 
 /**
- * BG-31 ITEM INFORMATION plus nested BG-32 attributes. BT-153..BT-159 plus the attributes list.
+ * BG-31 ITEM INFORMATION (1..1 on a line) plus nested BG-32 (item attributes). Carries
+ * BT-153 (item name), BT-154 (item description), BT-155 (seller's item identifier), BT-156
+ * (buyer's item identifier), BT-157/BT-157-1 (standard item identifier and scheme),
+ * BT-158/BT-158-1/BT-158-2 (classifications) and BT-159 (country of origin).
  *
  * @author Philip Helger
  */
@@ -39,15 +42,24 @@ public class NormaItem
   private String m_sCountryOfOrigin;
   private final ICommonsList <NormaItemAttribute> m_aAttributes = new CommonsArrayList <> ();
 
+  /** Create an empty item. */
   public NormaItem ()
   {}
 
+  /** @return Item name (BT-153). May be {@code null}. */
   @Nullable
   public String getName ()
   {
     return m_sName;
   }
 
+  /**
+   * Set the item name (BT-153).
+   *
+   * @param sName
+   *        Name; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaItem setName (@Nullable final String sName)
   {
@@ -55,12 +67,20 @@ public class NormaItem
     return this;
   }
 
+  /** @return Item description (BT-154). May be {@code null}. */
   @Nullable
   public String getDescription ()
   {
     return m_sDescription;
   }
 
+  /**
+   * Set the item description (BT-154).
+   *
+   * @param sDescription
+   *        Description; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaItem setDescription (@Nullable final String sDescription)
   {
@@ -68,12 +88,20 @@ public class NormaItem
     return this;
   }
 
+  /** @return Item seller's identifier (BT-155). May be {@code null}. */
   @Nullable
   public String getSellerItemID ()
   {
     return m_sSellerItemID;
   }
 
+  /**
+   * Set the item seller's identifier (BT-155).
+   *
+   * @param sSellerItemID
+   *        Seller's item identifier; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaItem setSellerItemID (@Nullable final String sSellerItemID)
   {
@@ -81,12 +109,20 @@ public class NormaItem
     return this;
   }
 
+  /** @return Item buyer's identifier (BT-156). May be {@code null}. */
   @Nullable
   public String getBuyerItemID ()
   {
     return m_sBuyerItemID;
   }
 
+  /**
+   * Set the item buyer's identifier (BT-156).
+   *
+   * @param sBuyerItemID
+   *        Buyer's item identifier; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaItem setBuyerItemID (@Nullable final String sBuyerItemID)
   {
@@ -94,12 +130,20 @@ public class NormaItem
     return this;
   }
 
+  /** @return Item standard identifier (BT-157 with BT-157-1 scheme ID). May be {@code null}. */
   @Nullable
   public NormaIdentifier getStandardItemID ()
   {
     return m_aStandardItemID;
   }
 
+  /**
+   * Set the item standard identifier (BT-157 / BT-157-1).
+   *
+   * @param aStandardItemID
+   *        Identifier; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaItem setStandardItemID (@Nullable final NormaIdentifier aStandardItemID)
   {
@@ -107,6 +151,10 @@ public class NormaItem
     return this;
   }
 
+  /**
+   * @return Mutable list of item classifications (BT-158 / BT-158-1 / BT-158-2). Never
+   *         {@code null}; empty when none are present.
+   */
   @NonNull
   @ReturnsMutableObject
   public ICommonsList <NormaItemClassification> classifications ()
@@ -114,12 +162,20 @@ public class NormaItem
     return m_aClassifications;
   }
 
+  /** @return Item country of origin (BT-159) — ISO 3166-1 alpha-2. May be {@code null}. */
   @Nullable
   public String getCountryOfOrigin ()
   {
     return m_sCountryOfOrigin;
   }
 
+  /**
+   * Set the item country of origin (BT-159).
+   *
+   * @param sCountryOfOrigin
+   *        Country code; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaItem setCountryOfOrigin (@Nullable final String sCountryOfOrigin)
   {
@@ -127,6 +183,10 @@ public class NormaItem
     return this;
   }
 
+  /**
+   * @return Mutable list of item attributes (BG-32 — BT-160 / BT-161). Never {@code null};
+   *         empty when none are present.
+   */
   @NonNull
   @ReturnsMutableObject
   public ICommonsList <NormaItemAttribute> attributes ()

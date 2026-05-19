@@ -22,7 +22,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-30 LINE VAT INFORMATION. BT-151 category code, BT-152 rate.
+ * BG-30 LINE VAT INFORMATION (1..1 on a line). Carries BT-151 (invoiced item VAT category code)
+ * and BT-152 (invoiced item VAT rate).
  *
  * @author Philip Helger
  */
@@ -31,15 +32,24 @@ public class NormaLineVAT
   private String m_sCategoryCode;
   private BigDecimal m_aRate;
 
+  /** Create an empty line VAT information record. */
   public NormaLineVAT ()
   {}
 
+  /** @return Invoiced item VAT category code (BT-151) — UNTDID 5305. May be {@code null}. */
   @Nullable
   public String getCategoryCode ()
   {
     return m_sCategoryCode;
   }
 
+  /**
+   * Set the invoiced item VAT category code (BT-151).
+   *
+   * @param sCategoryCode
+   *        UNTDID 5305 code; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaLineVAT setCategoryCode (@Nullable final String sCategoryCode)
   {
@@ -47,12 +57,20 @@ public class NormaLineVAT
     return this;
   }
 
+  /** @return Invoiced item VAT rate (BT-152). May be {@code null}. */
   @Nullable
   public BigDecimal getRate ()
   {
     return m_aRate;
   }
 
+  /**
+   * Set the invoiced item VAT rate (BT-152).
+   *
+   * @param aRate
+   *        Rate as a {@link BigDecimal} (e.g. {@code 19} for 19 %); may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaLineVAT setRate (@Nullable final BigDecimal aRate)
   {

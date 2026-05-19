@@ -20,7 +20,9 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Item classification: BT-158 code, BT-158-1 scheme list ID, BT-158-2 scheme version ID.
+ * Item classification (0..n inside BG-31 ITEM INFORMATION). Carries BT-158 (item classification
+ * identifier value), BT-158-1 (classification scheme list ID) and BT-158-2 (classification
+ * scheme version ID).
  *
  * @author Philip Helger
  */
@@ -30,15 +32,24 @@ public class NormaItemClassification
   private String m_sListID;
   private String m_sListVersionID;
 
+  /** Create an empty classification. */
   public NormaItemClassification ()
   {}
 
+  /** @return Classification code value (BT-158). May be {@code null}. */
   @Nullable
   public String getCode ()
   {
     return m_sCode;
   }
 
+  /**
+   * Set the classification code value (BT-158).
+   *
+   * @param sCode
+   *        Code value; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaItemClassification setCode (@Nullable final String sCode)
   {
@@ -46,12 +57,20 @@ public class NormaItemClassification
     return this;
   }
 
+  /** @return Classification scheme list ID (BT-158-1). May be {@code null}. */
   @Nullable
   public String getListID ()
   {
     return m_sListID;
   }
 
+  /**
+   * Set the classification scheme list ID (BT-158-1).
+   *
+   * @param sListID
+   *        List ID; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaItemClassification setListID (@Nullable final String sListID)
   {
@@ -59,12 +78,20 @@ public class NormaItemClassification
     return this;
   }
 
+  /** @return Classification scheme version ID (BT-158-2). May be {@code null}. */
   @Nullable
   public String getListVersionID ()
   {
     return m_sListVersionID;
   }
 
+  /**
+   * Set the classification scheme version ID (BT-158-2).
+   *
+   * @param sListVersionID
+   *        Version ID; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaItemClassification setListVersionID (@Nullable final String sListVersionID)
   {

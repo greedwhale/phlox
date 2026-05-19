@@ -20,7 +20,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-32 ITEM ATTRIBUTES. BT-160 name, BT-161 value.
+ * BG-32 ITEM ATTRIBUTES (0..n on an item). Carries BT-160 (item attribute name) and BT-161
+ * (item attribute value).
  *
  * @author Philip Helger
  */
@@ -29,21 +30,38 @@ public class NormaItemAttribute
   private String m_sName;
   private String m_sValue;
 
+  /** Create an empty item attribute. */
   public NormaItemAttribute ()
   {}
 
+  /**
+   * Create an item attribute with name and value set.
+   *
+   * @param sName
+   *        Attribute name (BT-160); may be {@code null}.
+   * @param sValue
+   *        Attribute value (BT-161); may be {@code null}.
+   */
   public NormaItemAttribute (@Nullable final String sName, @Nullable final String sValue)
   {
     m_sName = sName;
     m_sValue = sValue;
   }
 
+  /** @return Item attribute name (BT-160). May be {@code null}. */
   @Nullable
   public String getName ()
   {
     return m_sName;
   }
 
+  /**
+   * Set the item attribute name (BT-160).
+   *
+   * @param sName
+   *        Attribute name; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaItemAttribute setName (@Nullable final String sName)
   {
@@ -51,12 +69,20 @@ public class NormaItemAttribute
     return this;
   }
 
+  /** @return Item attribute value (BT-161). May be {@code null}. */
   @Nullable
   public String getValue ()
   {
     return m_sValue;
   }
 
+  /**
+   * Set the item attribute value (BT-161).
+   *
+   * @param sValue
+   *        Attribute value; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaItemAttribute setValue (@Nullable final String sValue)
   {
