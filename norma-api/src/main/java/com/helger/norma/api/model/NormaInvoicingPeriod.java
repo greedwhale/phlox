@@ -22,8 +22,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-14 INVOICING PERIOD (also reused for BG-26 invoice line period). BT-73/BT-74 (or
- * BT-134/BT-135).
+ * BG-14 INVOICING PERIOD (also reused for BG-26 invoice-line period). Carries the start date
+ * (BT-73 / BT-134) and end date (BT-74 / BT-135).
  *
  * @author Philip Helger
  */
@@ -32,15 +32,24 @@ public class NormaInvoicingPeriod
   private LocalDate m_aStartDate;
   private LocalDate m_aEndDate;
 
+  /** Create an empty period. */
   public NormaInvoicingPeriod ()
   {}
 
+  /** @return Period start date (BT-73 / BT-134). May be {@code null}. */
   @Nullable
   public LocalDate getStartDate ()
   {
     return m_aStartDate;
   }
 
+  /**
+   * Set the period start date (BT-73 / BT-134).
+   *
+   * @param aStartDate
+   *        Start date; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoicingPeriod setStartDate (@Nullable final LocalDate aStartDate)
   {
@@ -48,12 +57,20 @@ public class NormaInvoicingPeriod
     return this;
   }
 
+  /** @return Period end date (BT-74 / BT-135). May be {@code null}. */
   @Nullable
   public LocalDate getEndDate ()
   {
     return m_aEndDate;
   }
 
+  /**
+   * Set the period end date (BT-74 / BT-135).
+   *
+   * @param aEndDate
+   *        End date; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoicingPeriod setEndDate (@Nullable final LocalDate aEndDate)
   {
@@ -61,6 +78,7 @@ public class NormaInvoicingPeriod
     return this;
   }
 
+  /** @return {@code true} when both dates are {@code null}. */
   public boolean isEmpty ()
   {
     return m_aStartDate == null && m_aEndDate == null;

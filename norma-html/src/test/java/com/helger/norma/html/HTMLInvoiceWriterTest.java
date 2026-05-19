@@ -54,7 +54,7 @@ public final class HTMLInvoiceWriterTest
         {
           final HTMLRenderContext aCtx = new HTMLRenderContext ().setLocale (aLocale)
                                                                  .setUserWatermark (WatermarkSpec.text ("DRAFT"));
-          final String sHtml = aWriter.write (aModel, aCtx);
+          final String sHtml = aWriter.writeAsString (aModel, aCtx);
           assertNotNull (sHtml);
           assertTrue ("HTML output empty for " + aRes.getPath () + " / " + aLocale, sHtml.length () > 500);
           assertTrue ("Missing invoice number in HTML for " + aRes.getPath (), sHtml.contains (aModel.getNumber ()));

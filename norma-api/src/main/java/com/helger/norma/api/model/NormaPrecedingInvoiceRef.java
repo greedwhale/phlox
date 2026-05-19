@@ -22,7 +22,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-3 PRECEDING INVOICE REFERENCE. BT-25 number, BT-26 issue date.
+ * BG-3 PRECEDING INVOICE REFERENCE (0..n). Carries the preceding invoice number (BT-25) and
+ * its issue date (BT-26).
  *
  * @author Philip Helger
  */
@@ -31,15 +32,24 @@ public class NormaPrecedingInvoiceRef
   private String m_sNumber;
   private LocalDate m_aIssueDate;
 
+  /** Create an empty preceding-invoice reference. */
   public NormaPrecedingInvoiceRef ()
   {}
 
+  /** @return Preceding invoice number (BT-25). May be {@code null}. */
   @Nullable
   public String getNumber ()
   {
     return m_sNumber;
   }
 
+  /**
+   * Set the preceding invoice number (BT-25).
+   *
+   * @param sNumber
+   *        Preceding invoice number; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaPrecedingInvoiceRef setNumber (@Nullable final String sNumber)
   {
@@ -47,12 +57,20 @@ public class NormaPrecedingInvoiceRef
     return this;
   }
 
+  /** @return Preceding invoice issue date (BT-26). May be {@code null}. */
   @Nullable
   public LocalDate getIssueDate ()
   {
     return m_aIssueDate;
   }
 
+  /**
+   * Set the preceding invoice issue date (BT-26).
+   *
+   * @param aIssueDate
+   *        Issue date; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaPrecedingInvoiceRef setIssueDate (@Nullable final LocalDate aIssueDate)
   {

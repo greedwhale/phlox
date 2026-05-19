@@ -20,8 +20,9 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-11 SELLER TAX REPRESENTATIVE PARTY plus nested BG-12 postal address. Carries
- * BT-62, BT-63 and the address fields.
+ * BG-11 SELLER TAX REPRESENTATIVE PARTY plus nested BG-12 postal address. Carries BT-62
+ * (tax representative name), BT-63 (tax representative VAT ID) and the BG-12 address fields
+ * (BT-64..BT-69).
  *
  * @author Philip Helger
  */
@@ -31,15 +32,24 @@ public class NormaSellerTaxRepresentative
   private String m_sVATIdentifier;
   private NormaPostalAddress m_aPostalAddress;
 
+  /** Create an empty tax representative. */
   public NormaSellerTaxRepresentative ()
   {}
 
+  /** @return Tax representative name (BT-62). May be {@code null}. */
   @Nullable
   public String getName ()
   {
     return m_sName;
   }
 
+  /**
+   * Set the tax representative name (BT-62).
+   *
+   * @param sName
+   *        Name; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaSellerTaxRepresentative setName (@Nullable final String sName)
   {
@@ -47,12 +57,20 @@ public class NormaSellerTaxRepresentative
     return this;
   }
 
+  /** @return Tax representative VAT identifier (BT-63). May be {@code null}. */
   @Nullable
   public String getVATIdentifier ()
   {
     return m_sVATIdentifier;
   }
 
+  /**
+   * Set the tax representative VAT identifier (BT-63).
+   *
+   * @param sVATIdentifier
+   *        VAT ID; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaSellerTaxRepresentative setVATIdentifier (@Nullable final String sVATIdentifier)
   {
@@ -60,12 +78,20 @@ public class NormaSellerTaxRepresentative
     return this;
   }
 
+  /** @return Tax representative postal address (BG-12). May be {@code null}. */
   @Nullable
   public NormaPostalAddress getPostalAddress ()
   {
     return m_aPostalAddress;
   }
 
+  /**
+   * Set the tax representative postal address (BG-12).
+   *
+   * @param aPostalAddress
+   *        Address; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaSellerTaxRepresentative setPostalAddress (@Nullable final NormaPostalAddress aPostalAddress)
   {

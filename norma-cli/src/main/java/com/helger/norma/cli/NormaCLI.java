@@ -143,11 +143,17 @@ public class NormaCLI implements Callable <Integer>
     else
     {
       final HTMLRenderContext aCtx = new HTMLRenderContext ().setLocale (aLocale).setUserWatermark (aWM);
-      final String sHtml = new HTMLInvoiceWriter ().write (aInvoice, aCtx);
+      final HTMLInvoiceWriter aHtmlWriter = new HTMLInvoiceWriter ();
       if (outputFile == null)
+      {
+        final String sHtml = aHtmlWriter.writeAsString (aInvoice, aCtx);
         System.out.write (sHtml.getBytes (StandardCharsets.UTF_8));
+      }
       else
-        Files.writeString (outputFile, sHtml, StandardCharsets.UTF_8);
+        try (final OutputStream aOut = new FileOutputStream (outputFile.toFile ()))
+        {
+          aHtmlWriter.writeTo (aInvoice, aCtx, aOut);
+        }
     }
     return 0;
   }

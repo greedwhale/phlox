@@ -21,7 +21,8 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Binary attachment. Used for BT-125 attached document with BT-125-1 mime code and BT-125-2
- * filename. Also reused by {@code RenderContext.setLogo(...)}.
+ * filename inside BG-24 supporting documents. Also reused by
+ * {@code AbstractRenderContext.setLogo(...)} for the header logo.
  *
  * @author Philip Helger
  */
@@ -31,15 +32,24 @@ public class NormaAttachment
   private String m_sMimeCode;
   private String m_sFilename;
 
+  /** Create an empty attachment. */
   public NormaAttachment ()
   {}
 
+  /** @return The binary payload (BT-125). May be {@code null}. */
   @Nullable
   public byte [] getBinary ()
   {
     return m_aBinary;
   }
 
+  /**
+   * Set the binary payload (BT-125).
+   *
+   * @param aBinary
+   *        The bytes; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaAttachment setBinary (@Nullable final byte [] aBinary)
   {
@@ -47,12 +57,20 @@ public class NormaAttachment
     return this;
   }
 
+  /** @return The MIME type of the attachment (BT-125-1). May be {@code null}. */
   @Nullable
   public String getMimeCode ()
   {
     return m_sMimeCode;
   }
 
+  /**
+   * Set the MIME type of the attachment (BT-125-1).
+   *
+   * @param sMimeCode
+   *        The MIME type; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaAttachment setMimeCode (@Nullable final String sMimeCode)
   {
@@ -60,12 +78,20 @@ public class NormaAttachment
     return this;
   }
 
+  /** @return The original filename of the attachment (BT-125-2). May be {@code null}. */
   @Nullable
   public String getFilename ()
   {
     return m_sFilename;
   }
 
+  /**
+   * Set the original filename of the attachment (BT-125-2).
+   *
+   * @param sFilename
+   *        The filename; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaAttachment setFilename (@Nullable final String sFilename)
   {

@@ -22,7 +22,9 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-13 DELIVERY INFORMATION plus nested BG-15 deliver-to address.
+ * BG-13 DELIVERY INFORMATION plus nested BG-15 (Deliver-to address). Carries BT-70 (deliver-to
+ * party name), BT-71/BT-71-1 (deliver-to location identifier), BT-72 (actual delivery date) and
+ * the BG-15 address fields (BT-75..BT-80, BT-165).
  *
  * @author Philip Helger
  */
@@ -33,15 +35,24 @@ public class NormaDeliveryInformation
   private LocalDate m_aActualDeliveryDate;
   private NormaPostalAddress m_aPostalAddress;
 
+  /** Create an empty delivery information. */
   public NormaDeliveryInformation ()
   {}
 
+  /** @return Deliver-to party name (BT-70). May be {@code null}. */
   @Nullable
   public String getPartyName ()
   {
     return m_sPartyName;
   }
 
+  /**
+   * Set the deliver-to party name (BT-70).
+   *
+   * @param sPartyName
+   *        Party name; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaDeliveryInformation setPartyName (@Nullable final String sPartyName)
   {
@@ -49,12 +60,20 @@ public class NormaDeliveryInformation
     return this;
   }
 
+  /** @return Deliver-to location identifier (BT-71 with BT-71-1 scheme ID). May be {@code null}. */
   @Nullable
   public NormaIdentifier getLocationIdentifier ()
   {
     return m_aLocationIdentifier;
   }
 
+  /**
+   * Set the deliver-to location identifier (BT-71 / BT-71-1).
+   *
+   * @param aLocationIdentifier
+   *        Identifier; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaDeliveryInformation setLocationIdentifier (@Nullable final NormaIdentifier aLocationIdentifier)
   {
@@ -62,12 +81,20 @@ public class NormaDeliveryInformation
     return this;
   }
 
+  /** @return Actual delivery date (BT-72). May be {@code null}. */
   @Nullable
   public LocalDate getActualDeliveryDate ()
   {
     return m_aActualDeliveryDate;
   }
 
+  /**
+   * Set the actual delivery date (BT-72).
+   *
+   * @param aActualDeliveryDate
+   *        Delivery date; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaDeliveryInformation setActualDeliveryDate (@Nullable final LocalDate aActualDeliveryDate)
   {
@@ -75,12 +102,20 @@ public class NormaDeliveryInformation
     return this;
   }
 
+  /** @return Deliver-to address (BG-15). May be {@code null}. */
   @Nullable
   public NormaPostalAddress getPostalAddress ()
   {
     return m_aPostalAddress;
   }
 
+  /**
+   * Set the deliver-to address (BG-15).
+   *
+   * @param aPostalAddress
+   *        Address; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaDeliveryInformation setPostalAddress (@Nullable final NormaPostalAddress aPostalAddress)
   {

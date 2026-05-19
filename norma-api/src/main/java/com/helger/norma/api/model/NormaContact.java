@@ -20,7 +20,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Trade contact details. Shape shared by BG-6 (Seller contact) and BG-9 (Buyer contact).
+ * Trade contact details. Shape shared by BG-6 (Seller contact, BT-41/42/43) and BG-9 (Buyer
+ * contact, BT-56/57/58).
  *
  * @author Philip Helger
  */
@@ -30,15 +31,24 @@ public class NormaContact
   private String m_sTelephone;
   private String m_sEmail;
 
+  /** Create an empty contact. */
   public NormaContact ()
   {}
 
+  /** @return Contact point name (BT-41 / BT-56). May be {@code null}. */
   @Nullable
   public String getName ()
   {
     return m_sName;
   }
 
+  /**
+   * Set the contact point name (BT-41 / BT-56).
+   *
+   * @param sName
+   *        Contact name; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaContact setName (@Nullable final String sName)
   {
@@ -46,12 +56,20 @@ public class NormaContact
     return this;
   }
 
+  /** @return Telephone number (BT-42 / BT-57). May be {@code null}. */
   @Nullable
   public String getTelephone ()
   {
     return m_sTelephone;
   }
 
+  /**
+   * Set the telephone number (BT-42 / BT-57).
+   *
+   * @param sTelephone
+   *        Telephone string; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaContact setTelephone (@Nullable final String sTelephone)
   {
@@ -59,12 +77,20 @@ public class NormaContact
     return this;
   }
 
+  /** @return Email address (BT-43 / BT-58). May be {@code null}. */
   @Nullable
   public String getEmail ()
   {
     return m_sEmail;
   }
 
+  /**
+   * Set the email address (BT-43 / BT-58).
+   *
+   * @param sEmail
+   *        Email; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaContact setEmail (@Nullable final String sEmail)
   {
@@ -72,6 +98,7 @@ public class NormaContact
     return this;
   }
 
+  /** @return {@code true} when every field is {@code null}. */
   public boolean isEmpty ()
   {
     return m_sName == null && m_sTelephone == null && m_sEmail == null;

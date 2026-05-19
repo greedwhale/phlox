@@ -20,7 +20,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-1 INVOICE NOTE. BT-21 subject code, BT-22 content.
+ * BG-1 INVOICE NOTE (0..n on the invoice). Carries the subject-code prefix (BT-21) and the
+ * free-text content (BT-22).
  *
  * @author Philip Helger
  */
@@ -29,21 +30,38 @@ public class NormaInvoiceNote
   private String m_sSubjectCode;
   private String m_sContent;
 
+  /** Create an empty note. */
   public NormaInvoiceNote ()
   {}
 
+  /**
+   * Create a note with both subject code and content set.
+   *
+   * @param sSubjectCode
+   *        Note subject code (BT-21); may be {@code null}.
+   * @param sContent
+   *        Note content (BT-22); may be {@code null}.
+   */
   public NormaInvoiceNote (@Nullable final String sSubjectCode, @Nullable final String sContent)
   {
     m_sSubjectCode = sSubjectCode;
     m_sContent = sContent;
   }
 
+  /** @return Note subject code (BT-21). May be {@code null}. */
   @Nullable
   public String getSubjectCode ()
   {
     return m_sSubjectCode;
   }
 
+  /**
+   * Set the note subject code (BT-21).
+   *
+   * @param sSubjectCode
+   *        Subject code; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoiceNote setSubjectCode (@Nullable final String sSubjectCode)
   {
@@ -51,12 +69,20 @@ public class NormaInvoiceNote
     return this;
   }
 
+  /** @return Note content (BT-22). May be {@code null}. */
   @Nullable
   public String getContent ()
   {
     return m_sContent;
   }
 
+  /**
+   * Set the note content (BT-22).
+   *
+   * @param sContent
+   *        Content text; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaInvoiceNote setContent (@Nullable final String sContent)
   {

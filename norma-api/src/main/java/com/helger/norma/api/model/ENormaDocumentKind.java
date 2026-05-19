@@ -17,12 +17,15 @@
 package com.helger.norma.api.model;
 
 /**
- * Kind of EN 16931 document represented by a {@link NormaInvoice}.
+ * Kind of EN 16931 document represented by a {@link NormaInvoice}. Derived from BT-3 (Invoice
+ * type code) via the EN 16931 invoice/credit-note type-code lists.
  *
  * @author Philip Helger
  */
 public enum ENormaDocumentKind
 {
+  /** A regular invoice (BT-3 in the EN 16931 invoice type code set). */
   INVOICE,
+  /** A credit note (BT-3 in the EN 16931 credit-note type code set). */
   CREDIT_NOTE
 }

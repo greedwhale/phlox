@@ -79,14 +79,51 @@ import com.helger.norma.api.write.IInvoiceWriter;
  *
  * @author Philip Helger
  */
-public class HTMLInvoiceWriter implements IInvoiceWriter <String, HTMLRenderContext>
+public class HTMLInvoiceWriter implements IInvoiceWriter <HTMLRenderContext>
 {
   public HTMLInvoiceWriter ()
   {}
 
+  /**
+   * Render the invoice and write it as UTF-8 HTML5 to the given stream. The stream is closed
+   * by the writer.
+   *
+   * @param aInvoice
+   *        The invoice.
+   * @param aCtx
+   *        The HTML render context.
+   * @param aOut
+   *        The output stream.
+   */
   @Override
+  public void writeTo (@NonNull final NormaInvoice aInvoice,
+                       @NonNull final HTMLRenderContext aCtx,
+                       @NonNull final OutputStream aOut)
+  {
+    final String sHtml = writeAsString (aInvoice, aCtx);
+    try (final OutputStream aClosing = aOut)
+    {
+      aClosing.write (sHtml.getBytes (StandardCharsets.UTF_8));
+    }
+    catch (final IOException ex)
+    {
+      throw new UncheckedIOException (ex);
+    }
+  }
+
+  /**
+   * Render the invoice and return the HTML markup as a {@code String}. Equivalent to
+   * {@link #writeTo(NormaInvoice, HTMLRenderContext, OutputStream)} but keeps the result in
+   * memory.
+   *
+   * @param aInvoice
+   *        The invoice.
+   * @param aCtx
+   *        The HTML render context.
+   * @return The HTML5 document as a {@code String}.
+   */
   @NonNull
-  public String write (@NonNull final NormaInvoice aInvoice, @NonNull final HTMLRenderContext aCtx)
+  public String writeAsString (@NonNull final NormaInvoice aInvoice, @NonNull final HTMLRenderContext aCtx)
   {
     return HCRenderer.getAsHTMLString (writeAsHCHtml (aInvoice, aCtx));
   }
@@ -149,23 +186,6 @@ public class HTMLInvoiceWriter implements IInvoiceWriter <String, HTMLRenderCont
     _renderSupportingDocuments (aPage, aInvoice, aCtx);
 
     return aHtml;
-  }
-
-  /** Write directly to the given output stream as UTF-8 HTML5. */
-  public void writeTo (@NonNull final NormaInvoice aInvoice,
-                       @NonNull final HTMLRenderContext aCtx,
-                       @NonNull final OutputStream aOut)
-  {
-    final String sHtml = write (aInvoice, aCtx);
-    try
-    {
-      aOut.write (sHtml.getBytes (StandardCharsets.UTF_8));
-      aOut.flush ();
-    }
-    catch (final IOException ex)
-    {
-      throw new UncheckedIOException (ex);
-    }
   }
 
   // ===== Sections =====

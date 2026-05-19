@@ -22,7 +22,6 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -33,30 +32,9 @@ import org.apache.pdfbox.util.Matrix;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import com.helger.annotation.WillClose;
 import com.helger.norma.api.i18n.NormaFormat;
-import com.helger.norma.api.model.ENormaDocumentKind;
-import com.helger.norma.api.model.NormaBuyer;
-import com.helger.norma.api.model.NormaContact;
-import com.helger.norma.api.model.NormaCreditTransfer;
-import com.helger.norma.api.model.NormaDeliveryInformation;
-import com.helger.norma.api.model.NormaDirectDebit;
-import com.helger.norma.api.model.NormaDocumentAllowance;
-import com.helger.norma.api.model.NormaDocumentCharge;
-import com.helger.norma.api.model.NormaInvoice;
-import com.helger.norma.api.model.NormaInvoiceLine;
-import com.helger.norma.api.model.NormaInvoiceNote;
-import com.helger.norma.api.model.NormaInvoicingPeriod;
-import com.helger.norma.api.model.NormaItem;
-import com.helger.norma.api.model.NormaItemAttribute;
-import com.helger.norma.api.model.NormaPayee;
-import com.helger.norma.api.model.NormaPaymentCard;
-import com.helger.norma.api.model.NormaPaymentInstructions;
-import com.helger.norma.api.model.NormaPostalAddress;
-import com.helger.norma.api.model.NormaPrecedingInvoiceRef;
-import com.helger.norma.api.model.NormaSeller;
-import com.helger.norma.api.model.NormaSellerTaxRepresentative;
-import com.helger.norma.api.model.NormaSupportingDocument;
-import com.helger.norma.api.model.NormaVATBreakdown;
+import com.helger.norma.api.model.*;
 import com.helger.norma.api.watermark.EWatermarkPosition;
 import com.helger.norma.api.watermark.NormaProgramWatermark;
 import com.helger.norma.api.watermark.WatermarkSpec;
@@ -86,18 +64,10 @@ import com.helger.pdflayout.spec.WidthSpec;
  *
  * @author Philip Helger
  */
-public class PDFInvoiceWriter implements IInvoiceWriter <Void, PDFRenderContext>
+public class PDFInvoiceWriter implements IInvoiceWriter <PDFRenderContext>
 {
   public PDFInvoiceWriter ()
   {}
-
-  /** Convenience: render and return {@code null} (the writer streams its output). */
-  @Override
-  @NonNull
-  public Void write (@NonNull final NormaInvoice aInvoice, @NonNull final PDFRenderContext aCtx)
-  {
-    throw new UnsupportedOperationException ("Use writeTo(invoice, ctx, file|stream)");
-  }
 
   /**
    * Render the given invoice into a PDF written to the given file.
@@ -130,9 +100,10 @@ public class PDFInvoiceWriter implements IInvoiceWriter <Void, PDFRenderContext>
    * @throws PDFCreationException
    *         If PDF creation fails.
    */
+  @Override
   public void writeTo (@NonNull final NormaInvoice aInvoice,
                        @NonNull final PDFRenderContext aCtx,
-                       @NonNull final OutputStream aOut) throws PDFCreationException
+                       @NonNull @WillClose final OutputStream aOut) throws PDFCreationException
   {
     _build (aInvoice, aCtx).renderTo (aOut);
   }
@@ -205,7 +176,8 @@ public class PDFInvoiceWriter implements IInvoiceWriter <Void, PDFRenderContext>
     // Font: bold for centered/large watermarks, regular for the small program attribution.
     final PreloadFont eFontKind = aSpec.getPosition () == EWatermarkPosition.CENTER ? PreloadFont.REGULAR_BOLD
                                                                                     : PreloadFont.REGULAR;
-    final PDFont aFont = new PDType1Font (eFontKind == PreloadFont.REGULAR_BOLD ? Standard14Fonts.FontName.HELVETICA_BOLD
+    final PDFont aFont = new PDType1Font (eFontKind == PreloadFont.REGULAR_BOLD
+                                                                                ? Standard14Fonts.FontName.HELVETICA_BOLD
                                                                                 : Standard14Fonts.FontName.HELVETICA);
     final float fFontSize = aSpec.getFontSizePt ();
     final String sText = aSpec.getText ();
@@ -235,16 +207,17 @@ public class PDFInvoiceWriter implements IInvoiceWriter <Void, PDFRenderContext>
         final double dAngle = Math.toRadians (aSpec.getRotation ());
         // Anchor: shift back by half-text-width along the rotation direction so the text is
         // visually centered on (fCx, fCy).
-        final float fAnchorX = fCx - (float) (Math.cos (dAngle) * fTextWidth / 2f) +
+        final float fAnchorX = fCx -
+                               (float) (Math.cos (dAngle) * fTextWidth / 2f) +
                                (float) (Math.sin (dAngle) * fTextHeight / 2f);
-        final float fAnchorY = fCy - (float) (Math.sin (dAngle) * fTextWidth / 2f) -
+        final float fAnchorY = fCy -
+                               (float) (Math.sin (dAngle) * fTextWidth / 2f) -
                                (float) (Math.cos (dAngle) * fTextHeight / 2f);
         aCS.setTextMatrix (Matrix.getRotateInstance (dAngle, fAnchorX, fAnchorY));
         break;
       }
       case TOP:
-        aCS.setTextMatrix (Matrix.getTranslateInstance ((fPageWidth - fTextWidth) / 2f,
-                                                        fPageHeight - fFontSize - 12f));
+        aCS.setTextMatrix (Matrix.getTranslateInstance ((fPageWidth - fTextWidth) / 2f, fPageHeight - fFontSize - 12f));
         break;
       case BOTTOM:
         aCS.setTextMatrix (Matrix.getTranslateInstance ((fPageWidth - fTextWidth) / 2f, 12f));
@@ -265,11 +238,11 @@ public class PDFInvoiceWriter implements IInvoiceWriter <Void, PDFRenderContext>
                                      @NonNull final NormaInvoice aInvoice,
                                      @NonNull final PDFRenderContext aCtx)
   {
-    final String sTitle = aInvoice.getKind () == ENormaDocumentKind.CREDIT_NOTE
-                                                                                ? aCtx.label ("section.header.title.creditnote")
+    final String sTitle = aInvoice.getKind () == ENormaDocumentKind.CREDIT_NOTE ? aCtx.label (
+                                                                                              "section.header.title.creditnote")
                                                                                 : aCtx.label ("section.header.title.invoice");
-    aPS.addElement (new PLText (sTitle,
-                                new FontSpec (com.helger.pdflayout.spec.PreloadFont.REGULAR_BOLD, 18f)).setMarginBottom (6));
+    aPS.addElement (new PLText (sTitle, new FontSpec (com.helger.pdflayout.spec.PreloadFont.REGULAR_BOLD, 18f))
+                                                                                                               .setMarginBottom (6));
 
     final PLVBox aMeta = new PLVBox ();
     _kvRow (aMeta, aCtx.label ("BT-1"), aInvoice.getNumber (), aCtx);
@@ -433,8 +406,7 @@ public class PDFInvoiceWriter implements IInvoiceWriter <Void, PDFRenderContext>
     _appendRefIf (sb, aCtx.label ("BT-16"), aInvoice.getDespatchAdviceReference ());
     _appendRefIf (sb, aCtx.label ("BT-17"), aInvoice.getTenderOrLotReference ());
     _appendRefIf (sb, aCtx.label ("BT-19"), aInvoice.getBuyerAccountingReference ());
-    if (aInvoice.getInvoicedObjectIdentifier () != null &&
-        aInvoice.getInvoicedObjectIdentifier ().getValue () != null)
+    if (aInvoice.getInvoicedObjectIdentifier () != null && aInvoice.getInvoicedObjectIdentifier ().getValue () != null)
       _appendRefIf (sb, aCtx.label ("BT-18"), aInvoice.getInvoicedObjectIdentifier ().getValue ());
     for (final NormaPrecedingInvoiceRef aRef : aInvoice.precedingInvoiceRefs ())
     {
@@ -544,7 +516,8 @@ public class PDFInvoiceWriter implements IInvoiceWriter <Void, PDFRenderContext>
       aTbl.addRow (_td (_n (aLine.getID ()), aBF),
                    _td (aDesc.toString (), aBF),
                    _td (_qty (aLine.getQuantity (), aLine.getQuantityUnit ()), aBF),
-                   _td (aLine.getPrice () == null ? "" : _amount (aLine.getPrice ().getNetPrice (), sCurrency, aCtx), aBF),
+                   _td (aLine.getPrice () == null ? "" : _amount (aLine.getPrice ().getNetPrice (), sCurrency, aCtx),
+                        aBF),
                    _td (_lineVATCell (aLine, aCtx), aBF),
                    _td (_amount (aLine.getNetAmount (), sCurrency, aCtx), aBF));
     }
@@ -588,24 +561,20 @@ public class PDFInvoiceWriter implements IInvoiceWriter <Void, PDFRenderContext>
       aTbl.addRow (_td (aCtx.label ("BG-20"), aBF),
                    _td (_n (aA.getReason ()), aBF),
                    _td (_n (aA.getVATCategoryCode ()) +
-                        (aA.getVATRate () == null
-                                                  ? ""
-                                                  : " " +
-                                                    NormaFormat.percent (aA.getVATRate (),
-                                                                         aCtx.getLocale (),
-                                                                         aCtx.getFormatOptions ())),
+                        (aA.getVATRate () == null ? "" : " " +
+                                                         NormaFormat.percent (aA.getVATRate (),
+                                                                              aCtx.getLocale (),
+                                                                              aCtx.getFormatOptions ())),
                         aBF),
                    _td (_amount (_neg (aA.getAmount ()), sCurrency, aCtx), aBF));
     for (final NormaDocumentCharge aC : aInvoice.documentCharges ())
       aTbl.addRow (_td (aCtx.label ("BG-21"), aBF),
                    _td (_n (aC.getReason ()), aBF),
                    _td (_n (aC.getVATCategoryCode ()) +
-                        (aC.getVATRate () == null
-                                                  ? ""
-                                                  : " " +
-                                                    NormaFormat.percent (aC.getVATRate (),
-                                                                         aCtx.getLocale (),
-                                                                         aCtx.getFormatOptions ())),
+                        (aC.getVATRate () == null ? "" : " " +
+                                                         NormaFormat.percent (aC.getVATRate (),
+                                                                              aCtx.getLocale (),
+                                                                              aCtx.getFormatOptions ())),
                         aBF),
                    _td (_amount (aC.getAmount (), sCurrency, aCtx), aBF));
     aPS.addElement (aTbl);
@@ -631,12 +600,9 @@ public class PDFInvoiceWriter implements IInvoiceWriter <Void, PDFRenderContext>
     {
       final String sCat = aV.getCategoryCode ();
       aTbl.addRow (_td (sCat == null ? "" : sCat + " — " + aCtx.codeLabel ("vat.category", sCat), aBF),
-                   _td (aV.getRate () == null
-                                              ? ""
-                                              : NormaFormat.percent (aV.getRate (),
-                                                                     aCtx.getLocale (),
-                                                                     aCtx.getFormatOptions ()),
-                        aBF),
+                   _td (aV.getRate () == null ? "" : NormaFormat.percent (aV.getRate (),
+                                                                          aCtx.getLocale (),
+                                                                          aCtx.getFormatOptions ()), aBF),
                    _td (_amount (aV.getTaxableAmount (), sCurrency, aCtx), aBF),
                    _td (_amount (aV.getTaxAmount (), sCurrency, aCtx), aBF));
     }
@@ -663,7 +629,12 @@ public class PDFInvoiceWriter implements IInvoiceWriter <Void, PDFRenderContext>
     _totRow (aTbl, aCtx.label ("BT-109"), aInvoice.getDocumentTotals ().getTaxExclusiveTotal (), sCurrency, aCtx, aBF);
     _totRow (aTbl, aCtx.label ("BT-110"), aInvoice.getDocumentTotals ().getTaxTotal (), sCurrency, aCtx, aBF);
     _totRow (aTbl, aCtx.label ("BT-112"), aInvoice.getDocumentTotals ().getTaxInclusiveTotal (), sCurrency, aCtx, aBF);
-    _totRow (aTbl, aCtx.label ("BT-113"), _neg (aInvoice.getDocumentTotals ().getPrepaidAmount ()), sCurrency, aCtx, aBF);
+    _totRow (aTbl,
+             aCtx.label ("BT-113"),
+             _neg (aInvoice.getDocumentTotals ().getPrepaidAmount ()),
+             sCurrency,
+             aCtx,
+             aBF);
     _totRow (aTbl, aCtx.label ("BT-114"), aInvoice.getDocumentTotals ().getRoundingAmount (), sCurrency, aCtx, aBF);
     _totRow (aTbl,
              aCtx.label ("BT-115"),
@@ -685,7 +656,8 @@ public class PDFInvoiceWriter implements IInvoiceWriter <Void, PDFRenderContext>
     if (aAmount == null)
       return;
     aTbl.addRow (_td (sLabel, aFont),
-                 new PLTableCell (new PLText (_amount (aAmount, sCurrency, aCtx), aFont).setHorzAlign (EHorzAlignment.RIGHT)));
+                 new PLTableCell (new PLText (_amount (aAmount, sCurrency, aCtx), aFont).setHorzAlign (
+                                                                                                       EHorzAlignment.RIGHT)));
   }
 
   private static void _renderPayment (@NonNull final PLPageSet aPS,
@@ -808,7 +780,8 @@ public class PDFInvoiceWriter implements IInvoiceWriter <Void, PDFRenderContext>
     // PLText with an empty string is treated as "no element" by PLBox#render.
     if (sText.isEmpty ())
       return new PLTableCell (new PLSpacerX (1f)).setFillColor (PLColor.gray (0xf0));
-    return new PLTableCell (new PLText (sText, aFont).setPadding (new PaddingSpec (3))).setFillColor (PLColor.gray (0xf0));
+    return new PLTableCell (new PLText (sText, aFont).setPadding (new PaddingSpec (3))).setFillColor (PLColor.gray (
+                                                                                                                    0xf0));
   }
 
   @NonNull

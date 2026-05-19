@@ -21,7 +21,8 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * An identifier with an optional scheme. Used for BT-X / BT-X-1 pairs throughout the EN 16931
- * model (e.g. BT-29 seller identifier with BT-29-1 scheme ID).
+ * model (e.g. BT-29 seller identifier with BT-29-1 scheme ID, BT-46 buyer identifier with
+ * BT-46-1, BT-60 / BT-60-1 payee identifier, BT-71 / BT-71-1 deliver-to location, etc.).
  *
  * @author Philip Helger
  */
@@ -30,21 +31,38 @@ public class NormaIdentifier
   private String m_sValue;
   private String m_sSchemeID;
 
+  /** Create an empty identifier. */
   public NormaIdentifier ()
   {}
 
+  /**
+   * Create an identifier with the given value and scheme ID.
+   *
+   * @param sValue
+   *        The identifier value (the BT-X value). May be {@code null}.
+   * @param sSchemeID
+   *        The scheme ID (the BT-X-1 value). May be {@code null}.
+   */
   public NormaIdentifier (@Nullable final String sValue, @Nullable final String sSchemeID)
   {
     m_sValue = sValue;
     m_sSchemeID = sSchemeID;
   }
 
+  /** @return The identifier value (BT-X). May be {@code null}. */
   @Nullable
   public String getValue ()
   {
     return m_sValue;
   }
 
+  /**
+   * Set the identifier value (BT-X).
+   *
+   * @param sValue
+   *        The new value; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaIdentifier setValue (@Nullable final String sValue)
   {
@@ -52,12 +70,20 @@ public class NormaIdentifier
     return this;
   }
 
+  /** @return The scheme ID (BT-X-1) qualifying the identifier value. May be {@code null}. */
   @Nullable
   public String getSchemeID ()
   {
     return m_sSchemeID;
   }
 
+  /**
+   * Set the scheme ID (BT-X-1) qualifying the identifier value.
+   *
+   * @param sSchemeID
+   *        The new scheme ID; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaIdentifier setSchemeID (@Nullable final String sSchemeID)
   {

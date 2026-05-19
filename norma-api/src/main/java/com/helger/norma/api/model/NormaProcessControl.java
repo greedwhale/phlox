@@ -20,7 +20,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-2 PROCESS CONTROL. BT-23 business process type, BT-24 specification identifier.
+ * BG-2 PROCESS CONTROL (1..1). Carries the business process type (BT-23) and the EN 16931
+ * specification identifier (BT-24).
  *
  * @author Philip Helger
  */
@@ -29,15 +30,24 @@ public class NormaProcessControl
   private String m_sBusinessProcessType;
   private String m_sSpecificationIdentifier;
 
+  /** Create an empty process control. */
   public NormaProcessControl ()
   {}
 
+  /** @return Business process type (BT-23). May be {@code null}. */
   @Nullable
   public String getBusinessProcessType ()
   {
     return m_sBusinessProcessType;
   }
 
+  /**
+   * Set the business process type (BT-23).
+   *
+   * @param sBusinessProcessType
+   *        Profile / process identifier; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaProcessControl setBusinessProcessType (@Nullable final String sBusinessProcessType)
   {
@@ -45,12 +55,20 @@ public class NormaProcessControl
     return this;
   }
 
+  /** @return Specification identifier (BT-24) — the EN 16931 customisation URN. May be {@code null}. */
   @Nullable
   public String getSpecificationIdentifier ()
   {
     return m_sSpecificationIdentifier;
   }
 
+  /**
+   * Set the specification identifier (BT-24) — the EN 16931 customisation URN.
+   *
+   * @param sSpecificationIdentifier
+   *        URN; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaProcessControl setSpecificationIdentifier (@Nullable final String sSpecificationIdentifier)
   {
