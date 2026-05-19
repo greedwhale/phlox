@@ -593,18 +593,18 @@ public class PDFInvoiceWriter implements IInvoiceWriter <PDFRenderContext>
     final PLTable aTbl = PLTable.createWithPercentage (30, 20, 25, 25);
     aTbl.setHeaderRowCount (1);
     aTbl.addRow (_th (aCtx.label ("BT-151"), aCtx.getTableHeaderFont ()),
-                 _th (aCtx.label ("BT-152"), aCtx.getTableHeaderFont ()),
-                 _th (aCtx.label ("BT-116"), aCtx.getTableHeaderFont ()),
-                 _th (aCtx.label ("BT-117"), aCtx.getTableHeaderFont ()));
+                 _thRight (aCtx.label ("BT-152"), aCtx.getTableHeaderFont ()),
+                 _thRight (aCtx.label ("BT-116"), aCtx.getTableHeaderFont ()),
+                 _thRight (aCtx.label ("BT-117"), aCtx.getTableHeaderFont ()));
     for (final NormaVATBreakdown aV : aInvoice.vatBreakdowns ())
     {
       final String sCat = aV.getCategoryCode ();
       aTbl.addRow (_td (sCat == null ? "" : sCat + " — " + aCtx.codeLabel ("vat.category", sCat), aBF),
-                   _td (aV.getRate () == null ? "" : NormaFormat.percent (aV.getRate (),
-                                                                          aCtx.getLocale (),
-                                                                          aCtx.getFormatOptions ()), aBF),
-                   _td (_amount (aV.getTaxableAmount (), sCurrency, aCtx), aBF),
-                   _td (_amount (aV.getTaxAmount (), sCurrency, aCtx), aBF));
+                   _tdRight (aV.getRate () == null ? "" : NormaFormat.percent (aV.getRate (),
+                                                                               aCtx.getLocale (),
+                                                                               aCtx.getFormatOptions ()), aBF),
+                   _tdRight (_amount (aV.getTaxableAmount (), sCurrency, aCtx), aBF),
+                   _tdRight (_amount (aV.getTaxAmount (), sCurrency, aCtx), aBF));
     }
     aPS.addElement (aTbl);
     aPS.addElement (new PLSpacerY (6));
