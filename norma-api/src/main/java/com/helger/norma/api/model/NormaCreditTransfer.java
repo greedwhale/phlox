@@ -20,7 +20,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-17 CREDIT TRANSFER. BT-84..BT-86.
+ * BG-17 CREDIT TRANSFER (0..n). Carries BT-84 (account identifier), BT-85 (account name) and
+ * BT-86 (payment service provider ID, e.g. BIC).
  *
  * @author Philip Helger
  */
@@ -30,15 +31,24 @@ public class NormaCreditTransfer
   private String m_sAccountName;
   private String m_sServiceProviderID;
 
+  /** Create an empty credit transfer. */
   public NormaCreditTransfer ()
   {}
 
+  /** @return Payment account identifier (BT-84) — IBAN or proprietary ID. May be {@code null}. */
   @Nullable
   public String getAccountIdentifier ()
   {
     return m_sAccountIdentifier;
   }
 
+  /**
+   * Set the payment account identifier (BT-84).
+   *
+   * @param sAccountIdentifier
+   *        Account ID; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaCreditTransfer setAccountIdentifier (@Nullable final String sAccountIdentifier)
   {
@@ -46,12 +56,20 @@ public class NormaCreditTransfer
     return this;
   }
 
+  /** @return Payment account name (BT-85). May be {@code null}. */
   @Nullable
   public String getAccountName ()
   {
     return m_sAccountName;
   }
 
+  /**
+   * Set the payment account name (BT-85).
+   *
+   * @param sAccountName
+   *        Account name; may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaCreditTransfer setAccountName (@Nullable final String sAccountName)
   {
@@ -59,12 +77,20 @@ public class NormaCreditTransfer
     return this;
   }
 
+  /** @return Payment service provider ID (BT-86) — typically the BIC. May be {@code null}. */
   @Nullable
   public String getServiceProviderID ()
   {
     return m_sServiceProviderID;
   }
 
+  /**
+   * Set the payment service provider ID (BT-86).
+   *
+   * @param sServiceProviderID
+   *        Service provider ID (BIC); may be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public NormaCreditTransfer setServiceProviderID (@Nullable final String sServiceProviderID)
   {

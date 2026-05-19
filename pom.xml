@@ -182,4 +182,24 @@
     <module>norma-pdf</module>
     <module>norma-cli</module>
   </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>de.thetaphi</groupId>
+        <artifactId>forbiddenapis</artifactId>
+        <configuration>
+          <signaturesArtifacts>
+            <signaturesArtifact>
+              <groupId>com.helger</groupId>
+              <artifactId>ph-forbidden-apis</artifactId>
+              <version>1.1.1</version>
+              <type>jar</type>
+              <path>forbidden-apis-java9.txt</path>
+            </signaturesArtifact>
+          </signaturesArtifacts>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
