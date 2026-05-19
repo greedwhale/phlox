@@ -33,6 +33,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import com.helger.annotation.WillClose;
+import com.helger.base.string.StringHelper;
 import com.helger.norma.api.i18n.NormaFormat;
 import com.helger.norma.api.model.*;
 import com.helger.norma.api.watermark.EWatermarkPosition;
@@ -241,8 +242,7 @@ public class PDFInvoiceWriter implements IInvoiceWriter <PDFRenderContext>
     final String sTitle = aInvoice.getKind () == ENormaDocumentKind.CREDIT_NOTE ? aCtx.label (
                                                                                               "section.header.title.creditnote")
                                                                                 : aCtx.label ("section.header.title.invoice");
-    aPS.addElement (new PLText (sTitle, new FontSpec (com.helger.pdflayout.spec.PreloadFont.REGULAR_BOLD, 18f))
-                                                                                                               .setMarginBottom (6));
+    aPS.addElement (new PLText (sTitle, new FontSpec (PreloadFont.REGULAR_BOLD, 18f)).setMarginBottom (6));
 
     final PLVBox aMeta = new PLVBox ();
     _kvRow (aMeta, aCtx.label ("BT-1"), aInvoice.getNumber (), aCtx);
@@ -516,8 +516,9 @@ public class PDFInvoiceWriter implements IInvoiceWriter <PDFRenderContext>
       aTbl.addRow (_td (_n (aLine.getID ()), aBF),
                    _td (aDesc.toString (), aBF),
                    _tdRight (_qty (aLine.getQuantity (), aLine.getQuantityUnit ()), aBF),
-                   _tdRight (aLine.getPrice () == null ? "" : _amount (aLine.getPrice ().getNetPrice (), sCurrency, aCtx),
-                             aBF),
+                   _tdRight (aLine.getPrice () == null ? "" : _amount (aLine.getPrice ().getNetPrice (),
+                                                                       sCurrency,
+                                                                       aCtx), aBF),
                    _tdRight (_lineVATCell (aLine, aCtx), aBF),
                    _tdRight (_amount (aLine.getNetAmount (), sCurrency, aCtx), aBF));
     }
@@ -820,9 +821,8 @@ public class PDFInvoiceWriter implements IInvoiceWriter <PDFRenderContext>
                               @Nullable final String sValue,
                               @NonNull final PDFRenderContext aCtx)
   {
-    if (sValue == null || sValue.isEmpty ())
-      return;
-    aVBox.addRow (new PLText (sLabel + ": " + sValue, aCtx.getBodyFont ()));
+    if (StringHelper.isNotEmpty (sValue))
+      aVBox.addRow (new PLText (sLabel + ": " + sValue, aCtx.getBodyFont ()));
   }
 
   @NonNull
@@ -867,7 +867,7 @@ public class PDFInvoiceWriter implements IInvoiceWriter <PDFRenderContext>
 
   private static void _appendLine (@NonNull final StringBuilder sb, @Nullable final String s)
   {
-    if (s != null && !s.isEmpty ())
+    if (StringHelper.isNotEmpty (s))
       sb.append (s).append ('\n');
   }
 
@@ -882,9 +882,6 @@ public class PDFInvoiceWriter implements IInvoiceWriter <PDFRenderContext>
   @NonNull
   private static String _trim (@NonNull final StringBuilder sb)
   {
-    String s = sb.toString ();
-    while (s.endsWith ("\n"))
-      s = s.substring (0, s.length () - 1);
-    return s;
+    return StringHelper.trimEndRepeatedly (sb.toString (), '\n');
   }
 }
