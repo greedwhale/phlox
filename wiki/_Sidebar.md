@@ -5,6 +5,7 @@
   * [[Source Readers]]
   * [[Output Writers]]
   * [[Localization]]
+* [[Watermarking]]
 * [[Maven Module Structure]]
 * [[Configuration Properties]]
 * [[Roadmap]]

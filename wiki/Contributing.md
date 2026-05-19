@@ -33,7 +33,9 @@ See the project root coding rules for the complete list.
 | Add a new source syntax | New `norma-<syntax>` module that depends on `norma-api`. Don't touch existing readers. |
 | Add a new output format | New `norma-<format>` module that depends on `norma-api`. Don't touch existing writers. |
 | Add a new language | Drop two `*_<lang>.properties` files into `norma-api/src/main/resources`. See [[Localization]]. |
+| Add a "good case" example invoice | Drop the XML into the right folder in `norma-testfiles/src/main/resources/external/en16931/{2017,2026}/{ubl,cii}/...`, then register it in `MockNormaTestFiles`. Reader tests pick it up automatically. |
 | Change layout (e.g. parties side-by-side vs. stacked) | Edit the corresponding `*SectionRenderer` in `norma-html` and `norma-pdf` together — keep them visually consistent. |
+| Tweak watermark appearance | Edit the rendering paths in `HTMLInvoiceWriter` (CSS template) and `PDFInvoiceWriter` (page-decorator) together. See [[Watermarking]]. |
 
 ## Tests
 

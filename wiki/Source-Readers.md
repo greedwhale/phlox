@@ -74,10 +74,14 @@ Internally:
 - **Date formats.** Most CII dates are `udt:DateTimeString` with `@format="102"` (`yyyyMMdd`). One slot (BT-26) uses `qdt:DateTimeString`. The reader normalizes all to `LocalDate`.
 - **Sign of amounts.** CII credit notes carry positive amounts; the EN 16931 model also treats them as positive. No sign manipulation in the reader.
 
+## What readers **do** validate
+
+- **XSD.** The underlying `ph-ubl` and `ph-cii` marshallers perform XSD validation by default, and `norma` keeps that on. Malformed-against-schema documents are rejected — the reader returns `null` and adds the JAXB validation events to the `ErrorList`.
+- That's it on the validation side.
+
 ## What readers do **not** do
 
-- They don't validate against XSDs other than what the marshaller enforces by default.
-- They don't apply EN 16931 business rules (BR-CO-*, BR-S-* etc.). That is the job of `phive-rules-en16931`, run by callers if they want it.
+- They don't apply **Schematron** rules. EN 16931 business rules (BR-CO-*, BR-S-*, BR-CL-*, BR-AE-* …) live in Schematron and are out of scope here. Run `phive-rules-en16931` upstream if you need them.
 - They don't reconcile arithmetic (e.g. confirming BT-115 = BT-112 − BT-113 + BT-114). The writer renders whatever the source contains; reconciliation is out of scope.
 - They don't enrich with code-list values. The reader stores `"S"` for "Standard rate" verbatim; if the writer wants to print "Standardsatz" it looks that up itself (see [[Localization]]).
 
@@ -85,7 +89,7 @@ Internally:
 
 Each reader has a parallel JUnit test class that:
 
-1. Loads every example file from a shared corpus (mirroring how `en16931-cii2ubl` consumes `src/test/resources/external/cii/`).
+1. Loads every example file from the shared `norma-testfiles` module (see [[Maven Module Structure]]). The module organises files as `external/en16931/<edition>/<syntax>/...` for `<edition>` ∈ {`2017`, `2026`} and `<syntax>` ∈ {`ubl`, `cii`}.
 2. Parses it.
 3. Snapshots the resulting `NormaInvoice` to JSON.
 4. Diffs against the checked-in snapshot.

@@ -25,6 +25,7 @@ The intermediate model is the heart of the design: every reader populates the sa
   * [[Source Readers]] — UBL 2.x and CII D16B
   * [[Output Writers]] — HTML and PDF
   * [[Localization]] — English, German, and adding more
+* [[Watermarking]] — user watermarks and the program/edition watermark
 * [[Maven Module Structure]]
 * [[Configuration Properties]]
 * [[Roadmap]]
@@ -37,9 +38,11 @@ The intermediate model is the heart of the design: every reader populates the sa
 | Concern | Supported |
 |---------|-----------|
 | Source syntax | UBL 2.1 Invoice + CreditNote (EN 16931:2017) and CII D16B; UBL 2.5 (EN 16931:2026) planned for 0.3.0 |
+| Source validation | XSD only (Schematron is out of scope — use `phive-rules-en16931`) |
 | Output format | HTML5, PDF |
 | Languages | English (`en`), German (`de`) |
 | EN 16931 coverage | All BGs (BG-1..BG-32) and BTs (BT-1..BT-165) |
+| Watermarking | User watermark + program/edition watermark (HTML + PDF) — see [[Watermarking]] |
 
 **Out of scope (initial release):**
 

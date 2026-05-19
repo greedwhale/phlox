@@ -11,3 +11,7 @@ Initial specification.
 - UBL bindings: 0.1.0 ships UBL 2.1 (EN 16931:2017); UBL 2.5 (EN 16931:2026) lands in 0.3.0, sharing the same `norma-ubl` module since EN 16931's semantic model does not change between editions.
 - Module split: `norma-parent`, `norma-api`, `norma-ubl`, `norma-cii`, `norma-html`, `norma-pdf`, `norma-cli`. See [[Maven Module Structure]].
 - Configuration: split `RenderContext` (in `norma-api`) → `HTMLRenderContext` (in `norma-html`) / `PDFRenderContext` (in `norma-pdf`) so each writer has type-safe options and `ph-pdf-layout`/`ph-oton-html` types never leak into `norma-api`. See [[Configuration Properties]].
+- Watermarking is part of 0.1.0 — `RenderContext.setUserWatermark(...)` for caller-defined labels (e.g. "DRAFT") and `NormaProgramWatermark` for the distribution-edition attribution. Implemented in both HTML (via CSS) and PDF (via page decorator). See [[Watermarking]].
+- Source readers perform **XSD validation** by default (carried over from `ph-ubl` / `ph-cii` marshallers) but **not Schematron** — that remains the job of `phive-rules-en16931`. Clarified in [[Source Readers]].
+- New `norma-testfiles` module hosts a curated EN 16931 example corpus, organised as `external/en16931/{2017,2026}/{ubl,cii}/...`. Pulled in with test scope by every reader/writer module.
+- Roadmap additions: 0.4.0 brings lightweight text-based outputs (`norma-text`, `norma-markdown`, `norma-asciidoc`); 0.5.0 brings `norma-docx`.

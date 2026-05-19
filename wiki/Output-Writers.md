@@ -135,6 +135,10 @@ Invoice number  →  Invoice number [BT-1]
 Rechnungsnummer →  Rechnungsnummer [BT-1]
 ```
 
+## Watermarks
+
+Both writers honour `RenderContext.setUserWatermark(...)` and the static `NormaProgramWatermark`. In HTML this is implemented via embedded CSS (`position: fixed`, `@media print`); in PDF via a `ph-pdf-layout` page decorator that draws rotated `PLText` over every page. Full design in [[Watermarking]].
+
 ## What writers do **not** do
 
 - They don't fetch external resources (logos, attachments). The caller passes binary content in `RenderContext` or in BG-24 attachments embedded in the model.

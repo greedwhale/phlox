@@ -17,13 +17,15 @@ graph TD
     html[norma-html]
     pdf[norma-pdf]
     cli[norma-cli]
+    testfiles[norma-testfiles]
 
-    api  --> parent
-    ubl  --> parent
-    cii  --> parent
-    html --> parent
-    pdf  --> parent
-    cli  --> parent
+    api       --> parent
+    ubl       --> parent
+    cii       --> parent
+    html      --> parent
+    pdf       --> parent
+    cli       --> parent
+    testfiles --> parent
 
     ubl  --> api
     cii  --> api
@@ -34,9 +36,14 @@ graph TD
     cli  --> cii
     cli  --> html
     cli  --> pdf
+
+    ubl  -. test scope .-> testfiles
+    cii  -. test scope .-> testfiles
+    html -. test scope .-> testfiles
+    pdf  -. test scope .-> testfiles
 ```
 
-Arrows mean "depends on". Notice that **no reader depends on a writer and vice versa** — they only share `norma-api`. This is what lets a caller pull only HTML rendering for UBL onto its classpath, leaving `ph-cii` and `ph-pdf-layout` out.
+Arrows mean "depends on" (solid = compile, dotted = test-scope). Notice that **no reader depends on a writer and vice versa** — they only share `norma-api`. This is what lets a caller pull only HTML rendering for UBL onto its classpath, leaving `ph-cii` and `ph-pdf-layout` out.
 
 ## Modules
 
@@ -135,6 +142,32 @@ norma render --in invoice.xml                    --format html  # to stdout
 Auto-detects source syntax (UBL vs CII) from the root element.
 
 **Dependencies:** `norma-ubl`, `norma-cii`, `norma-html`, `norma-pdf`, `picocli`. Produces `norma-cli/target/norma-cli-full.jar` via the Maven shade plugin, matching the layout of `en16931-cii2ubl-cli`.
+
+### `norma-testfiles`
+
+A shared corpus of example invoices used by every reader and writer test. Modeled directly on `ph-cii-testfiles` from `../ph-cii/ph-cii-testfiles/` — packaging is plain `jar` (not `test-jar`), so consumers depend on it with `<scope>test</scope>`. The files are real EN 16931-conformant instances, hand-curated as "good cases" for regression testing.
+
+**Folder layout** under `src/main/resources/external/en16931/`:
+
+```
+norma-testfiles/src/main/resources/external/en16931/
+├── 2017/                            # EN 16931:2017 (current edition)
+│   ├── ubl/
+│   │   ├── invoice/                 # *.xml — UBL 2.1 Invoice
+│   │   └── creditnote/              # *.xml — UBL 2.1 CreditNote
+│   └── cii/                         # *.xml — CII D16B CrossIndustryInvoice
+├── 2026/                            # EN 16931:2026 (upcoming edition)
+│   ├── ubl/
+│   │   ├── invoice/                 # *.xml — UBL 2.5 Invoice
+│   │   └── creditnote/              # *.xml — UBL 2.5 CreditNote
+│   └── cii/                         # *.xml — TBD syntax revision once published
+```
+
+**Java side:** a small `MockNormaTestFiles` class in `com.helger.norma.testfiles` exposes typed lookups (`getUBL21InvoiceFiles()`, `getCIID16BFiles()`, etc.) returning `ICommonsList<IReadableResource>`. Test classes iterate those lists rather than walking the filesystem directly.
+
+**Dependencies:** `ph-commons` only — this module deliberately has no dependency on `norma-api`, so it can be consumed even by experiments outside this project.
+
+**Why a separate module:** keeping test data out of `norma-ubl` / `norma-cii` test resources avoids duplicating the corpus across modules, keeps reader-test artifacts tiny, and gives the corpus its own version life so adding files doesn't churn the reader Jar.
 
 ## Why this split
 

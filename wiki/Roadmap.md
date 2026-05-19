@@ -5,13 +5,14 @@ This page tracks the planned evolution of `norma`. Items are grouped by mileston
 ## 0.1.0 — Foundations (EN 16931:2017)
 
 - [ ] `norma-parent` BOM with pinned `ph-commons`, `ph-ubl21`, `ph-cii-d16b`, `ph-oton-html`, `ph-pdf-layout`.
-- [ ] `norma-api` with the full intermediate model (every BG/BT from [[Domain Model]]) and the base `RenderContext`.
+- [ ] `norma-api` with the full intermediate model (every BG/BT from [[Domain Model]]), the base `RenderContext`, and the `WatermarkSpec` / `NormaProgramWatermark` types.
 - [ ] `norma-api` resource bundles for English and German.
-- [ ] `norma-ubl` reader for UBL 2.1 Invoice + CreditNote with golden-file tests.
-- [ ] `norma-cii` reader for CII D16B with golden-file tests.
-- [ ] `norma-html` writer + `HTMLRenderContext` with golden-file tests in both languages.
-- [ ] `norma-pdf` writer + `PDFRenderContext` with visual-regression baseline in both languages.
-- [ ] `norma-cli` shaded fat JAR.
+- [ ] `norma-testfiles` module seeded with the curated EN 16931:2017 examples for UBL and CII; folder layout per [[Maven Module Structure]].
+- [ ] `norma-ubl` reader for UBL 2.1 Invoice + CreditNote with golden-file tests sourced from `norma-testfiles`.
+- [ ] `norma-cii` reader for CII D16B with golden-file tests sourced from `norma-testfiles`.
+- [ ] `norma-html` writer + `HTMLRenderContext` with golden-file tests in both languages. Watermarking implemented via embedded CSS (`position: fixed`, `@media print`) — see [[Watermarking]].
+- [ ] `norma-pdf` writer + `PDFRenderContext` with visual-regression baseline in both languages. Watermarking implemented via a `ph-pdf-layout` page decorator drawing rotated `PLText`.
+- [ ] `norma-cli` shaded fat JAR with `--watermark` / `--watermark-opacity` / `--watermark-rotation` flags.
 - [ ] CI: `mvn clean package` green on Java 17.
 
 ## 0.2.0 — Polish & coverage
@@ -29,15 +30,19 @@ This page tracks the planned evolution of `norma`. Items are grouped by mileston
 - [ ] Golden-file test corpus for UBL 2.5 once EN 16931:2026 example files are published.
 - [ ] Reassess whether the CII binding needs to track a newer revision for EN 16931:2026 (TBD — depends on what the EN 16931:2026 CII syntax binding specifies).
 
-## 0.4.0 — Optional output formats
+## 0.4.0 — Lightweight text-based output formats
 
 - [ ] `norma-text` — plain-text renderer (handy for accessibility and email previews).
+- [ ] `norma-markdown` — GitHub-flavored Markdown renderer. Shares the same section grammar as HTML/PDF (header → parties → references → lines → totals → payment), using Markdown tables for the line and VAT-breakdown sections. Useful for diff-friendly invoices and for embedding into PR descriptions, wikis, and chat systems.
+- [ ] `norma-asciidoc` — AsciiDoc renderer. Same section grammar; uses AsciiDoc table syntax (`|===`) so the output can be processed by Antora/Asciidoctor pipelines, included in publication toolchains, and converted to other formats downstream.
+
+## 0.5.0 — Editable output
+
 - [ ] `norma-docx` (stretch goal) — Word-document renderer for users who need to edit the output.
 
 ## Future / unscheduled
 
 - [ ] Validation hook: optional integration with `phive-rules-en16931` so renderers can surface BR-* failures inline (off by default; opt-in via `RenderContext`).
-- [ ] Watermarking (e.g. "PRELIMINARY") for PDFs.
 - [ ] Side-by-side bilingual rendering (one column EN, one DE) for cross-border audits.
 - [ ] EN 16931 extension support: render Peppol BIS Billing 3.0 extension fields when present in the source.
 

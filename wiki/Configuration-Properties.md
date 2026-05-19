@@ -26,6 +26,7 @@ Shared by every writer.
 | `setLabelResolver(INormaLabelResolver)` | `INormaLabelResolver` | `DefaultNormaLabelResolver` | Replace the resource-bundle lookup with a custom one (useful for branding). |
 | `setAnnotateBTIDs(boolean)` | `boolean` | `false` | When true, every label is suffixed with its EN 16931 ID (`Invoice number [BT-1]`). Debug aid. |
 | `setIncludeEmptySections(boolean)` | `boolean` | `false` | When true, render section headings even if their content is empty. Off by default — clean output. |
+| `setUserWatermark(WatermarkSpec)` | `WatermarkSpec` | `null` | A caller-defined watermark drawn on every page ("DRAFT", "PRELIMINARY", ...). Separate from the library's program watermark. See [[Watermarking]]. |
 
 All setters return the **concrete** context type (Helger `IMPLTYPE` pattern), so fluent chains stay typed across the hierarchy:
 
@@ -100,6 +101,19 @@ final PDFRenderContext aCtx = new PDFRenderContext ()
 
 new PDFInvoiceWriter ().writeTo (aInvoice, aCtx, aOutputStream);
 ```
+
+## Program watermark — set once, not per-render
+
+`NormaProgramWatermark.setInstance(...)` (in `norma-api`) installs a library-wide attribution watermark that all writers draw on every output. It is **not** part of `RenderContext` because it is a distribution-time choice, not a render-time one:
+
+```java
+// Typically called once at JVM startup — e.g. from a commercial distribution's bootstrap:
+NormaProgramWatermark.setInstance (null);          // suppress entirely
+// or
+NormaProgramWatermark.setInstance (WatermarkSpec.text ("ACME Invoicing v4.2"));
+```
+
+The open-source build ships with a small low-opacity attribution in the corner; the commercial build typically replaces or suppresses it. See [[Watermarking]] for the full design and the rendered appearance in HTML vs PDF.
 
 ## What `norma` does **not** configure
 
