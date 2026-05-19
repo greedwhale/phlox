@@ -17,10 +17,19 @@
 package com.helger.norma.pdf;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+import org.apache.pdfbox.util.Matrix;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -52,21 +61,24 @@ import com.helger.norma.api.watermark.EWatermarkPosition;
 import com.helger.norma.api.watermark.NormaProgramWatermark;
 import com.helger.norma.api.watermark.WatermarkSpec;
 import com.helger.norma.api.write.IInvoiceWriter;
+import com.helger.pdflayout.IPDDocumentCustomizer;
 import com.helger.pdflayout.PDFCreationException;
 import com.helger.pdflayout.PageLayoutPDF;
-import com.helger.pdflayout.base.AbstractPLElement;
 import com.helger.pdflayout.base.PLColor;
 import com.helger.pdflayout.base.PLPageSet;
 import com.helger.pdflayout.element.hbox.PLHBox;
+import com.helger.pdflayout.element.special.PLSpacerX;
 import com.helger.pdflayout.element.special.PLSpacerY;
 import com.helger.pdflayout.element.table.PLTable;
 import com.helger.pdflayout.element.table.PLTableCell;
 import com.helger.pdflayout.element.text.PLText;
 import com.helger.pdflayout.element.vbox.PLVBox;
+import com.helger.pdflayout.pdfbox.PDPageContentStreamExt;
 import com.helger.pdflayout.spec.BorderStyleSpec;
 import com.helger.pdflayout.spec.EHorzAlignment;
 import com.helger.pdflayout.spec.FontSpec;
 import com.helger.pdflayout.spec.PaddingSpec;
+import com.helger.pdflayout.spec.PreloadFont;
 import com.helger.pdflayout.spec.WidthSpec;
 
 /**
@@ -131,20 +143,6 @@ public class PDFInvoiceWriter implements IInvoiceWriter <Void, PDFRenderContext>
     final PageLayoutPDF aPDF = new PageLayoutPDF ();
     final PLPageSet aPS = new PLPageSet (aCtx.getPageSize ()).setMargin (aCtx.getMargins ());
 
-    // Watermarks shown as a page header (centered, semi-transparent — simplest approach with
-    // ph-pdf-layout without a custom page decorator). Drawn before content so they're visually
-    // behind text.
-    final WatermarkSpec aUW = aCtx.getUserWatermark ();
-    if (aUW != null)
-    {
-      final PLText aWM = new PLText (aUW.getText (),
-                                     new FontSpec (com.helger.pdflayout.spec.PreloadFont.REGULAR_BOLD,
-                                                   aUW.getFontSizePt (),
-                                                   _color (aUW))).setHorzAlign (EHorzAlignment.CENTER);
-      aPS.addElement (aWM);
-      aPS.addElement (new PLSpacerY (10));
-    }
-
     _renderHeader (aPS, aInvoice, aCtx);
     _renderProcessControl (aPS, aInvoice, aCtx);
     _renderParties (aPS, aInvoice, aCtx);
@@ -161,36 +159,104 @@ public class PDFInvoiceWriter implements IInvoiceWriter <Void, PDFRenderContext>
     _renderPaymentTerms (aPS, aInvoice, aCtx);
     _renderSupportingDocuments (aPS, aInvoice, aCtx);
 
-    // Program watermark as page footer
-    final WatermarkSpec aPW = NormaProgramWatermark.getInstance ();
-    if (aPW != null)
-    {
-      final PLText aFooter = new PLText (aPW.getText (),
-                                         new FontSpec (com.helger.pdflayout.spec.PreloadFont.REGULAR,
-                                                       aPW.getFontSizePt (),
-                                                       _color (aPW)));
-      aFooter.setHorzAlign (aPW.getPosition () == EWatermarkPosition.FOOTER_RIGHT ? EHorzAlignment.RIGHT
-                                                                                  : EHorzAlignment.CENTER);
-      aPS.setPageFooter (aFooter);
-    }
-
     aPDF.addPageSet (aPS);
+
+    // Watermarks are drawn after all pages are laid out, via a document customizer that
+    // prepends content (so the watermark appears behind the page text). Pattern lifted from
+    // ph-pdf-layout's PLPageSetTest.testCreateWatermark.
+    final WatermarkSpec aUW = aCtx.getUserWatermark ();
+    final WatermarkSpec aPW = NormaProgramWatermark.getInstance ();
+    if (aUW != null || aPW != null)
+      aPDF.setDocumentCustomizer (_buildWatermarkCustomizer (aUW, aPW));
+
     return aPDF;
   }
 
   @NonNull
-  private static PLColor _color (@NonNull final WatermarkSpec aSpec)
+  private static IPDDocumentCustomizer _buildWatermarkCustomizer (@Nullable final WatermarkSpec aUserWM,
+                                                                  @Nullable final WatermarkSpec aProgramWM)
   {
-    // ph-pdf-layout's PLColor is RGB only — opacity has to be approximated by lightening
-    // the color toward white. Watermarks therefore appear as a paler shade rather than
-    // semi-transparent overlay text; pixel-true transparency would require a custom page
-    // decorator, which is out of scope for the 0.1.0 MVP.
-    final java.awt.Color aC = aSpec.getColor ();
-    final float fOpacity = Math.max (0f, Math.min (1f, aSpec.getOpacity ()));
-    final int nR = Math.round (255 - (255 - aC.getRed ()) * fOpacity);
-    final int nG = Math.round (255 - (255 - aC.getGreen ()) * fOpacity);
-    final int nB = Math.round (255 - (255 - aC.getBlue ()) * fOpacity);
-    return new PLColor (nR, nG, nB);
+    return aDoc -> {
+      for (final PDPage aPage : aDoc.getPages ())
+      {
+        try (final PDPageContentStreamExt aCS = new PDPageContentStreamExt (aDoc,
+                                                                            aPage,
+                                                                            PDPageContentStream.AppendMode.PREPEND,
+                                                                            true,
+                                                                            true))
+        {
+          if (aUserWM != null)
+            _drawWatermark (aCS, aPage, aUserWM);
+          if (aProgramWM != null)
+            _drawWatermark (aCS, aPage, aProgramWM);
+        }
+      }
+    };
+  }
+
+  private static void _drawWatermark (@NonNull final PDPageContentStreamExt aCS,
+                                      @NonNull final PDPage aPage,
+                                      @NonNull final WatermarkSpec aSpec) throws IOException
+  {
+    final PDRectangle aPageSize = aPage.getMediaBox ();
+    final float fPageWidth = aPageSize.getWidth ();
+    final float fPageHeight = aPageSize.getHeight ();
+
+    // Font: bold for centered/large watermarks, regular for the small program attribution.
+    final PreloadFont eFontKind = aSpec.getPosition () == EWatermarkPosition.CENTER ? PreloadFont.REGULAR_BOLD
+                                                                                    : PreloadFont.REGULAR;
+    final PDFont aFont = new PDType1Font (eFontKind == PreloadFont.REGULAR_BOLD ? Standard14Fonts.FontName.HELVETICA_BOLD
+                                                                                : Standard14Fonts.FontName.HELVETICA);
+    final float fFontSize = aSpec.getFontSizePt ();
+    final String sText = aSpec.getText ();
+    final float fTextWidth = aFont.getStringWidth (sText) / 1000f * fFontSize;
+    // Approximate baseline-to-cap-height ratio for visual centering.
+    final float fTextHeight = fFontSize * 0.72f;
+
+    aCS.saveGraphicsState ();
+    aCS.beginText ();
+    aCS.setFont (aFont, fFontSize);
+
+    // PLColor is RGB-only — approximate opacity by lightening toward white. Pixel-true alpha
+    // would need a PDExtendedGraphicsState, which is heavier and not required for our use.
+    final java.awt.Color aRGB = aSpec.getColor ();
+    final float fO = Math.max (0f, Math.min (1f, aSpec.getOpacity ()));
+    final int nR = Math.round (255 - (255 - aRGB.getRed ()) * fO);
+    final int nG = Math.round (255 - (255 - aRGB.getGreen ()) * fO);
+    final int nB = Math.round (255 - (255 - aRGB.getBlue ()) * fO);
+    aCS.setNonStrokingColor (nR, nG, nB);
+
+    switch (aSpec.getPosition ())
+    {
+      case CENTER:
+      {
+        final float fCx = fPageWidth / 2f;
+        final float fCy = fPageHeight / 2f;
+        final double dAngle = Math.toRadians (aSpec.getRotation ());
+        // Anchor: shift back by half-text-width along the rotation direction so the text is
+        // visually centered on (fCx, fCy).
+        final float fAnchorX = fCx - (float) (Math.cos (dAngle) * fTextWidth / 2f) +
+                               (float) (Math.sin (dAngle) * fTextHeight / 2f);
+        final float fAnchorY = fCy - (float) (Math.sin (dAngle) * fTextWidth / 2f) -
+                               (float) (Math.cos (dAngle) * fTextHeight / 2f);
+        aCS.setTextMatrix (Matrix.getRotateInstance (dAngle, fAnchorX, fAnchorY));
+        break;
+      }
+      case TOP:
+        aCS.setTextMatrix (Matrix.getTranslateInstance ((fPageWidth - fTextWidth) / 2f,
+                                                        fPageHeight - fFontSize - 12f));
+        break;
+      case BOTTOM:
+        aCS.setTextMatrix (Matrix.getTranslateInstance ((fPageWidth - fTextWidth) / 2f, 12f));
+        break;
+      case FOOTER_RIGHT:
+      default:
+        aCS.setTextMatrix (Matrix.getTranslateInstance (fPageWidth - fTextWidth - 10f, 10f));
+        break;
+    }
+    aCS.showText (sText);
+    aCS.endText ();
+    aCS.restoreGraphicsState ();
   }
 
   // ===== Sections =====
@@ -738,12 +804,21 @@ public class PDFInvoiceWriter implements IInvoiceWriter <Void, PDFRenderContext>
   @NonNull
   private static PLTableCell _th (@NonNull final String sText, @NonNull final FontSpec aFont)
   {
+    // For empty header cells, wrap a 1-pt PLSpacerX so PLTable still has something to lay out.
+    // PLText with an empty string is treated as "no element" by PLBox#render.
+    if (sText.isEmpty ())
+      return new PLTableCell (new PLSpacerX (1f)).setFillColor (PLColor.gray (0xf0));
     return new PLTableCell (new PLText (sText, aFont).setPadding (new PaddingSpec (3))).setFillColor (PLColor.gray (0xf0));
   }
 
   @NonNull
   private static PLTableCell _td (@NonNull final String sText, @NonNull final FontSpec aFont)
   {
+    // Empty cells use PLSpacerX so PLTable doesn't log "no element is contained" for the
+    // original layout pass. Note: PLTable still emits the same INFO when splitting a row
+    // across page boundaries (its internal split-cell carries a null element by design).
+    if (sText.isEmpty ())
+      return new PLTableCell (new PLSpacerX (1f));
     return new PLTableCell (new PLText (sText, aFont).setPadding (new PaddingSpec (3)));
   }
 
