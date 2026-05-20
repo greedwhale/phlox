@@ -116,7 +116,9 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
 {
   private static final Logger LOGGER = LoggerFactory.getLogger (CIIInvoiceReader.class);
 
-  // EN 16931 credit-note type codes per Validation Artifacts 1.3.x
+  // EN 16931 credit-note type codes per Validation Artifacts 1.3.x. Mirrors the set used by
+  // en16931-cii2ubl. A non-credit-note code is treated as INVOICE only if it is also present
+  // in INVOICE_TYPE_CODES; unknown codes are reported as a warning.
   private static final Set <String> CREDIT_NOTE_TYPE_CODES = Set.of ("81",
                                                                      "83",
                                                                      "261",
@@ -129,7 +131,62 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
                                                                      "458",
                                                                      "532");
 
-  private static final DateTimeFormatter CII_DATE_FORMAT = DateTimeFormatter.ofPattern ("yyyyMMdd", Locale.ROOT);
+  // EN 16931 invoice type codes per Validation Artifacts 1.3.15 (sync with en16931-cii2ubl).
+  private static final Set <String> INVOICE_TYPE_CODES = Set.of ("71",
+                                                                 "80",
+                                                                 "81",
+                                                                 "82",
+                                                                 "84",
+                                                                 "102",
+                                                                 "130",
+                                                                 "202",
+                                                                 "203",
+                                                                 "204",
+                                                                 "211",
+                                                                 "218",
+                                                                 "219",
+                                                                 "295",
+                                                                 "325",
+                                                                 "326",
+                                                                 "331",
+                                                                 "380",
+                                                                 "382",
+                                                                 "383",
+                                                                 "384",
+                                                                 "385",
+                                                                 "386",
+                                                                 "387",
+                                                                 "388",
+                                                                 "389",
+                                                                 "390",
+                                                                 "393",
+                                                                 "394",
+                                                                 "395",
+                                                                 "456",
+                                                                 "457",
+                                                                 "471",
+                                                                 "472",
+                                                                 "473",
+                                                                 "500",
+                                                                 "501",
+                                                                 "502",
+                                                                 "503",
+                                                                 "527",
+                                                                 "553",
+                                                                 "575",
+                                                                 "623",
+                                                                 "633",
+                                                                 "751",
+                                                                 "780",
+                                                                 "817",
+                                                                 "870",
+                                                                 "875",
+                                                                 "876",
+                                                                 "877",
+                                                                 "935");
+
+  // Default date format code per EN 16931 (UN/EDIFACT DTM 2379).
+  private static final String DEFAULT_DATE_FORMAT_CODE = "102";
 
   public CIIInvoiceReader ()
   {}
@@ -144,11 +201,12 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
       aErrors.add (SingleError.builderError ().errorText ("Source could not be parsed as CII D16B").build ());
       return null;
     }
-    return readCrossIndustryInvoice (aCII);
+    return readCrossIndustryInvoice (aCII, aErrors);
   }
 
   /**
-   * Read an already-parsed CII document into a {@link NormaInvoice}.
+   * Read an already-parsed CII document into a {@link NormaInvoice}. Convenience overload that
+   * discards any collected warnings.
    *
    * @param aCII
    *        The JAXB invoice. Never {@code null}.
@@ -156,6 +214,23 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
    */
   @NonNull
   public NormaInvoice readCrossIndustryInvoice (@NonNull final CrossIndustryInvoiceType aCII)
+  {
+    return readCrossIndustryInvoice (aCII, new ErrorList ());
+  }
+
+  /**
+   * Read an already-parsed CII document into a {@link NormaInvoice}, collecting non-fatal
+   * issues (unknown type codes, unsupported date formats) into the supplied error list.
+   *
+   * @param aCII
+   *        The JAXB invoice. Never {@code null}.
+   * @param aErrors
+   *        Error list for warnings. Never {@code null}.
+   * @return The populated model.
+   */
+  @NonNull
+  public NormaInvoice readCrossIndustryInvoice (@NonNull final CrossIndustryInvoiceType aCII,
+                                                @NonNull final ErrorList aErrors)
   {
     final NormaInvoice aModel = new NormaInvoice ();
 
@@ -174,21 +249,19 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
     final ExchangedDocumentType aED = aCII.getExchangedDocument ();
     if (aED != null)
     {
-      aModel.setNumber (_idValue (aED.getID ()));                              // BT-1
-      aModel.setIssueDate (_dateTime (aED.getIssueDateTime ()));               // BT-2
-      final String sTypeCode = aED.getTypeCodeValue ();                        // BT-3
+      aModel.setNumber (_idValue (aED.getID ()));
+      aModel.setIssueDate (_dateTime (aED.getIssueDateTime ()));
+      // BT-3 — type code routing.
+      final String sTypeCode = aED.getTypeCodeValue ();
       aModel.setTypeCode (sTypeCode);
-      if (sTypeCode != null && CREDIT_NOTE_TYPE_CODES.contains (sTypeCode))
-        aModel.setKind (ENormaDocumentKind.CREDIT_NOTE);
-      else
-        aModel.setKind (ENormaDocumentKind.INVOICE);
-      // BG-1 notes
+      aModel.setKind (_resolveKind (sTypeCode, aErrors));
+      // BG-1 — notes. Multiple Content lines per note are joined with newlines to preserve
+      // every line; the EN 16931 model exposes a single BT-22 string per note.
       for (final NoteType aNote : aED.getIncludedNote ())
       {
         final NormaInvoiceNote aOut = new NormaInvoiceNote ();
         aOut.setSubjectCode (_codeValue (aNote.getSubjectCode ()));
-        if (!aNote.getContent ().isEmpty ())
-          aOut.setContent (_text (aNote.getContent ().get (0)));
+        aOut.setContent (_joinTexts (aNote.getContent ()));
         if (aOut.getContent () != null)
           aModel.invoiceNotes ().add (aOut);
       }
@@ -536,9 +609,9 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
       aPI.setPaymentMeansCode (_codeValue (aM.getTypeCode ()));
       if (!aM.getInformation ().isEmpty ())
         aPI.setPaymentMeansText (_text (aM.getInformation ().get (0)));
-      // BT-83 — remittance information lives on the parent
-      if (!aHTS.getPaymentReference ().isEmpty ())
-        aPI.setRemittanceInformation (_text (aHTS.getPaymentReference ().get (0)));
+      // BT-83 — remittance information lives on the parent. Multiple references are joined
+      // with newlines so multi-part instructions (e.g. invoice number + PO reference) survive.
+      aPI.setRemittanceInformation (_joinTexts (aHTS.getPaymentReference ()));
 
       // BG-17 credit transfers across all payment means
       for (final TradeSettlementPaymentMeansType aOne : aMeans)
@@ -931,49 +1004,137 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
     }
   }
 
-  /** Parse a CII {@code DateTimeType} (format="102", yyyyMMdd) into a {@link LocalDate}. */
+  /**
+   * Parse a CII {@code DateTimeType} into a {@link LocalDate}. Reads the {@code @format}
+   * attribute on the inner {@code DateTimeString} and dispatches to the right pattern; missing
+   * format defaults to "102" (yyyyMMdd) per EN 16931.
+   */
   @Nullable
   private static LocalDate _dateTime (@Nullable final DateTimeType aDT)
   {
     if (aDT == null || aDT.getDateTimeString () == null)
       return null;
-    final String sValue = aDT.getDateTimeString ().getValue ();
-    if (sValue == null)
-      return null;
-    try
-    {
-      return LocalDate.parse (sValue, CII_DATE_FORMAT);
-    }
-    catch (final java.time.format.DateTimeParseException ex)
-    {
-      LOGGER.warn ("Could not parse CII date '" + sValue + "'");
-      return null;
-    }
+    return _parseFormatted (aDT.getDateTimeString ().getValue (), aDT.getDateTimeString ().getFormat ());
   }
 
-  /** Parse a CII {@code DateType} (format="102", yyyyMMdd) into a {@link LocalDate}. */
+  /**
+   * Parse a CII {@code DateType} into a {@link LocalDate}. Honours the {@code @format}
+   * attribute on the inner {@code DateString}; if {@code DateString} is absent the
+   * {@code DateLocal} value is used.
+   */
   @Nullable
   private static LocalDate _dateOnly (@Nullable final DateType aDT)
   {
-    return aDT == null ? null : aDT.getDateLocal ();
+    if (aDT == null)
+      return null;
+    if (aDT.getDateString () != null)
+      return _parseFormatted (aDT.getDateString ().getValue (), aDT.getDateString ().getFormat ());
+    return aDT.getDateLocal ();
   }
 
-  /** Parse a CII {@code FormattedDateTimeType} (qdt:DateTimeString with @format). */
+  /**
+   * Parse a CII {@code FormattedDateTimeType} (qualified namespace) into a {@link LocalDate}.
+   * Format codes follow the same UN/EDIFACT 2379 dispatch as {@link #_dateTime(DateTimeType)}.
+   */
   @Nullable
   private static LocalDate _formattedDateTime (@Nullable final FormattedDateTimeType aFDT)
   {
     if (aFDT == null || aFDT.getDateTimeString () == null)
       return null;
-    final String sValue = aFDT.getDateTimeString ().getValue ();
-    if (sValue == null)
+    return _parseFormatted (aFDT.getDateTimeString ().getValue (), aFDT.getDateTimeString ().getFormat ());
+  }
+
+  /**
+   * Parse a date string according to its UN/EDIFACT 2379 format code. Returns {@code null}
+   * when the value or pattern cannot be resolved; logs a warning for unsupported format
+   * codes so operators notice the data loss.
+   */
+  @Nullable
+  private static LocalDate _parseFormatted (@Nullable final String sValue, @Nullable final String sFormat)
+  {
+    if (sValue == null || sValue.isEmpty ())
       return null;
+    final String sFormatOrDefault = sFormat == null || sFormat.isEmpty () ? DEFAULT_DATE_FORMAT_CODE : sFormat;
+    final String sPattern = _patternFor (sFormatOrDefault);
+    if (sPattern == null)
+    {
+      LOGGER.warn ("Unsupported CII date format code '" + sFormatOrDefault + "' on value '" + sValue + "'");
+      return null;
+    }
     try
     {
-      return LocalDate.parse (sValue, CII_DATE_FORMAT);
+      return LocalDate.parse (sValue, DateTimeFormatter.ofPattern (sPattern, Locale.ROOT));
     }
     catch (final java.time.format.DateTimeParseException ex)
     {
+      LOGGER.warn ("Could not parse CII date '" + sValue + "' with pattern '" + sPattern + "'");
       return null;
     }
+  }
+
+  /**
+   * Map UN/EDIFACT DTM 2379 format codes to {@link DateTimeFormatter} patterns. Mirrors
+   * {@code AbstractCIIToUBLConverter.getDatePattern(...)} in en16931-cii2ubl. Returns
+   * {@code null} for unsupported codes.
+   */
+  @Nullable
+  private static String _patternFor (@NonNull final String sFormatCode)
+  {
+    return switch (sFormatCode)
+    {
+      case "2" -> "ddMMuu";
+      case "3" -> "MMdduu";
+      case "4" -> "ddMMuuuu";
+      case "101" -> "uuMMdd";
+      case "102" -> "uuuuMMdd";
+      case "103" -> "YYwwee";
+      case "105" -> "uuDDD";
+      default -> null;
+    };
+  }
+
+  /**
+   * Resolve the BT-3 type code into a document kind. Codes in {@link #CREDIT_NOTE_TYPE_CODES}
+   * become {@link ENormaDocumentKind#CREDIT_NOTE}; codes in {@link #INVOICE_TYPE_CODES} become
+   * {@link ENormaDocumentKind#INVOICE}; anything else defaults to {@code INVOICE} and adds a
+   * warning to the error list. Mirrors the validation behaviour of en16931-cii2ubl.
+   */
+  @NonNull
+  private static ENormaDocumentKind _resolveKind (@Nullable final String sTypeCode, @NonNull final ErrorList aErrors)
+  {
+    if (sTypeCode == null || sTypeCode.isEmpty ())
+      return ENormaDocumentKind.INVOICE;
+    if (CREDIT_NOTE_TYPE_CODES.contains (sTypeCode))
+      return ENormaDocumentKind.CREDIT_NOTE;
+    if (INVOICE_TYPE_CODES.contains (sTypeCode))
+      return ENormaDocumentKind.INVOICE;
+    aErrors.add (SingleError.builderWarn ()
+                            .errorText ("Unknown BT-3 invoice type code '" +
+                                        sTypeCode +
+                                        "' — defaulting to INVOICE")
+                            .build ());
+    return ENormaDocumentKind.INVOICE;
+  }
+
+  /**
+   * Join the non-blank values of a list of {@link TextType} elements with newlines. Returns
+   * {@code null} when the list is empty or contains no usable values.
+   */
+  @Nullable
+  private static String _joinTexts (@Nullable final List <TextType> aTexts)
+  {
+    if (aTexts == null || aTexts.isEmpty ())
+      return null;
+    final StringBuilder aSb = new StringBuilder ();
+    for (final TextType aT : aTexts)
+    {
+      final String sVal = _text (aT);
+      if (sVal == null)
+        continue;
+      if (aSb.length () > 0)
+        aSb.append ('\n');
+      aSb.append (sVal);
+    }
+    return aSb.length () == 0 ? null : aSb.toString ();
   }
 }
