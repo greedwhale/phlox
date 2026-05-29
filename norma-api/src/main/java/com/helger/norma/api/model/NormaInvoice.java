@@ -26,14 +26,13 @@ import com.helger.collection.commons.CommonsArrayList;
 import com.helger.collection.commons.ICommonsList;
 
 /**
- * Root of the EN 16931 intermediate model. One instance represents one Invoice or one Credit
- * Note, populated by a source reader and consumed by an output writer. All optional fields
- * are {@code null} when not present in the source; all collections are non-{@code null} and
- * empty when not populated.
+ * Root of the EN 16931 intermediate model. One instance represents one Invoice or one Credit Note,
+ * populated by a source reader and consumed by an output writer. All optional fields are
+ * {@code null} when not present in the source; all collections are non-{@code null} and empty when
+ * not populated.
  * <p>
- * Header-level BTs sit directly on this class (BT-1 through BT-20). Each business group
- * (BG-1 through BG-25) is exposed as either a single nested object or a mutable list of
- * nested objects.
+ * Header-level BTs sit directly on this class (BT-1 through BT-20). Each business group (BG-1
+ * through BG-25) is exposed as either a single nested object or a mutable list of nested objects.
  *
  * @author Philip Helger
  */
@@ -106,13 +105,13 @@ public class NormaInvoice
   /** @return {@code true} when {@link #getKind()} is {@link ENormaDocumentKind#INVOICE}. */
   public boolean isInvoice ()
   {
-    return m_eKind == ENormaDocumentKind.INVOICE;
+    return m_eKind.isInvoice ();
   }
 
   /** @return {@code true} when {@link #getKind()} is {@link ENormaDocumentKind#CREDIT_NOTE}. */
   public boolean isCreditNote ()
   {
-    return m_eKind == ENormaDocumentKind.CREDIT_NOTE;
+    return m_eKind.isCreditNote ();
   }
 
   /** @return Invoice number (BT-1). May be {@code null}. */
@@ -515,8 +514,7 @@ public class NormaInvoice
   }
 
   /**
-   * @return Mutable list of invoice notes (BG-1). Never {@code null}; empty when none are
-   *         present.
+   * @return Mutable list of invoice notes (BG-1). Never {@code null}; empty when none are present.
    */
   @NonNull
   @ReturnsMutableObject
@@ -547,8 +545,8 @@ public class NormaInvoice
   }
 
   /**
-   * @return Mutable list of preceding invoice references (BG-3). Never {@code null}; empty
-   *         when none are present.
+   * @return Mutable list of preceding invoice references (BG-3). Never {@code null}; empty when
+   *         none are present.
    */
   @NonNull
   @ReturnsMutableObject
@@ -705,8 +703,8 @@ public class NormaInvoice
   }
 
   /**
-   * @return Mutable list of document-level allowances (BG-20). Never {@code null}; empty when
-   *         none are present.
+   * @return Mutable list of document-level allowances (BG-20). Never {@code null}; empty when none
+   *         are present.
    */
   @NonNull
   @ReturnsMutableObject
@@ -716,8 +714,8 @@ public class NormaInvoice
   }
 
   /**
-   * @return Mutable list of document-level charges (BG-21). Never {@code null}; empty when
-   *         none are present.
+   * @return Mutable list of document-level charges (BG-21). Never {@code null}; empty when none are
+   *         present.
    */
   @NonNull
   @ReturnsMutableObject
@@ -759,8 +757,8 @@ public class NormaInvoice
   }
 
   /**
-   * @return Mutable list of supporting documents (BG-24). Never {@code null}; empty when none
-   *         are present.
+   * @return Mutable list of supporting documents (BG-24). Never {@code null}; empty when none are
+   *         present.
    */
   @NonNull
   @ReturnsMutableObject
@@ -770,8 +768,8 @@ public class NormaInvoice
   }
 
   /**
-   * @return Mutable list of invoice lines (BG-25). Never {@code null}; the EN 16931 model
-   *         requires at least one entry for a valid invoice.
+   * @return Mutable list of invoice lines (BG-25). Never {@code null}; the EN 16931 model requires
+   *         at least one entry for a valid invoice.
    */
   @NonNull
   @ReturnsMutableObject

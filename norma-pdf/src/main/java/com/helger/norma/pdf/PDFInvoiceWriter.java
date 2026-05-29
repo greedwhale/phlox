@@ -239,9 +239,8 @@ public class PDFInvoiceWriter implements IInvoiceWriter <PDFRenderContext>
                                      @NonNull final NormaInvoice aInvoice,
                                      @NonNull final PDFRenderContext aCtx)
   {
-    final String sTitle = aInvoice.getKind () == ENormaDocumentKind.CREDIT_NOTE ? aCtx.label (
-                                                                                              "section.header.title.creditnote")
-                                                                                : aCtx.label ("section.header.title.invoice");
+    final String sTitle = aInvoice.getKind ().isCreditNote () ? aCtx.label ("section.header.title.creditnote") : aCtx
+                                                                                                                     .label ("section.header.title.invoice");
     aPS.addElement (new PLText (sTitle, new FontSpec (PreloadFont.REGULAR_BOLD, 18f)).setMarginBottom (6));
 
     final PLVBox aMeta = new PLVBox ();
