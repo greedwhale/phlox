@@ -177,9 +177,16 @@ A shared corpus of example invoices used by every reader and writer test. Modele
 norma-testfiles/src/main/resources/external/en16931/
 ├── 2017/                            # EN 16931:2017 (current edition)
 │   ├── ubl/
-│   │   ├── invoice/                 # *.xml — UBL 2.1 Invoice
-│   │   └── creditnote/              # *.xml — UBL 2.1 CreditNote
-│   └── cii/                         # *.xml — CII D16B CrossIndustryInvoice
+│   │   ├── invoice/                 # *.xml — UBL 2.1 Invoice (22 files)
+│   │   └── creditnote/              # *.xml — UBL 2.1 CreditNote (2 files)
+│   └── cii/                         # CII D16B CrossIndustryInvoice (104 files; see README.md there)
+│       ├── *.xml                    # core hand-curated examples (15 files)
+│       ├── xrechnung/
+│       │   ├── 1.2.2/               # XRechnung 1.2.2 corpus (21 files)
+│       │   ├── 2.0.0/               # XRechnung 2.0.0 corpus (19 files)
+│       │   ├── 3.0.2/               # XRechnung 3.0.2 corpus (33 files)
+│       │   └── technical/           # comprehensive + minimal stress tests (6 files)
+│       └── issues/                  # bug-regression fixtures (10 files; all well-formed CII)
 ├── 2026/                            # EN 16931:2026 (upcoming edition)
 │   ├── ubl/
 │   │   ├── invoice/                 # *.xml — UBL 2.5 Invoice
@@ -187,7 +194,9 @@ norma-testfiles/src/main/resources/external/en16931/
 │   └── cii/                         # *.xml — TBD syntax revision once published
 ```
 
-**Java side:** a small `MockNormaTestFiles` class in `com.helger.norma.testfiles` exposes typed lookups (`getUBL21InvoiceFiles()`, `getCIID16BFiles()`, etc.) returning `ICommonsList<IReadableResource>`. Test classes iterate those lists rather than walking the filesystem directly.
+Everything under `2017/cii/xrechnung/` and `2017/cii/issues/` is imported from `../en16931-cii2ubl/en16931-cii2ubl/src/test/resources/external/cii/`, preserving filenames and subdirectory structure. Provenance is documented in `2017/cii/README.md`.
+
+**Java side:** `MockNormaTestFiles` in `com.helger.norma.testfiles` exposes typed lookups (`getUBL21InvoiceFiles()`, `getCIID16BCoreFiles()`, `getCIID16BXRechnung302Files()`, `getCIID16BIssueFiles()`, `getCIID16BFiles()` — the last returns every CII file across all sub-tiers). Test classes iterate those lists rather than walking the filesystem directly.
 
 **Dependencies:** `ph-commons` only — this module deliberately has no dependency on `norma-api`, so it can be consumed even by experiments outside this project.
 
