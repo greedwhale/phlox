@@ -378,8 +378,9 @@ If the classpath cost ever becomes a problem, a future revision can make the dep
 
 ## See also
 
+- [[Template Processing]] — the implementation companion: pipeline stages, threading, error handling, integration with writers.
 - [[Output Writers]] — the section grammar the default template reproduces.
-- [[Domain Model]] — the full BG/BT catalog addressable from a template.
+- [[Domain Model]] — the full BG/BT catalog addressable from a template, plus the EN 16931 semantic-type vocabulary that picks default formatters.
 - [[Localization]] — labels, code-lists, and locale-aware formatters.
 - [[Configuration Properties]] — `setTemplate(...)` on `AbstractRenderContext`.
 - [JMustache](https://github.com/samskivert/jmustache) — Mustache implementation.

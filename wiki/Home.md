@@ -9,7 +9,7 @@ Welcome to the **norma** wiki!
 ```
 ┌──────────────┐     ┌──────────────────┐     ┌──────────────┐
 │ UBL Invoice  │ ──▶ │                  │ ──▶ │ HTML output  │
-│ UBL CredNote │     │  InvoiceModel    │     │              │
+│ UBL CredNote │     │  NormaInvoice    │     │              │
 │ CII D16B     │ ──▶ │  (EN 16931 BGs)  │ ──▶ │ PDF output   │
 └──────────────┘     └──────────────────┘     └──────────────┘
    Source readers      Intermediate model         Writers
@@ -25,6 +25,7 @@ The intermediate model is the heart of the design: every reader populates the sa
   * [[Source Readers]] — UBL 2.x and CII D16B
   * [[Output Writers]] — HTML and PDF
   * [[Template Language]] — customize the output without writing Java
+  * [[Template Processing]] — how a .ntpl flows through the engine
   * [[Localization]] — English, German, and adding more
 * [[Watermarking]] — user watermarks and the program/edition watermark
 * [[Maven Module Structure]]
@@ -44,6 +45,7 @@ The intermediate model is the heart of the design: every reader populates the sa
 | Languages | English (`en`), German (`de`) |
 | EN 16931 coverage | All BGs (BG-1..BG-32) and BTs (BT-1..BT-165) |
 | Watermarking | User watermark + program/edition watermark (HTML + PDF) — see [[Watermarking]] |
+| Customization | Optional `.ntpl` templates (JMustache + CommonMark) — see [[Template Language]]; lands in 0.4.0 |
 
 **Out of scope (initial release):**
 

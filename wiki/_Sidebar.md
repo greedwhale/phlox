@@ -5,6 +5,7 @@
   * [[Source Readers]]
   * [[Output Writers]]
   * [[Template Language]]
+  * [[Template Processing]]
   * [[Localization]]
 * [[Watermarking]]
 * [[Maven Module Structure]]

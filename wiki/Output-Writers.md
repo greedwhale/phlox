@@ -16,7 +16,7 @@ public interface IInvoiceWriter <O, CTX extends RenderContext>
 
 Each writer binds its own `CTX` type so the compiler rejects accidental mixups (e.g. passing a `PDFRenderContext` to the HTML writer).
 
-The base `RenderContext` lives in `norma-api` and carries only the syntax-neutral knobs (locale, label resolver, logo, format options, annotate-IDs). Output-specific extras live on subclasses defined alongside the writer: `HTMLRenderContext` in `norma-html`, `PDFRenderContext` in `norma-pdf`. See [[Configuration Properties]] for the full setter inventory.
+The base `RenderContext` lives in `norma-api` and carries only the syntax-neutral knobs (locale, label resolver, logo, format options, annotate-IDs, and an optional `INormaTemplate` for layout customization — see [[Template Language]]). Output-specific extras live on subclasses defined alongside the writer: `HTMLRenderContext` in `norma-html`, `PDFRenderContext` in `norma-pdf`. See [[Configuration Properties]] for the full setter inventory.
 
 ## Shared layout grammar
 
@@ -67,6 +67,8 @@ Both writers organize the output into the same logical sections so that an HTML 
 ```
 
 Each section is implemented in a `*SectionRenderer` class so the HTML and PDF writers can share the structural decisions ("skip section if empty", "two-column when both populated") and diverge only on the actual markup/layout calls.
+
+This grammar is the **default** layout, used whenever `RenderContext.getTemplate() == null`. A caller who needs a different structure supplies a `.ntpl` via `setTemplate(...)` and the writers walk that instead — see [[Template Language]].
 
 ## Concrete writers
 

@@ -27,6 +27,7 @@ Shared by every writer.
 | `setAnnotateBTIDs(boolean)` | `boolean` | `false` | When true, every label is suffixed with its EN 16931 ID (`Invoice number [BT-1]`). Debug aid. |
 | `setIncludeEmptySections(boolean)` | `boolean` | `false` | When true, render section headings even if their content is empty. Off by default — clean output. |
 | `setUserWatermark(WatermarkSpec)` | `WatermarkSpec` | `null` | A caller-defined watermark drawn on every page ("DRAFT", "PRELIMINARY", ...). Separate from the library's program watermark. See [[Watermarking]]. |
+| `setTemplate(INormaTemplate)` | `INormaTemplate` | `null` | Optional custom `.ntpl` template. When set, both writers walk it instead of their hard-coded section grammar; when `null`, fall through to the built-in layout. The `INormaTemplate` marker interface lives in `norma-api`; the parser implementation lives in the `norma-template` module. See [[Template Language]]. |
 
 All setters return the **concrete** context type (Helger `IMPLTYPE` pattern), so fluent chains stay typed across the hierarchy:
 

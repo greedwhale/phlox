@@ -1,6 +1,6 @@
 # Localization
 
-The intermediate model carries **no human text** — only EN 16931 identifiers and raw values. Writers translate those identifiers into a chosen language at render time.
+The intermediate model carries **no human text** — only EN 16931 identifiers and raw values. Writers translate those identifiers into a chosen language at render time. The same translation path is exposed to custom templates through the `{{label:...}}` placeholder — see [[Template Language]] — so a single language-independent template renders correctly in every supported locale.
 
 ## Supported languages
 
