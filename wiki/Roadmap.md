@@ -28,10 +28,6 @@ A box is checked when the headline deliverable is in the repo (code shipped, or 
 - [x] Test corpus expansion: pull example files from `en16931-cii2ubl/src/test/resources/external/cii/` and equivalent UBL sources.
   - CII side: 89 files imported into `norma-testfiles/2017/cii/{xrechnung,issues}/`, exposed via `MockNormaTestFiles.getCIID16BXRechnung*Files()` / `getCIID16BTechnicalFiles()` / `getCIID16BIssueFiles()`; total CII corpus now 104 files. Provenance documented in `2017/cii/README.md`.
   - UBL side: 9 files imported from `en16931-ubl2cii/src/test/resources/external/ubl21/{inv,cn}/peppol/` under the `peppol-` prefix; exposed via the existing `getUBL21InvoiceFiles()` / `getUBL21CreditNoteFiles()` accessors. Provenance documented in `2017/ubl/README.md`.
-- [ ] Round-trip fuzz tests: read example → render HTML → render PDF → assert no exceptions for every file in the corpus.
-- [ ] Optional embedded XSLT-FO comparison renderer for sanity-checking the PDF layout against the EU "Common View" stylesheet.
-- [ ] Logo embedding in PDF via `PLImage` + HTML via data-URI (already in `RenderContext`).
-- [ ] French (`fr`) and Italian (`it`) translations.
 
 ## 0.3.0 — EN 16931:2026 support
 
@@ -55,6 +51,7 @@ A box is checked when the headline deliverable is in the repo (code shipped, or 
 - [ ] `HTMLTemplateEmitter` and `PDFTemplateEmitter` visitors over the commonmark-java AST in their respective writer modules; golden HTML + visual-regression PDF coverage for the default template under both `en` and `de` locales.
   - design documented (node-to-output mapping tables in [[Template Processing]] § Stage 3); Java code + golden corpus pending.
 - [ ] `norma-cli` accepts `--template <path>` and resolves classpath URIs (`classpath:templates/foo.ntpl`) in addition to filesystem paths.
+- [ ] Round-trip fuzz tests: read example → render HTML → render PDF through the default template → assert no exceptions for every file in the corpus. Lands here (rather than 0.2.0) because the canonical render path is template-driven; running it against the hard-coded writers would test code that is on its way out.
 
 ## 0.5.0 — Lightweight text-based output formats
 
@@ -71,6 +68,8 @@ A box is checked when the headline deliverable is in the repo (code shipped, or 
 - [ ] Validation hook: optional integration with `phive-rules-en16931` so renderers can surface BR-* failures inline (off by default; opt-in via `RenderContext`).
 - [ ] Side-by-side bilingual rendering (one column EN, one DE) for cross-border audits.
 - [ ] EN 16931 extension support: render Peppol BIS Billing 3.0 extension fields when present in the source.
+- [ ] Optional embedded XSLT-FO comparison renderer for sanity-checking the PDF layout against the EU "Common View" stylesheet.
+- [ ] Additional language packs beyond `en` / `de` (e.g. `fr`, `it`, `es`, `nl`) — each new language is one `norma-labels_<lang>.properties` + one `norma-codelists_<lang>.properties` file in `norma-api`.
 
 ## What is intentionally **not** on the roadmap
 
