@@ -24,6 +24,7 @@ The intermediate model is the heart of the design: every reader populates the sa
   * [[Domain Model]] — the EN 16931 BGs and BTs `norma` represents
   * [[Source Readers]] — UBL 2.x and CII D16B
   * [[Output Writers]] — HTML and PDF
+  * [[Template Language]] — customize the output without writing Java
   * [[Localization]] — English, German, and adding more
 * [[Watermarking]] — user watermarks and the program/edition watermark
 * [[Maven Module Structure]]
@@ -47,7 +48,7 @@ The intermediate model is the heart of the design: every reader populates the sa
 **Out of scope (initial release):**
 
 - Writing (creating) invoices — `norma` only reads.
-- Validation of business rules — use `phive-rules-en16931` upstream.
+- Validation of business rules — use `phorm` based on `phive-rules-en16931` upstream.
 - Conversion between syntaxes — use `en16931-cii2ubl` for that.
 - XSLT-based visualizations (e.g. ZUGFeRD, Peppol) — `norma` builds output programmatically, not from stylesheets.
 

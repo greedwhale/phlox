@@ -30,15 +30,25 @@ This page tracks the planned evolution of `norma`. Items are grouped by mileston
 - [ ] Golden-file test corpus for UBL 2.5 once EN 16931:2026 example files are published.
 - [ ] Reassess whether the CII binding needs to track a newer revision for EN 16931:2026 (TBD — depends on what the EN 16931:2026 CII syntax binding specifies).
 
-## 0.4.0 — Lightweight text-based output formats
+## 0.4.0 — Customizable templates
 
-- [ ] `norma-text` — plain-text renderer (handy for accessibility and email previews).
-- [ ] `norma-markdown` — GitHub-flavored Markdown renderer. Shares the same section grammar as HTML/PDF (header → parties → references → lines → totals → payment), using Markdown tables for the line and VAT-breakdown sections. Useful for diff-friendly invoices and for embedding into PR descriptions, wikis, and chat systems.
-- [ ] `norma-asciidoc` — AsciiDoc renderer. Same section grammar; uses AsciiDoc table syntax (`|===`) so the output can be processed by Antora/Asciidoctor pipelines, included in publication toolchains, and converted to other formats downstream.
+- [ ] **New Maven module `norma-template`** (see [[Maven Module Structure]]) — owns the JMustache + commonmark-java machinery, the `NormaTemplate` factories, and the default `.ntpl` resource. `norma-html` and `norma-pdf` gain a compile-scope dependency on it.
+- [ ] [[Template Language]] design ratified. A single `.ntpl` template renders both HTML and PDF and is composed of three off-the-shelf grammars: **JMustache** for placeholders/loops/conditionals, **commonmark-java** (+ GFM tables and strikethrough extensions) for block structure, and **ph-pdf-layout's CommonMark-compatible inline parser** so the PDF writer renders the same paragraph markup natively.
+- [ ] `INormaTemplate` marker interface in `norma-api`; `AbstractRenderContext.setTemplate(INormaTemplate)` falls through to the existing hard-coded section grammar when unset, so 0.1.0 call sites keep working.
+- [ ] norma's Mustache adapter (in `norma-template`): BT/BG path resolution, format modifiers (`amount`, `date:long`, `code:doctype`, `percent`, …), and `{{label:...}}` lookup routed through `INormaLabelResolver`.
+- [ ] A single language-independent default template `default.ntpl` packaged as a classpath resource in `norma-template`. It reproduces the layout currently produced by the built-in writers; every literal string routes through `{{label:...}}`, so new languages need only a new `norma-labels_<lang>.properties` file in `norma-api`.
+- [ ] `HTMLTemplateEmitter` and `PDFTemplateEmitter` visitors over the commonmark-java AST in their respective writer modules; golden HTML + visual-regression PDF coverage for the default template under both `en` and `de` locales.
+- [ ] `norma-cli` accepts `--template <path>` and resolves classpath URIs (`classpath:templates/foo.ntpl`) in addition to filesystem paths.
 
-## 0.5.0 — Editable output
+## 0.5.0 — Lightweight text-based output formats
 
-- [ ] `norma-docx` (stretch goal) — Word-document renderer for users who need to edit the output.
+- [ ] `norma-text` — plain-text renderer (handy for accessibility and email previews). Consumes the same template AST as HTML/PDF; inline styling markers are stripped.
+- [ ] `norma-markdown` — GitHub-flavored Markdown renderer. Uses Markdown tables for the line and VAT-breakdown sections. Useful for diff-friendly invoices and for embedding into PR descriptions, wikis, and chat systems.
+- [ ] `norma-asciidoc` — AsciiDoc renderer. Uses AsciiDoc table syntax (`|===`) so the output can be processed by Antora/Asciidoctor pipelines, included in publication toolchains, and converted to other formats downstream.
+
+## 0.6.0 — Editable output
+
+- [ ] `norma-docx` (stretch goal) — Word-document renderer for users who need to edit the output. Consumes the same template AST.
 
 ## Future / unscheduled
 

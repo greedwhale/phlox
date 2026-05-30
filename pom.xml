@@ -66,6 +66,8 @@
     <ph-oton.version>10.2.3</ph-oton.version>
     <ph-pdf-layout.version>8.1.2</ph-pdf-layout.version>
     <picocli.version>4.7.7</picocli.version>
+    <jmustache.version>1.16</jmustache.version>
+    <commonmark.version>0.22.0</commonmark.version>
   </properties>
 
   <dependencyManagement>
@@ -109,6 +111,26 @@
         <artifactId>picocli</artifactId>
         <version>${picocli.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.samskivert</groupId>
+        <artifactId>jmustache</artifactId>
+        <version>${jmustache.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.commonmark</groupId>
+        <artifactId>commonmark</artifactId>
+        <version>${commonmark.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.commonmark</groupId>
+        <artifactId>commonmark-ext-gfm-tables</artifactId>
+        <version>${commonmark.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.commonmark</groupId>
+        <artifactId>commonmark-ext-gfm-strikethrough</artifactId>
+        <version>${commonmark.version}</version>
+      </dependency>
 
       <!-- Internal modules -->
       <dependency>
@@ -129,6 +151,11 @@
       <dependency>
         <groupId>com.helger.norma</groupId>
         <artifactId>norma-cii</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.helger.norma</groupId>
+        <artifactId>norma-template</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -178,6 +205,7 @@
     <module>norma-testfiles</module>
     <module>norma-ubl</module>
     <module>norma-cii</module>
+    <module>norma-template</module>
     <module>norma-html</module>
     <module>norma-pdf</module>
     <module>norma-cli</module>

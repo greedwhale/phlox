@@ -4,6 +4,7 @@
   * [[Domain Model]]
   * [[Source Readers]]
   * [[Output Writers]]
+  * [[Template Language]]
   * [[Localization]]
 * [[Watermarking]]
 * [[Maven Module Structure]]
