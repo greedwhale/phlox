@@ -25,9 +25,9 @@ A box is checked when the headline deliverable is in the repo (code shipped, or 
 
 ## 0.2.0 — Polish & coverage
 
-- [ ] Test corpus expansion: pull example files from `en16931-cii2ubl/src/test/resources/external/cii/` and equivalent UBL sources.
-  - CII side done: 89 files imported into `norma-testfiles/2017/cii/{xrechnung,issues}/`, exposed via `MockNormaTestFiles.getCIID16BXRechnung*Files()` / `getCIID16BTechnicalFiles()` / `getCIID16BIssueFiles()`; total CII corpus now 104 files. Provenance documented in `2017/cii/README.md`.
-  - UBL side pending — `en16931-cii2ubl` only carries CII as source, so UBL fixtures need a different upstream.
+- [x] Test corpus expansion: pull example files from `en16931-cii2ubl/src/test/resources/external/cii/` and equivalent UBL sources.
+  - CII side: 89 files imported into `norma-testfiles/2017/cii/{xrechnung,issues}/`, exposed via `MockNormaTestFiles.getCIID16BXRechnung*Files()` / `getCIID16BTechnicalFiles()` / `getCIID16BIssueFiles()`; total CII corpus now 104 files. Provenance documented in `2017/cii/README.md`.
+  - UBL side: 9 files imported from `en16931-ubl2cii/src/test/resources/external/ubl21/{inv,cn}/peppol/` under the `peppol-` prefix; exposed via the existing `getUBL21InvoiceFiles()` / `getUBL21CreditNoteFiles()` accessors. Provenance documented in `2017/ubl/README.md`.
 - [ ] Round-trip fuzz tests: read example → render HTML → render PDF → assert no exceptions for every file in the corpus.
 - [ ] Optional embedded XSLT-FO comparison renderer for sanity-checking the PDF layout against the EU "Common View" stylesheet.
 - [ ] Logo embedding in PDF via `PLImage` + HTML via data-URI (already in `RenderContext`).
