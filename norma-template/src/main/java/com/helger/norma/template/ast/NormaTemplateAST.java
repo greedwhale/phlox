@@ -1,0 +1,111 @@
+/*
+ * Copyright (C) 2026 Philip Helger (www.helger.com)
+ * philip[at]helger[dot]com
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.helger.norma.template.ast;
+
+import java.util.Map;
+
+import org.commonmark.node.Image;
+import org.commonmark.node.Node;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
+import com.helger.norma.api.AbstractRenderContext;
+import com.helger.norma.api.model.NormaInvoice;
+
+/**
+ * Output of stage 2 (Parse) — the commonmark {@link Node} tree plus two sidecar maps:
+ * the per-block CSS class attached by {@code {{class:name}}} sentinels, and the resolved
+ * image payload for each {@link Image} node. Carries the source invoice and the active
+ * render context so emitters can read configuration without re-resolving anything.
+ * <p>
+ * Immutable after construction. The {@link Node} graph itself is mutable in commonmark-java
+ * — callers must not mutate it after the AST is built.
+ *
+ * @author Philip Helger
+ */
+public final class NormaTemplateAST
+{
+  private final Node m_aRoot;
+  private final Map <Node, String> m_aBlockClassMap;
+  private final Map <Image, NormaResolvedImage> m_aImageMap;
+  private final NormaInvoice m_aInvoice;
+  private final AbstractRenderContext <?> m_aContext;
+
+  /**
+   * Construct the AST artifact. Called from
+   * {@link com.helger.norma.template.NormaLocalizedTemplate#renderAST} after stages 1 + 2 + 2a
+   * have completed; not normally constructed by external callers.
+   *
+   * @param aRoot
+   *        Post-processed commonmark root.
+   * @param aBlockClassMap
+   *        Block → class name sidecar populated by the {@code {{class:…}}} post-pass.
+   * @param aImageMap
+   *        Image node → resolved payload sidecar populated by the image URL post-pass.
+   * @param aInvoice
+   *        Source invoice.
+   * @param aContext
+   *        Render context active during this render.
+   */
+  public NormaTemplateAST (@NonNull final Node aRoot,
+                           @NonNull final Map <Node, String> aBlockClassMap,
+                           @NonNull final Map <Image, NormaResolvedImage> aImageMap,
+                           @NonNull final NormaInvoice aInvoice,
+                           @NonNull final AbstractRenderContext <?> aContext)
+  {
+    m_aRoot = aRoot;
+    m_aBlockClassMap = aBlockClassMap;
+    m_aImageMap = aImageMap;
+    m_aInvoice = aInvoice;
+    m_aContext = aContext;
+  }
+
+  /** @return The post-processed commonmark document tree. */
+  @NonNull
+  public Node getRoot ()
+  {
+    return m_aRoot;
+  }
+
+  /** @return The CSS class attached to the given block by a preceding {@code {{class:…}}} sentinel, or {@code null}. */
+  @Nullable
+  public String getBlockClass (@NonNull final Node aBlock)
+  {
+    return m_aBlockClassMap.get (aBlock);
+  }
+
+  /** @return The resolved image payload for the given {@link Image} node, or {@code null} when the node has no binary backing. */
+  @Nullable
+  public NormaResolvedImage getResolvedImage (@NonNull final Image aImage)
+  {
+    return m_aImageMap.get (aImage);
+  }
+
+  /** @return The {@link NormaInvoice} the template was rendered from. */
+  @NonNull
+  public NormaInvoice getInvoice ()
+  {
+    return m_aInvoice;
+  }
+
+  /** @return The active render context. */
+  @NonNull
+  public AbstractRenderContext <?> getContext ()
+  {
+    return m_aContext;
+  }
+}

@@ -3,43 +3,70 @@
 This page is the **implementation companion** to [[Template Language]]. That page defines the `.ntpl` grammar;
 this one describes the engine that turns a `.ntpl` source file plus a `NormaInvoice` into rendered output.
 
-> **Status:** Design proposal. Not yet implemented. Targeted at the 0.4.0 milestone (see [[Roadmap]]).
+> **Status:** Stage 1 (substitute), 2 (parse + post-pass) and the rendering AST are implemented in 0.4.0; emitters (stage 3) are pending. Stage 0 (localize) is a design refinement intended to land alongside the emitters.
 
 ## Pipeline overview
 
 ```
-   ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────┐
-   │  .ntpl source    │   │   NormaInvoice   │   │  RenderContext   │
-   │  (one string)    │   │   (intermediate  │   │  (locale, label  │
-   │                  │   │    model)        │   │   resolver, …)   │
-   └─────────┬────────┘   └─────────┬────────┘   └────────┬─────────┘
-             │                      │                     │
-             └──────────────────────┼─────────────────────┘
-                                    ▼
+   ┌──────────────────┐                          ┌──────────────────┐
+   │  .ntpl source    │                          │  RenderContext   │
+   │  (one string)    │                          │  (locale, label  │
+   │                  │                          │   resolver, …)   │
+   └─────────┬────────┘                          └────────┬─────────┘
+             │                                            │
+             └────────────────────┬───────────────────────┘
+                                  ▼
+   ┌────────────────────────────────────────────────────────────────┐
+   │  STAGE 0 — Localize  (norma-template)                          │
+   │  ─ strips {{! comment }} blocks                                │
+   │  ─ substitutes every {{label:KEY}} via INormaLabelResolver     │
+   │  ─ encodes {{?X}}…{{/X}} presence-check directives             │
+   │  ─ no Mustache compile yet; output is still a String           │
+   └─────────────────────────────────┬──────────────────────────────┘
+                                     ▼
+                       Locale-baked source (String)
+                                     │
+                                     ▼
+   ┌────────────────────────────────────────────────────────────────┐
+   │  STAGE 0a — Compile  (norma-template)                          │
+   │  ─ JMustache.compile(localeBaked) → Template                   │
+   │  ─ output is a compiled, locale-baked, thread-safe artifact    │
+   └─────────────────────────────────┬──────────────────────────────┘
+                                     ▼
+                  NormaLocalizedTemplate  (compiled, cacheable)
+                                     │
+   ┌──────────────────┐              │
+   │  NormaInvoice    │──────────────┤
+   └──────────────────┘              ▼
    ┌────────────────────────────────────────────────────────────────┐
    │  STAGE 1 — Substitute  (norma-template)                        │
-   │  JMustache + NormaInvoiceMustacheContext                       │
-   │  ─ resolves {{BT-X}}, {{BG-X.BT-Y}}, {{label:…}}, modifiers    │
+   │  Template.execute(invoice) + NormaInvoiceMustacheContext       │
+   │  ─ resolves {{BT-X}}, {{BG-X.BT-Y}}, format modifiers          │
    │  ─ expands {{#BG-X}}…{{/BG-X}} loops                           │
    │  ─ drops {{?BT-X}}…{{/BT-X}} blocks whose target is empty      │
    │  ─ leaves {{class:…}} and {{pagebreak}} as sentinel tokens     │
    └─────────────────────────────────┬──────────────────────────────┘
                                      ▼
-                       Substituted CommonMark document (String)
+                  Substituted CommonMark document (String)
                                      │
                                      ▼
    ┌────────────────────────────────────────────────────────────────┐
    │  STAGE 2 — Parse  (norma-template)                             │
    │  commonmark-java + TablesExtension + StrikethroughExtension    │
-   │  ─ parses headings, paragraphs, lists, GFM tables, code,       │
-   │    blockquotes, thematic breaks, links, emphasis, images       │
-   │  ─ post-pass lifts {{class:…}} and {{pagebreak}} sentinels     │
-   │    out of Text nodes and attaches them as Node properties      │
-   │  ─ post-pass parses image URLs (data:, attachment:, classpath:)│
-   │    and rejects http/https/file at parse time                   │
    └─────────────────────────────────┬──────────────────────────────┘
                                      ▼
-                        NormaTemplateAST (Node + sidecars)
+                            commonmark Node tree
+                                     │
+                                     ▼
+   ┌────────────────────────────────────────────────────────────────┐
+   │  STAGE 2a — Post-pass  (norma-template)                        │
+   │  ─ lifts {{class:…}}/{{pagebreak}} sentinels out of Text nodes │
+   │    and attaches them as sidecar Node properties                │
+   │  ─ resolves image URLs (data:, attachment:, classpath:);       │
+   │    rejects http/https/file at parse time                       │
+   └─────────────────────────────────┬──────────────────────────────┘
+                                     ▼
+                       NormaTemplateAST (Node + sidecars)
                                      │
                          ┌───────────┴───────────┐
                          ▼                       ▼
@@ -56,23 +83,66 @@ this one describes the engine that turns a `.ntpl` source file plus a `NormaInvo
          HCHtml / String                     OutputStream (PDF)
 ```
 
-Each stage has well-defined inputs and outputs and is independently testable. Stages 1 and 2 are shared by both writers; stage 3 diverges per output format.
+Each stage has well-defined inputs and outputs and is independently testable. Stages 0/0a depend only on the template + locale; stages 1, 2 and 2a depend on those + the invoice; stage 3 diverges per output format.
+
+## Artifacts and caching
+
+Every stage produces an immutable, cacheable artifact. The shape of the cache key tells you when each cache helps:
+
+| Artifact | Produced by | Cache key | Hit rate in practice |
+|---|---|---|---|
+| `NormaTemplate` | `NormaTemplate.fromString/Classpath/File` | the source path | per process — typically one per template |
+| `NormaLocalizedTemplate` | `NormaTemplate.localize(Locale)` (stage 0 + 0a) | template + locale + label-resolver identity | very high for a server: N templates × M locales is small |
+| substituted `String` (CommonMark) | `localized.renderSubstituted(invoice, ctx)` (stage 1) | localized + invoice + context | low — invoice-specific. Cache only when an upstream layer pre-computes invoices that will be re-rendered |
+| `NormaTemplateAST` | `localized.renderAST(invoice, ctx)` (stages 1 + 2 + 2a) | same as above + image-bag identity | low for the same reason; high when the same invoice is rendered to BOTH HTML and PDF — the AST is reused across both emitters |
+| rendered HTML / PDF | `HTMLInvoiceWriter` / `PDFInvoiceWriter` (stage 3) | same as AST + format flags | one-shot; callers cache the bytes themselves if needed |
+
+The biggest practical win is `NormaLocalizedTemplate`: every `{{label:…}}` lookup happens once at `localize()` time and the result is interpolated into the source. A server rendering the same template in the same locale for N invoices pays the label-resolver cost once instead of N × `labelCount` times.
+
+`NormaTemplate.renderAST(invoice, ctx)` is a one-line convenience that calls `localize(ctx.getLocale())` and then `renderAST(invoice, ctx)`. The engine keeps a small internal cache keyed by (this template, locale, label-resolver identity) so callers who don't manage the localized variant explicitly still get the benefit. Callers who want explicit control hold on to a `NormaLocalizedTemplate` and call `renderAST(invoice, ctx)` on it directly — bypassing the cache lookup.
+
+## Stage 0 — Localize
+
+### What it does
+
+The localize stage is a pure string transformation. It walks the raw `.ntpl` source and:
+
+1. **Strips `{{! comment }}` blocks**, both inline single-line and block (closing `}}` on its own line). Removing comments up front avoids a parser pitfall — a multi-line comment that contains a literal `{{label:…}}` example would otherwise terminate at the inner `}}` and leak the rest of the comment text into the substitution stream.
+2. **Substitutes every `{{label:KEY}}`** by looking `KEY` up via `INormaLabelResolver.getLabel(KEY, locale)`. The lookup uses the locale and resolver from the supplied `RenderContext`. Missing keys log a WARN and emit the key itself, matching the fall-back rule used in the hard-coded 0.1.0 writers.
+3. **Encodes `{{?X}}…{{/X}}` directives** into `{{#?ENCODED}}…{{/?ENCODED}}` so JMustache's section-name parser sees a single name even when the encoded path contains a dot. The decode is undone by the runtime fetcher when it evaluates the presence check during stage 1.
+
+Output: a plain `String` that is still a `.ntpl`-shaped document — placeholders, loops, conditionals all intact — but with no `{{label:…}}` calls left and no `{{! … }}` comment regions. The string is then handed to stage 0a.
+
+### Why bake at this stage
+
+Labels are the **only** template construct that depends on locale but **not** on the invoice. Pulling them into a dedicated stage gives them a cache key that doesn't include the invoice, which is the largest source of cache-miss noise. Pre-baking also lets the rest of the engine treat the substituted text as a plain Mustache template — no special-case handling for dotted label keys, no need to escape `.` inside `{{label:section.foo.bar}}`.
+
+## Stage 0a — Compile
+
+JMustache compiles the locale-baked source into a `Template`. The `Template` is internally a re-entrant interpreter state; one instance can serve many threads.
+
+The compilation step is **separate** from stage 0 because the locale-baked source is itself a useful artifact (snapshot tests, debugging, hot-reload). Callers who want only the substituted text can stop after stage 0; the engine API exposes both.
+
+`NormaLocalizedTemplate` wraps both the locale-baked source (kept for diagnostics) and the compiled `Template`. It is immutable after construction.
 
 ## Stage 1 — Substitute
 
 ### What it does
 
-JMustache walks the `.ntpl` token stream and substitutes placeholders for actual values. The output is a **plain `String`** that is itself a valid CommonMark document. No HTML, no PDF, no AST — just text.
+JMustache walks the compiled `Template` and substitutes placeholders for actual values, producing a **plain `String`** that is itself a valid CommonMark document.
+
+Because labels were already resolved in stage 0, the only constructs the runtime fetcher sees are:
+
+- `{{BT-X}}`, `{{BG-X.BT-Y}}` — model paths.
+- `{{BT-X | modifier}}` — formatted leaves.
+- `{{#BG-X}}…{{/BG-X}}` — iteration / truthy sections.
+- `{{?ENCODED}}…{{/ENCODED}}` — presence checks emitted by stage 0.
+- `{{class:…}}`, `{{pagebreak}}` — sentinels.
+- `logo`, `references_present`, `line_extras_present` — synthesized booleans.
 
 ### `NormaInvoiceMustacheContext`
 
-A `com.samskivert.mustache.Mustache.CustomContext` (or a `Mustache.Lambda` per resolution) that knows how to resolve every placeholder the [[Template Language]] grammar permits. It is created fresh per render and carries:
-
-- The `NormaInvoice` being rendered.
-- The active `Locale` (from `RenderContext.getLocale()`).
-- The `INormaLabelResolver` (from `RenderContext.getLabelResolver()`).
-- The `NormaFormatOptions` (from `RenderContext.getFormatOptions()`).
-- A scope stack tracking the current loop position (for `{{#BG-25}}…{{/BG-25}}` and parent-scope lookups via `^.`).
+The runtime fetcher held by every compiled `Template`. It receives `(ctx, name)` from JMustache and dispatches by name shape, walking the BG/BT registry against `ctx`. Per-render state (invoice, render context, locale, label resolver) lives in a `NormaRenderEnv` bound to the thread via a `ThreadLocal` during `Template.execute(…)`.
 
 ### Resolution algorithm
 
@@ -80,9 +150,8 @@ For a placeholder `{{name | modifier:arg}}`:
 
 1. **Parse the placeholder.** Split on `|`; trim whitespace. First token is the name path; remaining tokens are modifiers.
 2. **Dispatch by shape:**
-   - `label:foo` → look up `foo` via `INormaLabelResolver.getLabel(foo, locale)`.
-   - `class:foo` → emit the sentinel `CLASS=foo` (post-pass picks this up).
-   - `pagebreak` → emit the sentinel `PAGEBREAK`.
+   - `class:foo` → emit the sentinel `[[NORMA:CLASS=foo]]` (post-pass picks this up).
+   - `pagebreak` → emit the sentinel `[[NORMA:PAGEBREAK]]`.
    - `BT-N` or `BG-N.BT-M` or `BG-N.BG-M.BT-K` → walk the model.
    - `references_present`, `line_extras_present`, `logo` → synthesized booleans (see below).
 3. **Walk the model.** Split the path on `.`. Each segment is either a BG name (push into the BG instance) or a BT name (resolve to a field value).
@@ -140,7 +209,9 @@ After substitution (assuming line 1, "Widget A", quantity 10 pieces, unit price 
 
 That second string is what stage 2 receives.
 
-## Stage 2 — Parse
+## Stage 2 — Parse, and Stage 2a — Post-pass
+
+The two stages share a class (`NormaTemplatePostParser`) and are run back-to-back; they appear separately in the diagram because they have different cache-key shapes (stage 2 depends only on the substituted string; stage 2a additionally depends on the invoice's image attachments and the render context's logo).
 
 ### Standard commonmark-java
 
@@ -246,12 +317,13 @@ The HTML emitter does walk inline nodes itself, because `HCNode` types map strai
 
 ## Threading and caching
 
-- **`NormaTemplate` is immutable after construction.** A single instance can be used concurrently from many threads without synchronisation.
-- **JMustache's compiled `Template`** is cached as a field on `NormaTemplate`. Compile happens once, in the factory method (`fromClasspath`, `fromString`, `fromFile`).
+- **`NormaTemplate` is immutable after construction.** A single instance can be used concurrently from many threads without synchronisation. It holds the raw `.ntpl` source plus a commonmark-java `Parser`; the compiled JMustache `Template` lives one layer down, on `NormaLocalizedTemplate`.
+- **`NormaLocalizedTemplate` is immutable after construction.** Produced by `NormaTemplate.localize(Locale)`; carries the locale-baked source string and the compiled JMustache `Template`. Safe to share across threads.
+- **Internal localization cache.** `NormaTemplate` keeps a small `ConcurrentHashMap<CacheKey, NormaLocalizedTemplate>` keyed by (locale, label-resolver identity). The default label resolver is a singleton so the key is effectively just `Locale`; callers using a custom resolver must pass the same instance to benefit from caching. The map is bounded by an `INormaTemplateCachePolicy` (default: unbounded, since the cardinality is small).
 - **commonmark-java's `Parser`** is cached as a field on `NormaTemplate`. Both `Parser` and `AbstractVisitor` subclasses are thread-safe per commonmark-java's documentation.
-- **Per-render allocations:** one `NormaInvoiceMustacheContext`, one substituted `String`, one `Node` tree, one `NormaTemplateAST`. Nothing on the hot path requires locking.
+- **Per-render allocations:** one `NormaRenderEnv`, one substituted `String`, one `Node` tree, one `NormaTemplateAST`. Nothing on the hot path requires locking once the localized template is cached.
 
-For a server rendering many invoices through the same template — the expected workload for an embedded `norma` — the steady-state cost per invoice is one full pipeline pass, with the JMustache compile and Parser construction amortised over the JVM's lifetime.
+For a server rendering many invoices through the same template in the same locale — the expected workload for an embedded `norma` — the steady-state cost per invoice is **one stage 1 + 2 + 2a pass**, with stages 0 / 0a and the Parser construction amortised over the JVM's lifetime. Cross-locale rendering for the same template costs one localize per locale, paid lazily on first use.
 
 ## Error handling
 
@@ -291,6 +363,11 @@ public final String write (@Nonnull final NormaInvoice aInvoice,
   final INormaTemplate aTpl = aCtx.getTemplate ();
   if (aTpl != null)
   {
+    // Convenience entry point: NormaTemplate.renderAST(invoice, ctx) localizes
+    // on demand and uses the engine's internal (locale → NormaLocalizedTemplate)
+    // cache. A caller wanting explicit control can call
+    // `aTpl.localize(aCtx.getLocale())` once, hold the result, and feed every
+    // invoice through it directly — bypassing the cache lookup.
     final NormaTemplateAST aAST = ((NormaTemplate) aTpl).renderAST (aInvoice, aCtx);
     final HCHtml aHtml = new HTMLTemplateEmitter (aCtx).emit (aAST);
     return HCRenderer.getAsHTMLString (aHtml, HCSettings.getMutableConversionSettings ());
@@ -302,7 +379,7 @@ public final String write (@Nonnull final NormaInvoice aInvoice,
 
 The decision is one null-check. When unset, the template engine is not touched — none of `norma-template`'s code paths execute, none of JMustache or commonmark-java is loaded into the class verifier. The hard-coded section grammar from [[Output Writers]] is the unchanged 0.1.0 behaviour.
 
-`PDFInvoiceWriter` follows the same shape with `PDFTemplateEmitter` and `PDFRenderContext`.
+`PDFInvoiceWriter` follows the same shape with `PDFTemplateEmitter` and `PDFRenderContext`. When the same invoice is rendered into both HTML and PDF, callers can build the `NormaTemplateAST` once and pass it to both emitters explicitly via `HTMLTemplateEmitter.emit(ast)` / `PDFTemplateEmitter.emit(ast, out)`, paying stages 1 and 2 only once.
 
 ## Loading the default template
 
@@ -320,17 +397,21 @@ For 0.4.0 the writers do **not** fall through to the default template when `getT
 
 ## Performance
 
-Asymptotics per render (template already compiled):
+Asymptotics per pipeline stage:
 
-| Step | Cost | Allocations |
-|---|---|---|
-| Substitute | O(template size) | one `String` of substituted length |
-| Parse | O(substituted size) | the `Node` tree (proportional to AST node count) |
-| Post-pass | O(node count) | a few `Map` entries per `{{class:…}}` / image |
-| Emit (HTML) | O(node count) | the `HCNode` tree |
-| Emit (PDF) | O(node count) + ph-pdf-layout's layout pass | `PLPageSet` content + per-page line breaks |
+| Stage | Per | Cost | Allocations |
+|---|---|---|---|
+| 0 Localize | (template, locale) | O(template size) + N label lookups (N = number of `{{label:…}}` occurrences) | one locale-baked `String` |
+| 0a Compile | (template, locale) | O(locale-baked size) — the JMustache compile | one `Template` |
+| 1 Substitute | (template, locale, invoice) | O(locale-baked size) | one substituted `String` |
+| 2 Parse | substituted string | O(substituted size) | the `Node` tree |
+| 2a Post-pass | (Node tree, invoice) | O(node count) | a few `Map` entries per `{{class:…}}` / image |
+| 3 Emit (HTML) | `NormaTemplateAST` | O(node count) | the `HCNode` tree |
+| 3 Emit (PDF) | `NormaTemplateAST` | O(node count) + ph-pdf-layout's layout pass | `PLPageSet` content + per-page line breaks |
 
-For a typical EN 16931 invoice (~50 lines of source, 15-20 lines in the output), all four phases combined fit in milliseconds on commodity hardware. The cost is dominated by the PDF layout pass; templates add a few percent overhead.
+For a typical EN 16931 invoice (~50 lines of source, 15-20 lines in the output) all stages combined fit in milliseconds on commodity hardware. The cost is dominated by the PDF layout pass; templates add a few percent overhead.
+
+Stages 0 and 0a are amortised by the localize cache — for a server rendering the same template repeatedly in the same locale, those stages run once at first use and never again.
 
 ## See also
 

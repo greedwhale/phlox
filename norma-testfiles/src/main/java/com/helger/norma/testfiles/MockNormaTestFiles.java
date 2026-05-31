@@ -297,7 +297,7 @@ public final class MockNormaTestFiles
   }
 
   @NonNull
-  private static ICommonsList <ClassPathResource> _toResources (@NonNull final String [] aRelativePaths)
+  private static ICommonsList <ClassPathResource> _toResources (final String @NonNull [] aRelativePaths)
   {
     final ICommonsList <ClassPathResource> aList = new CommonsArrayList <> (aRelativePaths.length);
     for (final String sRelative : aRelativePaths)

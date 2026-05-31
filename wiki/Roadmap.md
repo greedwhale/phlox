@@ -59,10 +59,6 @@ A box is checked when the headline deliverable is in the repo (code shipped, or 
 - [ ] `norma-markdown` — GitHub-flavored Markdown renderer. Uses Markdown tables for the line and VAT-breakdown sections. Useful for diff-friendly invoices and for embedding into PR descriptions, wikis, and chat systems.
 - [ ] `norma-asciidoc` — AsciiDoc renderer. Uses AsciiDoc table syntax (`|===`) so the output can be processed by Antora/Asciidoctor pipelines, included in publication toolchains, and converted to other formats downstream.
 
-## 0.6.0 — Editable output
-
-- [ ] `norma-docx` (stretch goal) — Word-document renderer for users who need to edit the output. Consumes the same template AST.
-
 ## Future / unscheduled
 
 - [ ] Validation hook: optional integration with `phive-rules-en16931` so renderers can surface BR-* failures inline (off by default; opt-in via `RenderContext`).
@@ -70,6 +66,7 @@ A box is checked when the headline deliverable is in the repo (code shipped, or 
 - [ ] EN 16931 extension support: render Peppol BIS Billing 3.0 extension fields when present in the source.
 - [ ] Optional embedded XSLT-FO comparison renderer for sanity-checking the PDF layout against the EU "Common View" stylesheet.
 - [ ] Additional language packs beyond `en` / `de` (e.g. `fr`, `it`, `es`, `nl`) — each new language is one `norma-labels_<lang>.properties` + one `norma-codelists_<lang>.properties` file in `norma-api`.
+- [ ] `norma-docx` (stretch goal) — Word-document renderer for users who need to edit the output. Consumes the same template AST.
 
 ## What is intentionally **not** on the roadmap
 

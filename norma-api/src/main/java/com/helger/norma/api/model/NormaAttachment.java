@@ -37,8 +37,7 @@ public class NormaAttachment
   {}
 
   /** @return The binary payload (BT-125). May be {@code null}. */
-  @Nullable
-  public byte [] getBinary ()
+  public byte @Nullable [] getBinary ()
   {
     return m_aBinary;
   }
@@ -51,7 +50,7 @@ public class NormaAttachment
    * @return this for chaining.
    */
   @NonNull
-  public NormaAttachment setBinary (@Nullable final byte [] aBinary)
+  public NormaAttachment setBinary (final byte @Nullable [] aBinary)
   {
     m_aBinary = aBinary;
     return this;
