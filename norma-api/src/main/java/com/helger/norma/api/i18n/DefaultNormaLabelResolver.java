@@ -28,20 +28,26 @@ import org.slf4j.LoggerFactory;
  * Default {@link INormaLabelResolver} backed by two {@link ResourceBundle}s loaded from the
  * {@code norma-api} classpath: {@code norma-labels} for BG/BT labels and section titles, and
  * {@code norma-codelists} for UNTDID code list values.
+ * <p>
+ * Stateless and exposed as a singleton ({@link #INSTANCE}) so it can serve as a stable cache key in
+ * {@link com.helger.norma.api.template.INormaTemplate} localization caches without forcing callers
+ * to manage shared instances themselves.
  *
  * @author Philip Helger
  */
-public class DefaultNormaLabelResolver implements INormaLabelResolver
+public final class DefaultNormaLabelResolver implements INormaLabelResolver
 {
   /** Resource bundle base name for BG/BT labels and section titles. */
   public static final String BUNDLE_LABELS = "norma-labels";
   /** Resource bundle base name for code-list value descriptions. */
   public static final String BUNDLE_CODELISTS = "norma-codelists";
 
+  /** Process-wide shared instance. */
+  public static final DefaultNormaLabelResolver INSTANCE = new DefaultNormaLabelResolver ();
+
   private static final Logger LOGGER = LoggerFactory.getLogger (DefaultNormaLabelResolver.class);
 
-  /** Create a new resolver. */
-  public DefaultNormaLabelResolver ()
+  private DefaultNormaLabelResolver ()
   {}
 
   @Override
@@ -72,6 +78,7 @@ public class DefaultNormaLabelResolver implements INormaLabelResolver
     }
     catch (final MissingResourceException ex)
     {
+      LOGGER.warn ("No label for code list key '" + sFullKey + "' in locale '" + aLocale + "'");
       return sCode;
     }
   }

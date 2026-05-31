@@ -26,6 +26,8 @@ import java.util.Locale;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import com.helger.annotation.concurrent.Immutable;
+import com.helger.base.CGlobal;
 import com.helger.datetime.format.EDTFormatterMode;
 import com.helger.datetime.format.PDTFormatter;
 import com.helger.norma.api.NormaFormatOptions;
@@ -35,6 +37,7 @@ import com.helger.norma.api.NormaFormatOptions;
  *
  * @author Philip Helger
  */
+@Immutable
 public final class NormaFormat
 {
   private NormaFormat ()
@@ -85,6 +88,7 @@ public final class NormaFormat
   {
     if (aAmount == null)
       return "";
+
     final NumberFormat aFmt = NumberFormat.getCurrencyInstance (aLocale);
     if (sCurrencyCode != null)
     {
@@ -106,8 +110,8 @@ public final class NormaFormat
   }
 
   /**
-   * Format a percentage value (e.g. {@code 19} → {@code "19.00%"} in en-US, {@code "19,00 %"}
-   * in de-DE).
+   * Format a percentage value (e.g. {@code 19} → {@code "19.00%"} in en-US, {@code "19,00 %"} in
+   * de-DE).
    *
    * @param aRate
    *        The value expressed in whole-percent (i.e. {@code 19} for 19%). May be {@code null}.
@@ -124,10 +128,12 @@ public final class NormaFormat
   {
     if (aRate == null)
       return "";
-    final NumberFormat aFmt = NumberFormat.getNumberInstance (aLocale);
+
+    final NumberFormat aFmt = NumberFormat.getPercentInstance (aLocale);
     final int nDigits = aOptions != null ? aOptions.getPercentFractionDigits () : 2;
     aFmt.setMinimumFractionDigits (nDigits);
     aFmt.setMaximumFractionDigits (nDigits);
-    return aFmt.format (aRate) + " %";
+    // From 19 to 0,19
+    return aFmt.format (aRate.divide (CGlobal.BIGDEC_100));
   }
 }

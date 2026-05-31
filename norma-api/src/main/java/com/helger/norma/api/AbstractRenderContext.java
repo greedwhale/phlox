@@ -25,6 +25,7 @@ import com.helger.base.trait.IGenericImplTrait;
 import com.helger.norma.api.i18n.DefaultNormaLabelResolver;
 import com.helger.norma.api.i18n.INormaLabelResolver;
 import com.helger.norma.api.model.NormaAttachment;
+import com.helger.norma.api.template.INormaTemplate;
 import com.helger.norma.api.watermark.WatermarkSpec;
 
 /**
@@ -53,10 +54,11 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
   private Locale m_aLocale = Locale.ENGLISH;
   private NormaFormatOptions m_aFormatOptions = NormaFormatOptions.defaults ();
   private NormaAttachment m_aLogo;
-  private INormaLabelResolver m_aLabelResolver = new DefaultNormaLabelResolver ();
+  private INormaLabelResolver m_aLabelResolver = DefaultNormaLabelResolver.INSTANCE;
   private boolean m_bAnnotateBTIDs = DEFAULT_ANNOTATE_BT_IDS;
   private boolean m_bIncludeEmptySections = DEFAULT_INCLUDE_EMPTY_SECTIONS;
   private WatermarkSpec m_aUserWatermark;
+  private INormaTemplate m_aTemplate;
 
   /** Subclass-only constructor. */
   protected AbstractRenderContext ()
@@ -208,6 +210,31 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
   }
 
   /**
+   * @return The optional template that drives both writers when set. When {@code null} (the
+   *         default), writers fall back to their hard-coded section grammar.
+   */
+  @Nullable
+  public INormaTemplate getTemplate ()
+  {
+    return m_aTemplate;
+  }
+
+  /**
+   * Set the optional {@link INormaTemplate} that drives layout. When {@code null}, the writers
+   * fall back to their built-in section grammar (preserving 0.1.0 byte-for-byte output).
+   *
+   * @param aTemplate
+   *        Compiled template; may be {@code null} to clear.
+   * @return this for chaining.
+   */
+  @NonNull
+  public IMPLTYPE setTemplate (@Nullable final INormaTemplate aTemplate)
+  {
+    m_aTemplate = aTemplate;
+    return thisAsT ();
+  }
+
+  /**
    * Copy all base fields from another context into this one. Used by subclass static factories
    * (e.g. {@code PDFRenderContext.copyFrom(...)}) to share settings across formats.
    *
@@ -225,6 +252,7 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
     m_bAnnotateBTIDs = aSource.m_bAnnotateBTIDs;
     m_bIncludeEmptySections = aSource.m_bIncludeEmptySections;
     m_aUserWatermark = aSource.m_aUserWatermark;
+    m_aTemplate = aSource.m_aTemplate;
     return thisAsT ();
   }
 
