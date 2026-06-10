@@ -60,7 +60,7 @@
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
 
-    <ph-commons.version>12.2.6</ph-commons.version>
+    <ph-commons.version>12.3.0</ph-commons.version>
     <ph-ubl.version>10.2.0</ph-ubl.version>
     <ph-cii.version>4.1.1</ph-cii.version>
     <ph-oton.version>10.2.3</ph-oton.version>

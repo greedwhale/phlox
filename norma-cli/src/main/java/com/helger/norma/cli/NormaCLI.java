@@ -42,8 +42,8 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * Command-line entry point for {@code norma}. Reads an electronic invoice from XML and renders
- * it to HTML or PDF.
+ * Command-line entry point for {@code norma}. Reads an electronic invoice from XML and renders it
+ * to HTML or PDF.
  *
  * @author Philip Helger
  */
@@ -55,12 +55,15 @@ public class NormaCLI implements Callable <Integer>
 {
   public enum EOutputFormat
   {
-    HTML, PDF
+    HTML,
+    PDF
   }
 
   public enum ESourceSyntax
   {
-    AUTO, UBL, CII
+    AUTO,
+    UBL,
+    CII
   }
 
   @Option (names = { "-i", "--in" },
@@ -83,16 +86,22 @@ public class NormaCLI implements Callable <Integer>
            defaultValue = "AUTO")
   ESourceSyntax syntax;
 
-  @Option (names = { "-l", "--lang" }, description = "Output language code (e.g. 'en', 'de'). Default: en.", defaultValue = "en")
+  @Option (names = { "-l", "--lang" },
+           description = "Output language code (e.g. 'en', 'de'). Default: en.",
+           defaultValue = "en")
   String lang;
 
   @Option (names = "--watermark", description = "Optional user watermark text (e.g. 'DRAFT').")
   String watermark;
 
-  @Option (names = "--watermark-opacity", description = "Watermark opacity 0.0-1.0. Default: 0.10.", defaultValue = "0.10")
+  @Option (names = "--watermark-opacity",
+           description = "Watermark opacity 0.0-1.0. Default: 0.10.",
+           defaultValue = "0.10")
   float watermarkOpacity;
 
-  @Option (names = "--watermark-rotation", description = "Watermark rotation in degrees. Default: -45.", defaultValue = "-45")
+  @Option (names = "--watermark-rotation",
+           description = "Watermark rotation in degrees. Default: -45.",
+           defaultValue = "-45")
   float watermarkRotation;
 
   public static void main (final String [] args)
@@ -121,11 +130,9 @@ public class NormaCLI implements Callable <Integer>
     }
 
     final Locale aLocale = new Locale.Builder ().setLanguage (lang).build ();
-    final WatermarkSpec aWM = watermark == null
-                                                ? null
-                                                : WatermarkSpec.text (watermark)
-                                                               .setOpacity (watermarkOpacity)
-                                                               .setRotation (watermarkRotation);
+    final WatermarkSpec aWM = watermark == null ? null : WatermarkSpec.text (watermark)
+                                                                      .setOpacity (watermarkOpacity)
+                                                                      .setRotation (watermarkRotation);
 
     if (format == EOutputFormat.PDF)
     {
@@ -155,7 +162,7 @@ public class NormaCLI implements Callable <Integer>
           aHtmlWriter.writeTo (aInvoice, aCtx, aOut);
         }
     }
-    return 0;
+    return Integer.valueOf (0);
   }
 
   private static byte [] _readAllStdin () throws IOException

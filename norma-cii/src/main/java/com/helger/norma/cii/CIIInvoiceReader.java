@@ -17,7 +17,6 @@
 package com.helger.norma.cii;
 
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -32,80 +31,18 @@ import org.slf4j.LoggerFactory;
 import com.helger.cii.d16b.CIID16BCrossIndustryInvoiceTypeMarshaller;
 import com.helger.diagnostics.error.SingleError;
 import com.helger.diagnostics.error.list.ErrorList;
-import com.helger.norma.api.model.ENormaDocumentKind;
-import com.helger.norma.api.model.NormaAttachment;
-import com.helger.norma.api.model.NormaBuyer;
-import com.helger.norma.api.model.NormaContact;
-import com.helger.norma.api.model.NormaCreditTransfer;
-import com.helger.norma.api.model.NormaDeliveryInformation;
-import com.helger.norma.api.model.NormaDirectDebit;
-import com.helger.norma.api.model.NormaDocumentAllowance;
-import com.helger.norma.api.model.NormaDocumentCharge;
-import com.helger.norma.api.model.NormaIdentifier;
-import com.helger.norma.api.model.NormaInvoice;
-import com.helger.norma.api.model.NormaInvoiceLine;
-import com.helger.norma.api.model.NormaInvoiceNote;
-import com.helger.norma.api.model.NormaInvoicingPeriod;
-import com.helger.norma.api.model.NormaItem;
-import com.helger.norma.api.model.NormaItemAttribute;
-import com.helger.norma.api.model.NormaItemClassification;
-import com.helger.norma.api.model.NormaLineAllowance;
-import com.helger.norma.api.model.NormaLineCharge;
-import com.helger.norma.api.model.NormaLineVAT;
-import com.helger.norma.api.model.NormaPayee;
-import com.helger.norma.api.model.NormaPaymentCard;
-import com.helger.norma.api.model.NormaPaymentInstructions;
-import com.helger.norma.api.model.NormaPostalAddress;
-import com.helger.norma.api.model.NormaPrecedingInvoiceRef;
-import com.helger.norma.api.model.NormaPriceDetails;
-import com.helger.norma.api.model.NormaSeller;
-import com.helger.norma.api.model.NormaSellerTaxRepresentative;
-import com.helger.norma.api.model.NormaSupportingDocument;
-import com.helger.norma.api.model.NormaVATBreakdown;
+import com.helger.norma.api.model.*;
 import com.helger.norma.api.read.IInvoiceReader;
 
 import un.unece.uncefact.data.standard.crossindustryinvoice._100.CrossIndustryInvoiceType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.CreditorFinancialAccountType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.CreditorFinancialInstitutionType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.DebtorFinancialAccountType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.DocumentLineDocumentType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.ExchangedDocumentType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.HeaderTradeAgreementType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.HeaderTradeDeliveryType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.HeaderTradeSettlementType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.LegalOrganizationType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.LineTradeAgreementType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.LineTradeDeliveryType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.LineTradeSettlementType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.NoteType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.ProcuringProjectType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.ProductCharacteristicType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.ProductClassificationType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.ReferencedDocumentType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.SpecifiedPeriodType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.SupplyChainEventType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.SupplyChainTradeLineItemType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.SupplyChainTradeTransactionType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TaxRegistrationType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradeAddressType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradeAllowanceChargeType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradeContactType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradePartyType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradePaymentTermsType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradePriceType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradeProductType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradeSettlementHeaderMonetarySummationType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradeSettlementPaymentMeansType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradeTaxType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.UniversalCommunicationType;
+import un.unece.uncefact.data.standard.qualifieddatatype._100.FormattedDateTimeType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._100.AmountType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._100.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._100.DateType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._100.IDType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._100.IndicatorType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._100.QuantityType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._100.TextType;
-import un.unece.uncefact.data.standard.qualifieddatatype._100.FormattedDateTimeType;
 
 /**
  * Reads CII D16B {@code CrossIndustryInvoice} documents into a {@link NormaInvoice}.
@@ -219,8 +156,8 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
   }
 
   /**
-   * Read an already-parsed CII document into a {@link NormaInvoice}, collecting non-fatal
-   * issues (unknown type codes, unsupported date formats) into the supplied error list.
+   * Read an already-parsed CII document into a {@link NormaInvoice}, collecting non-fatal issues
+   * (unknown type codes, unsupported date formats) into the supplied error list.
    *
    * @param aCII
    *        The JAXB invoice. Never {@code null}.
@@ -275,7 +212,7 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
     final HeaderTradeAgreementType aHTA = aSCTT.getApplicableHeaderTradeAgreement ();
     if (aHTA != null)
     {
-      aModel.setBuyerReference (_text (aHTA.getBuyerReference ()));            // BT-10
+      aModel.setBuyerReference (_text (aHTA.getBuyerReference ())); // BT-10
       // BT-12 — contract
       if (aHTA.getContractReferencedDocument () != null)
         aModel.setContractReference (_idValue (aHTA.getContractReferencedDocument ().getIssuerAssignedID ()));
@@ -306,13 +243,15 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
         final String sTypeCode = _codeValue (aRD.getTypeCode ());
         if ("50".equals (sTypeCode))
           aModel.setTenderOrLotReference (_idValue (aRD.getIssuerAssignedID ()));
-        else if ("130".equals (sTypeCode))
-        {
-          final String sScheme = _codeValue (aRD.getReferenceTypeCode ());
-          aModel.setInvoicedObjectIdentifier (new NormaIdentifier (_idValue (aRD.getIssuerAssignedID ()), sScheme));
-        }
-        else if ("916".equals (sTypeCode) || sTypeCode == null)
-          aModel.supportingDocuments ().add (_readSupportingDocument (aRD));
+        else
+          if ("130".equals (sTypeCode))
+          {
+            final String sScheme = _codeValue (aRD.getReferenceTypeCode ());
+            aModel.setInvoicedObjectIdentifier (new NormaIdentifier (_idValue (aRD.getIssuerAssignedID ()), sScheme));
+          }
+          else
+            if ("916".equals (sTypeCode) || sTypeCode == null)
+              aModel.supportingDocuments ().add (_readSupportingDocument (aRD));
       }
     }
 
@@ -341,11 +280,12 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
             final IDType aGID = aShipTo.getGlobalID ().get (0);
             aDI.setLocationIdentifier (new NormaIdentifier (aGID.getValue (), aGID.getSchemeID ()));
           }
-          else if (!aShipTo.getID ().isEmpty ())
-          {
-            final IDType aID = aShipTo.getID ().get (0);
-            aDI.setLocationIdentifier (new NormaIdentifier (aID.getValue (), aID.getSchemeID ()));
-          }
+          else
+            if (!aShipTo.getID ().isEmpty ())
+            {
+              final IDType aID = aShipTo.getID ().get (0);
+              aDI.setLocationIdentifier (new NormaIdentifier (aID.getValue (), aID.getSchemeID ()));
+            }
           if (aShipTo.getPostalTradeAddress () != null)
             aDI.setPostalAddress (_readAddress (aShipTo.getPostalTradeAddress ()));
         }
@@ -452,11 +392,11 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
 
   private static void _readSeller (@NonNull final TradePartyType aTP, @NonNull final NormaSeller aSeller)
   {
-    aSeller.setName (_text (aTP.getName ()));                                  // BT-27
+    aSeller.setName (_text (aTP.getName ())); // BT-27
     final LegalOrganizationType aLO = aTP.getSpecifiedLegalOrganization ();
     if (aLO != null)
     {
-      aSeller.setTradingName (_text (aLO.getTradingBusinessName ()));          // BT-28
+      aSeller.setTradingName (_text (aLO.getTradingBusinessName ())); // BT-28
       if (aLO.getID () != null)
         aSeller.setLegalRegistration (new NormaIdentifier (aLO.getID ().getValue (), aLO.getID ().getSchemeID ()));
     }
@@ -472,8 +412,9 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
         final String sScheme = aTR.getID ().getSchemeID ();
         if ("VA".equalsIgnoreCase (sScheme))
           aSeller.setVATIdentifier (aTR.getID ().getValue ());
-        else if ("FC".equalsIgnoreCase (sScheme))
-          aSeller.setTaxRegistration (aTR.getID ().getValue ());
+        else
+          if ("FC".equalsIgnoreCase (sScheme))
+            aSeller.setTaxRegistration (aTR.getID ().getValue ());
       }
     // BT-33
     if (!aTP.getDescription ().isEmpty ())
@@ -483,7 +424,7 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
       if (aUC.getURIID () != null)
       {
         aSeller.setElectronicAddress (new NormaIdentifier (aUC.getURIID ().getValue (),
-                                                          aUC.getURIID ().getSchemeID ()));
+                                                           aUC.getURIID ().getSchemeID ()));
         break;
       }
     // BG-5
@@ -496,7 +437,7 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
 
   private static void _readBuyer (@NonNull final TradePartyType aTP, @NonNull final NormaBuyer aBuyer)
   {
-    aBuyer.setName (_text (aTP.getName ()));                                   // BT-44
+    aBuyer.setName (_text (aTP.getName ())); // BT-44
     final LegalOrganizationType aLO = aTP.getSpecifiedLegalOrganization ();
     if (aLO != null)
     {
@@ -514,8 +455,7 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
     for (final UniversalCommunicationType aUC : aTP.getURIUniversalCommunication ())
       if (aUC.getURIID () != null)
       {
-        aBuyer.setElectronicAddress (new NormaIdentifier (aUC.getURIID ().getValue (),
-                                                         aUC.getURIID ().getSchemeID ()));
+        aBuyer.setElectronicAddress (new NormaIdentifier (aUC.getURIID ().getValue (), aUC.getURIID ().getSchemeID ()));
         break;
       }
     if (aTP.getPostalTradeAddress () != null)
@@ -531,9 +471,10 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
     aOut.setName (_text (aTP.getName ()));
     if (!aTP.getID ().isEmpty ())
       aOut.setIdentifier (new NormaIdentifier (aTP.getID ().get (0).getValue (), aTP.getID ().get (0).getSchemeID ()));
-    else if (!aTP.getGlobalID ().isEmpty ())
-      aOut.setIdentifier (new NormaIdentifier (aTP.getGlobalID ().get (0).getValue (),
-                                              aTP.getGlobalID ().get (0).getSchemeID ()));
+    else
+      if (!aTP.getGlobalID ().isEmpty ())
+        aOut.setIdentifier (new NormaIdentifier (aTP.getGlobalID ().get (0).getValue (),
+                                                 aTP.getGlobalID ().get (0).getSchemeID ()));
     final LegalOrganizationType aLO = aTP.getSpecifiedLegalOrganization ();
     if (aLO != null && aLO.getID () != null)
       aOut.setLegalRegistration (new NormaIdentifier (aLO.getID ().getValue (), aLO.getID ().getSchemeID ()));
@@ -576,7 +517,8 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
     aOut.setName (_text (aTC.getPersonName ()));
     if (aTC.getTelephoneUniversalCommunication () != null)
       aOut.setTelephone (_text (aTC.getTelephoneUniversalCommunication ().getCompleteNumber ()));
-    if (aTC.getEmailURIUniversalCommunication () != null && aTC.getEmailURIUniversalCommunication ().getURIID () != null)
+    if (aTC.getEmailURIUniversalCommunication () != null &&
+        aTC.getEmailURIUniversalCommunication ().getURIID () != null)
       aOut.setEmail (aTC.getEmailURIUniversalCommunication ().getURIID ().getValue ());
     return aOut;
   }
@@ -621,8 +563,9 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
           final NormaCreditTransfer aCT = new NormaCreditTransfer ();
           if (aFA.getIBANID () != null)
             aCT.setAccountIdentifier (aFA.getIBANID ().getValue ());
-          else if (aFA.getProprietaryID () != null)
-            aCT.setAccountIdentifier (aFA.getProprietaryID ().getValue ());
+          else
+            if (aFA.getProprietaryID () != null)
+              aCT.setAccountIdentifier (aFA.getProprietaryID ().getValue ());
           aCT.setAccountName (_text (aFA.getAccountName ()));
           final CreditorFinancialInstitutionType aFI = aOne.getPayeeSpecifiedCreditorFinancialInstitution ();
           if (aFI != null && aFI.getBICID () != null)
@@ -769,8 +712,9 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
     {
       if (sAcct != null && sAcct.equals (aA.getCurrencyID ()))
         aModel.getDocumentTotals ().setTaxTotalAccountingCurrency (aA.getValue ());
-      else if (aModel.getDocumentTotals ().getTaxTotal () == null)
-        aModel.getDocumentTotals ().setTaxTotal (aA.getValue ());
+      else
+        if (aModel.getDocumentTotals ().getTaxTotal () == null)
+          aModel.getDocumentTotals ().setTaxTotal (aA.getValue ());
     }
   }
 
@@ -817,7 +761,8 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
     if (aLTA != null)
     {
       aOut.setPrice (_readPrice (aLTA));
-      if (aLTA.getBuyerOrderReferencedDocument () != null && aLTA.getBuyerOrderReferencedDocument ().getLineID () != null)
+      if (aLTA.getBuyerOrderReferencedDocument () != null &&
+          aLTA.getBuyerOrderReferencedDocument ().getLineID () != null)
         aOut.setPurchaseOrderLineRef (aLTA.getBuyerOrderReferencedDocument ().getLineID ().getValue ());
     }
     final LineTradeDeliveryType aLTD = aLine.getSpecifiedLineTradeDelivery ();
@@ -906,8 +851,7 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
     if (aP.getBuyerAssignedID () != null)
       aOut.setBuyerItemID (aP.getBuyerAssignedID ().getValue ());
     if (aP.getGlobalID () != null)
-      aOut.setStandardItemID (new NormaIdentifier (aP.getGlobalID ().getValue (),
-                                                  aP.getGlobalID ().getSchemeID ()));
+      aOut.setStandardItemID (new NormaIdentifier (aP.getGlobalID ().getValue (), aP.getGlobalID ().getSchemeID ()));
     if (aP.getOriginTradeCountry () != null && aP.getOriginTradeCountry ().getID () != null)
       aOut.setCountryOfOrigin (aP.getOriginTradeCountry ().getID ().getValue ());
     for (final ProductClassificationType aPC : aP.getDesignatedProductClassification ())
@@ -985,8 +929,8 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
 
   /**
    * Returns the {@code getValue()} of any CII code type. CII has dozens of qualified subtypes
-   * (TaxCategoryCodeType, DocumentCodeType, ...), none of which share a Java base. Reflection
-   * keeps the helper code small and avoids declaring 20 overloads.
+   * (TaxCategoryCodeType, DocumentCodeType, ...), none of which share a Java base. Reflection keeps
+   * the helper code small and avoids declaring 20 overloads.
    */
   @Nullable
   private static String _codeValue (@Nullable final Object aCode)
@@ -1005,9 +949,9 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
   }
 
   /**
-   * Parse a CII {@code DateTimeType} into a {@link LocalDate}. Reads the {@code @format}
-   * attribute on the inner {@code DateTimeString} and dispatches to the right pattern; missing
-   * format defaults to "102" (yyyyMMdd) per EN 16931.
+   * Parse a CII {@code DateTimeType} into a {@link LocalDate}. Reads the {@code @format} attribute
+   * on the inner {@code DateTimeString} and dispatches to the right pattern; missing format
+   * defaults to "102" (yyyyMMdd) per EN 16931.
    */
   @Nullable
   private static LocalDate _dateTime (@Nullable final DateTimeType aDT)
@@ -1018,9 +962,9 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
   }
 
   /**
-   * Parse a CII {@code DateType} into a {@link LocalDate}. Honours the {@code @format}
-   * attribute on the inner {@code DateString}; if {@code DateString} is absent the
-   * {@code DateLocal} value is used.
+   * Parse a CII {@code DateType} into a {@link LocalDate}. Honours the {@code @format} attribute on
+   * the inner {@code DateString}; if {@code DateString} is absent the {@code DateLocal} value is
+   * used.
    */
   @Nullable
   private static LocalDate _dateOnly (@Nullable final DateType aDT)
@@ -1045,9 +989,9 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
   }
 
   /**
-   * Parse a date string according to its UN/EDIFACT 2379 format code. Returns {@code null}
-   * when the value or pattern cannot be resolved; logs a warning for unsupported format
-   * codes so operators notice the data loss.
+   * Parse a date string according to its UN/EDIFACT 2379 format code. Returns {@code null} when the
+   * value or pattern cannot be resolved; logs a warning for unsupported format codes so operators
+   * notice the data loss.
    */
   @Nullable
   private static LocalDate _parseFormatted (@Nullable final String sValue, @Nullable final String sFormat)
@@ -1074,8 +1018,8 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
 
   /**
    * Map UN/EDIFACT DTM 2379 format codes to {@link DateTimeFormatter} patterns. Mirrors
-   * {@code AbstractCIIToUBLConverter.getDatePattern(...)} in en16931-cii2ubl. Returns
-   * {@code null} for unsupported codes.
+   * {@code AbstractCIIToUBLConverter.getDatePattern(...)} in en16931-cii2ubl. Returns {@code null}
+   * for unsupported codes.
    */
   @Nullable
   private static String _patternFor (@NonNull final String sFormatCode)
@@ -1109,9 +1053,7 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
     if (INVOICE_TYPE_CODES.contains (sTypeCode))
       return ENormaDocumentKind.INVOICE;
     aErrors.add (SingleError.builderWarn ()
-                            .errorText ("Unknown BT-3 invoice type code '" +
-                                        sTypeCode +
-                                        "' — defaulting to INVOICE")
+                            .errorText ("Unknown BT-3 invoice type code '" + sTypeCode + "' — defaulting to INVOICE")
                             .build ());
     return ENormaDocumentKind.INVOICE;
   }

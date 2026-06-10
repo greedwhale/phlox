@@ -23,81 +23,15 @@ import java.util.List;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.helger.datetime.xml.XMLOffsetDate;
 import com.helger.diagnostics.error.SingleError;
 import com.helger.diagnostics.error.list.ErrorList;
-import com.helger.norma.api.model.ENormaDocumentKind;
-import com.helger.norma.api.model.NormaAttachment;
-import com.helger.norma.api.model.NormaBuyer;
-import com.helger.norma.api.model.NormaContact;
-import com.helger.norma.api.model.NormaCreditTransfer;
-import com.helger.norma.api.model.NormaDeliveryInformation;
-import com.helger.norma.api.model.NormaDirectDebit;
-import com.helger.norma.api.model.NormaDocumentAllowance;
-import com.helger.norma.api.model.NormaDocumentCharge;
-import com.helger.norma.api.model.NormaIdentifier;
-import com.helger.norma.api.model.NormaInvoice;
-import com.helger.norma.api.model.NormaInvoiceLine;
-import com.helger.norma.api.model.NormaInvoiceNote;
-import com.helger.norma.api.model.NormaInvoicingPeriod;
-import com.helger.norma.api.model.NormaItem;
-import com.helger.norma.api.model.NormaItemAttribute;
-import com.helger.norma.api.model.NormaItemClassification;
-import com.helger.norma.api.model.NormaLineAllowance;
-import com.helger.norma.api.model.NormaLineCharge;
-import com.helger.norma.api.model.NormaLineVAT;
-import com.helger.norma.api.model.NormaPayee;
-import com.helger.norma.api.model.NormaPaymentCard;
-import com.helger.norma.api.model.NormaPaymentInstructions;
-import com.helger.norma.api.model.NormaPostalAddress;
-import com.helger.norma.api.model.NormaPrecedingInvoiceRef;
-import com.helger.norma.api.model.NormaPriceDetails;
-import com.helger.norma.api.model.NormaSeller;
-import com.helger.norma.api.model.NormaSellerTaxRepresentative;
-import com.helger.norma.api.model.NormaSupportingDocument;
-import com.helger.norma.api.model.NormaVATBreakdown;
+import com.helger.norma.api.model.*;
 import com.helger.norma.api.read.IInvoiceReader;
 import com.helger.ubl21.UBL21Marshaller;
 
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.AddressLineType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.AddressType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.AllowanceChargeType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.AttachmentType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.BillingReferenceType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.BranchType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.CommodityClassificationType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.ContactType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.CountryType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.CreditNoteLineType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.CustomerPartyType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.DeliveryType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.DocumentReferenceType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.ExternalReferenceType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.FinancialAccountType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.InvoiceLineType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.ItemIdentificationType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.ItemPropertyType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.ItemType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.MonetaryTotalType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.OrderLineReferenceType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.OrderReferenceType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.PartyIdentificationType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.PartyLegalEntityType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.PartyNameType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.PartyTaxSchemeType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.PartyType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.PaymentMandateType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.PaymentMeansType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.PaymentTermsType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.PeriodType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.PriceType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.SupplierPartyType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.TaxCategoryType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.TaxSubtotalType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.TaxTotalType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.*;
 import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.NoteType;
 import oasis.names.specification.ubl.schema.xsd.creditnote_21.CreditNoteType;
 import oasis.names.specification.ubl.schema.xsd.invoice_21.InvoiceType;
@@ -110,8 +44,6 @@ import oasis.names.specification.ubl.schema.xsd.invoice_21.InvoiceType;
  */
 public class UBLInvoiceReader implements IInvoiceReader <InputStream>
 {
-  private static final Logger LOGGER = LoggerFactory.getLogger (UBLInvoiceReader.class);
-
   protected UBLInvoiceReader ()
   {}
 
@@ -123,8 +55,8 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
   }
 
   /**
-   * @return A reader that auto-detects the root element ({@code Invoice} vs {@code CreditNote})
-   *         per call. Defaults to UBL 2.1 binding.
+   * @return A reader that auto-detects the root element ({@code Invoice} vs {@code CreditNote}) per
+   *         call. Defaults to UBL 2.1 binding.
    */
   @NonNull
   public static UBLInvoiceReader autoDetect ()
@@ -149,11 +81,13 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       return null;
     }
 
-    final InvoiceType aInvoice = UBL21Marshaller.invoice ().read (new com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream (aBytes));
+    final InvoiceType aInvoice = UBL21Marshaller.invoice ()
+                                                .read (new com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream (aBytes));
     if (aInvoice != null)
       return readInvoice (aInvoice);
 
-    final CreditNoteType aCreditNote = UBL21Marshaller.creditNote ().read (new com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream (aBytes));
+    final CreditNoteType aCreditNote = UBL21Marshaller.creditNote ()
+                                                      .read (new com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream (aBytes));
     if (aCreditNote != null)
       return readCreditNote (aCreditNote);
 
@@ -245,8 +179,9 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       if (aBR.getInvoiceDocumentReference () != null)
       {
         final DocumentReferenceType aDR = aBR.getInvoiceDocumentReference ();
-        aModel.precedingInvoiceRefs ().add (new NormaPrecedingInvoiceRef ().setNumber (_str (aDR.getIDValue ()))
-                                                                          .setIssueDate (_d (aDR.getIssueDateValue ())));
+        aModel.precedingInvoiceRefs ()
+              .add (new NormaPrecedingInvoiceRef ().setNumber (_str (aDR.getIDValue ()))
+                                                   .setIssueDate (_d (aDR.getIssueDateValue ())));
       }
 
     // BG-4 + BG-5 + BG-6 — Seller
@@ -272,7 +207,9 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       aIP.setStartDate (_d (aPeriod.getStartDateValue ()));
       aIP.setEndDate (_d (aPeriod.getEndDateValue ()));
       // BT-8 — VAT point date code (lives in InvoicePeriod for UBL)
-      aModel.setVATPointDateCode (_str ((aPeriod.getDescriptionCode ().isEmpty () ? null : aPeriod.getDescriptionCode ().get (0).getValue ())));
+      aModel.setVATPointDateCode (_str ((aPeriod.getDescriptionCode ().isEmpty () ? null : aPeriod.getDescriptionCode ()
+                                                                                                  .get (0)
+                                                                                                  .getValue ())));
       if (!aIP.isEmpty ())
         aModel.setInvoicingPeriod (aIP);
     }
@@ -372,8 +309,9 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       if (aBR.getInvoiceDocumentReference () != null)
       {
         final DocumentReferenceType aDR = aBR.getInvoiceDocumentReference ();
-        aModel.precedingInvoiceRefs ().add (new NormaPrecedingInvoiceRef ().setNumber (_str (aDR.getIDValue ()))
-                                                                          .setIssueDate (_d (aDR.getIssueDateValue ())));
+        aModel.precedingInvoiceRefs ()
+              .add (new NormaPrecedingInvoiceRef ().setNumber (_str (aDR.getIDValue ()))
+                                                   .setIssueDate (_d (aDR.getIssueDateValue ())));
       }
 
     if (aCreditNote.getAccountingSupplierParty () != null)
@@ -392,7 +330,9 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       final NormaInvoicingPeriod aIP = new NormaInvoicingPeriod ();
       aIP.setStartDate (_d (aPeriod.getStartDateValue ()));
       aIP.setEndDate (_d (aPeriod.getEndDateValue ()));
-      aModel.setVATPointDateCode (_str ((aPeriod.getDescriptionCode ().isEmpty () ? null : aPeriod.getDescriptionCode ().get (0).getValue ())));
+      aModel.setVATPointDateCode (_str ((aPeriod.getDescriptionCode ().isEmpty () ? null : aPeriod.getDescriptionCode ()
+                                                                                                  .get (0)
+                                                                                                  .getValue ())));
       if (!aIP.isEmpty ())
         aModel.setInvoicingPeriod (aIP);
     }
@@ -456,7 +396,7 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       aBuyer.setName (_str (aLE.getRegistrationNameValue ()));
       if (aLE.getCompanyID () != null)
         aBuyer.setLegalRegistration (new NormaIdentifier (aLE.getCompanyIDValue (),
-                                                         aLE.getCompanyID ().getSchemeID ()));
+                                                          aLE.getCompanyID ().getSchemeID ()));
     }
     // BT-45 — trading name
     if (!aParty.getPartyName ().isEmpty ())
@@ -475,7 +415,7 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
     // BT-49
     if (aParty.getEndpointID () != null)
       aBuyer.setElectronicAddress (new NormaIdentifier (aParty.getEndpointIDValue (),
-                                                       aParty.getEndpointID ().getSchemeID ()));
+                                                        aParty.getEndpointID ().getSchemeID ()));
     // BG-8
     if (aParty.getPostalAddress () != null)
       aBuyer.setPostalAddress (_readAddress (aParty.getPostalAddress ()));
@@ -493,7 +433,7 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       aSeller.setName (_str (aLE.getRegistrationNameValue ()));
       if (aLE.getCompanyID () != null)
         aSeller.setLegalRegistration (new NormaIdentifier (aLE.getCompanyIDValue (),
-                                                          aLE.getCompanyID ().getSchemeID ()));
+                                                           aLE.getCompanyID ().getSchemeID ()));
       // BT-33
       aSeller.setAdditionalLegalInfo (_str (aLE.getCompanyLegalFormValue ()));
     }
@@ -516,7 +456,7 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
     // BT-34
     if (aParty.getEndpointID () != null)
       aSeller.setElectronicAddress (new NormaIdentifier (aParty.getEndpointIDValue (),
-                                                        aParty.getEndpointID ().getSchemeID ()));
+                                                         aParty.getEndpointID ().getSchemeID ()));
     // BG-5
     if (aParty.getPostalAddress () != null)
       aSeller.setPostalAddress (_readAddress (aParty.getPostalAddress ()));
@@ -570,8 +510,7 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
     {
       final PartyLegalEntityType aLE = aParty.getPartyLegalEntity ().get (0);
       if (aLE.getCompanyID () != null)
-        aOut.setLegalRegistration (new NormaIdentifier (aLE.getCompanyIDValue (),
-                                                       aLE.getCompanyID ().getSchemeID ()));
+        aOut.setLegalRegistration (new NormaIdentifier (aLE.getCompanyIDValue (), aLE.getCompanyID ().getSchemeID ()));
     }
     return aOut;
   }
@@ -600,7 +539,7 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
     {
       if (aDelivery.getDeliveryLocation ().getID () != null)
         aOut.setLocationIdentifier (new NormaIdentifier (aDelivery.getDeliveryLocation ().getIDValue (),
-                                                        aDelivery.getDeliveryLocation ().getID ().getSchemeID ()));
+                                                         aDelivery.getDeliveryLocation ().getID ().getSchemeID ()));
       if (aDelivery.getDeliveryLocation ().getAddress () != null)
         aOut.setPostalAddress (_readAddress (aDelivery.getDeliveryLocation ().getAddress ()));
     }
@@ -644,7 +583,8 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       aDD.setMandateReferenceID (_str (aMandate.getIDValue ()));
       if (aMandate.getPayerFinancialAccount () != null)
         aDD.setDebitedAccountID (_str (aMandate.getPayerFinancialAccount ().getIDValue ()));
-      // BT-90 — bank assigned creditor id (UBL: from supplier/payee PartyIdentification with SEPA scheme)
+      // BT-90 — bank assigned creditor id (UBL: from supplier/payee PartyIdentification with SEPA
+      // scheme)
       aDD.setBankAssignedCreditorID (_findSepaCreditorID (aSupplier, aPayee));
       aOut.setDirectDebit (aDD);
     }
@@ -688,7 +628,9 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       aOut.setBaseAmount (aAC.getBaseAmount ().getValue ());
     if (aAC.getMultiplierFactorNumeric () != null)
       aOut.setPercentage (aAC.getMultiplierFactorNumeric ().getValue ());
-    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null : _str (aAC.getAllowanceChargeReason ().get (0).getValue ()));
+    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null : _str (aAC.getAllowanceChargeReason ()
+                                                                                 .get (0)
+                                                                                 .getValue ()));
     aOut.setReasonCode (_str (aAC.getAllowanceChargeReasonCodeValue ()));
     if (aAC.getTaxCategory () != null && !aAC.getTaxCategory ().isEmpty ())
     {
@@ -710,7 +652,9 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       aOut.setBaseAmount (aAC.getBaseAmount ().getValue ());
     if (aAC.getMultiplierFactorNumeric () != null)
       aOut.setPercentage (aAC.getMultiplierFactorNumeric ().getValue ());
-    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null : _str (aAC.getAllowanceChargeReason ().get (0).getValue ()));
+    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null : _str (aAC.getAllowanceChargeReason ()
+                                                                                 .get (0)
+                                                                                 .getValue ()));
     aOut.setReasonCode (_str (aAC.getAllowanceChargeReasonCodeValue ()));
     if (aAC.getTaxCategory () != null && !aAC.getTaxCategory ().isEmpty ())
     {
@@ -742,8 +686,7 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       aModel.getDocumentTotals ().setPayableAmount (aLMT.getPayableAmount ().getValue ());
   }
 
-  private static void _readTaxTotals (@NonNull final List <TaxTotalType> aTaxTotals,
-                                      @NonNull final NormaInvoice aModel)
+  private static void _readTaxTotals (@NonNull final List <TaxTotalType> aTaxTotals, @NonNull final NormaInvoice aModel)
   {
     final String sCurrency = aModel.getCurrency ();
     final String sAccountingCurrency = aModel.getVATAccountingCurrency ();
@@ -756,11 +699,12 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
         final String sCurrencyID = aTT.getTaxAmount ().getCurrencyID ();
         if (sAccountingCurrency != null && sAccountingCurrency.equals (sCurrencyID))
           aModel.getDocumentTotals ().setTaxTotalAccountingCurrency (aAmount);
-        else if (!bMainTaxTotalSet)
-        {
-          aModel.getDocumentTotals ().setTaxTotal (aAmount);
-          bMainTaxTotalSet = true;
-        }
+        else
+          if (!bMainTaxTotalSet)
+          {
+            aModel.getDocumentTotals ().setTaxTotal (aAmount);
+            bMainTaxTotalSet = true;
+          }
       }
       for (final TaxSubtotalType aSub : aTT.getTaxSubtotal ())
         aModel.vatBreakdowns ().add (_readVATBreakdown (aSub));
@@ -781,7 +725,9 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       aOut.setCategoryCode (_str (aTC.getIDValue ()));
       if (aTC.getPercent () != null)
         aOut.setRate (aTC.getPercent ().getValue ());
-      aOut.setExemptionReason (aTC.getTaxExemptionReason ().isEmpty () ? null : _str (aTC.getTaxExemptionReason ().get (0).getValue ()));
+      aOut.setExemptionReason (aTC.getTaxExemptionReason ().isEmpty () ? null : _str (aTC.getTaxExemptionReason ()
+                                                                                         .get (0)
+                                                                                         .getValue ()));
       aOut.setExemptionReasonCode (_str (aTC.getTaxExemptionReasonCodeValue ()));
     }
     return aOut;
@@ -792,10 +738,8 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
   {
     final NormaSupportingDocument aOut = new NormaSupportingDocument ();
     aOut.setReference (_str (aRef.getIDValue ()));
-    aOut.setDescription (_str (aRef.getDocumentDescriptionAtIndex (0) != null
-                                                                             ? aRef.getDocumentDescriptionAtIndex (0)
-                                                                                   .getValue ()
-                                                                             : null));
+    aOut.setDescription (_str (aRef.getDocumentDescriptionAtIndex (0) != null ? aRef.getDocumentDescriptionAtIndex (0)
+                                                                                    .getValue () : null));
     if (aRef.getAttachment () != null)
     {
       final AttachmentType aAtt = aRef.getAttachment ();
@@ -938,7 +882,9 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       aOut.setBaseAmount (aAC.getBaseAmount ().getValue ());
     if (aAC.getMultiplierFactorNumeric () != null)
       aOut.setPercentage (aAC.getMultiplierFactorNumeric ().getValue ());
-    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null : _str (aAC.getAllowanceChargeReason ().get (0).getValue ()));
+    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null : _str (aAC.getAllowanceChargeReason ()
+                                                                                 .get (0)
+                                                                                 .getValue ()));
     aOut.setReasonCode (_str (aAC.getAllowanceChargeReasonCodeValue ()));
     return aOut;
   }
@@ -953,7 +899,9 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       aOut.setBaseAmount (aAC.getBaseAmount ().getValue ());
     if (aAC.getMultiplierFactorNumeric () != null)
       aOut.setPercentage (aAC.getMultiplierFactorNumeric ().getValue ());
-    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null : _str (aAC.getAllowanceChargeReason ().get (0).getValue ()));
+    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null : _str (aAC.getAllowanceChargeReason ()
+                                                                                 .get (0)
+                                                                                 .getValue ()));
     aOut.setReasonCode (_str (aAC.getAllowanceChargeReasonCodeValue ()));
     return aOut;
   }
