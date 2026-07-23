@@ -21,9 +21,11 @@ import java.awt.Color;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import com.helger.base.enforce.ValueEnforcer;
+
 /**
- * Syntax-neutral watermark description. Consumed identically by HTML and PDF writers; each
- * writer interprets it for its medium.
+ * Syntax-neutral watermark description. Consumed identically by HTML and PDF writers; each writer
+ * interprets it for its medium.
  *
  * @author Philip Helger
  */
@@ -50,8 +52,7 @@ public class WatermarkSpec
    */
   protected WatermarkSpec (@NonNull final String sText)
   {
-    if (sText == null)
-      throw new IllegalArgumentException ("Watermark text must not be null");
+    ValueEnforcer.notNull (sText, "Text");
     m_sText = sText;
   }
 
@@ -205,10 +206,14 @@ public class WatermarkSpec
   public String getCssRgba ()
   {
     return "rgba(" +
-           m_aColor.getRed () + "," +
-           m_aColor.getGreen () + "," +
-           m_aColor.getBlue () + "," +
-           m_fOpacity + ")";
+           m_aColor.getRed () +
+           "," +
+           m_aColor.getGreen () +
+           "," +
+           m_aColor.getBlue () +
+           "," +
+           m_fOpacity +
+           ")";
   }
 
   /**

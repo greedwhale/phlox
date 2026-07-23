@@ -22,7 +22,7 @@
   <parent>
     <groupId>com.helger</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>3.0.5</version>
+    <version>3.1.0</version>
   </parent>
   <groupId>com.helger.norma</groupId>
   <artifactId>norma-parent-pom</artifactId>
@@ -62,7 +62,7 @@
 
     <ph-commons.version>12.3.0</ph-commons.version>
     <ph-ubl.version>10.2.0</ph-ubl.version>
-    <ph-cii.version>4.1.1</ph-cii.version>
+    <ph-cii.version>4.1.2</ph-cii.version>
     <ph-oton.version>10.2.3</ph-oton.version>
     <ph-pdf-layout.version>8.1.2</ph-pdf-layout.version>
     <picocli.version>4.7.7</picocli.version>
