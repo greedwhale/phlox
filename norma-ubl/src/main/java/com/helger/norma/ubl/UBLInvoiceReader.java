@@ -230,7 +230,7 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
 
     // BG-20 / BG-21 — document-level allowances and charges
     for (final AllowanceChargeType aAC : aInvoice.getAllowanceCharge ())
-      if (aAC.getChargeIndicator () != null && Boolean.TRUE.equals (aAC.getChargeIndicator ().isValue ()))
+      if (aAC.getChargeIndicator () != null && aAC.getChargeIndicator ().isValue ())
         aModel.documentCharges ().add (_readDocumentCharge (aAC));
       else
         aModel.documentAllowances ().add (_readDocumentAllowance (aAC));
@@ -359,7 +359,7 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
     }
 
     for (final AllowanceChargeType aAC : aCreditNote.getAllowanceCharge ())
-      if (aAC.getChargeIndicator () != null && Boolean.TRUE.equals (aAC.getChargeIndicator ().isValue ()))
+      if (aAC.getChargeIndicator () != null && aAC.getChargeIndicator ().isValue ())
         aModel.documentCharges ().add (_readDocumentCharge (aAC));
       else
         aModel.documentAllowances ().add (_readDocumentAllowance (aAC));
@@ -795,7 +795,7 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
         aOut.setPeriod (aIP);
     }
     for (final AllowanceChargeType aAC : aLine.getAllowanceCharge ())
-      if (aAC.getChargeIndicator () != null && Boolean.TRUE.equals (aAC.getChargeIndicator ().isValue ()))
+      if (aAC.getChargeIndicator () != null && aAC.getChargeIndicator ().isValue ())
         aOut.charges ().add (_readLineCharge (aAC));
       else
         aOut.allowances ().add (_readLineAllowance (aAC));
@@ -850,7 +850,7 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
         aOut.setPeriod (aIP);
     }
     for (final AllowanceChargeType aAC : aLine.getAllowanceCharge ())
-      if (aAC.getChargeIndicator () != null && Boolean.TRUE.equals (aAC.getChargeIndicator ().isValue ()))
+      if (aAC.getChargeIndicator () != null && aAC.getChargeIndicator ().isValue ())
         aOut.charges ().add (_readLineCharge (aAC));
       else
         aOut.allowances ().add (_readLineAllowance (aAC));
@@ -918,7 +918,7 @@ public class UBLInvoiceReader implements IInvoiceReader <InputStream>
       aOut.setBaseQuantityUnit (aPrice.getBaseQuantity ().getUnitCode ());
     }
     for (final AllowanceChargeType aAC : aPrice.getAllowanceCharge ())
-      if (aAC.getChargeIndicator () == null || !Boolean.TRUE.equals (aAC.getChargeIndicator ().isValue ()))
+      if (aAC.getChargeIndicator () == null || !aAC.getChargeIndicator ().isValue ())
       {
         if (aAC.getAmount () != null)
           aOut.setDiscount (aAC.getAmount ().getValue ());

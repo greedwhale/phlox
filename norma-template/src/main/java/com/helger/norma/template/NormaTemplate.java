@@ -34,7 +34,7 @@ import org.jspecify.annotations.NonNull;
 import com.helger.base.equals.EqualsHelper;
 import com.helger.base.hashcode.HashCodeGenerator;
 import com.helger.base.tostring.ToStringGenerator;
-import com.helger.cache.impl.Cache;
+import com.helger.cache.impl.ProviderCache;
 import com.helger.io.resource.ClassPathResource;
 import com.helger.norma.api.AbstractRenderContext;
 import com.helger.norma.api.i18n.INormaLabelResolver;
@@ -64,6 +64,68 @@ import com.samskivert.mustache.Template;
  */
 public final class NormaTemplate implements INormaTemplate
 {
+  // ─────────────────────────────────────────────────────────────────────
+  // Localize cache key — (Locale, INormaLabelResolver identity)
+  // ─────────────────────────────────────────────────────────────────────
+
+  /**
+   * Cache key for the localize step. Locale uses value equality (so {@code Locale.GERMAN} and
+   * {@code new Locale("de")} hit the same entry); the resolver uses reference identity, so callers
+   * must reuse the same resolver instance to hit the cache. The default resolver
+   * ({@link com.helger.norma.api.i18n.DefaultNormaLabelResolver#INSTANCE}) is process-wide, so
+   * default usage naturally hits.
+   */
+  private static final class CacheKey
+  {
+    private final Locale m_aLocale;
+    private final INormaLabelResolver m_aResolver;
+
+    CacheKey (@NonNull final Locale aLocale, @NonNull final INormaLabelResolver aResolver)
+    {
+      m_aLocale = aLocale;
+      m_aResolver = aResolver;
+    }
+
+    @NonNull
+    Locale locale ()
+    {
+      return m_aLocale;
+    }
+
+    @NonNull
+    INormaLabelResolver resolver ()
+    {
+      return m_aResolver;
+    }
+
+    @Override
+    public boolean equals (final Object o)
+    {
+      if (this == o)
+        return true;
+      if (o == null || !getClass ().equals (o.getClass ()))
+        return false;
+      final CacheKey rhs = (CacheKey) o;
+      // Locale uses value equality; resolver is compared by identity on purpose so that
+      // callers swapping in a fresh resolver instance get a fresh cache entry.
+      return EqualsHelper.equals (m_aLocale, rhs.m_aLocale) && m_aResolver == rhs.m_aResolver;
+    }
+
+    @Override
+    public int hashCode ()
+    {
+      return new HashCodeGenerator (this).append (m_aLocale)
+                                         .append (System.identityHashCode (m_aResolver))
+                                         .getHashCode ();
+    }
+
+    @Override
+    public String toString ()
+    {
+      return new ToStringGenerator (null).append ("Locale", m_aLocale).append ("Resolver", m_aResolver).getToString ();
+    }
+  }
+
   /** Classpath path of the default template shipped in this module. */
   public static final String DEFAULT_CLASSPATH_PATH = "templates/default.ntpl";
 
@@ -80,13 +142,17 @@ public final class NormaTemplate implements INormaTemplate
   private final int m_nID = NEXT_ID.incrementAndGet ();
   private final String m_sSource;
   private final Parser m_aCMParser;
-  private final Cache <CacheKey, NormaLocalizedTemplate> m_aLocalizeCache;
+  private final ProviderCache <CacheKey, NormaLocalizedTemplate> m_aLocalizeCache;
 
   private NormaTemplate (@NonNull final String sSource)
   {
     m_sSource = sSource;
     m_aCMParser = Parser.builder ().extensions (COMMONMARK_EXTENSIONS).build ();
-    m_aLocalizeCache = Cache.builder (this::_buildLocalized).name ("norma-template-" + m_nID).maxSize (1_000).build ();
+    m_aLocalizeCache = ProviderCache.<CacheKey, NormaLocalizedTemplate> builder ()
+                                    .valueProvider (this::_buildLocalized)
+                                    .name ("norma-template-" + m_nID)
+                                    .maxSize (1_000)
+                                    .build ();
   }
 
   @NonNull
@@ -117,8 +183,8 @@ public final class NormaTemplate implements INormaTemplate
   // ─────────────────────────────────────────────────────────────────────
 
   /**
-   * Build a template from a raw {@code .ntpl} source string. The source is held as-is; no
-   * label substitution or JMustache compile happens until {@link #localize} is called.
+   * Build a template from a raw {@code .ntpl} source string. The source is held as-is; no label
+   * substitution or JMustache compile happens until {@link #localize} is called.
    *
    * @param sSource
    *        Raw template text. Must be valid {@code .ntpl} per the grammar in
@@ -132,8 +198,8 @@ public final class NormaTemplate implements INormaTemplate
   }
 
   /**
-   * Build a template from a classpath resource (e.g. {@code "templates/foo.ntpl"}). The
-   * resource is read as UTF-8.
+   * Build a template from a classpath resource (e.g. {@code "templates/foo.ntpl"}). The resource is
+   * read as UTF-8.
    *
    * @param sPath
    *        Classpath path, relative to the classloader's root.
@@ -147,7 +213,8 @@ public final class NormaTemplate implements INormaTemplate
     final ClassPathResource aRes = new ClassPathResource (sPath);
     if (!aRes.exists ())
       throw new NormaTemplateException (EStage.SUBSTITUTE, sPath, "classpath template not found: " + sPath);
-    try (InputStream aIS = aRes.getInputStream ())
+
+    try (final InputStream aIS = aRes.getInputStream ())
     {
       if (aIS == null)
         throw new NormaTemplateException (EStage.SUBSTITUTE, sPath, "classpath template has no stream: " + sPath);
@@ -210,10 +277,10 @@ public final class NormaTemplate implements INormaTemplate
   // ─────────────────────────────────────────────────────────────────────
 
   /**
-   * Return a locale-baked, JMustache-compiled variant of this template. Subsequent calls with
-   * the same {@code (locale, resolver instance)} pair return the cached instance. The cache
-   * keys the resolver by reference identity, so callers using a custom resolver must reuse the
-   * same instance across calls to hit the cache.
+   * Return a locale-baked, JMustache-compiled variant of this template. Subsequent calls with the
+   * same {@code (locale, resolver instance)} pair return the cached instance. The cache keys the
+   * resolver by reference identity, so callers using a custom resolver must reuse the same instance
+   * across calls to hit the cache.
    *
    * @param aLocale
    *        Locale used for label lookups in stage 0.
@@ -228,8 +295,8 @@ public final class NormaTemplate implements INormaTemplate
   }
 
   /**
-   * Convenience overload — calls {@link #localize(Locale, INormaLabelResolver)} with the
-   * locale and label resolver pulled from {@code aCtx}.
+   * Convenience overload — calls {@link #localize(Locale, INormaLabelResolver)} with the locale and
+   * label resolver pulled from {@code aCtx}.
    *
    * @param aCtx
    *        Render context whose locale and label resolver drive the localization.
@@ -283,75 +350,13 @@ public final class NormaTemplate implements INormaTemplate
   }
 
   /**
-   * @return The raw template source — the {@code .ntpl} text the instance was built from.
-   *         Intended for diagnostics (error messages, debug dumps); never the runtime render
-   *         path, since stage 0 has not yet been applied.
+   * @return The raw template source — the {@code .ntpl} text the instance was built from. Intended
+   *         for diagnostics (error messages, debug dumps); never the runtime render path, since
+   *         stage 0 has not yet been applied.
    */
   @NonNull
   public String getSourceForDebug ()
   {
     return m_sSource;
-  }
-
-  // ─────────────────────────────────────────────────────────────────────
-  // Localize cache key — (Locale, INormaLabelResolver identity)
-  // ─────────────────────────────────────────────────────────────────────
-
-  /**
-   * Cache key for the localize step. Locale uses value equality (so {@code Locale.GERMAN} and
-   * {@code new Locale("de")} hit the same entry); the resolver uses reference identity, so callers
-   * must reuse the same resolver instance to hit the cache. The default resolver
-   * ({@link com.helger.norma.api.i18n.DefaultNormaLabelResolver#INSTANCE}) is process-wide, so
-   * default usage naturally hits.
-   */
-  private static final class CacheKey
-  {
-    private final Locale m_aLocale;
-    private final INormaLabelResolver m_aResolver;
-
-    CacheKey (@NonNull final Locale aLocale, @NonNull final INormaLabelResolver aResolver)
-    {
-      m_aLocale = aLocale;
-      m_aResolver = aResolver;
-    }
-
-    @NonNull
-    Locale locale ()
-    {
-      return m_aLocale;
-    }
-
-    @NonNull
-    INormaLabelResolver resolver ()
-    {
-      return m_aResolver;
-    }
-
-    @Override
-    public boolean equals (final Object o)
-    {
-      if (this == o)
-        return true;
-      if (o == null || !getClass ().equals (o.getClass ()))
-        return false;
-      final CacheKey rhs = (CacheKey) o;
-      // Locale uses value equality; resolver is compared by identity on purpose so that
-      // callers swapping in a fresh resolver instance get a fresh cache entry.
-      return EqualsHelper.equals (m_aLocale, rhs.m_aLocale) && m_aResolver == rhs.m_aResolver;
-    }
-
-    @Override
-    public int hashCode ()
-    {
-      return new HashCodeGenerator (this).append (m_aLocale)
-                                         .append (System.identityHashCode (m_aResolver))
-                                         .getHashCode ();
-    }
-
-    @Override
-    public String toString ()
-    {
-      return new ToStringGenerator (null).append ("Locale", m_aLocale).append ("Resolver", m_aResolver).getToString ();
-    }
   }
 }

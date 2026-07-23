@@ -17,7 +17,6 @@
 package com.helger.norma.cli;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,6 +26,7 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
+import com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream;
 import com.helger.diagnostics.error.list.ErrorList;
 import com.helger.norma.api.model.NormaInvoice;
 import com.helger.norma.api.watermark.WatermarkSpec;
@@ -119,14 +119,14 @@ public class NormaCLI implements Callable <Integer>
     final ErrorList aErrors = new ErrorList ();
     final NormaInvoice aInvoice;
     if (eSyntax == ESourceSyntax.CII)
-      aInvoice = new CIIInvoiceReader ().read (new ByteArrayInputStream (aBytes), aErrors);
+      aInvoice = new CIIInvoiceReader ().read (new NonBlockingByteArrayInputStream (aBytes), aErrors);
     else
-      aInvoice = UBLInvoiceReader.fromUBL21 ().read (new ByteArrayInputStream (aBytes), aErrors);
+      aInvoice = UBLInvoiceReader.fromUBL21 ().read (new NonBlockingByteArrayInputStream (aBytes), aErrors);
 
     if (aInvoice == null || aErrors.containsAtLeastOneError ())
     {
       System.err.println ("Failed to parse input: " + aErrors);
-      return 1;
+      return Integer.valueOf (1);
     }
 
     final Locale aLocale = new Locale.Builder ().setLanguage (lang).build ();
@@ -139,7 +139,7 @@ public class NormaCLI implements Callable <Integer>
       if (outputFile == null)
       {
         System.err.println ("PDF output requires --out");
-        return 2;
+        return Integer.valueOf (2);
       }
       final PDFRenderContext aCtx = new PDFRenderContext ().setLocale (aLocale).setUserWatermark (aWM);
       try (final OutputStream aOut = new FileOutputStream (outputFile.toFile ()))

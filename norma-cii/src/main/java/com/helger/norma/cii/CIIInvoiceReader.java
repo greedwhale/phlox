@@ -705,6 +705,7 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
       aModel.getDocumentTotals ().setRoundingAmount (aS.getRoundingAmount ().get (0).getValue ());
     if (!aS.getDuePayableAmount ().isEmpty ())
       aModel.getDocumentTotals ().setPayableAmount (aS.getDuePayableAmount ().get (0).getValue ());
+
     // BT-110 (main) / BT-111 (accounting currency)
     final String sMain = aModel.getCurrency ();
     final String sAcct = aModel.getVATAccountingCurrency ();
@@ -907,24 +908,25 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
   // ===== Helpers =====
 
   @Nullable
-  private static String _str (@Nullable final String s)
+  private static String _trimmed (@Nullable final String s)
   {
     if (s == null)
       return null;
-    final String t = s.trim ();
-    return t.isEmpty () ? null : t;
+
+    final String sTrimmed = s.trim ();
+    return sTrimmed.isEmpty () ? null : sTrimmed;
   }
 
   @Nullable
   private static String _idValue (@Nullable final IDType aID)
   {
-    return aID == null ? null : _str (aID.getValue ());
+    return aID == null ? null : _trimmed (aID.getValue ());
   }
 
   @Nullable
   private static String _text (@Nullable final TextType aT)
   {
-    return aT == null ? null : _str (aT.getValue ());
+    return aT == null ? null : _trimmed (aT.getValue ());
   }
 
   /**
@@ -937,10 +939,11 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
   {
     if (aCode == null)
       return null;
+
     try
     {
       final Object aVal = aCode.getClass ().getMethod ("getValue").invoke (aCode);
-      return aVal == null ? null : _str (aVal.toString ());
+      return aVal == null ? null : _trimmed (aVal.toString ());
     }
     catch (final ReflectiveOperationException ex)
     {
@@ -958,6 +961,7 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
   {
     if (aDT == null || aDT.getDateTimeString () == null)
       return null;
+
     return _parseFormatted (aDT.getDateTimeString ().getValue (), aDT.getDateTimeString ().getFormat ());
   }
 
@@ -971,6 +975,7 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
   {
     if (aDT == null)
       return null;
+
     if (aDT.getDateString () != null)
       return _parseFormatted (aDT.getDateString ().getValue (), aDT.getDateString ().getFormat ());
     return aDT.getDateLocal ();
@@ -985,6 +990,7 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
   {
     if (aFDT == null || aFDT.getDateTimeString () == null)
       return null;
+
     return _parseFormatted (aFDT.getDateTimeString ().getValue (), aFDT.getDateTimeString ().getFormat ());
   }
 
@@ -998,6 +1004,7 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
   {
     if (sValue == null || sValue.isEmpty ())
       return null;
+
     final String sFormatOrDefault = sFormat == null || sFormat.isEmpty () ? DEFAULT_DATE_FORMAT_CODE : sFormat;
     final String sPattern = _patternFor (sFormatOrDefault);
     if (sPattern == null)
@@ -1067,16 +1074,17 @@ public class CIIInvoiceReader implements IInvoiceReader <InputStream>
   {
     if (aTexts == null || aTexts.isEmpty ())
       return null;
-    final StringBuilder aSb = new StringBuilder ();
-    for (final TextType aT : aTexts)
+
+    final StringBuilder aSB = new StringBuilder ();
+    for (final TextType aText : aTexts)
     {
-      final String sVal = _text (aT);
+      final String sVal = _text (aText);
       if (sVal == null)
         continue;
-      if (aSb.length () > 0)
-        aSb.append ('\n');
-      aSb.append (sVal);
+      if (aSB.length () > 0)
+        aSB.append ('\n');
+      aSB.append (sVal);
     }
-    return aSb.length () == 0 ? null : aSb.toString ();
+    return aSB.length () == 0 ? null : aSB.toString ();
   }
 }
