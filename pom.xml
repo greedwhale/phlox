@@ -60,10 +60,10 @@
   <properties>
     <maven.compiler.release>25</maven.compiler.release>
 
-    <ph-commons.version>12.5.0</ph-commons.version>
+    <ph-commons.version>12.5.1</ph-commons.version>
     <ph-ubl.version>10.2.1</ph-ubl.version>
     <ph-cii.version>4.1.2</ph-cii.version>
-    <ph-oton.version>10.6.0</ph-oton.version>
+    <ph-oton.version>10.7.0</ph-oton.version>
     <ph-pdf-layout.version>8.3.3</ph-pdf-layout.version>
     <picocli.version>4.7.7</picocli.version>
     <jmustache.version>1.16</jmustache.version>
