@@ -19,6 +19,8 @@ package com.helger.phlox.template;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import com.helger.phlox.api.PhloxRuntimeException;
+
 /**
  * Thrown when a phlox template fails to substitute, parse, or emit. Carries the pipeline stage the
  * failure happened in plus the BG/BT path being resolved (when applicable), so callers can report
@@ -26,7 +28,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Philip Helger
  */
-public class PhloxTemplateException extends RuntimeException
+public class PhloxTemplateException extends PhloxRuntimeException
 {
   /**
    * Stage of the template pipeline. See {@code wiki/Template-Processing.md} § Error handling.
