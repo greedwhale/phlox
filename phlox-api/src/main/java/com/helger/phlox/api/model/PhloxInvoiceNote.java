@@ -48,7 +48,11 @@ public class PhloxInvoiceNote
     m_sContent = sContent;
   }
 
-  /** @return Note subject code (BT-21). May be {@code null}. */
+  /**
+   * Get the note subject code (BT-21).
+   *
+   * @return Note subject code (BT-21). May be {@code null}.
+   */
   @Nullable
   public String getSubjectCode ()
   {
@@ -69,7 +73,11 @@ public class PhloxInvoiceNote
     return this;
   }
 
-  /** @return Note content (BT-22). May be {@code null}. */
+  /**
+   * Get the note content (BT-22).
+   *
+   * @return Note content (BT-22). May be {@code null}.
+   */
   @Nullable
   public String getContent ()
   {

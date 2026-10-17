@@ -31,9 +31,13 @@ import com.helger.base.enforce.ValueEnforcer;
  */
 public class WatermarkSpec
 {
+  /** Default opacity of the watermark. */
   public static final float DEFAULT_OPACITY = 0.10f;
+  /** Default rotation of the watermark in degrees. */
   public static final float DEFAULT_ROTATION = -45f;
+  /** Default font size of the watermark in points. */
   public static final float DEFAULT_FONT_SIZE_PT = 72f;
+  /** Default for repeating the watermark on every page. */
   public static final boolean DEFAULT_REPEAT_PER_PAGE = true;
 
   private final String m_sText;
@@ -69,14 +73,22 @@ public class WatermarkSpec
     return new WatermarkSpec (sText);
   }
 
-  /** @return The watermark text. Never {@code null}. */
+  /**
+   * Get the watermark text.
+   *
+   * @return The watermark text. Never {@code null}.
+   */
   @NonNull
   public String getText ()
   {
     return m_sText;
   }
 
-  /** @return The opacity in the {@code [0..1]} range (default {@value #DEFAULT_OPACITY}). */
+  /**
+   * Get the opacity in the {@code [0..1]} range (default {@value #DEFAULT_OPACITY}).
+   *
+   * @return The opacity in the {@code [0..1]} range (default {@value #DEFAULT_OPACITY}).
+   */
   public float getOpacity ()
   {
     return m_fOpacity;
@@ -96,7 +108,11 @@ public class WatermarkSpec
     return this;
   }
 
-  /** @return Rotation in degrees. Negative values rotate clockwise. */
+  /**
+   * Get the rotation in degrees.
+   *
+   * @return Rotation in degrees. Negative values rotate clockwise.
+   */
   public float getRotation ()
   {
     return m_fRotation;
@@ -116,7 +132,11 @@ public class WatermarkSpec
     return this;
   }
 
-  /** @return The watermark colour. Never {@code null}. */
+  /**
+   * Get the watermark colour.
+   *
+   * @return The watermark colour. Never {@code null}.
+   */
   @NonNull
   public Color getColor ()
   {
@@ -137,7 +157,11 @@ public class WatermarkSpec
     return this;
   }
 
-  /** @return The watermark position. Never {@code null}. */
+  /**
+   * Get the watermark position.
+   *
+   * @return The watermark position. Never {@code null}.
+   */
   @NonNull
   public EWatermarkPosition getPosition ()
   {
@@ -158,7 +182,11 @@ public class WatermarkSpec
     return this;
   }
 
-  /** @return The font size in PDF points (default {@value #DEFAULT_FONT_SIZE_PT}). */
+  /**
+   * Get the font size in PDF points (default {@value #DEFAULT_FONT_SIZE_PT}).
+   *
+   * @return The font size in PDF points (default {@value #DEFAULT_FONT_SIZE_PT}).
+   */
   public float getFontSizePt ()
   {
     return m_fFontSizePt;
@@ -178,7 +206,11 @@ public class WatermarkSpec
     return this;
   }
 
-  /** @return {@code true} when the watermark should repeat on every page. */
+  /**
+   * Get the {@code true} when the watermark should repeat on every page.
+   *
+   * @return {@code true} when the watermark should repeat on every page.
+   */
   public boolean isRepeatPerPage ()
   {
     return m_bRepeatPerPage;
@@ -199,6 +231,8 @@ public class WatermarkSpec
   }
 
   /**
+   * Get the opaque RGBA string for HTML.
+   *
    * @return An opaque RGBA string for HTML (e.g. {@code "rgba(128,128,128,0.10)"}) combining the
    *         configured colour and opacity.
    */

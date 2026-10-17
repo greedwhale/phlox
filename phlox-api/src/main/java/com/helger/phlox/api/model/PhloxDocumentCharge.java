@@ -49,7 +49,11 @@ public class PhloxDocumentCharge
   public PhloxDocumentCharge ()
   {}
 
-  /** @return Charge amount (BT-99). May be {@code null}. */
+  /**
+   * Get the charge amount (BT-99).
+   *
+   * @return Charge amount (BT-99). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getAmount ()
   {
@@ -70,7 +74,11 @@ public class PhloxDocumentCharge
     return this;
   }
 
-  /** @return Charge base amount (BT-100). May be {@code null}. */
+  /**
+   * Get the charge base amount (BT-100).
+   *
+   * @return Charge base amount (BT-100). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getBaseAmount ()
   {
@@ -91,7 +99,11 @@ public class PhloxDocumentCharge
     return this;
   }
 
-  /** @return Charge percentage (BT-101). May be {@code null}. */
+  /**
+   * Get the charge percentage (BT-101).
+   *
+   * @return Charge percentage (BT-101). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getPercentage ()
   {
@@ -112,7 +124,11 @@ public class PhloxDocumentCharge
     return this;
   }
 
-  /** @return VAT category code (BT-102) — UNTDID 5305. May be {@code null}. */
+  /**
+   * Get the VAT category code (BT-102) — UNTDID 5305. May be {@code null}.
+   *
+   * @return VAT category code (BT-102) — UNTDID 5305. May be {@code null}.
+   */
   @Nullable
   public String getVatCategoryCode ()
   {
@@ -133,7 +149,11 @@ public class PhloxDocumentCharge
     return this;
   }
 
-  /** @return VAT rate (BT-103). May be {@code null}. */
+  /**
+   * Get the VAT rate (BT-103).
+   *
+   * @return VAT rate (BT-103). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getVatRate ()
   {
@@ -154,7 +174,11 @@ public class PhloxDocumentCharge
     return this;
   }
 
-  /** @return Charge reason text (BT-104). May be {@code null}. */
+  /**
+   * Get the charge reason text (BT-104).
+   *
+   * @return Charge reason text (BT-104). May be {@code null}.
+   */
   @Nullable
   public String getReason ()
   {
@@ -175,7 +199,11 @@ public class PhloxDocumentCharge
     return this;
   }
 
-  /** @return Charge reason code (BT-105) — UNTDID 7161. May be {@code null}. */
+  /**
+   * Get the charge reason code (BT-105) — UNTDID 7161. May be {@code null}.
+   *
+   * @return Charge reason code (BT-105) — UNTDID 7161. May be {@code null}.
+   */
   @Nullable
   public String getReasonCode ()
   {
@@ -196,7 +224,11 @@ public class PhloxDocumentCharge
     return this;
   }
 
-  /** @return Document level charge or tax exemption reason text (BT-175). May be {@code null}. */
+  /**
+   * Get the document level charge or tax exemption reason text (BT-175).
+   *
+   * @return Document level charge or tax exemption reason text (BT-175). May be {@code null}.
+   */
   @Nullable
   public String getExemptionReasonText ()
   {
@@ -217,7 +249,11 @@ public class PhloxDocumentCharge
     return this;
   }
 
-  /** @return VAT exemption reason and specification code of the document level charge or tax (BT-176). May be {@code null}. */
+  /**
+   * Get the VAT exemption reason and specification code of the document level charge or tax (BT-176).
+   *
+   * @return VAT exemption reason and specification code of the document level charge or tax (BT-176). May be {@code null}.
+   */
   @Nullable
   public String getExemptionReasonCode ()
   {
@@ -238,7 +274,11 @@ public class PhloxDocumentCharge
     return this;
   }
 
-  /** @return Document level non-VAT tax code (BT-177). May be {@code null}. */
+  /**
+   * Get the document level non-VAT tax code (BT-177).
+   *
+   * @return Document level non-VAT tax code (BT-177). May be {@code null}.
+   */
   @Nullable
   public String getNonVatTaxCode ()
   {
@@ -259,7 +299,11 @@ public class PhloxDocumentCharge
     return this;
   }
 
-  /** @return Document level non-VAT tax code list identifier (BT-177-1). May be {@code null}. */
+  /**
+   * Get the document level non-VAT tax code list identifier (BT-177-1).
+   *
+   * @return Document level non-VAT tax code list identifier (BT-177-1). May be {@code null}.
+   */
   @Nullable
   public String getNonVatTaxCodeListID ()
   {
@@ -280,7 +324,11 @@ public class PhloxDocumentCharge
     return this;
   }
 
-  /** @return Document level charge goods/services code (BT-214). May be {@code null}. */
+  /**
+   * Get the document level charge goods/services code (BT-214).
+   *
+   * @return Document level charge goods/services code (BT-214). May be {@code null}.
+   */
   @Nullable
   public String getGoodsServicesCode ()
   {

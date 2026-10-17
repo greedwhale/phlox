@@ -22,15 +22,18 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Optional fine-tuning of locale-driven formatting. Held by {@link RenderContext} and shared
+ * Optional fine-tuning of locale-driven formatting. Held by {@link AbstractRenderContext} and shared
  * across writers.
  *
  * @author Philip Helger
  */
 public class PhloxFormatOptions
 {
+  /** Default style of formatted dates. */
   public static final FormatStyle DEFAULT_DATE_STYLE = FormatStyle.MEDIUM;
+  /** Default number of fraction digits of percentages. */
   public static final int DEFAULT_PERCENT_FRACTION_DIGITS = 2;
+  /** Default representation of negative amounts. */
   public static final ENegativeStyle DEFAULT_NEGATIVE_STYLE = ENegativeStyle.MINUS_SIGN;
 
   private FormatStyle m_eDateStyle = DEFAULT_DATE_STYLE;
@@ -42,14 +45,22 @@ public class PhloxFormatOptions
   public PhloxFormatOptions ()
   {}
 
-  /** @return A new instance with all options at their defaults. */
+  /**
+   * Get the new instance with all options at their defaults.
+   *
+   * @return A new instance with all options at their defaults.
+   */
   @NonNull
   public static PhloxFormatOptions defaults ()
   {
     return new PhloxFormatOptions ();
   }
 
-  /** @return The date format style (MEDIUM by default). Never {@code null}. */
+  /**
+   * Get the date format style (MEDIUM by default).
+   *
+   * @return The date format style (MEDIUM by default). Never {@code null}.
+   */
   @NonNull
   public FormatStyle getDateStyle ()
   {
@@ -71,6 +82,8 @@ public class PhloxFormatOptions
   }
 
   /**
+   * Get the override for the number of fraction digits used when formatting amounts.
+   *
    * @return Override for the number of fraction digits used when formatting amounts. When
    *         {@code null} (the default), the currency's natural fraction-digits count is used.
    */
@@ -94,7 +107,11 @@ public class PhloxFormatOptions
     return this;
   }
 
-  /** @return Fraction digits for percentage values (default {@value #DEFAULT_PERCENT_FRACTION_DIGITS}). */
+  /**
+   * Get the fraction digits for percentage values (default {@value #DEFAULT_PERCENT_FRACTION_DIGITS}).
+   *
+   * @return Fraction digits for percentage values (default {@value #DEFAULT_PERCENT_FRACTION_DIGITS}).
+   */
   public int getPercentFractionDigits ()
   {
     return m_nPercentFractionDigits;
@@ -114,7 +131,11 @@ public class PhloxFormatOptions
     return this;
   }
 
-  /** @return The negative-amount style (minus-sign by default). Never {@code null}. */
+  /**
+   * Get the negative-amount style (minus-sign by default).
+   *
+   * @return The negative-amount style (minus-sign by default). Never {@code null}.
+   */
   @NonNull
   public ENegativeStyle getNegativeStyle ()
   {

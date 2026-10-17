@@ -94,21 +94,34 @@ public final class PhloxTemplatePostParser
     m_aContext = aContext;
   }
 
-  /** Run both post-passes against the document root. */
+  /**
+   * Run both post-passes against the document root.
+   *
+   * @param aRoot
+   *        The document root. Never {@code null}.
+   */
   public void process (@NonNull final Node aRoot)
   {
     _processSentinels (aRoot);
     aRoot.accept (new ImageResolver ());
   }
 
-  /** @return Sidecar map of block → CSS class assigned by {@code {{class:…}}} sentinels. */
+  /**
+   * Get the sidecar map of block → CSS class assigned by {@code {{class:…}}} sentinels.
+   *
+   * @return Sidecar map of block → CSS class assigned by {@code {{class:…}}} sentinels.
+   */
   @NonNull
   public Map <Node, String> getBlockClassMap ()
   {
     return m_aBlockClassMap;
   }
 
-  /** @return Sidecar map of {@link Image} node → resolved binary payload. */
+  /**
+   * Get the sidecar map of {@link Image} node → resolved binary payload.
+   *
+   * @return Sidecar map of {@link Image} node → resolved binary payload.
+   */
   @NonNull
   public Map <Image, PhloxResolvedImage> getImageMap ()
   {
@@ -329,6 +342,10 @@ public final class PhloxTemplatePostParser
   /**
    * Encode the given bytes as a {@code data:} URI. Static helper used by emitters that need to
    * inline a resolved image into an HTML {@code src} attribute.
+   *
+   * @param aImage
+   *        The resolved image. Never {@code null}.
+   * @return The {@code data:} URI. Never {@code null}.
    */
   @NonNull
   public static String toDataUri (@NonNull final PhloxResolvedImage aImage)

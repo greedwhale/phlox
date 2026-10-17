@@ -24,10 +24,10 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.helger.datetime.xml.XMLOffsetDateTime;
-import com.helger.diagnostics.error.SingleError;
 import com.helger.collection.commons.CommonsArrayList;
 import com.helger.collection.commons.ICommonsList;
+import com.helger.datetime.xml.XMLOffsetDateTime;
+import com.helger.diagnostics.error.SingleError;
 import com.helger.diagnostics.error.list.ErrorList;
 import com.helger.en16931.basics.EEN16931DateFormatCode;
 import com.helger.en16931.basics.EEN16931Edition;
@@ -37,9 +37,16 @@ import com.helger.phlox.api.model.*;
 
 import un.unece.uncefact.data.standard.cii.d25a.CrossIndustryInvoiceType;
 import un.unece.uncefact.data.standard.cii.d25a.qdt.AllowanceChargeReasonCodeType;
+import un.unece.uncefact.data.standard.cii.d25a.qdt.CurrencyCodeType;
+import un.unece.uncefact.data.standard.cii.d25a.qdt.DocumentCodeType;
 import un.unece.uncefact.data.standard.cii.d25a.qdt.FormattedDateTimeType;
+import un.unece.uncefact.data.standard.cii.d25a.qdt.PaymentMeansCodeType;
+import un.unece.uncefact.data.standard.cii.d25a.qdt.ReferenceCodeType;
+import un.unece.uncefact.data.standard.cii.d25a.qdt.TaxCategoryCodeType;
+import un.unece.uncefact.data.standard.cii.d25a.qdt.TimeReferenceCodeType;
 import un.unece.uncefact.data.standard.cii.d25a.rabie.*;
 import un.unece.uncefact.data.standard.cii.d25a.udt.AmountType;
+import un.unece.uncefact.data.standard.cii.d25a.udt.CodeType;
 import un.unece.uncefact.data.standard.cii.d25a.udt.DateTimeType;
 import un.unece.uncefact.data.standard.cii.d25a.udt.DateType;
 import un.unece.uncefact.data.standard.cii.d25a.udt.IDType;
@@ -52,7 +59,7 @@ import un.unece.uncefact.data.standard.cii.d25a.udt.TextType;
  *
  * @author Philip Helger
  */
-final class CiiD25AInvoiceReader
+final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
 {
   private static final Logger LOGGER = LoggerFactory.getLogger (CiiD25AInvoiceReader.class);
 
@@ -90,8 +97,7 @@ final class CiiD25AInvoiceReader
    * @return The populated model.
    */
   @NonNull
-  PhloxInvoice readCrossIndustryInvoice (@NonNull final CrossIndustryInvoiceType aCii,
-                                         @NonNull final ErrorList aErrors)
+  PhloxInvoice readCrossIndustryInvoice (@NonNull final CrossIndustryInvoiceType aCii, @NonNull final ErrorList aErrors)
   {
     final PhloxInvoice aModel = new PhloxInvoice ();
     aModel.setEdition (EEN16931Edition.EN2026);
@@ -141,9 +147,9 @@ final class CiiD25AInvoiceReader
       // BT-10 / BT-10-1 — repeatable since EN 16931:2026
       for (final IDType aID : aHTA.getBuyerReferenceID ())
       {
-        final String sBuyerReference = _trimmed (aID.getValue ());
+        final String sBuyerReference = str (aID.getValue ());
         if (sBuyerReference != null)
-          aModel.buyerReferences ().add (new PhloxIdentifier (sBuyerReference, _trimmed (aID.getSchemeID ())));
+          aModel.buyerReferences ().add (new PhloxIdentifier (sBuyerReference, str (aID.getSchemeID ())));
       }
       // BT-12 — contract
       if (aHTA.getContractReferencedDocument () != null)
@@ -320,7 +326,7 @@ final class CiiD25AInvoiceReader
       }
 
       // BG-16/17/18/19 + BT-9 + BG-33/35/36 — payment instructions and terms
-      _readPaymentInstructions (aHTS, aModel, aErrors);
+      _readPaymentInstructions (aHTS, aModel);
 
       // BG-34 — charges on behalf of a third party (EN 16931:2026)
       for (final FinancialAdjustmentType aFA : aHTS.getSpecifiedFinancialAdjustment ())
@@ -339,7 +345,7 @@ final class CiiD25AInvoiceReader
 
     // BG-25 — lines
     for (final SupplyChainTradeLineItemType aLine : aSCTT.getIncludedSupplyChainTradeLineItem ())
-      aModel.lines ().add (_readLine (aLine, aModel.isCreditNote ()));
+      aModel.lines ().add (_readLine (aLine));
 
     return aModel;
   }
@@ -348,17 +354,17 @@ final class CiiD25AInvoiceReader
 
   /**
    * Read the party identifiers (BT-29, BT-46, BT-60, BT-71 and their scheme identifiers). Since EN
-   * 16931:2026 only {@code ram:GlobalID} carries them; {@code ram:ID} is only used as a fallback for
-   * documents that still follow the 2017 binding.
+   * 16931:2026 only {@code ram:GlobalID} carries them; {@code ram:ID} is only used as a fallback
+   * for documents that still follow the 2017 binding.
    */
   private static void _readPartyIdentifiers (@NonNull final TradePartyType aTP,
                                              @NonNull final List <PhloxIdentifier> aTarget)
   {
     for (final IDType aID : aTP.getGlobalID ())
-      aTarget.add (new PhloxIdentifier (_idValue (aID), _trimmed (aID.getSchemeID ())));
+      aTarget.add (new PhloxIdentifier (_idValue (aID), str (aID.getSchemeID ())));
     if (aTarget.isEmpty ())
       for (final IDType aID : aTP.getID ())
-        aTarget.add (new PhloxIdentifier (_idValue (aID), _trimmed (aID.getSchemeID ())));
+        aTarget.add (new PhloxIdentifier (_idValue (aID), str (aID.getSchemeID ())));
   }
 
   private static void _readSeller (@NonNull final TradePartyType aTP, @NonNull final PhloxSeller aSeller)
@@ -385,7 +391,7 @@ final class CiiD25AInvoiceReader
           {
             // "FC" by default; special schemes from ISO/IEC 6523 may be used as well
             aSeller.setTaxRegistration (_idValue (aTR.getID ()));
-            aSeller.setTaxRegistrationSchemeID (_trimmed (sScheme));
+            aSeller.setTaxRegistrationSchemeID (str (sScheme));
           }
       }
     // BT-33
@@ -506,13 +512,12 @@ final class CiiD25AInvoiceReader
   // ===== Payment Instructions =====
 
   /**
-   * Read the BG-33 payment terms (BT-20) with the nested BG-35 early payment discount and BG-36 late
-   * payment penalty. One {@link PhloxPaymentTerms} is created per CII {@code
+   * Read the BG-33 payment terms (BT-20) with the nested BG-35 early payment discount and BG-36
+   * late payment penalty. One {@link PhloxPaymentTerms} is created per CII {@code
    * SpecifiedTradePaymentTerms} that carries a text, a discount or a penalty.
    */
   private static void _readPaymentTerms (@NonNull final List <TradePaymentTermsType> aTerms,
-                                         @NonNull final PhloxInvoice aModel,
-                                         @NonNull final ErrorList aErrors)
+                                         @NonNull final PhloxInvoice aModel)
   {
     for (final TradePaymentTermsType aPT : aTerms)
     {
@@ -551,14 +556,13 @@ final class CiiD25AInvoiceReader
   }
 
   private static void _readPaymentInstructions (@NonNull final HeaderTradeSettlementType aHTS,
-                                                @NonNull final PhloxInvoice aModel,
-                                                @NonNull final ErrorList aErrors)
+                                                @NonNull final PhloxInvoice aModel)
   {
     final List <TradeSettlementPaymentMeansType> aMeans = aHTS.getSpecifiedTradeSettlementPaymentMeans ();
     final List <TradePaymentTermsType> aTerms = aHTS.getSpecifiedTradePaymentTerms ();
 
     // BG-33 / BG-35 / BG-36
-    _readPaymentTerms (aTerms, aModel, aErrors);
+    _readPaymentTerms (aTerms, aModel);
 
     // BT-9 — payment due date
     for (final TradePaymentTermsType aPT : aTerms)
@@ -589,7 +593,7 @@ final class CiiD25AInvoiceReader
           final PhloxCreditTransfer aCT = new PhloxCreditTransfer ();
           // BT-84 — IBANID if applicable, ProprietaryID else
           aCT.setAccountIdentifier (aFA.getIBANID () != null ? _idValue (aFA.getIBANID ())
-                                                              : _idValue (aFA.getProprietaryID ()));
+                                                             : _idValue (aFA.getProprietaryID ()));
           aCT.setAccountName (_text (aFA.getAccountName ()));
           final CreditorFinancialInstitutionType aFI = aOne.getPayeeSpecifiedCreditorFinancialInstitution ();
           if (aFI != null && aFI.getBICID () != null)
@@ -643,9 +647,11 @@ final class CiiD25AInvoiceReader
   // ===== Allowances / Charges =====
 
   /**
+   * Get the {@code true} if the reason code carries {@code @listID="5153"} (UNTDID 5153 duty or tax.
+   *
    * @return {@code true} if the reason code carries {@code @listID="5153"} (UNTDID 5153 duty or tax
-   *         type), i.e. it is a non-VAT tax code (BT-177 / BT-193) and not a charge reason code. The
-   *         CII schema declares a default for {@code @listID}, so only the fixed value counts.
+   *         type), i.e. it is a non-VAT tax code (BT-177 / BT-193) and not a charge reason code.
+   *         The CII schema declares a default for {@code @listID}, so only the fixed value counts.
    */
   private static boolean _isNonVatTaxCodeList (@Nullable final AllowanceChargeReasonCodeType aCode)
   {
@@ -733,7 +739,6 @@ final class CiiD25AInvoiceReader
       aModel.getDocumentTotals ().setPayableAmount (aS.getDuePayableAmount ().get (0).getValue ());
 
     // BT-110 (main) / BT-111 (accounting currency)
-    final String sMain = aModel.getCurrency ();
     final String sAcct = aModel.getVatAccountingCurrency ();
     for (final AmountType aA : aS.getTaxTotalAmount ())
     {
@@ -791,8 +796,7 @@ final class CiiD25AInvoiceReader
   }
 
   @NonNull
-  private static PhloxInvoiceLine _readLine (@NonNull final SupplyChainTradeLineItemType aLine,
-                                             final boolean bIsCreditNote)
+  private static PhloxInvoiceLine _readLine (@NonNull final SupplyChainTradeLineItemType aLine)
   {
     final PhloxInvoiceLine aOut = new PhloxInvoiceLine ();
     final DocumentLineDocumentType aLD = aLine.getAssociatedDocumentLineDocument ();
@@ -840,7 +844,8 @@ final class CiiD25AInvoiceReader
       // BT-191 / BT-192
       if (aLTD.getReceivingAdviceReferencedDocument () != null)
       {
-        aOut.setReceivingAdviceReference (_idValue (aLTD.getReceivingAdviceReferencedDocument ().getIssuerAssignedID ()));
+        aOut.setReceivingAdviceReference (_idValue (aLTD.getReceivingAdviceReferencedDocument ()
+                                                        .getIssuerAssignedID ()));
         aOut.setReceivingAdviceLineReference (_idValue (aLTD.getReceivingAdviceReferencedDocument ().getLineID ()));
       }
       // BT-198 / BT-199
@@ -1027,25 +1032,63 @@ final class CiiD25AInvoiceReader
   // ===== Helpers =====
 
   @Nullable
-  private static String _trimmed (@Nullable final String s)
+  private static String _codeValue (@Nullable final AllowanceChargeReasonCodeType aCode)
   {
-    if (s == null)
-      return null;
+    return aCode == null ? null : str (aCode.getValue ());
+  }
 
-    final String sTrimmed = s.trim ();
-    return sTrimmed.isEmpty () ? null : sTrimmed;
+  @Nullable
+  private static String _codeValue (@Nullable final CurrencyCodeType aCode)
+  {
+    return aCode == null ? null : str (aCode.getValue ());
+  }
+
+  @Nullable
+  private static String _codeValue (@Nullable final DocumentCodeType aCode)
+  {
+    return aCode == null ? null : str (aCode.getValue ());
+  }
+
+  @Nullable
+  private static String _codeValue (@Nullable final PaymentMeansCodeType aCode)
+  {
+    return aCode == null ? null : str (aCode.getValue ());
+  }
+
+  @Nullable
+  private static String _codeValue (@Nullable final ReferenceCodeType aCode)
+  {
+    return aCode == null ? null : str (aCode.getValue ());
+  }
+
+  @Nullable
+  private static String _codeValue (@Nullable final TaxCategoryCodeType aCode)
+  {
+    return aCode == null ? null : str (aCode.getValue ());
+  }
+
+  @Nullable
+  private static String _codeValue (@Nullable final TimeReferenceCodeType aCode)
+  {
+    return aCode == null ? null : str (aCode.getValue ());
+  }
+
+  @Nullable
+  private static String _codeValue (@Nullable final CodeType aCode)
+  {
+    return aCode == null ? null : str (aCode.getValue ());
   }
 
   @Nullable
   private static String _idValue (@Nullable final IDType aID)
   {
-    return aID == null ? null : _trimmed (aID.getValue ());
+    return aID == null ? null : str (aID.getValue ());
   }
 
   @Nullable
   private static String _text (@Nullable final TextType aT)
   {
-    return aT == null ? null : _trimmed (aT.getValue ());
+    return aT == null ? null : str (aT.getValue ());
   }
 
   /**
@@ -1053,23 +1096,6 @@ final class CiiD25AInvoiceReader
    * (TaxCategoryCodeType, DocumentCodeType, ...), none of which share a Java base. Reflection keeps
    * the helper code small and avoids declaring 20 overloads.
    */
-  @Nullable
-  private static String _codeValue (@Nullable final Object aCode)
-  {
-    if (aCode == null)
-      return null;
-
-    try
-    {
-      final Object aVal = aCode.getClass ().getMethod ("getValue").invoke (aCode);
-      return aVal == null ? null : _trimmed (aVal.toString ());
-    }
-    catch (final ReflectiveOperationException ex)
-    {
-      return null;
-    }
-  }
-
   /**
    * Parse a CII {@code DateTimeType} into a {@link LocalDate}. Reads the {@code @format} attribute
    * on the inner {@code DateTimeString} and dispatches to the right pattern; missing format
@@ -1171,8 +1197,8 @@ final class CiiD25AInvoiceReader
    * Resolve the BT-3 type code into a document kind. Codes of the EN 16931 invoice type code
    * registry ({@link EEN16931InvoiceTypeCode}) with the role credit note become
    * {@link EPhloxDocumentKind#CREDIT_NOTE}, all other registry codes
-   * {@link EPhloxDocumentKind#INVOICE}; unknown codes default to {@code INVOICE} and add a warning to
-   * the error list.
+   * {@link EPhloxDocumentKind#INVOICE}; unknown codes default to {@code INVOICE} and add a warning
+   * to the error list.
    */
   @NonNull
   private static EPhloxDocumentKind _resolveKind (@Nullable final String sTypeCode, @NonNull final ErrorList aErrors)

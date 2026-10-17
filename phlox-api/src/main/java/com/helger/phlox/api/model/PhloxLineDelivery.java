@@ -42,7 +42,11 @@ public class PhloxLineDelivery
   public PhloxLineDelivery ()
   {}
 
-  /** @return Invoice line deliver to party name (BT-185). May be {@code null}. */
+  /**
+   * Get the invoice line deliver to party name (BT-185).
+   *
+   * @return Invoice line deliver to party name (BT-185). May be {@code null}.
+   */
   @Nullable
   public String getPartyName ()
   {
@@ -63,7 +67,11 @@ public class PhloxLineDelivery
     return this;
   }
 
-  /** @return Invoice line deliver to location identifier (BT-186 / BT-186-1). May be {@code null}. */
+  /**
+   * Get the invoice line deliver to location identifier (BT-186 / BT-186-1).
+   *
+   * @return Invoice line deliver to location identifier (BT-186 / BT-186-1). May be {@code null}.
+   */
   @Nullable
   public PhloxIdentifier getLocationIdentifier ()
   {
@@ -84,7 +92,11 @@ public class PhloxLineDelivery
     return this;
   }
 
-  /** @return Invoice line actual delivery date (BT-187). May be {@code null}. */
+  /**
+   * Get the invoice line actual delivery date (BT-187).
+   *
+   * @return Invoice line actual delivery date (BT-187). May be {@code null}.
+   */
   @Nullable
   public LocalDate getActualDeliveryDate ()
   {
@@ -105,7 +117,11 @@ public class PhloxLineDelivery
     return this;
   }
 
-  /** @return Invoice line deliver to address (BG-38). May be {@code null}. */
+  /**
+   * Get the invoice line deliver to address (BG-38).
+   *
+   * @return Invoice line deliver to address (BG-38). May be {@code null}.
+   */
   @Nullable
   public PhloxPostalAddress getPostalAddress ()
   {

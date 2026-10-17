@@ -44,7 +44,11 @@ public class PhloxVatBreakdown
   public PhloxVatBreakdown ()
   {}
 
-  /** @return VAT category taxable amount (BT-116). May be {@code null}. */
+  /**
+   * Get the VAT category taxable amount (BT-116).
+   *
+   * @return VAT category taxable amount (BT-116). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getTaxableAmount ()
   {
@@ -65,7 +69,11 @@ public class PhloxVatBreakdown
     return this;
   }
 
-  /** @return VAT category tax amount (BT-117). May be {@code null}. */
+  /**
+   * Get the VAT category tax amount (BT-117).
+   *
+   * @return VAT category tax amount (BT-117). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getTaxAmount ()
   {
@@ -86,7 +94,11 @@ public class PhloxVatBreakdown
     return this;
   }
 
-  /** @return VAT category code (BT-118) — UNTDID 5305. May be {@code null}. */
+  /**
+   * Get the VAT category code (BT-118) — UNTDID 5305. May be {@code null}.
+   *
+   * @return VAT category code (BT-118) — UNTDID 5305. May be {@code null}.
+   */
   @Nullable
   public String getCategoryCode ()
   {
@@ -107,7 +119,11 @@ public class PhloxVatBreakdown
     return this;
   }
 
-  /** @return VAT category rate (BT-119). May be {@code null}. */
+  /**
+   * Get the VAT category rate (BT-119).
+   *
+   * @return VAT category rate (BT-119). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getRate ()
   {
@@ -128,7 +144,11 @@ public class PhloxVatBreakdown
     return this;
   }
 
-  /** @return VAT exemption reason text (BT-120). May be {@code null}. */
+  /**
+   * Get the VAT exemption reason text (BT-120).
+   *
+   * @return VAT exemption reason text (BT-120). May be {@code null}.
+   */
   @Nullable
   public String getExemptionReason ()
   {
@@ -149,7 +169,11 @@ public class PhloxVatBreakdown
     return this;
   }
 
-  /** @return VAT exemption reason code (BT-121). May be {@code null}. */
+  /**
+   * Get the VAT exemption reason code (BT-121).
+   *
+   * @return VAT exemption reason code (BT-121). May be {@code null}.
+   */
   @Nullable
   public String getExemptionReasonCode ()
   {
@@ -170,7 +194,11 @@ public class PhloxVatBreakdown
     return this;
   }
 
-  /** @return VAT breakdown currency (BT-184). May be {@code null}. */
+  /**
+   * Get the VAT breakdown currency (BT-184).
+   *
+   * @return VAT breakdown currency (BT-184). May be {@code null}.
+   */
   @Nullable
   public String getCurrency ()
   {
@@ -191,7 +219,11 @@ public class PhloxVatBreakdown
     return this;
   }
 
-  /** @return VAT breakdown goods/services code (BT-210). May be {@code null}. */
+  /**
+   * Get the VAT breakdown goods/services code (BT-210).
+   *
+   * @return VAT breakdown goods/services code (BT-210). May be {@code null}.
+   */
   @Nullable
   public String getGoodsServicesCode ()
   {

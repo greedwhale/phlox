@@ -40,7 +40,11 @@ public class PhloxPaymentTerms
   public PhloxPaymentTerms ()
   {}
 
-  /** @return Payment term text (BT-20). May be {@code null}. */
+  /**
+   * Get the payment term text (BT-20).
+   *
+   * @return Payment term text (BT-20). May be {@code null}.
+   */
   @Nullable
   public String getText ()
   {
@@ -62,6 +66,8 @@ public class PhloxPaymentTerms
   }
 
   /**
+   * Get the mutable list of early payment discounts (BG-35).
+   *
    * @return Mutable list of early payment discounts (BG-35). Never {@code null}; empty when none are present.
    */
   @NonNull
@@ -72,6 +78,8 @@ public class PhloxPaymentTerms
   }
 
   /**
+   * Get the mutable list of late payment penalties (BG-36).
+   *
    * @return Mutable list of late payment penalties (BG-36). Never {@code null}; empty when none are present.
    */
   @NonNull

@@ -36,7 +36,11 @@ public class PhloxItemClassification
   public PhloxItemClassification ()
   {}
 
-  /** @return Classification code value (BT-158). May be {@code null}. */
+  /**
+   * Get the classification code value (BT-158).
+   *
+   * @return Classification code value (BT-158). May be {@code null}.
+   */
   @Nullable
   public String getCode ()
   {
@@ -57,7 +61,11 @@ public class PhloxItemClassification
     return this;
   }
 
-  /** @return Classification scheme list ID (BT-158-1). May be {@code null}. */
+  /**
+   * Get the classification scheme list ID (BT-158-1).
+   *
+   * @return Classification scheme list ID (BT-158-1). May be {@code null}.
+   */
   @Nullable
   public String getListID ()
   {
@@ -78,7 +86,11 @@ public class PhloxItemClassification
     return this;
   }
 
-  /** @return Classification scheme version ID (BT-158-2). May be {@code null}. */
+  /**
+   * Get the classification scheme version ID (BT-158-2).
+   *
+   * @return Classification scheme version ID (BT-158-2). May be {@code null}.
+   */
   @Nullable
   public String getListVersionID ()
   {

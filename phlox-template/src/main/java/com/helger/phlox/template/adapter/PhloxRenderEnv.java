@@ -59,35 +59,55 @@ public final class PhloxRenderEnv
     m_aFormatOptions = aRenderContext.getFormatOptions ();
   }
 
-  /** @return The source invoice. */
+  /**
+   * Get the source invoice.
+   *
+   * @return The source invoice.
+   */
   @NonNull
   public PhloxInvoice getInvoice ()
   {
     return m_aInvoice;
   }
 
-  /** @return The render context for this render call. */
+  /**
+   * Get the render context for this render call.
+   *
+   * @return The render context for this render call.
+   */
   @NonNull
   public AbstractRenderContext <?> getRenderContext ()
   {
     return m_aRenderContext;
   }
 
-  /** @return The locale to use for formatting and label lookups. */
+  /**
+   * Get the locale to use for formatting and label lookups.
+   *
+   * @return The locale to use for formatting and label lookups.
+   */
   @NonNull
   public Locale getLocale ()
   {
     return m_aLocale;
   }
 
-  /** @return The label resolver pulled from the render context. */
+  /**
+   * Get the label resolver pulled from the render context.
+   *
+   * @return The label resolver pulled from the render context.
+   */
   @NonNull
   public IPhloxLabelResolver getLabelResolver ()
   {
     return m_aLabelResolver;
   }
 
-  /** @return The format options pulled from the render context. */
+  /**
+   * Get the format options pulled from the render context.
+   *
+   * @return The format options pulled from the render context.
+   */
   @NonNull
   public PhloxFormatOptions getFormatOptions ()
   {

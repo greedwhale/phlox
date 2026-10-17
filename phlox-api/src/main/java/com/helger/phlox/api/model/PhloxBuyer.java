@@ -45,7 +45,11 @@ public class PhloxBuyer
   public PhloxBuyer ()
   {}
 
-  /** @return Buyer name (BT-44). May be {@code null}. */
+  /**
+   * Get the buyer name (BT-44).
+   *
+   * @return Buyer name (BT-44). May be {@code null}.
+   */
   @Nullable
   public String getName ()
   {
@@ -66,7 +70,11 @@ public class PhloxBuyer
     return this;
   }
 
-  /** @return Buyer trading name (BT-45). May be {@code null}. */
+  /**
+   * Get the buyer trading name (BT-45).
+   *
+   * @return Buyer trading name (BT-45). May be {@code null}.
+   */
   @Nullable
   public String getTradingName ()
   {
@@ -88,6 +96,8 @@ public class PhloxBuyer
   }
 
   /**
+   * Get the mutable list of buyer identifiers (BT-46 with BT-46-1 scheme IDs).
+   *
    * @return The mutable list of buyer identifiers (BT-46 with BT-46-1 scheme IDs). Never
    *         {@code null}; empty when none are present.
    */
@@ -98,7 +108,11 @@ public class PhloxBuyer
     return m_aIdentifiers;
   }
 
-  /** @return Buyer legal registration identifier (BT-47 with BT-47-1 scheme ID). May be {@code null}. */
+  /**
+   * Get the buyer legal registration identifier (BT-47 with BT-47-1 scheme ID).
+   *
+   * @return Buyer legal registration identifier (BT-47 with BT-47-1 scheme ID). May be {@code null}.
+   */
   @Nullable
   public PhloxIdentifier getLegalRegistration ()
   {
@@ -119,7 +133,11 @@ public class PhloxBuyer
     return this;
   }
 
-  /** @return Buyer VAT identifier (BT-48). May be {@code null}. */
+  /**
+   * Get the buyer VAT identifier (BT-48).
+   *
+   * @return Buyer VAT identifier (BT-48). May be {@code null}.
+   */
   @Nullable
   public String getVatIdentifier ()
   {
@@ -140,7 +158,11 @@ public class PhloxBuyer
     return this;
   }
 
-  /** @return Buyer electronic address (BT-49 with BT-49-1 scheme ID). May be {@code null}. */
+  /**
+   * Get the buyer electronic address (BT-49 with BT-49-1 scheme ID).
+   *
+   * @return Buyer electronic address (BT-49 with BT-49-1 scheme ID). May be {@code null}.
+   */
   @Nullable
   public PhloxIdentifier getElectronicAddress ()
   {
@@ -161,7 +183,11 @@ public class PhloxBuyer
     return this;
   }
 
-  /** @return Buyer postal address (BG-8). May be {@code null}. */
+  /**
+   * Get the buyer postal address (BG-8).
+   *
+   * @return Buyer postal address (BG-8). May be {@code null}.
+   */
   @Nullable
   public PhloxPostalAddress getPostalAddress ()
   {
@@ -182,7 +208,11 @@ public class PhloxBuyer
     return this;
   }
 
-  /** @return Buyer contact (BG-9). May be {@code null}. */
+  /**
+   * Get the buyer contact (BG-9).
+   *
+   * @return Buyer contact (BG-9). May be {@code null}.
+   */
   @Nullable
   public PhloxContact getContact ()
   {

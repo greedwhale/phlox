@@ -46,7 +46,11 @@ public class PhloxPostalAddress
   public PhloxPostalAddress ()
   {}
 
-  /** @return Address line 1 (BT-35 / BT-50 / BT-64 / BT-75). May be {@code null}. */
+  /**
+   * Get the address line 1 (BT-35 / BT-50 / BT-64 / BT-75).
+   *
+   * @return Address line 1 (BT-35 / BT-50 / BT-64 / BT-75). May be {@code null}.
+   */
   @Nullable
   public String getLine1 ()
   {
@@ -67,7 +71,11 @@ public class PhloxPostalAddress
     return this;
   }
 
-  /** @return Address line 2 (BT-36 / BT-51 / BT-65 / BT-76). May be {@code null}. */
+  /**
+   * Get the address line 2 (BT-36 / BT-51 / BT-65 / BT-76).
+   *
+   * @return Address line 2 (BT-36 / BT-51 / BT-65 / BT-76). May be {@code null}.
+   */
   @Nullable
   public String getLine2 ()
   {
@@ -88,7 +96,11 @@ public class PhloxPostalAddress
     return this;
   }
 
-  /** @return Address line 3 (BT-162 / BT-163 / BT-164 / BT-165). May be {@code null}. */
+  /**
+   * Get the address line 3 (BT-162 / BT-163 / BT-164 / BT-165).
+   *
+   * @return Address line 3 (BT-162 / BT-163 / BT-164 / BT-165). May be {@code null}.
+   */
   @Nullable
   public String getLine3 ()
   {
@@ -109,7 +121,11 @@ public class PhloxPostalAddress
     return this;
   }
 
-  /** @return City name (BT-37 / BT-52 / BT-66 / BT-77). May be {@code null}. */
+  /**
+   * Get the city name (BT-37 / BT-52 / BT-66 / BT-77).
+   *
+   * @return City name (BT-37 / BT-52 / BT-66 / BT-77). May be {@code null}.
+   */
   @Nullable
   public String getCity ()
   {
@@ -130,7 +146,11 @@ public class PhloxPostalAddress
     return this;
   }
 
-  /** @return Post code (BT-38 / BT-53 / BT-67 / BT-78). May be {@code null}. */
+  /**
+   * Get the post code (BT-38 / BT-53 / BT-67 / BT-78).
+   *
+   * @return Post code (BT-38 / BT-53 / BT-67 / BT-78). May be {@code null}.
+   */
   @Nullable
   public String getPostCode ()
   {
@@ -151,7 +171,11 @@ public class PhloxPostalAddress
     return this;
   }
 
-  /** @return Country subdivision (BT-39 / BT-54 / BT-68 / BT-79). May be {@code null}. */
+  /**
+   * Get the country subdivision (BT-39 / BT-54 / BT-68 / BT-79).
+   *
+   * @return Country subdivision (BT-39 / BT-54 / BT-68 / BT-79). May be {@code null}.
+   */
   @Nullable
   public String getCountrySubdivision ()
   {
@@ -172,7 +196,11 @@ public class PhloxPostalAddress
     return this;
   }
 
-  /** @return ISO 3166-1 alpha-2 country code (BT-40 / BT-55 / BT-69 / BT-80). May be {@code null}. */
+  /**
+   * Get the ISO 3166-1 alpha-2 country code (BT-40 / BT-55 / BT-69 / BT-80).
+   *
+   * @return ISO 3166-1 alpha-2 country code (BT-40 / BT-55 / BT-69 / BT-80). May be {@code null}.
+   */
   @Nullable
   public String getCountryCode ()
   {
@@ -193,7 +221,11 @@ public class PhloxPostalAddress
     return this;
   }
 
-  /** @return {@code true} if every field is {@code null}. */
+  /**
+   * Get the {@code true} if every field is {@code null}.
+   *
+   * @return {@code true} if every field is {@code null}.
+   */
   public boolean isEmpty ()
   {
     return m_sLine1 == null &&

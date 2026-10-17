@@ -39,7 +39,11 @@ public class PhloxLatePaymentPenalty
   public PhloxLatePaymentPenalty ()
   {}
 
-  /** @return Penalty start date (BT-181). May be {@code null}. */
+  /**
+   * Get the penalty start date (BT-181).
+   *
+   * @return Penalty start date (BT-181). May be {@code null}.
+   */
   @Nullable
   public LocalDate getStartDate ()
   {
@@ -60,7 +64,11 @@ public class PhloxLatePaymentPenalty
     return this;
   }
 
-  /** @return Penalty yearly interest percentage (BT-182). May be {@code null}. */
+  /**
+   * Get the penalty yearly interest percentage (BT-182).
+   *
+   * @return Penalty yearly interest percentage (BT-182). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getYearlyInterestPercentage ()
   {
@@ -81,7 +89,11 @@ public class PhloxLatePaymentPenalty
     return this;
   }
 
-  /** @return Penalty amount (BT-183). May be {@code null}. */
+  /**
+   * Get the penalty amount (BT-183).
+   *
+   * @return Penalty amount (BT-183). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getAmount ()
   {

@@ -74,35 +74,59 @@ public final class PhloxTemplateAst
     m_aContext = aContext;
   }
 
-  /** @return The post-processed commonmark document tree. */
+  /**
+   * Get the post-processed commonmark document tree.
+   *
+   * @return The post-processed commonmark document tree.
+   */
   @NonNull
   public Node getRoot ()
   {
     return m_aRoot;
   }
 
-  /** @return The CSS class attached to the given block by a preceding {@code {{class:…}}} sentinel, or {@code null}. */
+  /**
+   * Get the CSS class attached to a block by a preceding {@code {{class:…}}} sentinel.
+   *
+   * @param aBlock
+   *        The block node to look up. Never {@code null}.
+   * @return The CSS class or {@code null} if no sentinel was attached to the block.
+   */
   @Nullable
   public String getBlockClass (@NonNull final Node aBlock)
   {
     return m_aBlockClassMap.get (aBlock);
   }
 
-  /** @return The resolved image payload for the given {@link Image} node, or {@code null} when the node has no binary backing. */
+  /**
+   * Get the resolved image payload for an {@link Image} node.
+   *
+   * @param aImage
+   *        The image node to look up. Never {@code null}.
+   * @return The resolved image payload or {@code null} when the node has no binary backing.
+   */
   @Nullable
   public PhloxResolvedImage getResolvedImage (@NonNull final Image aImage)
   {
     return m_aImageMap.get (aImage);
   }
 
-  /** @return The {@link PhloxInvoice} the template was rendered from. */
+  /**
+   * Get the {@link PhloxInvoice} the template was rendered from.
+   *
+   * @return The {@link PhloxInvoice} the template was rendered from.
+   */
   @NonNull
   public PhloxInvoice getInvoice ()
   {
     return m_aInvoice;
   }
 
-  /** @return The active render context. */
+  /**
+   * Get the active render context.
+   *
+   * @return The active render context.
+   */
   @NonNull
   public AbstractRenderContext <?> getContext ()
   {

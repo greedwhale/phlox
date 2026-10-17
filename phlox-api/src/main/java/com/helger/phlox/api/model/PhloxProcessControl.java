@@ -34,7 +34,11 @@ public class PhloxProcessControl
   public PhloxProcessControl ()
   {}
 
-  /** @return Business process type (BT-23). May be {@code null}. */
+  /**
+   * Get the business process type (BT-23).
+   *
+   * @return Business process type (BT-23). May be {@code null}.
+   */
   @Nullable
   public String getBusinessProcessType ()
   {
@@ -55,7 +59,11 @@ public class PhloxProcessControl
     return this;
   }
 
-  /** @return Specification identifier (BT-24) — the EN 16931 customisation URN. May be {@code null}. */
+  /**
+   * Get the specification identifier (BT-24) — the EN 16931 customisation URN. May be {@code null}.
+   *
+   * @return Specification identifier (BT-24) — the EN 16931 customisation URN. May be {@code null}.
+   */
   @Nullable
   public String getSpecificationIdentifier ()
   {

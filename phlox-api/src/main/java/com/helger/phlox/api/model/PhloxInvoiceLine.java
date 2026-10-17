@@ -67,7 +67,11 @@ public class PhloxInvoiceLine
   public PhloxInvoiceLine ()
   {}
 
-  /** @return Invoice line identifier (BT-126). May be {@code null}. */
+  /**
+   * Get the invoice line identifier (BT-126).
+   *
+   * @return Invoice line identifier (BT-126). May be {@code null}.
+   */
   @Nullable
   public String getID ()
   {
@@ -88,7 +92,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoice line note (BT-127). May be {@code null}. */
+  /**
+   * Get the invoice line note (BT-127).
+   *
+   * @return Invoice line note (BT-127). May be {@code null}.
+   */
   @Nullable
   public String getNote ()
   {
@@ -109,7 +117,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoice line object identifier (BT-128 with BT-128-1 scheme ID). May be {@code null}. */
+  /**
+   * Get the invoice line object identifier (BT-128 with BT-128-1 scheme ID).
+   *
+   * @return Invoice line object identifier (BT-128 with BT-128-1 scheme ID). May be {@code null}.
+   */
   @Nullable
   public PhloxIdentifier getObjectIdentifier ()
   {
@@ -130,7 +142,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoiced quantity (BT-129) — credit-note credited quantity also stored here. May be {@code null}. */
+  /**
+   * Get the invoiced quantity (BT-129) — credit-note credited quantity also stored here.
+   *
+   * @return Invoiced quantity (BT-129) — credit-note credited quantity also stored here. May be {@code null}.
+   */
   @Nullable
   public BigDecimal getQuantity ()
   {
@@ -151,7 +167,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoiced quantity unit of measure (BT-130) — UN/ECE Rec 20/21. May be {@code null}. */
+  /**
+   * Get the invoiced quantity unit of measure (BT-130) — UN/ECE Rec 20/21. May be {@code null}.
+   *
+   * @return Invoiced quantity unit of measure (BT-130) — UN/ECE Rec 20/21. May be {@code null}.
+   */
   @Nullable
   public String getQuantityUnit ()
   {
@@ -172,7 +192,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoice line net amount (BT-131). May be {@code null}. */
+  /**
+   * Get the invoice line net amount (BT-131).
+   *
+   * @return Invoice line net amount (BT-131). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getNetAmount ()
   {
@@ -193,7 +217,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Referenced purchase order line reference (BT-132). May be {@code null}. */
+  /**
+   * Get the referenced purchase order line reference (BT-132).
+   *
+   * @return Referenced purchase order line reference (BT-132). May be {@code null}.
+   */
   @Nullable
   public String getPurchaseOrderLineRef ()
   {
@@ -214,7 +242,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoice line buyer accounting reference (BT-133). May be {@code null}. */
+  /**
+   * Get the invoice line buyer accounting reference (BT-133).
+   *
+   * @return Invoice line buyer accounting reference (BT-133). May be {@code null}.
+   */
   @Nullable
   public String getAccountingCost ()
   {
@@ -235,7 +267,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoice line period (BG-26 — BT-134 / BT-135). May be {@code null}. */
+  /**
+   * Get the invoice line period (BG-26 — BT-134 / BT-135).
+   *
+   * @return Invoice line period (BG-26 — BT-134 / BT-135). May be {@code null}.
+   */
   @Nullable
   public PhloxInvoicingPeriod getPeriod ()
   {
@@ -257,6 +293,8 @@ public class PhloxInvoiceLine
   }
 
   /**
+   * Get the mutable list of line allowances (BG-27).
+   *
    * @return Mutable list of line allowances (BG-27). Never {@code null}; empty when none are
    *         present.
    */
@@ -268,6 +306,8 @@ public class PhloxInvoiceLine
   }
 
   /**
+   * Get the mutable list of line charges (BG-28).
+   *
    * @return Mutable list of line charges (BG-28). Never {@code null}; empty when none are
    *         present.
    */
@@ -278,7 +318,11 @@ public class PhloxInvoiceLine
     return m_aCharges;
   }
 
-  /** @return Price details (BG-29). May be {@code null}. */
+  /**
+   * Get the price details (BG-29).
+   *
+   * @return Price details (BG-29). May be {@code null}.
+   */
   @Nullable
   public PhloxPriceDetails getPrice ()
   {
@@ -299,7 +343,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Line VAT information (BG-30). May be {@code null}. */
+  /**
+   * Get the line VAT information (BG-30).
+   *
+   * @return Line VAT information (BG-30). May be {@code null}.
+   */
   @Nullable
   public PhloxLineVat getLineVat ()
   {
@@ -320,7 +368,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Item information (BG-31). May be {@code null}. */
+  /**
+   * Get the item information (BG-31).
+   *
+   * @return Item information (BG-31). May be {@code null}.
+   */
   @Nullable
   public PhloxItem getItem ()
   {
@@ -341,7 +393,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoice line purchase order reference (BT-188). May be {@code null}. */
+  /**
+   * Get the invoice line purchase order reference (BT-188).
+   *
+   * @return Invoice line purchase order reference (BT-188). May be {@code null}.
+   */
   @Nullable
   public String getPurchaseOrderReference ()
   {
@@ -362,7 +418,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoice line sales order reference (BT-200). May be {@code null}. */
+  /**
+   * Get the invoice line sales order reference (BT-200).
+   *
+   * @return Invoice line sales order reference (BT-200). May be {@code null}.
+   */
   @Nullable
   public String getSalesOrderReference ()
   {
@@ -383,7 +443,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoice line sales order line reference (BT-201). May be {@code null}. */
+  /**
+   * Get the invoice line sales order line reference (BT-201).
+   *
+   * @return Invoice line sales order line reference (BT-201). May be {@code null}.
+   */
   @Nullable
   public String getSalesOrderLineReference ()
   {
@@ -404,7 +468,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoice line despatch advice reference (BT-189). May be {@code null}. */
+  /**
+   * Get the invoice line despatch advice reference (BT-189).
+   *
+   * @return Invoice line despatch advice reference (BT-189). May be {@code null}.
+   */
   @Nullable
   public String getDespatchAdviceReference ()
   {
@@ -425,7 +493,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoice line despatch advice line reference (BT-190). May be {@code null}. */
+  /**
+   * Get the invoice line despatch advice line reference (BT-190).
+   *
+   * @return Invoice line despatch advice line reference (BT-190). May be {@code null}.
+   */
   @Nullable
   public String getDespatchAdviceLineReference ()
   {
@@ -446,7 +518,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoice line receiving advice reference (BT-191). May be {@code null}. */
+  /**
+   * Get the invoice line receiving advice reference (BT-191).
+   *
+   * @return Invoice line receiving advice reference (BT-191). May be {@code null}.
+   */
   @Nullable
   public String getReceivingAdviceReference ()
   {
@@ -467,7 +543,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoice line receiving advice line reference (BT-192). May be {@code null}. */
+  /**
+   * Get the invoice line receiving advice line reference (BT-192).
+   *
+   * @return Invoice line receiving advice line reference (BT-192). May be {@code null}.
+   */
   @Nullable
   public String getReceivingAdviceLineReference ()
   {
@@ -488,7 +568,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoice line delivery note reference (BT-198). May be {@code null}. */
+  /**
+   * Get the invoice line delivery note reference (BT-198).
+   *
+   * @return Invoice line delivery note reference (BT-198). May be {@code null}.
+   */
   @Nullable
   public String getDeliveryNoteReference ()
   {
@@ -509,7 +593,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoice line delivery note line reference (BT-199). May be {@code null}. */
+  /**
+   * Get the invoice line delivery note line reference (BT-199).
+   *
+   * @return Invoice line delivery note line reference (BT-199). May be {@code null}.
+   */
   @Nullable
   public String getDeliveryNoteLineReference ()
   {
@@ -530,7 +618,11 @@ public class PhloxInvoiceLine
     return this;
   }
 
-  /** @return Invoice line delivery information (BG-37). May be {@code null}. */
+  /**
+   * Get the invoice line delivery information (BG-37).
+   *
+   * @return Invoice line delivery information (BG-37). May be {@code null}.
+   */
   @Nullable
   public PhloxLineDelivery getDelivery ()
   {
@@ -552,6 +644,8 @@ public class PhloxInvoiceLine
   }
 
   /**
+   * Get the mutable list of line-level preceding invoice references (BG-39).
+   *
    * @return Mutable list of line-level preceding invoice references (BG-39). Never {@code null}; empty when none are present.
    */
   @NonNull

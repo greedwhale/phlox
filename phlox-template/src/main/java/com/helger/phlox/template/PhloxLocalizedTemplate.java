@@ -35,8 +35,8 @@ import com.samskivert.mustache.Template;
  * {@code (template, locale, label-resolver)} key.
  * <p>
  * Immutable after construction and safe to share across threads. Held by {@link PhloxTemplate}
- * inside a ph-cache instance; callers who want explicit control can obtain a localized
- * variant via {@link PhloxTemplate#localize}.
+ * inside a ph-cache instance; callers who want explicit control can obtain a localized variant via
+ * {@link PhloxTemplate#localize}.
  *
  * @author Philip Helger
  */
@@ -57,8 +57,10 @@ public final class PhloxLocalizedTemplate
   }
 
   /**
-   * @return The locale-baked source — the {@code .ptpl} text after stage 0. Kept for
-   *         diagnostics / snapshot tests; never the runtime render path.
+   * Get the locale-baked source — the {@code .ptpl} text after stage 0. Kept for diagnostics /.
+   *
+   * @return The locale-baked source — the {@code .ptpl} text after stage 0. Kept for diagnostics /
+   *         snapshot tests; never the runtime render path.
    */
   @NonNull
   public String getLocaleBakedSource ()
@@ -67,8 +69,8 @@ public final class PhloxLocalizedTemplate
   }
 
   /**
-   * Run stages 1 + 2 + 2a — substitute the invoice into the compiled template, parse the
-   * result as CommonMark, then run the sentinel + image post-pass.
+   * Run stages 1 + 2 + 2a — substitute the invoice into the compiled template, parse the result as
+   * CommonMark, then run the sentinel + image post-pass.
    *
    * @param aInvoice
    *        Source invoice.
@@ -95,20 +97,21 @@ public final class PhloxLocalizedTemplate
     final PhloxTemplatePostParser aPostParser = new PhloxTemplatePostParser (aInvoice, aCtx);
     aPostParser.process (aRoot);
 
-    return new PhloxTemplateAst (aRoot,
-                                 aPostParser.getBlockClassMap (),
-                                 aPostParser.getImageMap (),
-                                 aInvoice,
-                                 aCtx);
+    return new PhloxTemplateAst (aRoot, aPostParser.getBlockClassMap (), aPostParser.getImageMap (), aInvoice, aCtx);
   }
 
   /**
-   * Run stage 1 in isolation — substitute the invoice into the compiled template and return
-   * the CommonMark string without parsing it. Mainly useful for snapshot testing.
+   * Run stage 1 in isolation — substitute the invoice into the compiled template and return the
+   * CommonMark string without parsing it. Mainly useful for snapshot testing.
+   *
+   * @param aInvoice
+   *        The invoice to substitute. Never {@code null}.
+   * @param aCtx
+   *        The render context. Never {@code null}.
+   * @return The substituted CommonMark source. Never {@code null}.
    */
   @NonNull
-  public String renderSubstituted (@NonNull final PhloxInvoice aInvoice,
-                                   @NonNull final AbstractRenderContext <?> aCtx)
+  public String renderSubstituted (@NonNull final PhloxInvoice aInvoice, @NonNull final AbstractRenderContext <?> aCtx)
   {
     final String [] aOut = new String [1];
     PhloxInvoiceMustacheContext.withEnv (aInvoice, aCtx, () -> {
@@ -121,14 +124,11 @@ public final class PhloxLocalizedTemplate
         Throwable aCause = ex.getCause ();
         while (aCause != null)
         {
-          if (aCause instanceof PhloxTemplateException)
-            throw (PhloxTemplateException) aCause;
+          if (aCause instanceof final PhloxTemplateException aPhloxCause)
+            throw aPhloxCause;
           aCause = aCause.getCause ();
         }
-        throw new PhloxTemplateException (EStage.SUBSTITUTE,
-                                          null,
-                                          "JMustache execute failed: " + ex.getMessage (),
-                                          ex);
+        throw new PhloxTemplateException (EStage.SUBSTITUTE, null, "JMustache execute failed: " + ex.getMessage (), ex);
       }
     });
     return aOut[0];

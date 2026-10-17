@@ -90,7 +90,11 @@ public class PhloxInvoice
   public PhloxInvoice ()
   {}
 
-  /** @return The document kind (Invoice or Credit Note), derived from BT-3. Never {@code null}. */
+  /**
+   * Get the document kind (Invoice or Credit Note), derived from BT-3. Never {@code null}.
+   *
+   * @return The document kind (Invoice or Credit Note), derived from BT-3. Never {@code null}.
+   */
   @NonNull
   public EPhloxDocumentKind getKind ()
   {
@@ -111,19 +115,31 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return {@code true} when {@link #getKind()} is {@link EPhloxDocumentKind#INVOICE}. */
+  /**
+   * Get the {@code true} when {@link #getKind()} is {@link EPhloxDocumentKind#INVOICE}.
+   *
+   * @return {@code true} when {@link #getKind()} is {@link EPhloxDocumentKind#INVOICE}.
+   */
   public boolean isInvoice ()
   {
     return m_eKind.isInvoice ();
   }
 
-  /** @return {@code true} when {@link #getKind()} is {@link EPhloxDocumentKind#CREDIT_NOTE}. */
+  /**
+   * Get the {@code true} when {@link #getKind()} is {@link EPhloxDocumentKind#CREDIT_NOTE}.
+   *
+   * @return {@code true} when {@link #getKind()} is {@link EPhloxDocumentKind#CREDIT_NOTE}.
+   */
   public boolean isCreditNote ()
   {
     return m_eKind.isCreditNote ();
   }
 
-  /** @return Invoice number (BT-1). May be {@code null}. */
+  /**
+   * Get the invoice number (BT-1).
+   *
+   * @return Invoice number (BT-1). May be {@code null}.
+   */
   @Nullable
   public String getNumber ()
   {
@@ -144,7 +160,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Invoice issue date (BT-2). May be {@code null}. */
+  /**
+   * Get the invoice issue date (BT-2).
+   *
+   * @return Invoice issue date (BT-2). May be {@code null}.
+   */
   @Nullable
   public LocalDate getIssueDate ()
   {
@@ -165,7 +185,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Invoice type code (BT-3) — UNTDID 1001. May be {@code null}. */
+  /**
+   * Get the invoice type code (BT-3) — UNTDID 1001. May be {@code null}.
+   *
+   * @return Invoice type code (BT-3) — UNTDID 1001. May be {@code null}.
+   */
   @Nullable
   public String getTypeCode ()
   {
@@ -186,7 +210,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Invoice currency code (BT-5) — ISO 4217. May be {@code null}. */
+  /**
+   * Get the invoice currency code (BT-5) — ISO 4217. May be {@code null}.
+   *
+   * @return Invoice currency code (BT-5) — ISO 4217. May be {@code null}.
+   */
   @Nullable
   public String getCurrency ()
   {
@@ -207,7 +235,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return VAT accounting currency code (BT-6) — ISO 4217. May be {@code null}. */
+  /**
+   * Get the VAT accounting currency code (BT-6) — ISO 4217. May be {@code null}.
+   *
+   * @return VAT accounting currency code (BT-6) — ISO 4217. May be {@code null}.
+   */
   @Nullable
   public String getVatAccountingCurrency ()
   {
@@ -228,7 +260,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Value added tax point date (BT-7). May be {@code null}. */
+  /**
+   * Get the value added tax point date (BT-7).
+   *
+   * @return Value added tax point date (BT-7). May be {@code null}.
+   */
   @Nullable
   public LocalDate getVatPointDate ()
   {
@@ -249,7 +285,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Value added tax point date code (BT-8). May be {@code null}. */
+  /**
+   * Get the value added tax point date code (BT-8).
+   *
+   * @return Value added tax point date code (BT-8). May be {@code null}.
+   */
   @Nullable
   public String getVatPointDateCode ()
   {
@@ -270,7 +310,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Payment due date (BT-9). May be {@code null}. */
+  /**
+   * Get the payment due date (BT-9).
+   *
+   * @return Payment due date (BT-9). May be {@code null}.
+   */
   @Nullable
   public LocalDate getPaymentDueDate ()
   {
@@ -291,7 +335,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Project reference (BT-11). May be {@code null}. */
+  /**
+   * Get the project reference (BT-11).
+   *
+   * @return Project reference (BT-11). May be {@code null}.
+   */
   @Nullable
   public String getProjectReference ()
   {
@@ -312,7 +360,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Contract reference (BT-12). May be {@code null}. */
+  /**
+   * Get the contract reference (BT-12).
+   *
+   * @return Contract reference (BT-12). May be {@code null}.
+   */
   @Nullable
   public String getContractReference ()
   {
@@ -333,7 +385,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Purchase order reference (BT-13). May be {@code null}. */
+  /**
+   * Get the purchase order reference (BT-13).
+   *
+   * @return Purchase order reference (BT-13). May be {@code null}.
+   */
   @Nullable
   public String getPurchaseOrderReference ()
   {
@@ -354,7 +410,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Sales order reference (BT-14). May be {@code null}. */
+  /**
+   * Get the sales order reference (BT-14).
+   *
+   * @return Sales order reference (BT-14). May be {@code null}.
+   */
   @Nullable
   public String getSalesOrderReference ()
   {
@@ -375,7 +435,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Receiving advice reference (BT-15). May be {@code null}. */
+  /**
+   * Get the receiving advice reference (BT-15).
+   *
+   * @return Receiving advice reference (BT-15). May be {@code null}.
+   */
   @Nullable
   public String getReceivingAdviceReference ()
   {
@@ -396,7 +460,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Despatch advice reference (BT-16). May be {@code null}. */
+  /**
+   * Get the despatch advice reference (BT-16).
+   *
+   * @return Despatch advice reference (BT-16). May be {@code null}.
+   */
   @Nullable
   public String getDespatchAdviceReference ()
   {
@@ -417,7 +485,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Tender or lot reference (BT-17). May be {@code null}. */
+  /**
+   * Get the tender or lot reference (BT-17).
+   *
+   * @return Tender or lot reference (BT-17). May be {@code null}.
+   */
   @Nullable
   public String getTenderOrLotReference ()
   {
@@ -438,7 +510,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Invoiced object identifier (BT-18 with BT-18-1 scheme ID). May be {@code null}. */
+  /**
+   * Get the invoiced object identifier (BT-18 with BT-18-1 scheme ID).
+   *
+   * @return Invoiced object identifier (BT-18 with BT-18-1 scheme ID). May be {@code null}.
+   */
   @Nullable
   public PhloxIdentifier getInvoicedObjectIdentifier ()
   {
@@ -459,7 +535,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Buyer accounting reference (BT-19). May be {@code null}. */
+  /**
+   * Get the buyer accounting reference (BT-19).
+   *
+   * @return Buyer accounting reference (BT-19). May be {@code null}.
+   */
   @Nullable
   public String getBuyerAccountingReference ()
   {
@@ -481,6 +561,8 @@ public class PhloxInvoice
   }
 
   /**
+   * Get the mutable list of invoice notes (BG-1).
+   *
    * @return Mutable list of invoice notes (BG-1). Never {@code null}; empty when none are present.
    */
   @NonNull
@@ -490,7 +572,11 @@ public class PhloxInvoice
     return m_aInvoiceNotes;
   }
 
-  /** @return Process control (BG-2). Never {@code null} (initialised to an empty record). */
+  /**
+   * Get the process control (BG-2).
+   *
+   * @return Process control (BG-2). Never {@code null} (initialised to an empty record).
+   */
   @NonNull
   public PhloxProcessControl getProcessControl ()
   {
@@ -512,6 +598,8 @@ public class PhloxInvoice
   }
 
   /**
+   * Get the mutable list of preceding invoice references (BG-3).
+   *
    * @return Mutable list of preceding invoice references (BG-3). Never {@code null}; empty when
    *         none are present.
    */
@@ -522,7 +610,11 @@ public class PhloxInvoice
     return m_aPrecedingInvoiceRefs;
   }
 
-  /** @return Seller (BG-4 with nested BG-5 and BG-6). Never {@code null} (initialised). */
+  /**
+   * Get the seller (BG-4 with nested BG-5 and BG-6).
+   *
+   * @return Seller (BG-4 with nested BG-5 and BG-6). Never {@code null} (initialised).
+   */
   @NonNull
   public PhloxSeller getSeller ()
   {
@@ -543,7 +635,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Buyer (BG-7 with nested BG-8 and BG-9). Never {@code null} (initialised). */
+  /**
+   * Get the buyer (BG-7 with nested BG-8 and BG-9).
+   *
+   * @return Buyer (BG-7 with nested BG-8 and BG-9). Never {@code null} (initialised).
+   */
   @NonNull
   public PhloxBuyer getBuyer ()
   {
@@ -564,7 +660,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Payee (BG-10). May be {@code null}. */
+  /**
+   * Get the payee (BG-10).
+   *
+   * @return Payee (BG-10). May be {@code null}.
+   */
   @Nullable
   public PhloxPayee getPayee ()
   {
@@ -585,7 +685,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Seller tax representative (BG-11 with nested BG-12). May be {@code null}. */
+  /**
+   * Get the seller tax representative (BG-11 with nested BG-12).
+   *
+   * @return Seller tax representative (BG-11 with nested BG-12). May be {@code null}.
+   */
   @Nullable
   public PhloxSellerTaxRepresentative getSellerTaxRepresentative ()
   {
@@ -606,7 +710,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Delivery information (BG-13 with nested BG-15). May be {@code null}. */
+  /**
+   * Get the delivery information (BG-13 with nested BG-15).
+   *
+   * @return Delivery information (BG-13 with nested BG-15). May be {@code null}.
+   */
   @Nullable
   public PhloxDeliveryInformation getDeliveryInformation ()
   {
@@ -627,7 +735,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Invoicing period (BG-14). May be {@code null}. */
+  /**
+   * Get the invoicing period (BG-14).
+   *
+   * @return Invoicing period (BG-14). May be {@code null}.
+   */
   @Nullable
   public PhloxInvoicingPeriod getInvoicingPeriod ()
   {
@@ -648,7 +760,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Payment instructions (BG-16 with nested BG-17/BG-18/BG-19). May be {@code null}. */
+  /**
+   * Get the payment instructions (BG-16 with nested BG-17/BG-18/BG-19).
+   *
+   * @return Payment instructions (BG-16 with nested BG-17/BG-18/BG-19). May be {@code null}.
+   */
   @Nullable
   public PhloxPaymentInstructions getPaymentInstructions ()
   {
@@ -670,6 +786,8 @@ public class PhloxInvoice
   }
 
   /**
+   * Get the mutable list of document-level allowances (BG-20).
+   *
    * @return Mutable list of document-level allowances (BG-20). Never {@code null}; empty when none
    *         are present.
    */
@@ -681,6 +799,8 @@ public class PhloxInvoice
   }
 
   /**
+   * Get the mutable list of document-level charges (BG-21).
+   *
    * @return Mutable list of document-level charges (BG-21). Never {@code null}; empty when none are
    *         present.
    */
@@ -691,7 +811,11 @@ public class PhloxInvoice
     return m_aDocumentCharges;
   }
 
-  /** @return Document totals (BG-22). Never {@code null} (initialised to an empty record). */
+  /**
+   * Get the document totals (BG-22).
+   *
+   * @return Document totals (BG-22). Never {@code null} (initialised to an empty record).
+   */
   @NonNull
   public PhloxDocumentTotals getDocumentTotals ()
   {
@@ -713,6 +837,8 @@ public class PhloxInvoice
   }
 
   /**
+   * Get the mutable list of VAT breakdowns (BG-23).
+   *
    * @return Mutable list of VAT breakdowns (BG-23). Never {@code null}; empty when none are
    *         present.
    */
@@ -724,6 +850,8 @@ public class PhloxInvoice
   }
 
   /**
+   * Get the mutable list of supporting documents (BG-24).
+   *
    * @return Mutable list of supporting documents (BG-24). Never {@code null}; empty when none are
    *         present.
    */
@@ -735,6 +863,8 @@ public class PhloxInvoice
   }
 
   /**
+   * Get the mutable list of invoice lines (BG-25).
+   *
    * @return Mutable list of invoice lines (BG-25). Never {@code null}; the EN 16931 model requires
    *         at least one entry for a valid invoice.
    */
@@ -745,7 +875,11 @@ public class PhloxInvoice
     return m_aLines;
   }
 
-  /** @return EN 16931 edition the document was read as. May be {@code null}. */
+  /**
+   * Get the EN 16931 edition the document was read as.
+   *
+   * @return EN 16931 edition the document was read as. May be {@code null}.
+   */
   @Nullable
   public EEN16931Edition getEdition ()
   {
@@ -766,7 +900,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Invoice issue time (BT-166). May be {@code null}. */
+  /**
+   * Get the invoice issue time (BT-166).
+   *
+   * @return Invoice issue time (BT-166). May be {@code null}.
+   */
   @Nullable
   public OffsetTime getIssueTime ()
   {
@@ -787,7 +925,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return VAT accounting currency exchange rate (BT-167). May be {@code null}. */
+  /**
+   * Get the VAT accounting currency exchange rate (BT-167).
+   *
+   * @return VAT accounting currency exchange rate (BT-167). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getVatExchangeRate ()
   {
@@ -808,7 +950,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return VAT accounting currency exchange rate target currency code (BT-167-1). May be {@code null}. */
+  /**
+   * Get the VAT accounting currency exchange rate target currency code (BT-167-1).
+   *
+   * @return VAT accounting currency exchange rate target currency code (BT-167-1). May be {@code null}.
+   */
   @Nullable
   public String getVatExchangeRateTargetCurrency ()
   {
@@ -829,7 +975,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return VAT accounting currency exchange rate source currency code (BT-167-2). May be {@code null}. */
+  /**
+   * Get the VAT accounting currency exchange rate source currency code (BT-167-2).
+   *
+   * @return VAT accounting currency exchange rate source currency code (BT-167-2). May be {@code null}.
+   */
   @Nullable
   public String getVatExchangeRateSourceCurrency ()
   {
@@ -850,7 +1000,11 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Delivery note reference (BT-197). May be {@code null}. */
+  /**
+   * Get the delivery note reference (BT-197).
+   *
+   * @return Delivery note reference (BT-197). May be {@code null}.
+   */
   @Nullable
   public String getDeliveryNoteReference ()
   {
@@ -872,6 +1026,8 @@ public class PhloxInvoice
   }
 
   /**
+   * Get the mutable list of buyer references (BT-10 / BT-10-1).
+   *
    * @return Mutable list of buyer references (BT-10 / BT-10-1). Never {@code null}; empty when none are present.
    */
   @NonNull
@@ -882,6 +1038,8 @@ public class PhloxInvoice
   }
 
   /**
+   * Get the mutable list of payment terms (BG-33).
+   *
    * @return Mutable list of payment terms (BG-33). Never {@code null}; empty when none are present.
    */
   @NonNull

@@ -36,7 +36,11 @@ public class PhloxSellerTaxRepresentative
   public PhloxSellerTaxRepresentative ()
   {}
 
-  /** @return Tax representative name (BT-62). May be {@code null}. */
+  /**
+   * Get the tax representative name (BT-62).
+   *
+   * @return Tax representative name (BT-62). May be {@code null}.
+   */
   @Nullable
   public String getName ()
   {
@@ -57,7 +61,11 @@ public class PhloxSellerTaxRepresentative
     return this;
   }
 
-  /** @return Tax representative VAT identifier (BT-63). May be {@code null}. */
+  /**
+   * Get the tax representative VAT identifier (BT-63).
+   *
+   * @return Tax representative VAT identifier (BT-63). May be {@code null}.
+   */
   @Nullable
   public String getVatIdentifier ()
   {
@@ -78,7 +86,11 @@ public class PhloxSellerTaxRepresentative
     return this;
   }
 
-  /** @return Tax representative postal address (BG-12). May be {@code null}. */
+  /**
+   * Get the tax representative postal address (BG-12).
+   *
+   * @return Tax representative postal address (BG-12). May be {@code null}.
+   */
   @Nullable
   public PhloxPostalAddress getPostalAddress ()
   {

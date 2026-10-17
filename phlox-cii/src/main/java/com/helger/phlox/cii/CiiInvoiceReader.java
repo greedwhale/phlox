@@ -65,6 +65,8 @@ public class CiiInvoiceReader implements IInvoiceReader <InputStream>
   }
 
   /**
+   * Get the reader for EN 16931:2017 documents (CII D16B).
+   *
    * @return A reader for EN 16931:2017 documents (CII D16B). BT-24 is not inspected. Never
    *         {@code null}.
    */
@@ -75,6 +77,8 @@ public class CiiInvoiceReader implements IInvoiceReader <InputStream>
   }
 
   /**
+   * Get the reader for EN 16931:2026 documents (CII D25A).
+   *
    * @return A reader for EN 16931:2026 documents (CII D25A). BT-24 is not inspected. Never
    *         {@code null}.
    */
@@ -85,6 +89,8 @@ public class CiiInvoiceReader implements IInvoiceReader <InputStream>
   }
 
   /**
+   * Get a reader that determines the edition of each document from BT-24.
+   *
    * @return A reader that determines the edition of each document from BT-24 (Specification
    *         identifier) and reports an error if that is not possible. Never {@code null}.
    */
@@ -95,6 +101,8 @@ public class CiiInvoiceReader implements IInvoiceReader <InputStream>
   }
 
   /**
+   * Get the fixed edition of this reader or {@code null} if the edition is detected per.
+   *
    * @return The fixed edition of this reader or {@code null} if the edition is detected per
    *         document.
    */

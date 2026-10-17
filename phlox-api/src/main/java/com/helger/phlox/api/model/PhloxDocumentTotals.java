@@ -52,7 +52,11 @@ public class PhloxDocumentTotals
   public PhloxDocumentTotals ()
   {}
 
-  /** @return Sum of invoice line net amounts (BT-106). May be {@code null}. */
+  /**
+   * Get the sum of invoice line net amounts (BT-106).
+   *
+   * @return Sum of invoice line net amounts (BT-106). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getLineNetTotal ()
   {
@@ -73,7 +77,11 @@ public class PhloxDocumentTotals
     return this;
   }
 
-  /** @return Sum of allowances on document level (BT-107). May be {@code null}. */
+  /**
+   * Get the sum of allowances on document level (BT-107).
+   *
+   * @return Sum of allowances on document level (BT-107). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getAllowanceTotal ()
   {
@@ -94,7 +102,11 @@ public class PhloxDocumentTotals
     return this;
   }
 
-  /** @return Sum of charges on document level (BT-108). May be {@code null}. */
+  /**
+   * Get the sum of charges on document level (BT-108).
+   *
+   * @return Sum of charges on document level (BT-108). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getChargeTotal ()
   {
@@ -115,7 +127,11 @@ public class PhloxDocumentTotals
     return this;
   }
 
-  /** @return Invoice total amount without VAT (BT-109). May be {@code null}. */
+  /**
+   * Get the invoice total amount without VAT (BT-109).
+   *
+   * @return Invoice total amount without VAT (BT-109). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getTaxExclusiveTotal ()
   {
@@ -136,7 +152,11 @@ public class PhloxDocumentTotals
     return this;
   }
 
-  /** @return Invoice total VAT amount (BT-110). May be {@code null}. */
+  /**
+   * Get the invoice total VAT amount (BT-110).
+   *
+   * @return Invoice total VAT amount (BT-110). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getTaxTotal ()
   {
@@ -157,7 +177,11 @@ public class PhloxDocumentTotals
     return this;
   }
 
-  /** @return Invoice total VAT amount in accounting currency (BT-111). May be {@code null}. */
+  /**
+   * Get the invoice total VAT amount in accounting currency (BT-111).
+   *
+   * @return Invoice total VAT amount in accounting currency (BT-111). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getTaxTotalAccountingCurrency ()
   {
@@ -178,7 +202,11 @@ public class PhloxDocumentTotals
     return this;
   }
 
-  /** @return Invoice total amount with VAT (BT-112). May be {@code null}. */
+  /**
+   * Get the invoice total amount with VAT (BT-112).
+   *
+   * @return Invoice total amount with VAT (BT-112). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getTaxInclusiveTotal ()
   {
@@ -199,7 +227,11 @@ public class PhloxDocumentTotals
     return this;
   }
 
-  /** @return Paid amount (BT-113). May be {@code null}. */
+  /**
+   * Get the paid amount (BT-113).
+   *
+   * @return Paid amount (BT-113). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getPrepaidAmount ()
   {
@@ -220,7 +252,11 @@ public class PhloxDocumentTotals
     return this;
   }
 
-  /** @return Rounding amount (BT-114). May be {@code null}. */
+  /**
+   * Get the rounding amount (BT-114).
+   *
+   * @return Rounding amount (BT-114). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getRoundingAmount ()
   {
@@ -241,7 +277,11 @@ public class PhloxDocumentTotals
     return this;
   }
 
-  /** @return Amount due for payment (BT-115). May be {@code null}. */
+  /**
+   * Get the amount due for payment (BT-115).
+   *
+   * @return Amount due for payment (BT-115). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getPayableAmount ()
   {
@@ -263,6 +303,8 @@ public class PhloxDocumentTotals
   }
 
   /**
+   * Get the mutable list of charges collected on behalf of a third party (BG-34).
+   *
    * @return Mutable list of charges collected on behalf of a third party (BG-34). Never {@code null}; empty when none are present.
    */
   @NonNull

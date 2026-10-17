@@ -39,7 +39,11 @@ public class PhloxLinePrecedingInvoiceRef
   public PhloxLinePrecedingInvoiceRef ()
   {}
 
-  /** @return Line-level preceding invoice reference (BT-217). May be {@code null}. */
+  /**
+   * Get the line-level preceding invoice reference (BT-217).
+   *
+   * @return Line-level preceding invoice reference (BT-217). May be {@code null}.
+   */
   @Nullable
   public String getNumber ()
   {
@@ -60,7 +64,11 @@ public class PhloxLinePrecedingInvoiceRef
     return this;
   }
 
-  /** @return Line-level preceding invoice issue date (BT-218). May be {@code null}. */
+  /**
+   * Get the line-level preceding invoice issue date (BT-218).
+   *
+   * @return Line-level preceding invoice issue date (BT-218). May be {@code null}.
+   */
   @Nullable
   public LocalDate getIssueDate ()
   {
@@ -81,7 +89,11 @@ public class PhloxLinePrecedingInvoiceRef
     return this;
   }
 
-  /** @return Line-level preceding invoice type code (BT-219). May be {@code null}. */
+  /**
+   * Get the line-level preceding invoice type code (BT-219).
+   *
+   * @return Line-level preceding invoice type code (BT-219). May be {@code null}.
+   */
   @Nullable
   public String getTypeCode ()
   {
@@ -102,7 +114,11 @@ public class PhloxLinePrecedingInvoiceRef
     return this;
   }
 
-  /** @return Line-level preceding invoice line reference (BT-220). May be {@code null}. */
+  /**
+   * Get the line-level preceding invoice line reference (BT-220).
+   *
+   * @return Line-level preceding invoice line reference (BT-220). May be {@code null}.
+   */
   @Nullable
   public String getLineReference ()
   {

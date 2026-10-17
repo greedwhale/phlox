@@ -88,7 +88,7 @@ public final class UblInvoiceReaderTest
       final PhloxInvoice aModel = _read (aReader, aRes.getPath ());
       assertNotNull ("Missing invoice number in " + aRes.getPath (), aModel.getNumber ());
       assertSame ("Wrong edition in " + aRes.getPath (), eExpectedEdition, aModel.getEdition ());
-      assertEquals ("Wrong kind in " + aRes.getPath (), bCreditNote, aModel.isCreditNote ());
+      assertTrue ("Wrong kind in " + aRes.getPath (), bCreditNote == aModel.isCreditNote ());
       nCount++;
     }
     return nCount;
@@ -253,7 +253,11 @@ public final class UblInvoiceReaderTest
                                                            .get (0)
                                                            .getPercentage ()));
     assertEquals (0,
-                  new BigDecimal ("2.64").compareTo (aModel.paymentTerms ().get (1).earlyDiscounts ().get (0).getAmount ()));
+                  new BigDecimal ("2.64").compareTo (aModel.paymentTerms ()
+                                                           .get (1)
+                                                           .earlyDiscounts ()
+                                                           .get (0)
+                                                           .getAmount ()));
     // BG-36
     assertEquals (1, aModel.paymentTerms ().get (2).latePenalties ().size ());
     assertEquals (LocalDate.of (2026, 2, 15), aModel.paymentTerms ().get (2).latePenalties ().get (0).getStartDate ());
@@ -264,7 +268,11 @@ public final class UblInvoiceReaderTest
                                                            .get (0)
                                                            .getYearlyInterestPercentage ()));
     assertEquals (0,
-                  new BigDecimal ("12.5").compareTo (aModel.paymentTerms ().get (2).latePenalties ().get (0).getAmount ()));
+                  new BigDecimal ("12.5").compareTo (aModel.paymentTerms ()
+                                                           .get (2)
+                                                           .latePenalties ()
+                                                           .get (0)
+                                                           .getAmount ()));
   }
 
   @Test

@@ -33,12 +33,17 @@ public class PhloxTemplateException extends RuntimeException
    */
   public enum EStage
   {
+    /** Mustache substitution of the invoice into the template. */
     SUBSTITUTE,
+    /** CommonMark parsing of the substituted text. */
     PARSE,
+    /** Emitting the output (HTML or PDF) from the parsed AST. */
     EMIT
   }
 
+  /** The pipeline stage in which the failure occurred. */
   private final EStage m_eStage;
+  /** The BG/BT path being resolved or {@code null}. */
   private final String m_sPath;
 
   @NonNull
@@ -92,14 +97,22 @@ public class PhloxTemplateException extends RuntimeException
     m_sPath = sPath;
   }
 
-  /** @return The pipeline stage that raised the error. */
+  /**
+   * Get the pipeline stage that raised the error.
+   *
+   * @return The pipeline stage that raised the error.
+   */
   @NonNull
   public EStage getStage ()
   {
     return m_eStage;
   }
 
-  /** @return The BG/BT path being resolved when the error fired, or {@code null}. */
+  /**
+   * Get the BG/BT path being resolved when the error fired, or {@code null}.
+   *
+   * @return The BG/BT path being resolved when the error fired, or {@code null}.
+   */
   @Nullable
   public String getPath ()
   {

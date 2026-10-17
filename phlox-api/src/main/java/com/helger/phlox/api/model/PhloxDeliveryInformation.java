@@ -39,7 +39,11 @@ public class PhloxDeliveryInformation
   public PhloxDeliveryInformation ()
   {}
 
-  /** @return Deliver-to party name (BT-70). May be {@code null}. */
+  /**
+   * Get the deliver-to party name (BT-70).
+   *
+   * @return Deliver-to party name (BT-70). May be {@code null}.
+   */
   @Nullable
   public String getPartyName ()
   {
@@ -60,7 +64,11 @@ public class PhloxDeliveryInformation
     return this;
   }
 
-  /** @return Deliver-to location identifier (BT-71 with BT-71-1 scheme ID). May be {@code null}. */
+  /**
+   * Get the deliver-to location identifier (BT-71 with BT-71-1 scheme ID).
+   *
+   * @return Deliver-to location identifier (BT-71 with BT-71-1 scheme ID). May be {@code null}.
+   */
   @Nullable
   public PhloxIdentifier getLocationIdentifier ()
   {
@@ -81,7 +89,11 @@ public class PhloxDeliveryInformation
     return this;
   }
 
-  /** @return Actual delivery date (BT-72). May be {@code null}. */
+  /**
+   * Get the actual delivery date (BT-72).
+   *
+   * @return Actual delivery date (BT-72). May be {@code null}.
+   */
   @Nullable
   public LocalDate getActualDeliveryDate ()
   {
@@ -102,7 +114,11 @@ public class PhloxDeliveryInformation
     return this;
   }
 
-  /** @return Deliver-to address (BG-15). May be {@code null}. */
+  /**
+   * Get the deliver-to address (BG-15).
+   *
+   * @return Deliver-to address (BG-15). May be {@code null}.
+   */
   @Nullable
   public PhloxPostalAddress getPostalAddress ()
   {

@@ -38,7 +38,11 @@ public class PhloxLineVat
   public PhloxLineVat ()
   {}
 
-  /** @return Invoiced item VAT category code (BT-151) — UNTDID 5305. May be {@code null}. */
+  /**
+   * Get the invoiced item VAT category code (BT-151) — UNTDID 5305. May be {@code null}.
+   *
+   * @return Invoiced item VAT category code (BT-151) — UNTDID 5305. May be {@code null}.
+   */
   @Nullable
   public String getCategoryCode ()
   {
@@ -59,7 +63,11 @@ public class PhloxLineVat
     return this;
   }
 
-  /** @return Invoiced item VAT rate (BT-152). May be {@code null}. */
+  /**
+   * Get the invoiced item VAT rate (BT-152).
+   *
+   * @return Invoiced item VAT rate (BT-152). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getRate ()
   {
@@ -80,7 +88,11 @@ public class PhloxLineVat
     return this;
   }
 
-  /** @return Invoiced item exemption reason text (BT-194). May be {@code null}. */
+  /**
+   * Get the invoiced item exemption reason text (BT-194).
+   *
+   * @return Invoiced item exemption reason text (BT-194). May be {@code null}.
+   */
   @Nullable
   public String getExemptionReasonText ()
   {
@@ -101,7 +113,11 @@ public class PhloxLineVat
     return this;
   }
 
-  /** @return Invoiced item VAT exemption reason and specification code (BT-195). May be {@code null}. */
+  /**
+   * Get the invoiced item VAT exemption reason and specification code (BT-195).
+   *
+   * @return Invoiced item VAT exemption reason and specification code (BT-195). May be {@code null}.
+   */
   @Nullable
   public String getExemptionReasonCode ()
   {

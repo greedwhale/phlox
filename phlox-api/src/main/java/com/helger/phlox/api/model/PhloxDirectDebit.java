@@ -37,7 +37,11 @@ public class PhloxDirectDebit
   public PhloxDirectDebit ()
   {}
 
-  /** @return Mandate reference ID (BT-89). May be {@code null}. */
+  /**
+   * Get the mandate reference ID (BT-89).
+   *
+   * @return Mandate reference ID (BT-89). May be {@code null}.
+   */
   @Nullable
   public String getMandateReferenceID ()
   {
@@ -58,7 +62,11 @@ public class PhloxDirectDebit
     return this;
   }
 
-  /** @return Bank assigned creditor identifier (BT-90). May be {@code null}. */
+  /**
+   * Get the bank assigned creditor identifier (BT-90).
+   *
+   * @return Bank assigned creditor identifier (BT-90). May be {@code null}.
+   */
   @Nullable
   public String getBankAssignedCreditorID ()
   {
@@ -79,7 +87,11 @@ public class PhloxDirectDebit
     return this;
   }
 
-  /** @return Debited account identifier (BT-91) — typically the debtor's IBAN. May be {@code null}. */
+  /**
+   * Get the debited account identifier (BT-91) — typically the debtor's IBAN. May be {@code null}.
+   *
+   * @return Debited account identifier (BT-91) — typically the debtor's IBAN. May be {@code null}.
+   */
   @Nullable
   public String getDebitedAccountID ()
   {
@@ -100,7 +112,11 @@ public class PhloxDirectDebit
     return this;
   }
 
-  /** @return Debited account payment service provider identifier (BT-215). May be {@code null}. */
+  /**
+   * Get the debited account payment service provider identifier (BT-215).
+   *
+   * @return Debited account payment service provider identifier (BT-215). May be {@code null}.
+   */
   @Nullable
   public String getDebitedAccountProviderID ()
   {
@@ -121,7 +137,11 @@ public class PhloxDirectDebit
     return this;
   }
 
-  /** @return Debited account name (BT-216). May be {@code null}. */
+  /**
+   * Get the debited account name (BT-216).
+   *
+   * @return Debited account name (BT-216). May be {@code null}.
+   */
   @Nullable
   public String getDebitedAccountName ()
   {

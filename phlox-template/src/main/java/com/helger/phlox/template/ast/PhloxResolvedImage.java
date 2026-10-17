@@ -58,27 +58,43 @@ public final class PhloxResolvedImage
     m_sAltText = sAltText;
   }
 
-  /** @return The image bytes; never {@code null}, never empty. */
+  /**
+   * Get the image bytes; never {@code null}, never empty.
+   *
+   * @return The image bytes; never {@code null}, never empty.
+   */
   public byte @NonNull [] getBinary ()
   {
     return m_aBinary;
   }
 
-  /** @return MIME code (e.g. {@code image/png}). May be {@code null} when unknown. */
+  /**
+   * Get the MIME code of the image.
+   *
+   * @return MIME code (e.g. {@code image/png}). May be {@code null} when unknown.
+   */
   @Nullable
   public String getMimeCode ()
   {
     return m_sMimeCode;
   }
 
-  /** @return The original filename (when available, e.g. for {@code attachment:BG-24[i]}). */
+  /**
+   * Get the original filename of the image, if available.
+   *
+   * @return The original filename (when available, e.g. for {@code attachment:BG-24[i]}).
+   */
   @Nullable
   public String getFilename ()
   {
     return m_sFilename;
   }
 
-  /** @return The CommonMark image alt text ({@code ![alt](url)}). May be {@code null}. */
+  /**
+   * Get the commonMark image alt text ({@code ![alt](url)}).
+   *
+   * @return The CommonMark image alt text ({@code ![alt](url)}). May be {@code null}.
+   */
   @Nullable
   public String getAltText ()
   {

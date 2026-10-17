@@ -43,7 +43,11 @@ public class PhloxLineCharge
   public PhloxLineCharge ()
   {}
 
-  /** @return Line charge amount (BT-141). May be {@code null}. */
+  /**
+   * Get the line charge amount (BT-141).
+   *
+   * @return Line charge amount (BT-141). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getAmount ()
   {
@@ -64,7 +68,11 @@ public class PhloxLineCharge
     return this;
   }
 
-  /** @return Line charge base amount (BT-142). May be {@code null}. */
+  /**
+   * Get the line charge base amount (BT-142).
+   *
+   * @return Line charge base amount (BT-142). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getBaseAmount ()
   {
@@ -85,7 +93,11 @@ public class PhloxLineCharge
     return this;
   }
 
-  /** @return Line charge percentage (BT-143). May be {@code null}. */
+  /**
+   * Get the line charge percentage (BT-143).
+   *
+   * @return Line charge percentage (BT-143). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getPercentage ()
   {
@@ -106,7 +118,11 @@ public class PhloxLineCharge
     return this;
   }
 
-  /** @return Line charge reason text (BT-144). May be {@code null}. */
+  /**
+   * Get the line charge reason text (BT-144).
+   *
+   * @return Line charge reason text (BT-144). May be {@code null}.
+   */
   @Nullable
   public String getReason ()
   {
@@ -127,7 +143,11 @@ public class PhloxLineCharge
     return this;
   }
 
-  /** @return Line charge reason code (BT-145) — UNTDID 7161. May be {@code null}. */
+  /**
+   * Get the line charge reason code (BT-145) — UNTDID 7161. May be {@code null}.
+   *
+   * @return Line charge reason code (BT-145) — UNTDID 7161. May be {@code null}.
+   */
   @Nullable
   public String getReasonCode ()
   {
@@ -148,7 +168,11 @@ public class PhloxLineCharge
     return this;
   }
 
-  /** @return Invoice line-level non-VAT tax type code (BT-193). May be {@code null}. */
+  /**
+   * Get the invoice line-level non-VAT tax type code (BT-193).
+   *
+   * @return Invoice line-level non-VAT tax type code (BT-193). May be {@code null}.
+   */
   @Nullable
   public String getNonVatTaxTypeCode ()
   {
@@ -169,7 +193,11 @@ public class PhloxLineCharge
     return this;
   }
 
-  /** @return Invoice line tax type code list identifier (BT-193-1). May be {@code null}. */
+  /**
+   * Get the invoice line tax type code list identifier (BT-193-1).
+   *
+   * @return Invoice line tax type code list identifier (BT-193-1). May be {@code null}.
+   */
   @Nullable
   public String getNonVatTaxTypeCodeListID ()
   {

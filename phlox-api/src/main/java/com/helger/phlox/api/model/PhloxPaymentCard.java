@@ -34,7 +34,11 @@ public class PhloxPaymentCard
   public PhloxPaymentCard ()
   {}
 
-  /** @return Payment card primary account number / PAN (BT-87) — typically masked. May be {@code null}. */
+  /**
+   * Get the payment card primary account number / PAN (BT-87) — typically masked.
+   *
+   * @return Payment card primary account number / PAN (BT-87) — typically masked. May be {@code null}.
+   */
   @Nullable
   public String getPan ()
   {
@@ -55,7 +59,11 @@ public class PhloxPaymentCard
     return this;
   }
 
-  /** @return Payment card holder name (BT-88). May be {@code null}. */
+  /**
+   * Get the payment card holder name (BT-88).
+   *
+   * @return Payment card holder name (BT-88). May be {@code null}.
+   */
   @Nullable
   public String getHolderName ()
   {

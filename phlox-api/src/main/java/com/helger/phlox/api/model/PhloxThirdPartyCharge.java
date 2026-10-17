@@ -37,7 +37,11 @@ public class PhloxThirdPartyCharge
   public PhloxThirdPartyCharge ()
   {}
 
-  /** @return Charge amount collected on behalf of a third party (BT-179). May be {@code null}. */
+  /**
+   * Get the charge amount collected on behalf of a third party (BT-179).
+   *
+   * @return Charge amount collected on behalf of a third party (BT-179). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getAmount ()
   {
@@ -58,7 +62,11 @@ public class PhloxThirdPartyCharge
     return this;
   }
 
-  /** @return Charges specification (BT-180). May be {@code null}. */
+  /**
+   * Get the charges specification (BT-180).
+   *
+   * @return Charges specification (BT-180). May be {@code null}.
+   */
   @Nullable
   public String getSpecification ()
   {

@@ -43,7 +43,11 @@ public class PhloxPaymentInstructions
   public PhloxPaymentInstructions ()
   {}
 
-  /** @return Payment means type code (BT-81) — UNTDID 4461. May be {@code null}. */
+  /**
+   * Get the payment means type code (BT-81) — UNTDID 4461. May be {@code null}.
+   *
+   * @return Payment means type code (BT-81) — UNTDID 4461. May be {@code null}.
+   */
   @Nullable
   public String getPaymentMeansCode ()
   {
@@ -64,7 +68,11 @@ public class PhloxPaymentInstructions
     return this;
   }
 
-  /** @return Payment means text (BT-82). May be {@code null}. */
+  /**
+   * Get the payment means text (BT-82).
+   *
+   * @return Payment means text (BT-82). May be {@code null}.
+   */
   @Nullable
   public String getPaymentMeansText ()
   {
@@ -85,7 +93,11 @@ public class PhloxPaymentInstructions
     return this;
   }
 
-  /** @return Remittance information (BT-83). May be {@code null}. */
+  /**
+   * Get the remittance information (BT-83).
+   *
+   * @return Remittance information (BT-83). May be {@code null}.
+   */
   @Nullable
   public String getRemittanceInformation ()
   {
@@ -107,6 +119,8 @@ public class PhloxPaymentInstructions
   }
 
   /**
+   * Get the mutable list of credit transfers (BG-17).
+   *
    * @return Mutable list of credit transfers (BG-17). Never {@code null}; empty when none are
    *         present.
    */
@@ -117,7 +131,11 @@ public class PhloxPaymentInstructions
     return m_aCreditTransfers;
   }
 
-  /** @return Payment card information (BG-18). May be {@code null}. */
+  /**
+   * Get the payment card information (BG-18).
+   *
+   * @return Payment card information (BG-18). May be {@code null}.
+   */
   @Nullable
   public PhloxPaymentCard getPaymentCard ()
   {
@@ -138,7 +156,11 @@ public class PhloxPaymentInstructions
     return this;
   }
 
-  /** @return Direct debit information (BG-19). May be {@code null}. */
+  /**
+   * Get the direct debit information (BG-19).
+   *
+   * @return Direct debit information (BG-19). May be {@code null}.
+   */
   @Nullable
   public PhloxDirectDebit getDirectDebit ()
   {

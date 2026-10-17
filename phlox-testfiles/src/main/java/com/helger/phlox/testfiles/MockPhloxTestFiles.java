@@ -235,7 +235,11 @@ public final class MockPhloxTestFiles
   private MockPhloxTestFiles ()
   {}
 
-  /** @return Classpath resources for all EN 16931:2017 UBL 2.1 Invoice example files. */
+  /**
+   * Get the classpath resources for all EN 16931:2017 UBL 2.1 Invoice example files.
+   *
+   * @return Classpath resources for all EN 16931:2017 UBL 2.1 Invoice example files.
+   */
   @NonNull
   @ReturnsMutableCopy
   public static ICommonsList <ClassPathResource> getUbl21InvoiceFiles ()
@@ -243,7 +247,11 @@ public final class MockPhloxTestFiles
     return _toResources (UBL21_INVOICE_FILES);
   }
 
-  /** @return Classpath resources for all EN 16931:2017 UBL 2.1 CreditNote example files. */
+  /**
+   * Get the classpath resources for all EN 16931:2017 UBL 2.1 CreditNote example files.
+   *
+   * @return Classpath resources for all EN 16931:2017 UBL 2.1 CreditNote example files.
+   */
   @NonNull
   @ReturnsMutableCopy
   public static ICommonsList <ClassPathResource> getUbl21CreditNoteFiles ()
@@ -251,7 +259,11 @@ public final class MockPhloxTestFiles
     return _toResources (UBL21_CREDITNOTE_FILES);
   }
 
-  /** @return Classpath resources for all UBL 2.1 example files (Invoice and CreditNote). */
+  /**
+   * Get the classpath resources for all UBL 2.1 example files (Invoice and CreditNote).
+   *
+   * @return Classpath resources for all UBL 2.1 example files (Invoice and CreditNote).
+   */
   @NonNull
   @ReturnsMutableCopy
   public static ICommonsList <ClassPathResource> getAllUbl21Files ()
@@ -262,6 +274,8 @@ public final class MockPhloxTestFiles
   }
 
   /**
+   * Get the classpath resources for the core hand-curated EN 16931:2017 CII D16B example files.
+   *
    * @return Classpath resources for the core hand-curated EN 16931:2017 CII D16B example files
    *         that have been in the repo since inception.
    */
@@ -272,7 +286,11 @@ public final class MockPhloxTestFiles
     return _toResources (CII_D16B_CORE_FILES);
   }
 
-  /** @return Classpath resources for the XRechnung 1.2.2 example corpus (21 files). */
+  /**
+   * Get the classpath resources for the XRechnung 1.2.2 example corpus (21 files).
+   *
+   * @return Classpath resources for the XRechnung 1.2.2 example corpus (21 files).
+   */
   @NonNull
   @ReturnsMutableCopy
   public static ICommonsList <ClassPathResource> getCiiD16BXRechnung122Files ()
@@ -280,7 +298,11 @@ public final class MockPhloxTestFiles
     return _toResources (CII_D16B_XRECHNUNG_122_FILES);
   }
 
-  /** @return Classpath resources for the XRechnung 2.0.0 example corpus (19 files). */
+  /**
+   * Get the classpath resources for the XRechnung 2.0.0 example corpus (19 files).
+   *
+   * @return Classpath resources for the XRechnung 2.0.0 example corpus (19 files).
+   */
   @NonNull
   @ReturnsMutableCopy
   public static ICommonsList <ClassPathResource> getCiiD16BXRechnung200Files ()
@@ -288,7 +310,11 @@ public final class MockPhloxTestFiles
     return _toResources (CII_D16B_XRECHNUNG_200_FILES);
   }
 
-  /** @return Classpath resources for the XRechnung 3.0.2 example corpus (33 files). */
+  /**
+   * Get the classpath resources for the XRechnung 3.0.2 example corpus (33 files).
+   *
+   * @return Classpath resources for the XRechnung 3.0.2 example corpus (33 files).
+   */
   @NonNull
   @ReturnsMutableCopy
   public static ICommonsList <ClassPathResource> getCiiD16BXRechnung302Files ()
@@ -297,6 +323,8 @@ public final class MockPhloxTestFiles
   }
 
   /**
+   * Get the classpath resources for the technical stress-test CII files — both comprehensive.
+   *
    * @return Classpath resources for the technical stress-test CII files — both comprehensive
    *         (every BG/BT populated) and minimal (smallest valid invoice) shapes (6 files).
    */
@@ -308,6 +336,8 @@ public final class MockPhloxTestFiles
   }
 
   /**
+   * Get the classpath resources for the bug-regression CII files (10 files).
+   *
    * @return Classpath resources for the bug-regression CII files (10 files). Each file is a
    *         minimal repro for an issue reported against the upstream {@code en16931-cii2ubl}
    *         project. All are well-formed CII; some are flagged "-bad" in the filename because
@@ -322,6 +352,8 @@ public final class MockPhloxTestFiles
   }
 
   /**
+   * Get the classpath resources for every EN 16931:2017 CII D16B example file — core +.
+   *
    * @return Classpath resources for every EN 16931:2017 CII D16B example file — core +
    *         XRechnung 1.2.2 + 2.0.0 + 3.0.2 + technical + issues. All files are well-formed
    *         CII and should round-trip through {@code CiiInvoiceReader} without errors.
@@ -340,7 +372,11 @@ public final class MockPhloxTestFiles
     return aList;
   }
 
-  /** @return Classpath resources for all EN 16931:2026 UBL 2.5 Invoice example files. */
+  /**
+   * Get the classpath resources for all EN 16931:2026 UBL 2.5 Invoice example files.
+   *
+   * @return Classpath resources for all EN 16931:2026 UBL 2.5 Invoice example files.
+   */
   @NonNull
   @ReturnsMutableCopy
   public static ICommonsList <ClassPathResource> getUbl25InvoiceFiles ()
@@ -348,7 +384,11 @@ public final class MockPhloxTestFiles
     return _toResources (UBL25_INVOICE_FILES);
   }
 
-  /** @return Classpath resources for all EN 16931:2026 UBL 2.5 CreditNote example files. */
+  /**
+   * Get the classpath resources for all EN 16931:2026 UBL 2.5 CreditNote example files.
+   *
+   * @return Classpath resources for all EN 16931:2026 UBL 2.5 CreditNote example files.
+   */
   @NonNull
   @ReturnsMutableCopy
   public static ICommonsList <ClassPathResource> getUbl25CreditNoteFiles ()
@@ -356,7 +396,11 @@ public final class MockPhloxTestFiles
     return _toResources (UBL25_CREDITNOTE_FILES);
   }
 
-  /** @return Classpath resources for all UBL 2.5 example files (Invoice and CreditNote). */
+  /**
+   * Get the classpath resources for all UBL 2.5 example files (Invoice and CreditNote).
+   *
+   * @return Classpath resources for all UBL 2.5 example files (Invoice and CreditNote).
+   */
   @NonNull
   @ReturnsMutableCopy
   public static ICommonsList <ClassPathResource> getAllUbl25Files ()
@@ -367,6 +411,8 @@ public final class MockPhloxTestFiles
   }
 
   /**
+   * Get the classpath resources for all EN 16931:2026 CII D25A example files (Invoices and.
+   *
    * @return Classpath resources for all EN 16931:2026 CII D25A example files (Invoices and
    *         CreditNotes).
    */

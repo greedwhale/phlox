@@ -249,6 +249,8 @@ public final class PhloxTemplate implements IPhloxTemplate
   }
 
   /**
+   * Get the default template shipped in this module — a single language-independent.
+   *
    * @return The default template shipped in this module — a single language-independent
    *         {@code default.ptpl} that reproduces the layout of the 0.1.0 hard-coded writers.
    *         Returned instance is a lazily created singleton.
@@ -350,6 +352,8 @@ public final class PhloxTemplate implements IPhloxTemplate
   }
 
   /**
+   * Get the raw template source — the {@code .ptpl} text the instance was built from.
+   *
    * @return The raw template source — the {@code .ptpl} text the instance was built from. Intended
    *         for diagnostics (error messages, debug dumps); never the runtime render path, since
    *         stage 0 has not yet been applied.

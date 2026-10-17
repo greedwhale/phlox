@@ -69,6 +69,7 @@ import com.helger.pdflayout.spec.WidthSpec;
  */
 public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
 {
+  /** Create a new PDF invoice writer. */
   public PdfInvoiceWriter ()
   {}
 

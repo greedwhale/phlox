@@ -40,7 +40,11 @@ public class PhloxLineAllowance
   public PhloxLineAllowance ()
   {}
 
-  /** @return Line allowance amount (BT-136). May be {@code null}. */
+  /**
+   * Get the line allowance amount (BT-136).
+   *
+   * @return Line allowance amount (BT-136). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getAmount ()
   {
@@ -61,7 +65,11 @@ public class PhloxLineAllowance
     return this;
   }
 
-  /** @return Line allowance base amount (BT-137). May be {@code null}. */
+  /**
+   * Get the line allowance base amount (BT-137).
+   *
+   * @return Line allowance base amount (BT-137). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getBaseAmount ()
   {
@@ -82,7 +90,11 @@ public class PhloxLineAllowance
     return this;
   }
 
-  /** @return Line allowance percentage (BT-138). May be {@code null}. */
+  /**
+   * Get the line allowance percentage (BT-138).
+   *
+   * @return Line allowance percentage (BT-138). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getPercentage ()
   {
@@ -103,7 +115,11 @@ public class PhloxLineAllowance
     return this;
   }
 
-  /** @return Line allowance reason text (BT-139). May be {@code null}. */
+  /**
+   * Get the line allowance reason text (BT-139).
+   *
+   * @return Line allowance reason text (BT-139). May be {@code null}.
+   */
   @Nullable
   public String getReason ()
   {
@@ -124,7 +140,11 @@ public class PhloxLineAllowance
     return this;
   }
 
-  /** @return Line allowance reason code (BT-140) — UNTDID 5189. May be {@code null}. */
+  /**
+   * Get the line allowance reason code (BT-140) — UNTDID 5189. May be {@code null}.
+   *
+   * @return Line allowance reason code (BT-140) — UNTDID 5189. May be {@code null}.
+   */
   @Nullable
   public String getReasonCode ()
   {

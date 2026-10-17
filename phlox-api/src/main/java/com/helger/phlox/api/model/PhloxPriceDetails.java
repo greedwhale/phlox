@@ -40,7 +40,11 @@ public class PhloxPriceDetails
   public PhloxPriceDetails ()
   {}
 
-  /** @return Item net price (BT-146). May be {@code null}. */
+  /**
+   * Get the item net price (BT-146).
+   *
+   * @return Item net price (BT-146). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getNetPrice ()
   {
@@ -61,7 +65,11 @@ public class PhloxPriceDetails
     return this;
   }
 
-  /** @return Item price discount (BT-147). May be {@code null}. */
+  /**
+   * Get the item price discount (BT-147).
+   *
+   * @return Item price discount (BT-147). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getDiscount ()
   {
@@ -82,7 +90,11 @@ public class PhloxPriceDetails
     return this;
   }
 
-  /** @return Item gross price (BT-148). May be {@code null}. */
+  /**
+   * Get the item gross price (BT-148).
+   *
+   * @return Item gross price (BT-148). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getGrossPrice ()
   {
@@ -103,7 +115,11 @@ public class PhloxPriceDetails
     return this;
   }
 
-  /** @return Item price base quantity (BT-149). May be {@code null}. */
+  /**
+   * Get the item price base quantity (BT-149).
+   *
+   * @return Item price base quantity (BT-149). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getBaseQuantity ()
   {
@@ -124,7 +140,11 @@ public class PhloxPriceDetails
     return this;
   }
 
-  /** @return Item price base quantity unit of measure (BT-150) — UN/ECE Rec 20/21. May be {@code null}. */
+  /**
+   * Get the item price base quantity unit of measure (BT-150) — UN/ECE Rec 20/21. May be {@code null}.
+   *
+   * @return Item price base quantity unit of measure (BT-150) — UN/ECE Rec 20/21. May be {@code null}.
+   */
   @Nullable
   public String getBaseQuantityUnit ()
   {

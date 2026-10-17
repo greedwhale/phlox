@@ -29,8 +29,11 @@ import com.helger.phlox.api.AbstractRenderContext;
  */
 public class HtmlRenderContext extends AbstractRenderContext <HtmlRenderContext>
 {
+  /** Default prefix of all CSS classes emitted by the writer. */
   public static final String DEFAULT_CSS_CLASS_PREFIX = "phlox-";
+  /** Default for embedding the stylesheet into the document. */
   public static final boolean DEFAULT_EMBEDDED_STYLESHEET = true;
+  /** Default for emitting the HTML doctype. */
   public static final boolean DEFAULT_EMIT_DOCTYPE = true;
 
   private String m_sCssClassPrefix = DEFAULT_CSS_CLASS_PREFIX;
@@ -38,22 +41,41 @@ public class HtmlRenderContext extends AbstractRenderContext <HtmlRenderContext>
   private String m_sCustomStylesheet;
   private boolean m_bEmitDoctype = DEFAULT_EMIT_DOCTYPE;
 
+  /** Create a new context with the default HTML settings. */
   public HtmlRenderContext ()
   {}
 
-  /** Create a {@link HtmlRenderContext} pre-populated with another context's shared settings. */
+  /**
+   * Create a new context pre-populated with the shared settings of another context.
+   *
+   * @param aSource
+   *        The context to copy the shared settings from. Never {@code null}.
+   * @return A new context. Never {@code null}.
+   */
   @NonNull
   public static HtmlRenderContext copyFrom (@NonNull final AbstractRenderContext <?> aSource)
   {
     return new HtmlRenderContext ().copyBaseFieldsFrom (aSource);
   }
 
+  /**
+   * Get the CSS class prefix.
+   *
+   * @return The CSS class prefix.
+   */
   @NonNull
   public String getCssClassPrefix ()
   {
     return m_sCssClassPrefix;
   }
 
+  /**
+   * Set the CSS class prefix.
+   *
+   * @param sCssClassPrefix
+   *        The new value. Never {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public HtmlRenderContext setCssClassPrefix (@NonNull final String sCssClassPrefix)
   {
@@ -61,11 +83,23 @@ public class HtmlRenderContext extends AbstractRenderContext <HtmlRenderContext>
     return this;
   }
 
+  /**
+   * Check if the default stylesheet is embedded into the document.
+   *
+   * @return {@code true} if the default stylesheet is embedded into the document.
+   */
   public boolean isEmbeddedStylesheet ()
   {
     return m_bEmbeddedStylesheet;
   }
 
+  /**
+   * Set the embedded stylesheet flag.
+   *
+   * @param bEmbeddedStylesheet
+   *        The new value. Never {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public HtmlRenderContext setEmbeddedStylesheet (final boolean bEmbeddedStylesheet)
   {
@@ -73,12 +107,24 @@ public class HtmlRenderContext extends AbstractRenderContext <HtmlRenderContext>
     return this;
   }
 
+  /**
+   * Get the custom stylesheet.
+   *
+   * @return The custom stylesheet. May be {@code null}.
+   */
   @Nullable
   public String getCustomStylesheet ()
   {
     return m_sCustomStylesheet;
   }
 
+  /**
+   * Set the custom stylesheet.
+   *
+   * @param sCustomStylesheet
+   *        The new value. May be {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public HtmlRenderContext setCustomStylesheet (@Nullable final String sCustomStylesheet)
   {
@@ -86,11 +132,23 @@ public class HtmlRenderContext extends AbstractRenderContext <HtmlRenderContext>
     return this;
   }
 
+  /**
+   * Check if the HTML doctype is emitted.
+   *
+   * @return {@code true} if the HTML doctype is emitted.
+   */
   public boolean isEmitDoctype ()
   {
     return m_bEmitDoctype;
   }
 
+  /**
+   * Set the emit doctype flag.
+   *
+   * @param bEmitDoctype
+   *        The new value. Never {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public HtmlRenderContext setEmitDoctype (final boolean bEmitDoctype)
   {

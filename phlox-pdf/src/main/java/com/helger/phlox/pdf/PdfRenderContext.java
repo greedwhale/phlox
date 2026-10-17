@@ -32,10 +32,15 @@ import com.helger.pdflayout.spec.PreloadFont;
  */
 public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
 {
+  /** Default page size (A4). */
   public static final PDRectangle DEFAULT_PAGE_SIZE = PDRectangle.A4;
+  /** Default page margins (20 mm). */
   public static final MarginSpec DEFAULT_MARGINS = new MarginSpec (20 * 72 / 25.4f); // 20mm in points
+  /** Default font of the body text. */
   public static final FontSpec DEFAULT_BODY_FONT = new FontSpec (PreloadFont.REGULAR, 10f);
+  /** Default font of section headers. */
   public static final FontSpec DEFAULT_HEADER_FONT = new FontSpec (PreloadFont.REGULAR_BOLD, 12f);
+  /** Default font of table headers. */
   public static final FontSpec DEFAULT_TABLE_HEADER_FONT = new FontSpec (PreloadFont.REGULAR_BOLD, 10f);
 
   private PDRectangle m_aPageSize = DEFAULT_PAGE_SIZE;
@@ -44,22 +49,41 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
   private FontSpec m_aHeaderFont = DEFAULT_HEADER_FONT;
   private FontSpec m_aTableHeaderFont = DEFAULT_TABLE_HEADER_FONT;
 
+  /** Create a new context with the default PDF settings. */
   public PdfRenderContext ()
   {}
 
-  /** Pre-populate from another context's shared settings. */
+  /**
+   * Create a new context pre-populated with the shared settings of another context.
+   *
+   * @param aSource
+   *        The context to copy the shared settings from. Never {@code null}.
+   * @return A new context. Never {@code null}.
+   */
   @NonNull
   public static PdfRenderContext copyFrom (@NonNull final AbstractRenderContext <?> aSource)
   {
     return new PdfRenderContext ().copyBaseFieldsFrom (aSource);
   }
 
+  /**
+   * Get the page size.
+   *
+   * @return The page size.
+   */
   @NonNull
   public PDRectangle getPageSize ()
   {
     return m_aPageSize;
   }
 
+  /**
+   * Set the page size.
+   *
+   * @param aPageSize
+   *        The new value. Never {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public PdfRenderContext setPageSize (@NonNull final PDRectangle aPageSize)
   {
@@ -67,12 +91,24 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     return this;
   }
 
+  /**
+   * Get the page margins.
+   *
+   * @return The page margins.
+   */
   @NonNull
   public MarginSpec getMargins ()
   {
     return m_aMargins;
   }
 
+  /**
+   * Set the page margins.
+   *
+   * @param aMargins
+   *        The new value. Never {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public PdfRenderContext setMargins (@NonNull final MarginSpec aMargins)
   {
@@ -80,12 +116,24 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     return this;
   }
 
+  /**
+   * Get the body font.
+   *
+   * @return The body font.
+   */
   @NonNull
   public FontSpec getBodyFont ()
   {
     return m_aBodyFont;
   }
 
+  /**
+   * Set the body font.
+   *
+   * @param aBodyFont
+   *        The new value. Never {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public PdfRenderContext setBodyFont (@NonNull final FontSpec aBodyFont)
   {
@@ -93,12 +141,24 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     return this;
   }
 
+  /**
+   * Get the header font.
+   *
+   * @return The header font.
+   */
   @NonNull
   public FontSpec getHeaderFont ()
   {
     return m_aHeaderFont;
   }
 
+  /**
+   * Set the header font.
+   *
+   * @param aHeaderFont
+   *        The new value. Never {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public PdfRenderContext setHeaderFont (@NonNull final FontSpec aHeaderFont)
   {
@@ -106,12 +166,24 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     return this;
   }
 
+  /**
+   * Get the table header font.
+   *
+   * @return The table header font.
+   */
   @NonNull
   public FontSpec getTableHeaderFont ()
   {
     return m_aTableHeaderFont;
   }
 
+  /**
+   * Set the table header font.
+   *
+   * @param aTableHeaderFont
+   *        The new value. Never {@code null}.
+   * @return this for chaining.
+   */
   @NonNull
   public PdfRenderContext setTableHeaderFont (@NonNull final FontSpec aTableHeaderFont)
   {

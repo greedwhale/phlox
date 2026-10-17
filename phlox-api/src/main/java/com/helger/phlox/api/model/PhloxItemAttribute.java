@@ -51,7 +51,11 @@ public class PhloxItemAttribute
     m_sValue = sValue;
   }
 
-  /** @return Item attribute name (BT-160). May be {@code null}. */
+  /**
+   * Get the item attribute name (BT-160).
+   *
+   * @return Item attribute name (BT-160). May be {@code null}.
+   */
   @Nullable
   public String getName ()
   {
@@ -72,7 +76,11 @@ public class PhloxItemAttribute
     return this;
   }
 
-  /** @return Item attribute value (BT-161). May be {@code null}. */
+  /**
+   * Get the item attribute value (BT-161).
+   *
+   * @return Item attribute value (BT-161). May be {@code null}.
+   */
   @Nullable
   public String getValue ()
   {
@@ -93,7 +101,11 @@ public class PhloxItemAttribute
     return this;
   }
 
-  /** @return Item attribute code (BT-211). May be {@code null}. */
+  /**
+   * Get the item attribute code (BT-211).
+   *
+   * @return Item attribute code (BT-211). May be {@code null}.
+   */
   @Nullable
   public String getCode ()
   {
@@ -114,7 +126,11 @@ public class PhloxItemAttribute
     return this;
   }
 
-  /** @return Item attribute value unit of measure code (BT-212). May be {@code null}. */
+  /**
+   * Get the item attribute value unit of measure code (BT-212).
+   *
+   * @return Item attribute value unit of measure code (BT-212). May be {@code null}.
+   */
   @Nullable
   public String getValueUnit ()
   {

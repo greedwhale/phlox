@@ -35,7 +35,11 @@ public class PhloxCreditTransfer
   public PhloxCreditTransfer ()
   {}
 
-  /** @return Payment account identifier (BT-84) — IBAN or proprietary ID. May be {@code null}. */
+  /**
+   * Get the payment account identifier (BT-84) — IBAN or proprietary ID. May be {@code null}.
+   *
+   * @return Payment account identifier (BT-84) — IBAN or proprietary ID. May be {@code null}.
+   */
   @Nullable
   public String getAccountIdentifier ()
   {
@@ -56,7 +60,11 @@ public class PhloxCreditTransfer
     return this;
   }
 
-  /** @return Payment account name (BT-85). May be {@code null}. */
+  /**
+   * Get the payment account name (BT-85).
+   *
+   * @return Payment account name (BT-85). May be {@code null}.
+   */
   @Nullable
   public String getAccountName ()
   {
@@ -77,7 +85,11 @@ public class PhloxCreditTransfer
     return this;
   }
 
-  /** @return Payment service provider ID (BT-86) — typically the BIC. May be {@code null}. */
+  /**
+   * Get the payment service provider ID (BT-86) — typically the BIC. May be {@code null}.
+   *
+   * @return Payment service provider ID (BT-86) — typically the BIC. May be {@code null}.
+   */
   @Nullable
   public String getServiceProviderID ()
   {

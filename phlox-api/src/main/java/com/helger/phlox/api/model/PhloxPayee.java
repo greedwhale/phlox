@@ -35,7 +35,11 @@ public class PhloxPayee
   public PhloxPayee ()
   {}
 
-  /** @return Payee name (BT-59). May be {@code null}. */
+  /**
+   * Get the payee name (BT-59).
+   *
+   * @return Payee name (BT-59). May be {@code null}.
+   */
   @Nullable
   public String getName ()
   {
@@ -56,7 +60,11 @@ public class PhloxPayee
     return this;
   }
 
-  /** @return Payee identifier (BT-60 with BT-60-1 scheme ID). May be {@code null}. */
+  /**
+   * Get the payee identifier (BT-60 with BT-60-1 scheme ID).
+   *
+   * @return Payee identifier (BT-60 with BT-60-1 scheme ID). May be {@code null}.
+   */
   @Nullable
   public PhloxIdentifier getIdentifier ()
   {
@@ -77,7 +85,11 @@ public class PhloxPayee
     return this;
   }
 
-  /** @return Payee legal registration (BT-61 with BT-61-1 scheme ID). May be {@code null}. */
+  /**
+   * Get the payee legal registration (BT-61 with BT-61-1 scheme ID).
+   *
+   * @return Payee legal registration (BT-61 with BT-61-1 scheme ID). May be {@code null}.
+   */
   @Nullable
   public PhloxIdentifier getLegalRegistration ()
   {

@@ -49,7 +49,11 @@ public class PhloxIdentifier
     m_sSchemeID = sSchemeID;
   }
 
-  /** @return The identifier value (BT-X). May be {@code null}. */
+  /**
+   * Get the identifier value (BT-X).
+   *
+   * @return The identifier value (BT-X). May be {@code null}.
+   */
   @Nullable
   public String getValue ()
   {
@@ -70,7 +74,11 @@ public class PhloxIdentifier
     return this;
   }
 
-  /** @return The scheme ID (BT-X-1) qualifying the identifier value. May be {@code null}. */
+  /**
+   * Get the scheme ID (BT-X-1) qualifying the identifier value.
+   *
+   * @return The scheme ID (BT-X-1) qualifying the identifier value. May be {@code null}.
+   */
   @Nullable
   public String getSchemeID ()
   {

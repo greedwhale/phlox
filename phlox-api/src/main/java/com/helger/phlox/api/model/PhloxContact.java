@@ -35,7 +35,11 @@ public class PhloxContact
   public PhloxContact ()
   {}
 
-  /** @return Contact point name (BT-41 / BT-56). May be {@code null}. */
+  /**
+   * Get the contact point name (BT-41 / BT-56).
+   *
+   * @return Contact point name (BT-41 / BT-56). May be {@code null}.
+   */
   @Nullable
   public String getName ()
   {
@@ -56,7 +60,11 @@ public class PhloxContact
     return this;
   }
 
-  /** @return Telephone number (BT-42 / BT-57). May be {@code null}. */
+  /**
+   * Get the telephone number (BT-42 / BT-57).
+   *
+   * @return Telephone number (BT-42 / BT-57). May be {@code null}.
+   */
   @Nullable
   public String getTelephone ()
   {
@@ -77,7 +85,11 @@ public class PhloxContact
     return this;
   }
 
-  /** @return Email address (BT-43 / BT-58). May be {@code null}. */
+  /**
+   * Get the email address (BT-43 / BT-58).
+   *
+   * @return Email address (BT-43 / BT-58). May be {@code null}.
+   */
   @Nullable
   public String getEmail ()
   {
@@ -98,7 +110,11 @@ public class PhloxContact
     return this;
   }
 
-  /** @return {@code true} when every field is {@code null}. */
+  /**
+   * Get the {@code true} when every field is {@code null}.
+   *
+   * @return {@code true} when every field is {@code null}.
+   */
   public boolean isEmpty ()
   {
     return m_sName == null && m_sTelephone == null && m_sEmail == null;

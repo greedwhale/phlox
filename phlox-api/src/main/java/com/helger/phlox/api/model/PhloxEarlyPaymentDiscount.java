@@ -39,7 +39,11 @@ public class PhloxEarlyPaymentDiscount
   public PhloxEarlyPaymentDiscount ()
   {}
 
-  /** @return Discount end date (BT-170). May be {@code null}. */
+  /**
+   * Get the discount end date (BT-170).
+   *
+   * @return Discount end date (BT-170). May be {@code null}.
+   */
   @Nullable
   public LocalDate getEndDate ()
   {
@@ -60,7 +64,11 @@ public class PhloxEarlyPaymentDiscount
     return this;
   }
 
-  /** @return Discount percentage (BT-171). May be {@code null}. */
+  /**
+   * Get the discount percentage (BT-171).
+   *
+   * @return Discount percentage (BT-171). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getPercentage ()
   {
@@ -81,7 +89,11 @@ public class PhloxEarlyPaymentDiscount
     return this;
   }
 
-  /** @return Discount amount (BT-172). May be {@code null}. */
+  /**
+   * Get the discount amount (BT-172).
+   *
+   * @return Discount amount (BT-172). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getAmount ()
   {

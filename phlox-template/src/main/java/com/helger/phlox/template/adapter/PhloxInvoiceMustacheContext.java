@@ -98,6 +98,8 @@ public final class PhloxInvoiceMustacheContext
   {}
 
   /**
+   * Get the singleton {@link com.samskivert.mustache.Mustache.Collector} used by every compiled.
+   *
    * @return The singleton {@link com.samskivert.mustache.Mustache.Collector} used by every compiled
    *         template. Backed by a thread-local execution environment set by
    *         {@link #withEnv(PhloxInvoice, AbstractRenderContext, Runnable)}.

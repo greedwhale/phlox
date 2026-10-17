@@ -33,9 +33,16 @@ import com.helger.en16931.basics.EEN16931Edition;
 import com.helger.phlox.api.model.*;
 
 import un.unece.uncefact.data.standard.crossindustryinvoice._100.CrossIndustryInvoiceType;
+import un.unece.uncefact.data.standard.qualifieddatatype._100.AllowanceChargeReasonCodeType;
+import un.unece.uncefact.data.standard.qualifieddatatype._100.DocumentCodeType;
 import un.unece.uncefact.data.standard.qualifieddatatype._100.FormattedDateTimeType;
+import un.unece.uncefact.data.standard.qualifieddatatype._100.PaymentMeansCodeType;
+import un.unece.uncefact.data.standard.qualifieddatatype._100.ReferenceCodeType;
+import un.unece.uncefact.data.standard.qualifieddatatype._100.TaxCategoryCodeType;
+import un.unece.uncefact.data.standard.qualifieddatatype._100.TimeReferenceCodeType;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._100.AmountType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._100.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._100.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._100.DateType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._100.IDType;
@@ -48,7 +55,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._100.TextType;
  *
  * @author Philip Helger
  */
-final class CiiD16BInvoiceReader
+final class CiiD16BInvoiceReader extends AbstractCiiInvoiceReader
 {
   private static final Logger LOGGER = LoggerFactory.getLogger (CiiD16BInvoiceReader.class);
 
@@ -152,8 +159,7 @@ final class CiiD16BInvoiceReader
    * @return The populated model.
    */
   @NonNull
-  PhloxInvoice readCrossIndustryInvoice (@NonNull final CrossIndustryInvoiceType aCii,
-                                         @NonNull final ErrorList aErrors)
+  PhloxInvoice readCrossIndustryInvoice (@NonNull final CrossIndustryInvoiceType aCii, @NonNull final ErrorList aErrors)
   {
     final PhloxInvoice aModel = new PhloxInvoice ();
     aModel.setEdition (EEN16931Edition.EN2017);
@@ -373,7 +379,7 @@ final class CiiD16BInvoiceReader
 
     // BG-25 — lines
     for (final SupplyChainTradeLineItemType aLine : aSCTT.getIncludedSupplyChainTradeLineItem ())
-      aModel.lines ().add (_readLine (aLine, aModel.isCreditNote ()));
+      aModel.lines ().add (_readLine (aLine));
 
     return aModel;
   }
@@ -697,7 +703,6 @@ final class CiiD16BInvoiceReader
       aModel.getDocumentTotals ().setPayableAmount (aS.getDuePayableAmount ().get (0).getValue ());
 
     // BT-110 (main) / BT-111 (accounting currency)
-    final String sMain = aModel.getCurrency ();
     final String sAcct = aModel.getVatAccountingCurrency ();
     for (final AmountType aA : aS.getTaxTotalAmount ())
     {
@@ -734,8 +739,7 @@ final class CiiD16BInvoiceReader
   // ===== Lines =====
 
   @NonNull
-  private static PhloxInvoiceLine _readLine (@NonNull final SupplyChainTradeLineItemType aLine,
-                                             final boolean bIsCreditNote)
+  private static PhloxInvoiceLine _readLine (@NonNull final SupplyChainTradeLineItemType aLine)
   {
     final PhloxInvoiceLine aOut = new PhloxInvoiceLine ();
     final DocumentLineDocumentType aLD = aLine.getAssociatedDocumentLineDocument ();
@@ -898,25 +902,57 @@ final class CiiD16BInvoiceReader
   // ===== Helpers =====
 
   @Nullable
-  private static String _trimmed (@Nullable final String s)
+  private static String _codeValue (@Nullable final AllowanceChargeReasonCodeType aCode)
   {
-    if (s == null)
-      return null;
+    return aCode == null ? null : str (aCode.getValue ());
+  }
 
-    final String sTrimmed = s.trim ();
-    return sTrimmed.isEmpty () ? null : sTrimmed;
+  @Nullable
+  private static String _codeValue (@Nullable final DocumentCodeType aCode)
+  {
+    return aCode == null ? null : str (aCode.getValue ());
+  }
+
+  @Nullable
+  private static String _codeValue (@Nullable final PaymentMeansCodeType aCode)
+  {
+    return aCode == null ? null : str (aCode.getValue ());
+  }
+
+  @Nullable
+  private static String _codeValue (@Nullable final ReferenceCodeType aCode)
+  {
+    return aCode == null ? null : str (aCode.getValue ());
+  }
+
+  @Nullable
+  private static String _codeValue (@Nullable final TaxCategoryCodeType aCode)
+  {
+    return aCode == null ? null : str (aCode.getValue ());
+  }
+
+  @Nullable
+  private static String _codeValue (@Nullable final TimeReferenceCodeType aCode)
+  {
+    return aCode == null ? null : str (aCode.getValue ());
+  }
+
+  @Nullable
+  private static String _codeValue (@Nullable final CodeType aCode)
+  {
+    return aCode == null ? null : str (aCode.getValue ());
   }
 
   @Nullable
   private static String _idValue (@Nullable final IDType aID)
   {
-    return aID == null ? null : _trimmed (aID.getValue ());
+    return aID == null ? null : str (aID.getValue ());
   }
 
   @Nullable
   private static String _text (@Nullable final TextType aT)
   {
-    return aT == null ? null : _trimmed (aT.getValue ());
+    return aT == null ? null : str (aT.getValue ());
   }
 
   /**
@@ -924,23 +960,6 @@ final class CiiD16BInvoiceReader
    * (TaxCategoryCodeType, DocumentCodeType, ...), none of which share a Java base. Reflection keeps
    * the helper code small and avoids declaring 20 overloads.
    */
-  @Nullable
-  private static String _codeValue (@Nullable final Object aCode)
-  {
-    if (aCode == null)
-      return null;
-
-    try
-    {
-      final Object aVal = aCode.getClass ().getMethod ("getValue").invoke (aCode);
-      return aVal == null ? null : _trimmed (aVal.toString ());
-    }
-    catch (final ReflectiveOperationException ex)
-    {
-      return null;
-    }
-  }
-
   /**
    * Parse a CII {@code DateTimeType} into a {@link LocalDate}. Reads the {@code @format} attribute
    * on the inner {@code DateTimeString} and dispatches to the right pattern; missing format

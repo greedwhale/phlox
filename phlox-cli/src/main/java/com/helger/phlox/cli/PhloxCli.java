@@ -53,16 +53,27 @@ import picocli.CommandLine.Option;
           description = "Render EN 16931 electronic invoices (UBL / CII) to HTML or PDF.")
 public class PhloxCli implements Callable <Integer>
 {
+  /** Create a new CLI instance. */
+  public PhloxCli ()
+  {}
+
+  /** The supported output formats. */
   public enum EOutputFormat
   {
+    /** HTML5 output. */
     HTML,
+    /** PDF output. */
     PDF
   }
 
+  /** The supported source syntaxes. */
   public enum ESourceSyntax
   {
+    /** Detect the syntax from the document. */
     AUTO,
+    /** UBL Invoice or CreditNote. */
     UBL,
+    /** UN/CEFACT Cross Industry Invoice. */
     CII
   }
 
@@ -109,6 +120,12 @@ public class PhloxCli implements Callable <Integer>
            defaultValue = "-45")
   float watermarkRotation;
 
+  /**
+   * Command line entry point.
+   *
+   * @param args
+   *        The command line arguments.
+   */
   public static void main (final String [] args)
   {
     final int nExit = new CommandLine (new PhloxCli ()).execute (args);

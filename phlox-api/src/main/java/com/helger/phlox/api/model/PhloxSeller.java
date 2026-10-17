@@ -49,7 +49,11 @@ public class PhloxSeller
   public PhloxSeller ()
   {}
 
-  /** @return Seller name (BT-27). May be {@code null}. */
+  /**
+   * Get the seller name (BT-27).
+   *
+   * @return Seller name (BT-27). May be {@code null}.
+   */
   @Nullable
   public String getName ()
   {
@@ -70,7 +74,11 @@ public class PhloxSeller
     return this;
   }
 
-  /** @return Seller trading name (BT-28). May be {@code null}. */
+  /**
+   * Get the seller trading name (BT-28).
+   *
+   * @return Seller trading name (BT-28). May be {@code null}.
+   */
   @Nullable
   public String getTradingName ()
   {
@@ -92,6 +100,8 @@ public class PhloxSeller
   }
 
   /**
+   * Get the mutable list of seller identifiers (BT-29 with BT-29-1 scheme IDs).
+   *
    * @return The mutable list of seller identifiers (BT-29 with BT-29-1 scheme IDs). Never
    *         {@code null}; empty when none are present.
    */
@@ -102,7 +112,11 @@ public class PhloxSeller
     return m_aIdentifiers;
   }
 
-  /** @return The legal registration identifier (BT-30 with BT-30-1 scheme ID). May be {@code null}. */
+  /**
+   * Get the legal registration identifier (BT-30 with BT-30-1 scheme ID).
+   *
+   * @return The legal registration identifier (BT-30 with BT-30-1 scheme ID). May be {@code null}.
+   */
   @Nullable
   public PhloxIdentifier getLegalRegistration ()
   {
@@ -123,7 +137,11 @@ public class PhloxSeller
     return this;
   }
 
-  /** @return Seller VAT identifier (BT-31). May be {@code null}. */
+  /**
+   * Get the seller VAT identifier (BT-31).
+   *
+   * @return Seller VAT identifier (BT-31). May be {@code null}.
+   */
   @Nullable
   public String getVatIdentifier ()
   {
@@ -144,7 +162,11 @@ public class PhloxSeller
     return this;
   }
 
-  /** @return Seller tax registration ID (BT-32). May be {@code null}. */
+  /**
+   * Get the seller tax registration ID (BT-32).
+   *
+   * @return Seller tax registration ID (BT-32). May be {@code null}.
+   */
   @Nullable
   public String getTaxRegistration ()
   {
@@ -165,7 +187,11 @@ public class PhloxSeller
     return this;
   }
 
-  /** @return Additional seller legal information (BT-33). May be {@code null}. */
+  /**
+   * Get the additional seller legal information (BT-33).
+   *
+   * @return Additional seller legal information (BT-33). May be {@code null}.
+   */
   @Nullable
   public String getAdditionalLegalInfo ()
   {
@@ -186,7 +212,11 @@ public class PhloxSeller
     return this;
   }
 
-  /** @return Seller electronic address (BT-34 with BT-34-1 scheme ID). May be {@code null}. */
+  /**
+   * Get the seller electronic address (BT-34 with BT-34-1 scheme ID).
+   *
+   * @return Seller electronic address (BT-34 with BT-34-1 scheme ID). May be {@code null}.
+   */
   @Nullable
   public PhloxIdentifier getElectronicAddress ()
   {
@@ -207,7 +237,11 @@ public class PhloxSeller
     return this;
   }
 
-  /** @return Seller postal address (BG-5). May be {@code null}. */
+  /**
+   * Get the seller postal address (BG-5).
+   *
+   * @return Seller postal address (BG-5). May be {@code null}.
+   */
   @Nullable
   public PhloxPostalAddress getPostalAddress ()
   {
@@ -228,7 +262,11 @@ public class PhloxSeller
     return this;
   }
 
-  /** @return Seller contact (BG-6). May be {@code null}. */
+  /**
+   * Get the seller contact (BG-6).
+   *
+   * @return Seller contact (BG-6). May be {@code null}.
+   */
   @Nullable
   public PhloxContact getContact ()
   {
@@ -249,7 +287,11 @@ public class PhloxSeller
     return this;
   }
 
-  /** @return Seller tax registration identifier scheme identifier (BT-32-1). May be {@code null}. */
+  /**
+   * Get the seller tax registration identifier scheme identifier (BT-32-1).
+   *
+   * @return Seller tax registration identifier scheme identifier (BT-32-1). May be {@code null}.
+   */
   @Nullable
   public String getTaxRegistrationSchemeID ()
   {

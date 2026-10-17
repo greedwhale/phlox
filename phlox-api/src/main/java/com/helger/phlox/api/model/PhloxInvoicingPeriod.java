@@ -36,7 +36,11 @@ public class PhloxInvoicingPeriod
   public PhloxInvoicingPeriod ()
   {}
 
-  /** @return Period start date (BT-73 / BT-134). May be {@code null}. */
+  /**
+   * Get the period start date (BT-73 / BT-134).
+   *
+   * @return Period start date (BT-73 / BT-134). May be {@code null}.
+   */
   @Nullable
   public LocalDate getStartDate ()
   {
@@ -57,7 +61,11 @@ public class PhloxInvoicingPeriod
     return this;
   }
 
-  /** @return Period end date (BT-74 / BT-135). May be {@code null}. */
+  /**
+   * Get the period end date (BT-74 / BT-135).
+   *
+   * @return Period end date (BT-74 / BT-135). May be {@code null}.
+   */
   @Nullable
   public LocalDate getEndDate ()
   {
@@ -78,7 +86,11 @@ public class PhloxInvoicingPeriod
     return this;
   }
 
-  /** @return {@code true} when both dates are {@code null}. */
+  /**
+   * Get the {@code true} when both dates are {@code null}.
+   *
+   * @return {@code true} when both dates are {@code null}.
+   */
   public boolean isEmpty ()
   {
     return m_aStartDate == null && m_aEndDate == null;

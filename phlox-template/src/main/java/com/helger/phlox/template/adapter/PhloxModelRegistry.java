@@ -394,6 +394,8 @@ public final class PhloxModelRegistry
   {}
 
   /**
+   * Get the comma separated buyer references (BT-10), each followed by its scheme identifier.
+   *
    * @return The comma separated buyer references (BT-10), each followed by its scheme identifier
    *         (BT-10-1) in parentheses if present, or {@code null} if there is none.
    */
@@ -424,6 +426,8 @@ public final class PhloxModelRegistry
   }
 
   /**
+   * Resolve a registered BT/BG name against the given model object.
+   *
    * @param aCtx
    *        The current context value (model object).
    * @param sName
@@ -443,7 +447,13 @@ public final class PhloxModelRegistry
     return aGetter.apply (aCtx);
   }
 
-  /** @return {@code true} when {@code aClass} has any registered name. */
+  /**
+   * Check if any BT/BG name is registered for a model class.
+   *
+   * @param aClass
+   *        The model class to check. Never {@code null}.
+   * @return {@code true} when {@code aClass} has any registered name.
+   */
   public static boolean knows (@NonNull final Class <?> aClass)
   {
     return REG.containsKey (aClass);

@@ -37,7 +37,11 @@ public class PhloxPrecedingInvoiceRef
   public PhloxPrecedingInvoiceRef ()
   {}
 
-  /** @return Preceding invoice number (BT-25). May be {@code null}. */
+  /**
+   * Get the preceding invoice number (BT-25).
+   *
+   * @return Preceding invoice number (BT-25). May be {@code null}.
+   */
   @Nullable
   public String getNumber ()
   {
@@ -58,7 +62,11 @@ public class PhloxPrecedingInvoiceRef
     return this;
   }
 
-  /** @return Preceding invoice issue date (BT-26). May be {@code null}. */
+  /**
+   * Get the preceding invoice issue date (BT-26).
+   *
+   * @return Preceding invoice issue date (BT-26). May be {@code null}.
+   */
   @Nullable
   public LocalDate getIssueDate ()
   {
@@ -79,7 +87,11 @@ public class PhloxPrecedingInvoiceRef
     return this;
   }
 
-  /** @return Preceding invoice type code (BT-202). May be {@code null}. */
+  /**
+   * Get the preceding invoice type code (BT-202).
+   *
+   * @return Preceding invoice type code (BT-202). May be {@code null}.
+   */
   @Nullable
   public String getTypeCode ()
   {

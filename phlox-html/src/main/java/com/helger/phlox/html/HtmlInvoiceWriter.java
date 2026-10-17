@@ -90,6 +90,7 @@ import com.helger.phlox.api.write.IInvoiceWriter;
  */
 public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
 {
+  /** Create a new HTML invoice writer. */
   public HtmlInvoiceWriter ()
   {}
 

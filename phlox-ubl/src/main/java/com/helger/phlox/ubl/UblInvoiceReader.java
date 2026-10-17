@@ -16,7 +16,6 @@
  */
 package com.helger.phlox.ubl;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.jspecify.annotations.NonNull;
@@ -50,6 +49,8 @@ public class UblInvoiceReader implements IInvoiceReader <InputStream>
   private final EEN16931Edition m_eEdition;
 
   /**
+   * Create a new reader.
+   *
    * @param eEdition
    *        The fixed edition to read or {@code null} to determine it from BT-24 per document.
    */
@@ -58,14 +59,22 @@ public class UblInvoiceReader implements IInvoiceReader <InputStream>
     m_eEdition = eEdition;
   }
 
-  /** @return A reader for UBL 2.1 (EN 16931:2017 binding). BT-24 is not inspected. */
+  /**
+   * Get the reader for UBL 2.1 (EN 16931:2017 binding).
+   *
+   * @return A reader for UBL 2.1 (EN 16931:2017 binding). BT-24 is not inspected.
+   */
   @NonNull
   public static UblInvoiceReader fromUbl21 ()
   {
     return new UblInvoiceReader (EEN16931Edition.EN2017);
   }
 
-  /** @return A reader for UBL 2.5 (EN 16931:2026 binding). BT-24 is not inspected. */
+  /**
+   * Get the reader for UBL 2.5 (EN 16931:2026 binding).
+   *
+   * @return A reader for UBL 2.5 (EN 16931:2026 binding). BT-24 is not inspected.
+   */
   @NonNull
   public static UblInvoiceReader fromUbl25 ()
   {
@@ -73,6 +82,8 @@ public class UblInvoiceReader implements IInvoiceReader <InputStream>
   }
 
   /**
+   * Get the reader that determines the EN 16931 edition of each document from BT-24 and reads it.
+   *
    * @return A reader that determines the EN 16931 edition of each document from BT-24 and reads it
    *         with the matching UBL version. Documents without a BT-24 that identifies a known
    *         edition are rejected with an error.
@@ -84,6 +95,8 @@ public class UblInvoiceReader implements IInvoiceReader <InputStream>
   }
 
   /**
+   * Get the fixed EN 16931 edition of this reader or {@code null} if the edition is determined.
+   *
    * @return The fixed EN 16931 edition of this reader or {@code null} if the edition is determined
    *         per document.
    */
@@ -97,27 +110,18 @@ public class UblInvoiceReader implements IInvoiceReader <InputStream>
   @Nullable
   public PhloxInvoice read (@NonNull final InputStream aSource, @NonNull final ErrorList aErrors)
   {
-    // The InputStream can only be read once, so we buffer it.
-    final byte [] aBytes;
-    try
+    // Parse exactly once - the Document is used to detect the edition as well as to fill the JAXB
+    // object
+    final Document aDoc = DOMReader.readXMLDOM (aSource);
+    if (aDoc == null)
     {
-      aBytes = aSource.readAllBytes ();
-    }
-    catch (final IOException ex)
-    {
-      aErrors.add (SingleError.builderError ().errorText ("Failed to read source: " + ex.getMessage ()).build ());
+      aErrors.add (SingleError.builderError ().errorText ("Source is not well-formed XML").build ());
       return null;
     }
 
     EEN16931Edition eEdition = m_eEdition;
     if (eEdition == null)
     {
-      final Document aDoc = DOMReader.readXMLDOM (aBytes);
-      if (aDoc == null)
-      {
-        aErrors.add (SingleError.builderError ().errorText ("Source is not well-formed XML").build ());
-        return null;
-      }
       eEdition = EEN16931Edition.detect (aDoc);
       if (eEdition == null)
       {
@@ -132,8 +136,9 @@ public class UblInvoiceReader implements IInvoiceReader <InputStream>
       }
     }
 
-    return eEdition == EEN16931Edition.EN2026 ? new Ubl25InvoiceReader ().read (aBytes, aErrors)
-                                              : new Ubl21InvoiceReader ().read (aBytes, aErrors);
+    final AbstractUblInvoiceReader aReader = eEdition == EEN16931Edition.EN2026 ? new Ubl25InvoiceReader ()
+                                                                                : new Ubl21InvoiceReader ();
+    return aReader.read (aDoc, aErrors);
   }
 
   /**

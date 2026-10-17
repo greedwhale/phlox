@@ -20,7 +20,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Library-wide attribution watermark. Distinguishes the open-source distribution from any
- * commercial repackaging at runtime. Not part of {@link com.helger.phlox.api.RenderContext}
+ * commercial repackaging at runtime. Not part of {@link com.helger.phlox.api.AbstractRenderContext}
  * because it is a distribution-time choice, not a per-render one.
  * <p>
  * The open-source build defaults to a small low-opacity footer-right attribution. The
@@ -61,7 +61,11 @@ public final class PhloxProgramWatermark
     s_aActive = aSpec;
   }
 
-  /** @return The currently active program watermark spec, or {@code null} if suppressed. */
+  /**
+   * Get the currently active program watermark spec, or {@code null} if suppressed.
+   *
+   * @return The currently active program watermark spec, or {@code null} if suppressed.
+   */
   @Nullable
   public static WatermarkSpec getInstance ()
   {

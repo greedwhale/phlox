@@ -48,7 +48,9 @@ import com.helger.phlox.api.watermark.WatermarkSpec;
 public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderContext <IMPLTYPE>> implements
                                             IGenericImplTrait <IMPLTYPE>
 {
+  /** Default for appending the BT/BG identifier to each label. */
   public static final boolean DEFAULT_ANNOTATE_BT_IDS = false;
+  /** Default for rendering sections that have no content. */
   public static final boolean DEFAULT_INCLUDE_EMPTY_SECTIONS = false;
 
   private Locale m_aLocale = Locale.ENGLISH;
@@ -64,7 +66,11 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
   protected AbstractRenderContext ()
   {}
 
-  /** @return The target locale for labels and locale-driven formatting. Never {@code null}. */
+  /**
+   * Get the target locale for labels and locale-driven formatting.
+   *
+   * @return The target locale for labels and locale-driven formatting. Never {@code null}.
+   */
   @NonNull
   public Locale getLocale ()
   {
@@ -85,7 +91,11 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
     return thisAsT ();
   }
 
-  /** @return The per-call format options. Never {@code null}. */
+  /**
+   * Get the per-call format options.
+   *
+   * @return The per-call format options. Never {@code null}.
+   */
   @NonNull
   public PhloxFormatOptions getFormatOptions ()
   {
@@ -106,7 +116,11 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
     return thisAsT ();
   }
 
-  /** @return The optional logo to render in the page header. May be {@code null}. */
+  /**
+   * Get the optional logo to render in the page header.
+   *
+   * @return The optional logo to render in the page header. May be {@code null}.
+   */
   @Nullable
   public PhloxAttachment getLogo ()
   {
@@ -127,7 +141,11 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
     return thisAsT ();
   }
 
-  /** @return The label resolver in use. Never {@code null}. */
+  /**
+   * Get the label resolver in use.
+   *
+   * @return The label resolver in use. Never {@code null}.
+   */
   @NonNull
   public IPhloxLabelResolver getLabelResolver ()
   {
@@ -148,7 +166,11 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
     return thisAsT ();
   }
 
-  /** @return {@code true} when labels should be suffixed with their BT/BG ID (debug aid). */
+  /**
+   * Get the {@code true} when labels should be suffixed with their BT/BG ID (debug aid).
+   *
+   * @return {@code true} when labels should be suffixed with their BT/BG ID (debug aid).
+   */
   public boolean isAnnotateBtIDs ()
   {
     return m_bAnnotateBtIDs;
@@ -168,7 +190,11 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
     return thisAsT ();
   }
 
-  /** @return {@code true} when section headings should be rendered even when empty. */
+  /**
+   * Get the {@code true} when section headings should be rendered even when empty.
+   *
+   * @return {@code true} when section headings should be rendered even when empty.
+   */
   public boolean isIncludeEmptySections ()
   {
     return m_bIncludeEmptySections;
@@ -188,7 +214,11 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
     return thisAsT ();
   }
 
-  /** @return The optional user watermark (e.g. "DRAFT"). May be {@code null}. */
+  /**
+   * Get the optional user watermark, e.g. "DRAFT".
+   *
+   * @return The optional user watermark (e.g. "DRAFT"). May be {@code null}.
+   */
   @Nullable
   public WatermarkSpec getUserWatermark ()
   {
@@ -210,6 +240,8 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
   }
 
   /**
+   * Get the optional template that drives both writers when set.
+   *
    * @return The optional template that drives both writers when set. When {@code null} (the
    *         default), writers fall back to their hard-coded section grammar.
    */
@@ -273,7 +305,15 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
     return sValue;
   }
 
-  /** Convenience: look up a code-list label using the configured resolver and locale. */
+  /**
+   * Convenience: look up a code-list label using the configured resolver and locale.
+   *
+   * @param sListName
+   *        The name of the code list, e.g. {@code vatcategory}. Never {@code null}.
+   * @param sCode
+   *        The code to look up. Never {@code null}.
+   * @return The label of the code or the code itself if there is no label. Never {@code null}.
+   */
   @NonNull
   public String codeLabel (@NonNull final String sListName, @NonNull final String sCode)
   {

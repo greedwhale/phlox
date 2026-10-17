@@ -29,6 +29,10 @@ import org.commonmark.node.Visitor;
  */
 public final class PhloxPageBreakNode extends CustomBlock
 {
+  /** Create a new page break node. */
+  public PhloxPageBreakNode ()
+  {}
+
   /**
    * Default commonmark dispatch — the standard {@code AbstractVisitor.visit(CustomBlock)} hook
    * fires. Emitters override that hook and instance-check for this type.

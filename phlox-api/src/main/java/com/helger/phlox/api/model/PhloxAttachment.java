@@ -36,7 +36,11 @@ public class PhloxAttachment
   public PhloxAttachment ()
   {}
 
-  /** @return The binary payload (BT-125). May be {@code null}. */
+  /**
+   * Get the binary payload (BT-125).
+   *
+   * @return The binary payload (BT-125). May be {@code null}.
+   */
   public byte @Nullable [] getBinary ()
   {
     return m_aBinary;
@@ -56,7 +60,11 @@ public class PhloxAttachment
     return this;
   }
 
-  /** @return The MIME type of the attachment (BT-125-1). May be {@code null}. */
+  /**
+   * Get the MIME type of the attachment (BT-125-1).
+   *
+   * @return The MIME type of the attachment (BT-125-1). May be {@code null}.
+   */
   @Nullable
   public String getMimeCode ()
   {
@@ -77,7 +85,11 @@ public class PhloxAttachment
     return this;
   }
 
-  /** @return The original filename of the attachment (BT-125-2). May be {@code null}. */
+  /**
+   * Get the original filename of the attachment (BT-125-2).
+   *
+   * @return The original filename of the attachment (BT-125-2). May be {@code null}.
+   */
   @Nullable
   public String getFilename ()
   {

@@ -29,11 +29,21 @@ public enum EPhloxDocumentKind
   /** A credit note (BT-3 in the EN 16931 credit-note type code set). */
   CREDIT_NOTE;
 
+  /**
+   * Check if this is an invoice.
+   *
+   * @return {@code true} for {@link #INVOICE}.
+   */
   public boolean isInvoice ()
   {
     return this == INVOICE;
   }
 
+  /**
+   * Check if this is a credit note.
+   *
+   * @return {@code true} for {@link #CREDIT_NOTE}.
+   */
   public boolean isCreditNote ()
   {
     return this == CREDIT_NOTE;

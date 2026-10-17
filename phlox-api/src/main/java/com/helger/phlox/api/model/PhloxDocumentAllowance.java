@@ -45,7 +45,11 @@ public class PhloxDocumentAllowance
   public PhloxDocumentAllowance ()
   {}
 
-  /** @return Allowance amount (BT-92). May be {@code null}. */
+  /**
+   * Get the allowance amount (BT-92).
+   *
+   * @return Allowance amount (BT-92). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getAmount ()
   {
@@ -66,7 +70,11 @@ public class PhloxDocumentAllowance
     return this;
   }
 
-  /** @return Allowance base amount (BT-93). May be {@code null}. */
+  /**
+   * Get the allowance base amount (BT-93).
+   *
+   * @return Allowance base amount (BT-93). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getBaseAmount ()
   {
@@ -87,7 +95,11 @@ public class PhloxDocumentAllowance
     return this;
   }
 
-  /** @return Allowance percentage (BT-94). May be {@code null}. */
+  /**
+   * Get the allowance percentage (BT-94).
+   *
+   * @return Allowance percentage (BT-94). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getPercentage ()
   {
@@ -108,7 +120,11 @@ public class PhloxDocumentAllowance
     return this;
   }
 
-  /** @return VAT category code (BT-95) — UNTDID 5305. May be {@code null}. */
+  /**
+   * Get the VAT category code (BT-95) — UNTDID 5305. May be {@code null}.
+   *
+   * @return VAT category code (BT-95) — UNTDID 5305. May be {@code null}.
+   */
   @Nullable
   public String getVatCategoryCode ()
   {
@@ -129,7 +145,11 @@ public class PhloxDocumentAllowance
     return this;
   }
 
-  /** @return VAT rate (BT-96). May be {@code null}. */
+  /**
+   * Get the VAT rate (BT-96).
+   *
+   * @return VAT rate (BT-96). May be {@code null}.
+   */
   @Nullable
   public BigDecimal getVatRate ()
   {
@@ -150,7 +170,11 @@ public class PhloxDocumentAllowance
     return this;
   }
 
-  /** @return Allowance reason text (BT-97). May be {@code null}. */
+  /**
+   * Get the allowance reason text (BT-97).
+   *
+   * @return Allowance reason text (BT-97). May be {@code null}.
+   */
   @Nullable
   public String getReason ()
   {
@@ -171,7 +195,11 @@ public class PhloxDocumentAllowance
     return this;
   }
 
-  /** @return Allowance reason code (BT-98) — UNTDID 5189. May be {@code null}. */
+  /**
+   * Get the allowance reason code (BT-98) — UNTDID 5189. May be {@code null}.
+   *
+   * @return Allowance reason code (BT-98) — UNTDID 5189. May be {@code null}.
+   */
   @Nullable
   public String getReasonCode ()
   {
@@ -192,7 +220,11 @@ public class PhloxDocumentAllowance
     return this;
   }
 
-  /** @return Document level allowance exemption reason text (BT-173). May be {@code null}. */
+  /**
+   * Get the document level allowance exemption reason text (BT-173).
+   *
+   * @return Document level allowance exemption reason text (BT-173). May be {@code null}.
+   */
   @Nullable
   public String getExemptionReasonText ()
   {
@@ -213,7 +245,11 @@ public class PhloxDocumentAllowance
     return this;
   }
 
-  /** @return Document level allowance VAT exemption reason and specification code (BT-174). May be {@code null}. */
+  /**
+   * Get the document level allowance VAT exemption reason and specification code (BT-174).
+   *
+   * @return Document level allowance VAT exemption reason and specification code (BT-174). May be {@code null}.
+   */
   @Nullable
   public String getExemptionReasonCode ()
   {
@@ -234,7 +270,11 @@ public class PhloxDocumentAllowance
     return this;
   }
 
-  /** @return Document level allowance goods/services code (BT-213). May be {@code null}. */
+  /**
+   * Get the document level allowance goods/services code (BT-213).
+   *
+   * @return Document level allowance goods/services code (BT-213). May be {@code null}.
+   */
   @Nullable
   public String getGoodsServicesCode ()
   {

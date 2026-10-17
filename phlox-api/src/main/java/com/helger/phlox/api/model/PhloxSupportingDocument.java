@@ -38,7 +38,11 @@ public class PhloxSupportingDocument
   public PhloxSupportingDocument ()
   {}
 
-  /** @return Supporting document reference (BT-122). May be {@code null}. */
+  /**
+   * Get the supporting document reference (BT-122).
+   *
+   * @return Supporting document reference (BT-122). May be {@code null}.
+   */
   @Nullable
   public String getReference ()
   {
@@ -59,7 +63,11 @@ public class PhloxSupportingDocument
     return this;
   }
 
-  /** @return Supporting document description (BT-123). May be {@code null}. */
+  /**
+   * Get the supporting document description (BT-123).
+   *
+   * @return Supporting document description (BT-123). May be {@code null}.
+   */
   @Nullable
   public String getDescription ()
   {
@@ -80,7 +88,11 @@ public class PhloxSupportingDocument
     return this;
   }
 
-  /** @return External document location URL (BT-124). May be {@code null}. */
+  /**
+   * Get the external document location URL (BT-124).
+   *
+   * @return External document location URL (BT-124). May be {@code null}.
+   */
   @Nullable
   public String getExternalLocation ()
   {
@@ -102,6 +114,8 @@ public class PhloxSupportingDocument
   }
 
   /**
+   * Get the attached binary document (BT-125 with BT-125-1 mime and BT-125-2 filename).
+   *
    * @return The attached binary document (BT-125 with BT-125-1 mime and BT-125-2 filename).
    *         May be {@code null}.
    */

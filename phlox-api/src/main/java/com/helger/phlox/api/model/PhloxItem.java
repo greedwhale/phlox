@@ -47,7 +47,11 @@ public class PhloxItem
   public PhloxItem ()
   {}
 
-  /** @return Item name (BT-153). May be {@code null}. */
+  /**
+   * Get the item name (BT-153).
+   *
+   * @return Item name (BT-153). May be {@code null}.
+   */
   @Nullable
   public String getName ()
   {
@@ -68,7 +72,11 @@ public class PhloxItem
     return this;
   }
 
-  /** @return Item description (BT-154). May be {@code null}. */
+  /**
+   * Get the item description (BT-154).
+   *
+   * @return Item description (BT-154). May be {@code null}.
+   */
   @Nullable
   public String getDescription ()
   {
@@ -89,7 +97,11 @@ public class PhloxItem
     return this;
   }
 
-  /** @return Item seller's identifier (BT-155). May be {@code null}. */
+  /**
+   * Get the item seller's identifier (BT-155).
+   *
+   * @return Item seller's identifier (BT-155). May be {@code null}.
+   */
   @Nullable
   public String getSellerItemID ()
   {
@@ -110,7 +122,11 @@ public class PhloxItem
     return this;
   }
 
-  /** @return Item buyer's identifier (BT-156). May be {@code null}. */
+  /**
+   * Get the item buyer's identifier (BT-156).
+   *
+   * @return Item buyer's identifier (BT-156). May be {@code null}.
+   */
   @Nullable
   public String getBuyerItemID ()
   {
@@ -131,7 +147,11 @@ public class PhloxItem
     return this;
   }
 
-  /** @return Item standard identifier (BT-157 with BT-157-1 scheme ID). May be {@code null}. */
+  /**
+   * Get the item standard identifier (BT-157 with BT-157-1 scheme ID).
+   *
+   * @return Item standard identifier (BT-157 with BT-157-1 scheme ID). May be {@code null}.
+   */
   @Nullable
   public PhloxIdentifier getStandardItemID ()
   {
@@ -153,6 +173,8 @@ public class PhloxItem
   }
 
   /**
+   * Get the mutable list of item classifications (BT-158 / BT-158-1 / BT-158-2).
+   *
    * @return Mutable list of item classifications (BT-158 / BT-158-1 / BT-158-2). Never
    *         {@code null}; empty when none are present.
    */
@@ -163,7 +185,11 @@ public class PhloxItem
     return m_aClassifications;
   }
 
-  /** @return Item country of origin (BT-159) — ISO 3166-1 alpha-2. May be {@code null}. */
+  /**
+   * Get the item country of origin (BT-159) — ISO 3166-1 alpha-2. May be {@code null}.
+   *
+   * @return Item country of origin (BT-159) — ISO 3166-1 alpha-2. May be {@code null}.
+   */
   @Nullable
   public String getCountryOfOrigin ()
   {
@@ -185,6 +211,8 @@ public class PhloxItem
   }
 
   /**
+   * Get the mutable list of item attributes (BG-32 — BT-160 / BT-161).
+   *
    * @return Mutable list of item attributes (BG-32 — BT-160 / BT-161). Never {@code null};
    *         empty when none are present.
    */
@@ -195,7 +223,11 @@ public class PhloxItem
     return m_aAttributes;
   }
 
-  /** @return Goods/services code (BT-196). May be {@code null}. */
+  /**
+   * Get the goods/services code (BT-196).
+   *
+   * @return Goods/services code (BT-196). May be {@code null}.
+   */
   @Nullable
   public String getGoodsServicesCode ()
   {
