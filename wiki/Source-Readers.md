@@ -1,16 +1,16 @@
 # Source Readers
 
-A **reader** parses an electronic invoice in one of the supported syntaxes and populates a [[Domain Model|Domain-Model]] `NormaInvoice`. Readers do not validate business rules; they only translate the source structure into the syntax-neutral intermediate model.
+A **reader** parses an electronic invoice in one of the supported syntaxes and populates a [[Domain Model|Domain-Model]] `PhloxInvoice`. Readers do not validate business rules; they only translate the source structure into the syntax-neutral intermediate model.
 
 ## SPI
 
 ```java
-package com.helger.norma.api.read;
+package com.helger.phlox.api.read;
 
 public interface IInvoiceReader <SRC>
 {
   @Nullable
-  NormaInvoice read (@Nonnull SRC aSource, @Nonnull ErrorList aErrors);
+  PhloxInvoice read (@Nonnull SRC aSource, @Nonnull ErrorList aErrors);
 }
 ```
 
@@ -20,7 +20,7 @@ public interface IInvoiceReader <SRC>
 
 ## Concrete readers
 
-### `UBLInvoiceReader` (module `norma-ubl`)
+### `UblInvoiceReader` (module `phlox-ubl`)
 
 Reads UBL `Invoice` and `CreditNote` documents. The module supports **the two UBL versions that EN 16931 has a syntax binding for**:
 
@@ -29,14 +29,14 @@ Reads UBL `Invoice` and `CreditNote` documents. The module supports **the two UB
 | **UBL 2.1** | EN 16931:2017 (current) | `com.helger.ubl:ph-ubl21` |
 | **UBL 2.5** | EN 16931:2026 (upcoming) | `com.helger.ubl:ph-ubl25` |
 
-No other UBL versions are in scope — EN 16931 only specifies bindings for these two, so anything else (2.2 / 2.3 / 2.4) is irrelevant for EN 16931 visualization. Both bindings live in **the same `norma-ubl` module**: the reader logic is nearly identical, the BG/BT field set is identical (the EN 16931 semantic model itself does not change between editions), and the only differences are which JAXB classes are imported and a handful of element-name updates that EN 16931:2026 introduces.
+No other UBL versions are in scope — EN 16931 only specifies bindings for these two, so anything else (2.2 / 2.3 / 2.4) is irrelevant for EN 16931 visualization. Both bindings live in **the same `phlox-ubl` module**: the reader logic is nearly identical, the BG/BT field set is identical (the EN 16931 semantic model itself does not change between editions), and the only differences are which JAXB classes are imported and a handful of element-name updates that EN 16931:2026 introduces.
 
 ```java
 // EN 16931:2017 binding
-final NormaInvoice aModel = UBLInvoiceReader.fromUBL21 ().read (aXMLStream, aErrors);
+final PhloxInvoice aModel = UblInvoiceReader.fromUbl21 ().read (aXMLStream, aErrors);
 
 // EN 16931:2026 binding
-final NormaInvoice aModel = UBLInvoiceReader.fromUBL25 ().read (aXMLStream, aErrors);
+final PhloxInvoice aModel = UblInvoiceReader.fromUbl25 ().read (aXMLStream, aErrors);
 ```
 
 Internally:
@@ -52,14 +52,14 @@ Internally:
 - BG-25 — `InvoiceLine` vs `CreditNoteLine`.
 - BT-129 — `InvoicedQuantity` vs `CreditedQuantity`.
 
-**Auto-detection.** `UBLInvoiceReader.autoDetect()` reads `cbc:UBLVersionID` from the document and routes to the matching binding; it falls back to UBL 2.1 when the element is absent (which is common in EN 16931:2017 instances).
+**Auto-detection.** `UblInvoiceReader.autoDetect()` reads `cbc:UBLVersionID` from the document and routes to the matching binding; it falls back to UBL 2.1 when the element is absent (which is common in EN 16931:2017 instances).
 
-### `CIIInvoiceReader` (module `norma-cii`)
+### `CiiInvoiceReader` (module `phlox-cii`)
 
 Reads CII D16B `CrossIndustryInvoice` documents.
 
 ```java
-final NormaInvoice aModel = new CIIInvoiceReader ().read (aXMLStream, aErrors);
+final PhloxInvoice aModel = new CiiInvoiceReader ().read (aXMLStream, aErrors);
 ```
 
 Internally:
@@ -76,7 +76,7 @@ Internally:
 
 ## What readers **do** validate
 
-- **XSD.** The underlying `ph-ubl` and `ph-cii` marshallers perform XSD validation by default, and `norma` keeps that on. Malformed-against-schema documents are rejected — the reader returns `null` and adds the JAXB validation events to the `ErrorList`.
+- **XSD.** The underlying `ph-ubl` and `ph-cii` marshallers perform XSD validation by default, and `phlox` keeps that on. Malformed-against-schema documents are rejected — the reader returns `null` and adds the JAXB validation events to the `ErrorList`.
 - That's it on the validation side.
 
 ## What readers do **not** do
@@ -89,9 +89,9 @@ Internally:
 
 Each reader has a parallel JUnit test class that:
 
-1. Loads every example file from the shared `norma-testfiles` module (see [[Maven Module Structure]]). The module organises files as `external/en16931/<edition>/<syntax>/...` for `<edition>` ∈ {`2017`, `2026`} and `<syntax>` ∈ {`ubl`, `cii`}.
+1. Loads every example file from the shared `phlox-testfiles` module (see [[Maven Module Structure]]). The module organises files as `external/en16931/<edition>/<syntax>/...` for `<edition>` ∈ {`2017`, `2026`} and `<syntax>` ∈ {`ubl`, `cii`}.
 2. Parses it.
-3. Snapshots the resulting `NormaInvoice` to JSON.
+3. Snapshots the resulting `PhloxInvoice` to JSON.
 4. Diffs against the checked-in snapshot.
 
 This catches regressions in the field-by-field mapping without needing a full PDF/HTML render cycle.

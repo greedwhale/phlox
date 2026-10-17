@@ -1,4 +1,4 @@
-# norma
+# phlox
 
 Visualizer for EN 16931 electronic invoices.
 

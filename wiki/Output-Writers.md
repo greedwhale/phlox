@@ -1,22 +1,22 @@
 # Output Writers
 
-A **writer** consumes a `NormaInvoice` plus an output-typed `RenderContext` subclass and produces an output artifact. Writers contain all the presentation logic: layout, label lookup, locale-aware formatting.
+A **writer** consumes a `PhloxInvoice` plus an output-typed `RenderContext` subclass and produces an output artifact. Writers contain all the presentation logic: layout, label lookup, locale-aware formatting.
 
 ## SPI
 
 ```java
-package com.helger.norma.api.write;
+package com.helger.phlox.api.write;
 
 public interface IInvoiceWriter <O, CTX extends RenderContext>
 {
   @Nonnull
-  O write (@Nonnull NormaInvoice aInvoice, @Nonnull CTX aCtx);
+  O write (@Nonnull PhloxInvoice aInvoice, @Nonnull CTX aCtx);
 }
 ```
 
-Each writer binds its own `CTX` type so the compiler rejects accidental mixups (e.g. passing a `PDFRenderContext` to the HTML writer).
+Each writer binds its own `CTX` type so the compiler rejects accidental mixups (e.g. passing a `PdfRenderContext` to the HTML writer).
 
-The base `RenderContext` lives in `norma-api` and carries only the syntax-neutral knobs (locale, label resolver, logo, format options, annotate-IDs, and an optional `INormaTemplate` for layout customization — see [[Template Language]]). Output-specific extras live on subclasses defined alongside the writer: `HTMLRenderContext` in `norma-html`, `PDFRenderContext` in `norma-pdf`. See [[Configuration Properties]] for the full setter inventory.
+The base `RenderContext` lives in `phlox-api` and carries only the syntax-neutral knobs (locale, label resolver, logo, format options, annotate-IDs, and an optional `IPhloxTemplate` for layout customization — see [[Template Language]]). Output-specific extras live on subclasses defined alongside the writer: `HtmlRenderContext` in `phlox-html`, `PdfRenderContext` in `phlox-pdf`. See [[Configuration Properties]] for the full setter inventory.
 
 ## Shared layout grammar
 
@@ -68,69 +68,69 @@ Both writers organize the output into the same logical sections so that an HTML 
 
 Each section is implemented in a `*SectionRenderer` class so the HTML and PDF writers can share the structural decisions ("skip section if empty", "two-column when both populated") and diverge only on the actual markup/layout calls.
 
-This grammar is the **default** layout, used whenever `RenderContext.getTemplate() == null`. A caller who needs a different structure supplies a `.ntpl` via `setTemplate(...)` and the writers walk that instead — see [[Template Language]].
+This grammar is the **default** layout, used whenever `RenderContext.getTemplate() == null`. A caller who needs a different structure supplies a `.ptpl` via `setTemplate(...)` and the writers walk that instead — see [[Template Language]].
 
 ## Concrete writers
 
-### `HTMLInvoiceWriter` (module `norma-html`)
+### `HtmlInvoiceWriter` (module `phlox-html`)
 
-`implements IInvoiceWriter <String, HTMLRenderContext>`. Produces a complete HTML5 document.
+`implements IInvoiceWriter <String, HtmlRenderContext>`. Produces a complete HTML5 document.
 
 ```java
-final HTMLRenderContext aCtx = new HTMLRenderContext ().setLocale (Locale.GERMAN);
-final HCHtml aHtml = new HTMLInvoiceWriter ().writeAsHCHtml (aInvoice, aCtx);
+final HtmlRenderContext aCtx = new HtmlRenderContext ().setLocale (Locale.GERMAN);
+final HCHtml aHtml = new HtmlInvoiceWriter ().writeAsHcHtml (aInvoice, aCtx);
 final String sHTML = HCRenderer.getAsHTMLString (aHtml, HCSettings.getMutableConversionSettings ());
 // or
-new HTMLInvoiceWriter ().writeTo (aInvoice, aCtx, aOutputStream);
+new HtmlInvoiceWriter ().writeTo (aInvoice, aCtx, aOutputStream);
 ```
 
 Built on `ph-oton-html`:
 
 - Root element: `com.helger.html.hc.html.root.HCHtml` with `HCHead` (CSS) + `HCBody` (layout).
 - Sections built from `HCDiv`, `HCTable`, `HCSpan` (from `ph-oton-html` subpackages).
-- CSS: a single embedded stylesheet (`<style>` in `<head>`) with class names prefixed by `HTMLRenderContext.m_sCSSClassPrefix` (default `norma-`). Inline styles only where strictly needed. Driven by `setEmbeddedStylesheet(...)` / `setCustomStylesheet(...)` on the context.
+- CSS: a single embedded stylesheet (`<style>` in `<head>`) with class names prefixed by `HtmlRenderContext.m_sCssClassPrefix` (default `phlox-`). Inline styles only where strictly needed. Driven by `setEmbeddedStylesheet(...)` / `setCustomStylesheet(...)` on the context.
 - Rendering: `HCRenderer.getAsHTMLString(...)` for a `String`, `HCRenderer.writeHtmlTo(...)` for streaming output.
 
 **Why HC and not raw strings:** safety (auto-escapes), reuse, no template language to learn. The same approach the Helger stack already uses.
 
-### `PDFInvoiceWriter` (module `norma-pdf`)
+### `PdfInvoiceWriter` (module `phlox-pdf`)
 
-`implements IInvoiceWriter <Void, PDFRenderContext>`. Produces a PDF.
+`implements IInvoiceWriter <Void, PdfRenderContext>`. Produces a PDF.
 
 ```java
-final PDFRenderContext aCtx = new PDFRenderContext ().setLocale (Locale.GERMAN);
-new PDFInvoiceWriter ().writeTo (aInvoice, aCtx, aOutputStream);
+final PdfRenderContext aCtx = new PdfRenderContext ().setLocale (Locale.GERMAN);
+new PdfInvoiceWriter ().writeTo (aInvoice, aCtx, aOutputStream);
 // or
-new PDFInvoiceWriter ().writeTo (aInvoice, aCtx, aOutputFile);
+new PdfInvoiceWriter ().writeTo (aInvoice, aCtx, aOutputFile);
 ```
 
 Built on `ph-pdf-layout`:
 
-- Top-level: `com.helger.pdflayout.PageLayoutPDF` containing one `com.helger.pdflayout.base.PLPageSet`. Page size and margins come from `PDFRenderContext.setPageSize(...)` / `.setMargins(...)` (default A4 portrait, 20 mm margins).
+- Top-level: `com.helger.pdflayout.PageLayoutPDF` containing one `com.helger.pdflayout.base.PLPageSet`. Page size and margins come from `PdfRenderContext.setPageSize(...)` / `.setMargins(...)` (default A4 portrait, 20 mm margins).
 - Layout primitives: `PLVBox`, `PLHBox` for the section grid, `PLTable` for tabular data (invoice lines, VAT breakdown), `PLText` for everything else.
-- Fonts: `com.helger.pdflayout.spec.FontSpec` instances on `PDFRenderContext` (`setBodyFont`, `setHeaderFont`, `setTableHeaderFont`). Defaults: Helvetica 10pt body, Helvetica-Bold 12pt section headings.
+- Fonts: `com.helger.pdflayout.spec.FontSpec` instances on `PdfRenderContext` (`setBodyFont`, `setHeaderFont`, `setTableHeaderFont`). Defaults: Helvetica 10pt body, Helvetica-Bold 12pt section headings.
 - Rendering: `PageLayoutPDF.renderTo(outputStream)` or `.renderTo(file)`.
 
 **Page break policy:** `ph-pdf-layout` handles line-wrapping inside `PLTable` automatically; the writer adds explicit `PLPageBreak` only before the invoice-line table when the header would otherwise crowd it.
 
 ## Locale-aware formatting
 
-Both writers route every formatted value through `NormaFormat` helpers in `norma-api`:
+Both writers route every formatted value through `PhloxFormat` helpers in `phlox-api`:
 
 | Value type | Helper | Behaviour |
 |------------|--------|-----------|
-| `BigDecimal` amount | `NormaFormat.amount (val, currency, locale)` | Group separators, fraction digits from currency; currency symbol position from locale (e.g. `1.234,56 €` for `de-DE`, `€1,234.56` for `en-US`). |
-| `BigDecimal` percentage | `NormaFormat.percent (val, locale)` | Two decimals, `%` suffix. |
-| `LocalDate` | `NormaFormat.date (val, locale)` | `DateTimeFormatter.ofLocalizedDate (FormatStyle.MEDIUM)` per locale. |
-| Code-list value | `NormaFormat.codeListLabel (listName, code, locale)` | Looks up a human label from a code-list resource bundle; falls back to the code itself. |
+| `BigDecimal` amount | `PhloxFormat.amount (val, currency, locale)` | Group separators, fraction digits from currency; currency symbol position from locale (e.g. `1.234,56 €` for `de-DE`, `€1,234.56` for `en-US`). |
+| `BigDecimal` percentage | `PhloxFormat.percent (val, locale)` | Two decimals, `%` suffix. |
+| `LocalDate` | `PhloxFormat.date (val, locale)` | `DateTimeFormatter.ofLocalizedDate (FormatStyle.MEDIUM)` per locale. |
+| Code-list value | `PhloxFormat.codeListLabel (listName, code, locale)` | Looks up a human label from a code-list resource bundle; falls back to the code itself. |
 
 This is the only place where `Locale` enters the call graph. Models contain raw values.
 
 ## Label lookup
 
-Both writers fetch human-readable text from a `INormaLabelResolver` whose default implementation reads a Java `ResourceBundle`. Keys are EN 16931 IDs (`BT-1`, `BG-4`, etc.) plus a small set of compound keys for sub-section titles. See [[Localization]] for the full list and the resource-bundle layout.
+Both writers fetch human-readable text from a `IPhloxLabelResolver` whose default implementation reads a Java `ResourceBundle`. Keys are EN 16931 IDs (`BT-1`, `BG-4`, etc.) plus a small set of compound keys for sub-section titles. See [[Localization]] for the full list and the resource-bundle layout.
 
-`RenderContext.m_bAnnotateBTIDs` (default `false`) wraps every label with its BT/BG identifier for debugging:
+`RenderContext.m_bAnnotateBtIDs` (default `false`) wraps every label with its BT/BG identifier for debugging:
 
 ```
 Invoice number  →  Invoice number [BT-1]
@@ -139,7 +139,7 @@ Rechnungsnummer →  Rechnungsnummer [BT-1]
 
 ## Watermarks
 
-Both writers honour `RenderContext.setUserWatermark(...)` and the static `NormaProgramWatermark`. In HTML this is implemented via embedded CSS (`position: fixed`, `@media print`); in PDF via a `ph-pdf-layout` page decorator that draws rotated `PLText` over every page. Full design in [[Watermarking]].
+Both writers honour `RenderContext.setUserWatermark(...)` and the static `PhloxProgramWatermark`. In HTML this is implemented via embedded CSS (`position: fixed`, `@media print`); in PDF via a `ph-pdf-layout` page decorator that draws rotated `PLText` over every page. Full design in [[Watermarking]].
 
 ## What writers do **not** do
 

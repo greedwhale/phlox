@@ -1,12 +1,12 @@
 # Template Language
 
-`norma` ships with a small **template language** that lets a caller customize the rendered invoice without writing Java. One template produces both HTML and PDF — the template is the **single source of truth** for layout and styling, and each writer maps it to its medium.
+`phlox` ships with a small **template language** that lets a caller customize the rendered invoice without writing Java. One template produces both HTML and PDF — the template is the **single source of truth** for layout and styling, and each writer maps it to its medium.
 
 > **Status:** Design proposal. Not yet implemented. Targeted at the 0.4.0 milestone (see [[Roadmap]]).
 
 ## Why
 
-The 0.1.0 writers (`HTMLInvoiceWriter`, `PDFInvoiceWriter`) lay out invoices with a fixed section grammar described in [[Output Writers]].
+The 0.1.0 writers (`HtmlInvoiceWriter`, `PdfInvoiceWriter`) lay out invoices with a fixed section grammar described in [[Output Writers]].
 That covers the "show me a readable invoice" case. It does **not** cover:
 
 - "Use our brand fonts and brand colors."
@@ -15,11 +15,11 @@ That covers the "show me a readable invoice" case. It does **not** cover:
 - "Add a custom footer block under payment instructions."
 
 Users currently solve this by post-processing the HTML (fragile) or forking the writer (heavy).
-The template language replaces both: load a `.ntpl` (norma template) file, hand it to either writer, get the customized output.
+The template language replaces both: load a `.ptpl` (phlox template) file, hand it to either writer, get the customized output.
 
 ## Composition (no new syntax invented)
 
-A `.ntpl` file is a stack of three well-known grammars. None of them is invented by norma; we wire them together and add a small invoice-aware data binding.
+A `.ptpl` file is a stack of three well-known grammars. None of them is invented by phlox; we wire them together and add a small invoice-aware data binding.
 
 ```
 ┌─ JMustache                         ← {{BT-X}}, {{#BG-X}}, {{?BT-X}}, {{label:...}}
@@ -72,9 +72,9 @@ The same file renders to HTML (semantic `<h1>`, `<h2>`, `<table>`, `<strong>`, `
 |---|---|
 | Inline styling is **CommonMark + GFM**, parsed natively by ph-pdf-layout | `**bold**`, `*italic*`, `` `code` ``, `~~strike~~`, `[text](url)`, hard line break (`\`) — same byte sequence renders in both media. |
 | `commonmark-java` parses block structure (headings, lists, blockquote, fenced code, tables) | Block-level AST is shared; emitters diverge only on the output API call. |
-| CommonMark does **not** define inline color, underline, font size, or background | These are intentionally absent from the template grammar. Block-level color comes from a per-block attribute syntax (see "Block attributes"); document-wide colors come from `HTMLRenderContext.setCustomStylesheet(...)` / `PDFRenderContext` font setters. |
+| CommonMark does **not** define inline color, underline, font size, or background | These are intentionally absent from the template grammar. Block-level color comes from a per-block attribute syntax (see "Block attributes"); document-wide colors come from `HtmlRenderContext.setCustomStylesheet(...)` / `PdfRenderContext` font setters. |
 | Tables can't nest paragraphs of arbitrary block content | GFM tables are single-line cells with inline-only content — matches what `PLTable` supports natively. |
-| Templates must not leak BT-empty placeholders | The Mustache adapter respects `IncludeEmptySections` / `AnnotateBTIDs` — same rules as the built-in writers. |
+| Templates must not leak BT-empty placeholders | The Mustache adapter respects `IncludeEmptySections` / `AnnotateBtIDs` — same rules as the built-in writers. |
 
 ## Syntax overview
 
@@ -83,7 +83,7 @@ The same file renders to HTML (semantic `<h1>`, `<h2>`, `<table>`, `<strong>`, `
 | Value placeholder | JMustache | `{{BT-1}}` |
 | Path placeholder | JMustache (custom resolver) | `{{BG-4.BT-27}}` |
 | Label placeholder | JMustache (custom resolver) | `{{label:BT-1}}` |
-| Format modifier | norma extension | `{{BT-2 \| date:long}}` |
+| Format modifier | phlox extension | `{{BT-2 \| date:long}}` |
 | Optional block | JMustache `{{#...}}` truthy test | `{{?BT-10}}…{{/BT-10}}` |
 | Inverted block | JMustache `{{^...}}` | `{{^BG-10}}…{{/BG-10}}` |
 | Loop block | JMustache `{{#...}}` over iterable | `{{#BG-25}}…{{/BG-25}}` |
@@ -107,10 +107,10 @@ The same file renders to HTML (semantic `<h1>`, `<h2>`, `<table>`, `<strong>`, `
 | Image | CommonMark | `![alt](data:…)` (rendered in both HTML and PDF; see "Images" below) |
 | Table | GFM tables extension | `\| col \| col \|` … |
 | Backslash escape | CommonMark | `\*`, `\_`, `\\`, `\|` |
-| Page break | norma directive | `{{pagebreak}}` |
-| Block attributes | norma directive (optional) | `{{class:totals-row}}` before a block |
+| Page break | phlox directive | `{{pagebreak}}` |
+| Block attributes | phlox directive (optional) | `{{class:totals-row}}` before a block |
 
-The grammar is a strict superset of CommonMark 0.30 with the two GFM extensions enabled. The norma additions are all Mustache placeholders, so they're invisible to plain CommonMark tools and don't break syntax highlighting.
+The grammar is a strict superset of CommonMark 0.30 with the two GFM extensions enabled. The phlox additions are all Mustache placeholders, so they're invisible to plain CommonMark tools and don't break syntax highlighting.
 
 ## Placeholders
 
@@ -118,26 +118,26 @@ Every EN 16931 BT and BG defined in [[Domain Model]] is addressable.
 
 ### Resolution
 
-`{{BT-1}}` goes through the norma Mustache resolver, which:
+`{{BT-1}}` goes through the phlox Mustache resolver, which:
 
 1. Parses the placeholder name as a BT or BG identifier (or a `label:` / format modifier).
-2. Walks the `NormaInvoice` to the matching getter.
+2. Walks the `PhloxInvoice` to the matching getter.
 3. Applies a default formatter chosen from the Java type.
 4. Returns a HTML-escaped string in the HTML pipeline, a raw string in the PDF pipeline (PDF text escaping is handled by `PLRichText`).
 
 | Java type on the model | Default formatter | Source |
 |---|---|---|
 | `String` | as-is | direct |
-| `LocalDate` | `NormaFormat.date(val, locale)` — medium style | [[Output Writers]] |
-| `BigDecimal` amount BTs | `NormaFormat.amount(val, BT-5 currency, locale)` | currency taken from BT-5 |
-| `BigDecimal` percentage BTs | `NormaFormat.percent(val, locale)` | two decimals + `%` |
-| Code BTs (UNTDID 1001, 5305, etc.) | `NormaFormat.codeListLabel(listName, code, locale)` | list inferred from BT |
-| `NormaIdentifier` | scheme-prefixed if BT-X-1 set, otherwise the value | as in built-in writers |
+| `LocalDate` | `PhloxFormat.date(val, locale)` — medium style | [[Output Writers]] |
+| `BigDecimal` amount BTs | `PhloxFormat.amount(val, BT-5 currency, locale)` | currency taken from BT-5 |
+| `BigDecimal` percentage BTs | `PhloxFormat.percent(val, locale)` | two decimals + `%` |
+| Code BTs (UNTDID 1001, 5305, etc.) | `PhloxFormat.codeListLabel(listName, code, locale)` | list inferred from BT |
+| `PhloxIdentifier` | scheme-prefixed if BT-X-1 set, otherwise the value | as in built-in writers |
 | `ICommonsList<…>` | only valid inside a loop block | error otherwise |
 
 ### Path syntax
 
-JMustache resolves `{{a.b.c}}` left-to-right. The norma resolver overloads dot to also walk into BGs.
+JMustache resolves `{{a.b.c}}` left-to-right. The phlox resolver overloads dot to also walk into BGs.
 
 - `{{BG-4.BT-27}}` — seller name.
 - `{{BG-4.BG-5.BT-37}}` — seller postal-address city.
@@ -163,7 +163,7 @@ Modifiers are pure functions over the resolved value and the active `RenderConte
 
 ### Labels
 
-`{{label:BT-1}}` returns the localized label for the BT, resolved through `INormaLabelResolver` exactly like the built-in writers. `{{label:BG-4}}` works the same way for BGs. `{{label:section.parties.title}}` reads an arbitrary key from the resource bundle, so templates can use the same translation file as the rest of the library.
+`{{label:BT-1}}` returns the localized label for the BT, resolved through `IPhloxLabelResolver` exactly like the built-in writers. `{{label:BG-4}}` works the same way for BGs. `{{label:section.parties.title}}` reads an arbitrary key from the resource bundle, so templates can use the same translation file as the rest of the library.
 
 ### Missing values
 
@@ -173,7 +173,7 @@ A BT may be `null`, an empty `String`, or — for lists — empty. By default th
 |---|---|
 | `IncludeEmptySections=false` (default) | Empty placeholders disappear; CommonMark then collapses empty paragraphs and rows during AST construction. |
 | `IncludeEmptySections=true` | Empty values render as `—`; lines and rows are preserved. |
-| `AnnotateBTIDs=true` | Every placeholder's output is suffixed with `[BT-1]` for debugging — same convention as the built-in writers. |
+| `AnnotateBtIDs=true` | Every placeholder's output is suffixed with `[BT-1]` for debugging — same convention as the built-in writers. |
 
 ## Sections and loops
 
@@ -198,13 +198,13 @@ JMustache iterates every entry of a list-typed BG. Inside the loop, the current 
 
 | BG | Java field | Iterates over |
 |---|---|---|
-| BG-1 | `m_aInvoiceNotes` | `NormaInvoiceNote` |
-| BG-3 | `m_aPrecedingInvoiceRefs` | `NormaPrecedingInvoiceRef` |
-| BG-20 | `m_aDocumentAllowances` | `NormaDocumentAllowance` |
-| BG-21 | `m_aDocumentCharges` | `NormaDocumentCharge` |
-| BG-23 | `m_aVATBreakdowns` | `NormaVATBreakdown` |
-| BG-24 | `m_aSupportingDocuments` | `NormaSupportingDocument` |
-| BG-25 | `m_aLines` | `NormaInvoiceLine` |
+| BG-1 | `m_aInvoiceNotes` | `PhloxInvoiceNote` |
+| BG-3 | `m_aPrecedingInvoiceRefs` | `PhloxPrecedingInvoiceRef` |
+| BG-20 | `m_aDocumentAllowances` | `PhloxDocumentAllowance` |
+| BG-21 | `m_aDocumentCharges` | `PhloxDocumentCharge` |
+| BG-23 | `m_aVatBreakdowns` | `PhloxVatBreakdown` |
+| BG-24 | `m_aSupportingDocuments` | `PhloxSupportingDocument` |
+| BG-25 | `m_aLines` | `PhloxInvoiceLine` |
 | BG-29 / BG-30 / BG-31 / BG-32 | nested in lines | per-line allowances, charges, item attributes |
 
 Nested loops are allowed: a `BG-25` loop can contain a `BG-29` (line-level allowances) loop.
@@ -214,7 +214,7 @@ Nested loops are allowed: a `BG-25` loop can contain a `BG-29` (line-level allow
 CommonMark ATX headings (`#`, `##`, `###`) are the section primitive. The renderer maps the heading level to the natural output:
 
 - HTML: `<h1>` / `<h2>` / `<h3>` with the configured CSS class prefix.
-- PDF: `PLText` with descending font sizes derived from `PDFRenderContext.getHeaderFont()`.
+- PDF: `PLText` with descending font sizes derived from `PdfRenderContext.getHeaderFont()`.
 
 There is no separate "section" directive; a heading marks a section. For an explicit page break in the PDF output, use the placeholder `{{pagebreak}}`. CommonMark `---` (thematic break) renders as `<hr>` in HTML and as a thin horizontal rule in PDF — it is **not** a page break.
 
@@ -235,19 +235,19 @@ GFM-tables syntax — recognized by `commonmark-java` with the `org.commonmark:c
 - Inline CommonMark markup inside cells works as elsewhere — bold, italic, links, code.
 - A blank line ends the table.
 
-HTML: `<table><thead><tr><th>…</th></tr></thead><tbody><tr><td>…</td></tr></tbody></table>` with the CSS class prefix from `HTMLRenderContext.setCSSClassPrefix(...)`.
-PDF: a `PLTable` with the same column count, the header row styled with `PDFRenderContext.tableHeaderFont`, body rows styled with the body font, and column widths derived either from an explicit column-widths attribute or from a default even split.
+HTML: `<table><thead><tr><th>…</th></tr></thead><tbody><tr><td>…</td></tr></tbody></table>` with the CSS class prefix from `HtmlRenderContext.setCssClassPrefix(...)`.
+PDF: a `PLTable` with the same column count, the header row styled with `PdfRenderContext.tableHeaderFont`, body rows styled with the body font, and column widths derived either from an explicit column-widths attribute or from a default even split.
 
 ## Block attributes (optional)
 
-Some block-level customizations have no CommonMark equivalent — most obviously the per-row background fill on the totals ladder. The template engine recognizes an optional `{{class:name}}` placeholder at the start of a block; on the HTML side it becomes a class attribute, on the PDF side it looks up a `PLTableCell` fill color from a small style map exposed on `PDFRenderContext`. This is the only place where per-block style escapes the CommonMark grammar.
+Some block-level customizations have no CommonMark equivalent — most obviously the per-row background fill on the totals ladder. The template engine recognizes an optional `{{class:name}}` placeholder at the start of a block; on the HTML side it becomes a class attribute, on the PDF side it looks up a `PLTableCell` fill color from a small style map exposed on `PdfRenderContext`. This is the only place where per-block style escapes the CommonMark grammar.
 
 ```ntpl
 {{class:totals-due}}
 | **{{label:BT-115}}** | **{{BT-115 | amount}}** |
 ```
 
-No syntax is added for inline color: if a template truly needs it, the caller can either use a class on the surrounding block, or attach a `HTMLRenderContext.setCustomStylesheet(...)` for the HTML side (the PDF side won't see it).
+No syntax is added for inline color: if a template truly needs it, the caller can either use a class on the surrounding block, or attach a `HtmlRenderContext.setCustomStylesheet(...)` for the HTML side (the PDF side won't see it).
 
 ## Images
 
@@ -272,36 +272,36 @@ Per [[Output Writers]], **writers never fetch external resources**. Only these s
 | Scheme | Resolves to | HTML side | PDF side |
 |---|---|---|---|
 | `data:` | Inline base64-encoded bytes | passed through verbatim | decoded into a `PLImage` |
-| `attachment:logo` | The `NormaAttachment` set via `RenderContext.setLogo(...)` | rendered as a data-URI `<img>` | wrapped in a `PLImage` |
+| `attachment:logo` | The `PhloxAttachment` set via `RenderContext.setLogo(...)` | rendered as a data-URI `<img>` | wrapped in a `PLImage` |
 | `attachment:BG-24[i]` | The i-th entry of BG-24 supporting documents (if it carries inline binary) | rendered as a data-URI `<img>` | wrapped in a `PLImage` |
 | `classpath:/path` | A resource on the writer's classpath | inlined as a data URI | wrapped in a `PLImage` |
 | `http:`, `https:`, `file:` | (rejected at parse time) | — | — |
 
 ## Defaults
 
-A built-in default template reproduces the layout described in [[Output Writers]] section-for-section. Callers don't have to write a template to get a usable invoice — they only set one when they want to override layout. The default template ships as a single language-independent resource under `norma-template/src/main/resources/templates/default.ntpl` and is loaded if no other template is set on the context. All localized strings inside it route through `{{label:...}}` placeholders, so new languages are added by dropping in a new `norma-labels_<lang>.properties` file in `norma-api` — never a new template. See [[Localization]] for the resource-bundle layout.
+A built-in default template reproduces the layout described in [[Output Writers]] section-for-section. Callers don't have to write a template to get a usable invoice — they only set one when they want to override layout. The default template ships as a single language-independent resource under `phlox-template/src/main/resources/templates/default.ptpl` and is loaded if no other template is set on the context. All localized strings inside it route through `{{label:...}}` placeholders, so new languages are added by dropping in a new `phlox-labels_<lang>.properties` file in `phlox-api` — never a new template. See [[Localization]] for the resource-bundle layout.
 
 ## Integration
 
 A new abstract setter on `AbstractRenderContext`:
 
 ```java
-public IMPLTYPE setTemplate (@Nullable INormaTemplate aTemplate);
+public IMPLTYPE setTemplate (@Nullable IPhloxTemplate aTemplate);
 ```
 
-`INormaTemplate` is a small interface so the same template can be loaded from a classpath resource, a `String`, or a file. The engine parses the template (Mustache compile + CommonMark parse of the post-substitution document) into an AST per render; the Mustache compile is cached on the `INormaTemplate` instance, so reusing the same template across many invoices is cheap.
+`IPhloxTemplate` is a small interface so the same template can be loaded from a classpath resource, a `String`, or a file. The engine parses the template (Mustache compile + CommonMark parse of the post-substitution document) into an AST per render; the Mustache compile is cached on the `IPhloxTemplate` instance, so reusing the same template across many invoices is cheap.
 
 ```java
-final INormaTemplate aTpl = NormaTemplate.fromClasspath ("/templates/my-brand.ntpl");
-final HTMLRenderContext aCtxHtml = new HTMLRenderContext ()
+final IPhloxTemplate aTpl = PhloxTemplate.fromClasspath ("/templates/my-brand.ptpl");
+final HtmlRenderContext aCtxHtml = new HtmlRenderContext ()
     .setLocale (Locale.GERMAN)
     .setTemplate (aTpl);
-final String sHtml = new HTMLInvoiceWriter ().writeAsString (aInvoice, aCtxHtml);
+final String sHtml = new HtmlInvoiceWriter ().writeAsString (aInvoice, aCtxHtml);
 
-final PDFRenderContext aCtxPdf = new PDFRenderContext ()
+final PdfRenderContext aCtxPdf = new PdfRenderContext ()
     .setLocale (Locale.GERMAN)
     .setTemplate (aTpl);
-new PDFInvoiceWriter ().writeTo (aInvoice, aCtxPdf, aOutputStream);
+new PdfInvoiceWriter ().writeTo (aInvoice, aCtxPdf, aOutputStream);
 ```
 
 Both writers consult `RenderContext.getTemplate()`. When it is `null`, they fall back to their hard-coded section grammar — so existing call sites keep working unchanged.
@@ -312,9 +312,9 @@ How each CommonMark / GFM / Mustache construct lands in the two output formats:
 
 | Template construct | HTML | PDF (via `ph-pdf-layout`) |
 |---|---|---|
-| `# title` | `<h1 class="norma-title">title</h1>` | `PLText` with `headerFont`, largest size |
-| `## title` | `<h2 class="norma-section-title">title</h2>` | `PLText` with `headerFont` |
-| `### title` | `<h3 class="norma-subsection-title">title</h3>` | `PLText` with `headerFont`, smaller size |
+| `# title` | `<h1 class="phlox-title">title</h1>` | `PLText` with `headerFont`, largest size |
+| `## title` | `<h2 class="phlox-section-title">title</h2>` | `PLText` with `headerFont` |
+| `### title` | `<h3 class="phlox-subsection-title">title</h3>` | `PLText` with `headerFont`, smaller size |
 | Paragraph | `<p>…</p>` | `PLRichText` populated from ph-pdf-layout's CommonMark inline parser |
 | `**bold**` | `<strong>` | bold run inside `PLRichText` |
 | `*italic*` | `<em>` | italic run inside `PLRichText` |
@@ -330,7 +330,7 @@ How each CommonMark / GFM / Mustache construct lands in the two output formats:
 | GFM table | `<table>…</table>` | `PLTable` |
 | Inline image `![alt](url)` | `<img src="…" alt="…">` (inline inside `<p>`) | `PLImage` as a standalone block; the surrounding paragraph is split into pre-image `PLRichText` + `PLImage` + post-image `PLRichText` (see "Images" below) |
 | `{{pagebreak}}` | `<div style="page-break-after:always"></div>` | `PLPageBreak` |
-| `{{class:name}}` before block | class attribute on next block | `PLTableCell` fill / `PLBox` fill from `PDFRenderContext` style map |
+| `{{class:name}}` before block | class attribute on next block | `PLTableCell` fill / `PLBox` fill from `PdfRenderContext` style map |
 
 ## Limitations
 
@@ -346,11 +346,11 @@ When a template uses an unsupported construct the engine fails fast at parse tim
 
 ## Resolution algorithm
 
-1. **Substitute** (JMustache) — walk the Mustache AST with a `NormaInvoice`-aware `Mustache.CustomContext`, applying default formatters and `{{label:...}}` lookups. Output: a CommonMark document as a `String`. Loops have been expanded; conditionals have been resolved; placeholders have been replaced with locale-aware formatted values.
-2. **Parse** (commonmark-java with `TablesExtension` + `StrikethroughExtension`) — turn the document into a `Node` AST. Standard CommonMark parser, no norma-specific modifications.
+1. **Substitute** (JMustache) — walk the Mustache AST with a `PhloxInvoice`-aware `Mustache.CustomContext`, applying default formatters and `{{label:...}}` lookups. Output: a CommonMark document as a `String`. Loops have been expanded; conditionals have been resolved; placeholders have been replaced with locale-aware formatted values.
+2. **Parse** (commonmark-java with `TablesExtension` + `StrikethroughExtension`) — turn the document into a `Node` AST. Standard CommonMark parser, no phlox-specific modifications.
 3. **Emit** — visit the AST through one of two `AbstractVisitor` subclasses:
-   - `HTMLEmitter` builds an `HCNode` tree (same `ph-oton-html` types the current `HTMLInvoiceWriter` uses).
-   - `PDFEmitter` builds `PLPageSet` content (same `ph-pdf-layout` types the current `PDFInvoiceWriter` uses). Paragraphs feed their inline content through ph-pdf-layout's CommonMark inline parser.
+   - `HTMLEmitter` builds an `HCNode` tree (same `ph-oton-html` types the current `HtmlInvoiceWriter` uses).
+   - `PDFEmitter` builds `PLPageSet` content (same `ph-pdf-layout` types the current `PdfInvoiceWriter` uses). Paragraphs feed their inline content through ph-pdf-layout's CommonMark inline parser.
 
 Each stage is independently testable:
 
@@ -362,17 +362,17 @@ Each stage is independently testable:
 
 | Module | New dep | Version | Size | License |
 |---|---|---|---|---|
-| `norma-api` | (none — only the marker interface `INormaTemplate` is added; zero new transitive deps) | — | — | — |
-| `norma-template` | `com.samskivert:jmustache` | 1.16 | ~70 KB | BSD-2-Clause (Apache 2.0-compatible) |
-| `norma-template` | `org.commonmark:commonmark` | 0.22.0 | ~120 KB | BSD-2-Clause |
-| `norma-template` | `org.commonmark:commonmark-ext-gfm-tables` | 0.22.0 | ~25 KB | BSD-2-Clause |
-| `norma-template` | `org.commonmark:commonmark-ext-gfm-strikethrough` | 0.22.0 | ~10 KB | BSD-2-Clause |
-| `norma-html` | `norma-template` (compile) | (this project) | — | Apache 2.0 |
-| `norma-pdf` | `norma-template` (compile) + (existing) `ph-pdf-layout` with its CommonMark inline support | (TBD) | (unchanged) | Apache 2.0 |
+| `phlox-api` | (none — only the marker interface `IPhloxTemplate` is added; zero new transitive deps) | — | — | — |
+| `phlox-template` | `com.samskivert:jmustache` | 1.16 | ~70 KB | BSD-2-Clause (Apache 2.0-compatible) |
+| `phlox-template` | `org.commonmark:commonmark` | 0.22.0 | ~120 KB | BSD-2-Clause |
+| `phlox-template` | `org.commonmark:commonmark-ext-gfm-tables` | 0.22.0 | ~25 KB | BSD-2-Clause |
+| `phlox-template` | `org.commonmark:commonmark-ext-gfm-strikethrough` | 0.22.0 | ~10 KB | BSD-2-Clause |
+| `phlox-html` | `phlox-template` (compile) | (this project) | — | Apache 2.0 |
+| `phlox-pdf` | `phlox-template` (compile) + (existing) `ph-pdf-layout` with its CommonMark inline support | (TBD) | (unchanged) | Apache 2.0 |
 
 No JRuby, no servlet container, no template-engine framework. All four new third-party deps are pure Java and version-stable.
 
-Because `norma-template` is a compile-scope dependency of `norma-html` and `norma-pdf`, the four jars are transitively pulled onto the classpath of any consumer of either writer (~225 KB total, ~250 KB with `norma-template` itself). Consumers who use the writers without ever calling `setTemplate(...)` will load those classes lazily — the runtime cost is effectively zero — but they're on the classpath. Consumers of `norma-api`, `norma-ubl`, or `norma-cii` alone (e.g. an embedding that only parses invoices) get neither `norma-template` nor its deps.
+Because `phlox-template` is a compile-scope dependency of `phlox-html` and `phlox-pdf`, the four jars are transitively pulled onto the classpath of any consumer of either writer (~225 KB total, ~250 KB with `phlox-template` itself). Consumers who use the writers without ever calling `setTemplate(...)` will load those classes lazily — the runtime cost is effectively zero — but they're on the classpath. Consumers of `phlox-api`, `phlox-ubl`, or `phlox-cii` alone (e.g. an embedding that only parses invoices) get neither `phlox-template` nor its deps.
 
 If the classpath cost ever becomes a problem, a future revision can make the dep optional (Maven `<optional>true</optional>`) and load the emitter via `ServiceLoader` — that's a non-breaking change.
 

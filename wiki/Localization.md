@@ -6,22 +6,22 @@ The intermediate model carries **no human text** — only EN 16931 identifiers a
 
 | Locale | Status | Resource bundle |
 |--------|--------|-----------------|
-| `en` (English) | First class | `norma-labels_en.properties` |
-| `de` (German) | First class | `norma-labels_de.properties` |
+| `en` (English) | First class | `phlox-labels_en.properties` |
+| `de` (German) | First class | `phlox-labels_de.properties` |
 | anything else | Falls back to `en` | — |
 
 Adding a language is a matter of dropping a translated properties file onto the classpath. No code changes.
 
 ## Resource bundle structure
 
-There are **two** bundles, both packaged in `norma-api`:
+There are **two** bundles, both packaged in `phlox-api`:
 
-### `norma-labels` — section titles and BG/BT labels
+### `phlox-labels` — section titles and BG/BT labels
 
 Keyed by EN 16931 identifier:
 
 ```properties
-# norma-labels_en.properties
+# phlox-labels_en.properties
 BT-1   = Invoice number
 BT-2   = Invoice issue date
 BT-5   = Currency
@@ -33,7 +33,7 @@ BG-25  = Invoice lines
 ```
 
 ```properties
-# norma-labels_de.properties
+# phlox-labels_de.properties
 BT-1   = Rechnungsnummer
 BT-2   = Rechnungsdatum
 BT-5   = Währung
@@ -63,12 +63,12 @@ section.totals.total              = Total
 section.totals.due                = Amount due
 ```
 
-### `norma-codelists` — UNTDID / VAT category / payment-means code descriptions
+### `phlox-codelists` — UNTDID / VAT category / payment-means code descriptions
 
 Keyed by `<listname>.<code>`:
 
 ```properties
-# norma-codelists_en.properties
+# phlox-codelists_en.properties
 vat.category.S    = Standard rated
 vat.category.Z    = Zero rated
 vat.category.E    = Exempt from VAT
@@ -98,9 +98,9 @@ The full list of values is sourced from the **UNTDID 4461** (payment means), **U
 ## API
 
 ```java
-package com.helger.norma.api.i18n;
+package com.helger.phlox.api.i18n;
 
-public interface INormaLabelResolver
+public interface IPhloxLabelResolver
 {
   /** Looks up a section/BG/BT label. Returns the key itself on miss. */
   @Nonnull
@@ -111,13 +111,13 @@ public interface INormaLabelResolver
   String getCodeLabel (@Nonnull String sListName, @Nonnull String sCode, @Nonnull Locale aLocale);
 }
 
-public final class DefaultNormaLabelResolver implements INormaLabelResolver
+public final class DefaultPhloxLabelResolver implements IPhloxLabelResolver
 {
   // ResourceBundle-backed; used by both writers when none is supplied.
 }
 ```
 
-A caller who needs labels for branded terminology (e.g. "Invoice #" instead of "Invoice number") can supply a custom `INormaLabelResolver` through `RenderContext.setLabelResolver (...)` without rewriting any rendering code.
+A caller who needs labels for branded terminology (e.g. "Invoice #" instead of "Invoice number") can supply a custom `IPhloxLabelResolver` through `RenderContext.setLabelResolver (...)` without rewriting any rendering code.
 
 ## Fallback rules
 
@@ -139,8 +139,8 @@ These are the only locale-sensitive operations the writers perform.
 
 ## Adding a new language
 
-1. Translate `norma-labels_en.properties` to `norma-labels_<lang>.properties`.
-2. Translate `norma-codelists_en.properties` to `norma-codelists_<lang>.properties`.
+1. Translate `phlox-labels_en.properties` to `phlox-labels_<lang>.properties`.
+2. Translate `phlox-codelists_en.properties` to `phlox-codelists_<lang>.properties`.
 3. Drop both onto the classpath — no other change is necessary.
 4. Pass `new RenderContext().setLocale(new Locale("<lang>"))` to the writer.
 

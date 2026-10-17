@@ -24,13 +24,13 @@
     <artifactId>parent-pom</artifactId>
     <version>3.1.0</version>
   </parent>
-  <groupId>com.helger.norma</groupId>
-  <artifactId>norma-parent-pom</artifactId>
+  <groupId>com.helger.phlox</groupId>
+  <artifactId>phlox-parent-pom</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>norma-parent-pom</name>
-  <description>norma - EN 16931 electronic invoice visualizer - Parent POM</description>
-  <url>https://github.com/phax/norma</url>
+  <name>phlox-parent-pom</name>
+  <description>phlox - EN 16931 electronic invoice visualizer - Parent POM</description>
+  <url>https://github.com/phax/phlox</url>
   <inceptionYear>2026</inceptionYear>
 
   <licenses>
@@ -42,9 +42,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:https://github.com/phax/norma.git</connection>
-    <developerConnection>scm:git:https://github.com/phax/norma.git</developerConnection>
-    <url>https://github.com/phax/norma</url>
+    <connection>scm:git:https://github.com/phax/phlox.git</connection>
+    <developerConnection>scm:git:https://github.com/phax/phlox.git</developerConnection>
+    <url>https://github.com/phax/phlox</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -134,43 +134,43 @@
 
       <!-- Internal modules -->
       <dependency>
-        <groupId>com.helger.norma</groupId>
-        <artifactId>norma-api</artifactId>
+        <groupId>com.helger.phlox</groupId>
+        <artifactId>phlox-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.helger.norma</groupId>
-        <artifactId>norma-testfiles</artifactId>
+        <groupId>com.helger.phlox</groupId>
+        <artifactId>phlox-testfiles</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.helger.norma</groupId>
-        <artifactId>norma-ubl</artifactId>
+        <groupId>com.helger.phlox</groupId>
+        <artifactId>phlox-ubl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.helger.norma</groupId>
-        <artifactId>norma-cii</artifactId>
+        <groupId>com.helger.phlox</groupId>
+        <artifactId>phlox-cii</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.helger.norma</groupId>
-        <artifactId>norma-template</artifactId>
+        <groupId>com.helger.phlox</groupId>
+        <artifactId>phlox-template</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.helger.norma</groupId>
-        <artifactId>norma-html</artifactId>
+        <groupId>com.helger.phlox</groupId>
+        <artifactId>phlox-html</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.helger.norma</groupId>
-        <artifactId>norma-pdf</artifactId>
+        <groupId>com.helger.phlox</groupId>
+        <artifactId>phlox-pdf</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.helger.norma</groupId>
-        <artifactId>norma-cli</artifactId>
+        <groupId>com.helger.phlox</groupId>
+        <artifactId>phlox-cli</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>
@@ -201,14 +201,14 @@
   </dependencies>
 
   <modules>
-    <module>norma-api</module>
-    <module>norma-testfiles</module>
-    <module>norma-ubl</module>
-    <module>norma-cii</module>
-    <module>norma-template</module>
-    <module>norma-html</module>
-    <module>norma-pdf</module>
-    <module>norma-cli</module>
+    <module>phlox-api</module>
+    <module>phlox-testfiles</module>
+    <module>phlox-ubl</module>
+    <module>phlox-cii</module>
+    <module>phlox-template</module>
+    <module>phlox-html</module>
+    <module>phlox-pdf</module>
+    <module>phlox-cli</module>
   </modules>
 
   <build>
