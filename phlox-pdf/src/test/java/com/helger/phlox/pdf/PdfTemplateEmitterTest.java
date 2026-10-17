@@ -24,10 +24,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.contentstream.operator.Operator;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdfparser.PDFStreamParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -240,6 +243,42 @@ public final class PdfTemplateEmitterTest
     assertTrue (_text (aStruck).contains ("Text deleted end"));
     // The only difference is the line through the struck word
     assertEquals (_strokeOperators (aPlain) + 1, _strokeOperators (aStruck));
+  }
+
+  private static List <String> _fontNames (final byte [] aPdf)
+  {
+    try (final PDDocument aDoc = Loader.loadPDF (aPdf))
+    {
+      final List <String> ret = new ArrayList <> ();
+      for (final COSName aName : aDoc.getPage (0).getResources ().getFontNames ())
+        ret.add (aDoc.getPage (0).getResources ().getFont (aName).getName ());
+      return ret;
+    }
+    catch (final IOException ex)
+    {
+      throw new IllegalStateException ("Failed to read the PDF", ex);
+    }
+  }
+
+  @Test
+  public void testInlineCodeUsesCourier ()
+  {
+    final PhloxInvoice aModel = _read (UblInvoiceReader.fromUbl21 (), "2017/ubl/invoice/ubl-tc434-example1.xml");
+    final byte [] aWithCode = _render (aModel, PhloxTemplate.fromString ("Call `getFoo()` now"), Locale.ENGLISH);
+    final byte [] aWithout = _render (aModel, PhloxTemplate.fromString ("Call getFoo() now"), Locale.ENGLISH);
+    assertTrue (_text (aWithCode).contains ("Call getFoo() now"));
+    assertTrue (_fontNames (aWithCode).contains ("Courier"));
+    assertFalse (_fontNames (aWithout).contains ("Courier"));
+  }
+
+  @Test
+  public void testBacktickInTextIsNotAMarker ()
+  {
+    final PhloxInvoice aModel = _read (UblInvoiceReader.fromUbl21 (), "2017/ubl/invoice/ubl-tc434-example1.xml");
+    // Written as a literal backtick in the template: CommonMark keeps a lone backtick as text
+    final byte [] aPdf = _render (aModel, PhloxTemplate.fromString ("It costs 5 `a unit"), Locale.ENGLISH);
+    assertTrue (_text (aPdf).contains ("It costs 5 `a unit"));
+    assertFalse (_fontNames (aPdf).contains ("Courier"));
   }
 
   @Test

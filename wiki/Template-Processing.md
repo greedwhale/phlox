@@ -320,7 +320,7 @@ Walks the AST and builds the content of a `PLPageSet` (page size and margins fro
 | `Link` | `{link[uri]}…{link}` for the schemes `http`, `https`, `mailto`, `tel`, `ftp`, `ftps`; any other target (for example `attachment:BG-24[0]`) stays plain text |
 | `SoftLineBreak` / `HardLineBreak` / `<br>` | A hard line break |
 | `Strikethrough` | `~~strikethrough~~` |
-| `Code` | Plain text (the markup has no monospace) |
+| `Code` | `` `code` `` — the monospace font (Courier of the standard 14 fonts) |
 | inline `Image` | Skipped (only block level images are supported) |
 
 Text of table cells is not vertically splittable, so a table moves whole rows to the next page rather than splitting a row.

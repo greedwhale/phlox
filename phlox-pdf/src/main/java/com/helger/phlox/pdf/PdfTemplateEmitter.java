@@ -32,26 +32,7 @@ import org.commonmark.ext.gfm.tables.TableBody;
 import org.commonmark.ext.gfm.tables.TableCell;
 import org.commonmark.ext.gfm.tables.TableHead;
 import org.commonmark.ext.gfm.tables.TableRow;
-import org.commonmark.node.BlockQuote;
-import org.commonmark.node.BulletList;
-import org.commonmark.node.Code;
-import org.commonmark.node.Emphasis;
-import org.commonmark.node.FencedCodeBlock;
-import org.commonmark.node.HardLineBreak;
-import org.commonmark.node.Heading;
-import org.commonmark.node.HtmlBlock;
-import org.commonmark.node.HtmlInline;
-import org.commonmark.node.Image;
-import org.commonmark.node.IndentedCodeBlock;
-import org.commonmark.node.Link;
-import org.commonmark.node.ListItem;
-import org.commonmark.node.Node;
-import org.commonmark.node.OrderedList;
-import org.commonmark.node.Paragraph;
-import org.commonmark.node.SoftLineBreak;
-import org.commonmark.node.StrongEmphasis;
-import org.commonmark.node.Text;
-import org.commonmark.node.ThematicBreak;
+import org.commonmark.node.*;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -64,7 +45,7 @@ import com.helger.pdflayout.base.PLColor;
 import com.helger.pdflayout.base.PLPageSet;
 import com.helger.pdflayout.element.box.PLBox;
 import com.helger.pdflayout.element.image.PLImage;
-import com.helger.pdflayout.element.link.PLExternalLink;
+import com.helger.pdflayout.element.link.AbstractPLExternalLink;
 import com.helger.pdflayout.element.list.BulletPointCreatorNumeric;
 import com.helger.pdflayout.element.list.BulletPointCreatorSymbol;
 import com.helger.pdflayout.element.list.IBulletPointCreator;
@@ -83,8 +64,6 @@ import com.helger.pdflayout.spec.EHorzAlignment;
 import com.helger.pdflayout.spec.FontSpec;
 import com.helger.pdflayout.spec.PaddingSpec;
 import com.helger.pdflayout.spec.PreloadFont;
-import com.helger.pdflayout.richtext.element.PLRichText;
-import com.helger.pdflayout.richtext.run.PLFontFamily;
 import com.helger.pdflayout.spec.WidthSpec;
 import com.helger.phlox.template.ast.PhloxPageBreakNode;
 import com.helger.phlox.template.ast.PhloxResolvedImage;
@@ -96,8 +75,9 @@ import com.helger.phlox.template.ast.PhloxTemplateAst;
  * ph-pdf-layout itself has one style per text element. The inline nodes of a paragraph, heading or
  * table cell are therefore folded into the markup of {@code ph-pdf-layout-richtext}
  * (<code>**bold**</code>, <code>*italic*</code>, <code>~~strikethrough~~</code>,
- * <code>{link[uri]}text{link}</code>), which {@code PLRichText} wraps and draws. Inline code is
- * rendered as plain text, and inline images are skipped. A block class that was attached with
+ * <code>`code`</code> for the monospace font,
+ * <code>{link[uri]}text{link}</code>), which {@code PLRichText} wraps and draws. Inline images are
+ * skipped. A block class that was attached with
  * {@code {{class:name}}} is looked up with {@link PdfRenderContext#getBlockStyle(String)}.
  *
  * @author Philip Helger
@@ -130,7 +110,7 @@ public final class PdfTemplateEmitter
   private static FontSpec _withTextColor (@NonNull final FontSpec aFont, @Nullable final PdfBlockStyle aStyle)
   {
     return aStyle != null && aStyle.getTextColor () != null ? aFont.getCloneWithDifferentColor (aStyle.getTextColor ())
-                                                           : aFont;
+                                                            : aFont;
   }
 
   @Nullable
@@ -145,14 +125,17 @@ public final class PdfTemplateEmitter
     return aStyle;
   }
 
-  /** PDF only allows links to a few URI schemes; other targets, like attachments, stay plain text. */
+  /**
+   * PDF only allows links to a few URI schemes; other targets, like attachments, stay plain text.
+   */
   private static boolean _isSupportedLink (@Nullable final String sDestination)
   {
     if (sDestination == null)
       return false;
     final int nColon = sDestination.indexOf (':');
     return nColon > 0 &&
-           PLExternalLink.getAllowedURISchemes ().contains (sDestination.substring (0, nColon).toLowerCase (Locale.ROOT));
+           AbstractPLExternalLink.getAllowedURISchemes ()
+                                 .contains (sDestination.substring (0, nColon).toLowerCase (Locale.ROOT));
   }
 
   private static String _escape (@NonNull final String sText)
@@ -162,8 +145,8 @@ public final class PdfTemplateEmitter
     for (int i = 0; i < aChars.length; ++i)
     {
       final char c = aChars[i];
-      // Two tildes in a row are the strikethrough marker
-      if (c == '\\' || c == '*' || c == '_' || c == '{' || (c == '~' && i + 1 < aChars.length && aChars[i + 1] == '~'))
+      // Two tildes in a row are the strike-through marker
+      if (c == '\\' || c == '*' || c == '_' || c == '{' || c == '`' || (c == '~' && i + 1 < aChars.length && aChars[i + 1] == '~'))
         aSb.append ('\\');
       aSb.append (c);
     }
@@ -183,7 +166,7 @@ public final class PdfTemplateEmitter
           aLines.add (new StringBuilder ());
         else
           if (aChild instanceof final Code aCode)
-            aLine.append (_escape (aCode.getLiteral ()));
+            aLine.append ('`').append (_escape (aCode.getLiteral ())).append ('`');
           else
             if (aChild instanceof StrongEmphasis)
             {
@@ -240,7 +223,9 @@ public final class PdfTemplateEmitter
     return PLFontFamily.regular ();
   }
 
-  /** Create the content of a block of text (paragraph, heading, table cell) from its inline nodes. */
+  /**
+   * Create the content of a block of text (paragraph, heading, table cell) from its inline nodes.
+   */
   @Nullable
   private static IPLRenderableObject <?> _createInlineBlock (@NonNull final Node aParent,
                                                              @NonNull final FontSpec aBase,
@@ -279,20 +264,17 @@ public final class PdfTemplateEmitter
     final FontSpec aBody = m_aCtx.getBodyFont ();
     final FontSpec aFont;
     final PLBox aBox;
-    switch (aHeading.getLevel ())
+    aFont = switch (aHeading.getLevel ())
     {
-      case 1:
-        aFont = new FontSpec (PreloadFont.REGULAR_BOLD, 18f);
-        break;
-      case 2:
-        aFont = m_aCtx.getHeaderFont ();
-        break;
-      default:
-        aFont = aBody.getCloneWithDifferentFont (PreloadFont.REGULAR_BOLD)
-                     .getCloneWithDifferentFontSize (aBody.getFontSize () + (aHeading.getLevel () == 3 ? 1f : 0f));
-        break;
-    }
-    final IPLRenderableObject <?> aContent = _createInlineBlock (aHeading, _withTextColor (aFont, aStyle), EHorzAlignment.LEFT, false);
+      case 1 -> new FontSpec (PreloadFont.REGULAR_BOLD, 18f);
+      case 2 -> m_aCtx.getHeaderFont ();
+      default -> aBody.getCloneWithDifferentFont (PreloadFont.REGULAR_BOLD)
+                      .getCloneWithDifferentFontSize (aBody.getFontSize () + (aHeading.getLevel () == 3 ? 1f : 0f));
+    };
+    final IPLRenderableObject <?> aContent = _createInlineBlock (aHeading,
+                                                                 _withTextColor (aFont, aStyle),
+                                                                 EHorzAlignment.LEFT,
+                                                                 false);
     if (aContent == null)
       return;
     aBox = new PLBox (aContent);
@@ -309,7 +291,7 @@ public final class PdfTemplateEmitter
   }
 
   @Nullable
-  private BufferedImage _readImage (@NonNull final PhloxResolvedImage aResolved)
+  private static BufferedImage _readImage (@NonNull final PhloxResolvedImage aResolved)
   {
     try
     {
@@ -321,9 +303,9 @@ public final class PdfTemplateEmitter
     }
   }
 
-  private void _addImage (@NonNull final PhloxTemplateAst aAst,
-                          @NonNull final Image aImage,
-                          @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  private static void _addImage (@NonNull final PhloxTemplateAst aAst,
+                                 @NonNull final Image aImage,
+                                 @NonNull final Consumer <IPLRenderableObject <?>> aSink)
   {
     final PhloxResolvedImage aResolved = aAst.getResolvedImage (aImage);
     if (aResolved == null)
@@ -334,7 +316,9 @@ public final class PdfTemplateEmitter
     final BufferedImage aBufferedImage = _readImage (aResolved);
     if (aBufferedImage == null)
     {
-      LOGGER.warn ("Template image '" + aImage.getDestination () + "' is not a raster image PDF can embed - skipping it");
+      LOGGER.warn ("Template image '" +
+                   aImage.getDestination () +
+                   "' is not a raster image PDF can embed - skipping it");
       return;
     }
     final float fRatio = (float) aBufferedImage.getWidth () / aBufferedImage.getHeight ();
@@ -373,9 +357,9 @@ public final class PdfTemplateEmitter
   }
 
   @NonNull
-  private IPLRenderableObject <?> _createCell (@NonNull final TableCell aCell,
-                                               @NonNull final FontSpec aFont,
-                                               @NonNull final EHorzAlignment eAlign)
+  private static IPLRenderableObject <?> _createCell (@NonNull final TableCell aCell,
+                                                      @NonNull final FontSpec aFont,
+                                                      @NonNull final EHorzAlignment eAlign)
   {
     final IPLRenderableObject <?> aContent = _createInlineBlock (aCell, aFont, eAlign, false);
     if (aContent == null)
@@ -514,11 +498,15 @@ public final class PdfTemplateEmitter
             _addTable (aAst, aTable, aSink);
           else
             if (aNode instanceof BulletList)
-              _addList (aAst, aNode, BulletPointCreatorSymbol.createFilledDot (m_aCtx.getBodyFont ().getFontSize ()), aSink);
+              _addList (aAst,
+                        aNode,
+                        BulletPointCreatorSymbol.createFilledDot (m_aCtx.getBodyFont ().getFontSize ()),
+                        aSink);
             else
               if (aNode instanceof final OrderedList aList)
               {
-                final int nStart = aList.getMarkerStartNumber () == null ? 1 : aList.getMarkerStartNumber ().intValue ();
+                final int nStart = aList.getMarkerStartNumber () == null ? 1
+                                                                         : aList.getMarkerStartNumber ().intValue ();
                 _addList (aAst,
                           aList,
                           new BulletPointCreatorNumeric (nIndex -> (nStart + nIndex) + ".", m_aCtx.getBodyFont ()),
