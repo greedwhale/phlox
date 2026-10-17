@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.OffsetTime;
+import java.time.format.DateTimeFormatter;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -246,6 +248,7 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     final PLVBox aMeta = new PLVBox ();
     _kvRow (aMeta, aCtx.label ("BT-1"), aInvoice.getNumber (), aCtx);
     _kvRow (aMeta, aCtx.label ("BT-2"), _date (aInvoice.getIssueDate (), aCtx), aCtx);
+    _kvRow (aMeta, aCtx.label ("BT-166"), _time (aInvoice.getIssueTime ()), aCtx);
     _kvRow (aMeta, aCtx.label ("BT-3"), _docTypeText (aInvoice.getTypeCode (), aCtx), aCtx);
     _kvRow (aMeta, aCtx.label ("BT-5"), aInvoice.getCurrency (), aCtx);
     aPS.addElement (aMeta);
@@ -396,13 +399,14 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
                                          @NonNull final PdfRenderContext aCtx)
   {
     final StringBuilder sb = new StringBuilder ();
-    _appendRefIf (sb, aCtx.label ("BT-10"), aInvoice.getBuyerReference ());
+    _appendRefIf (sb, aCtx.label ("BT-10"), _buyerReferences (aInvoice));
     _appendRefIf (sb, aCtx.label ("BT-11"), aInvoice.getProjectReference ());
     _appendRefIf (sb, aCtx.label ("BT-12"), aInvoice.getContractReference ());
     _appendRefIf (sb, aCtx.label ("BT-13"), aInvoice.getPurchaseOrderReference ());
     _appendRefIf (sb, aCtx.label ("BT-14"), aInvoice.getSalesOrderReference ());
     _appendRefIf (sb, aCtx.label ("BT-15"), aInvoice.getReceivingAdviceReference ());
     _appendRefIf (sb, aCtx.label ("BT-16"), aInvoice.getDespatchAdviceReference ());
+    _appendRefIf (sb, aCtx.label ("BT-197"), aInvoice.getDeliveryNoteReference ());
     _appendRefIf (sb, aCtx.label ("BT-17"), aInvoice.getTenderOrLotReference ());
     _appendRefIf (sb, aCtx.label ("BT-19"), aInvoice.getBuyerAccountingReference ());
     if (aInvoice.getInvoicedObjectIdentifier () != null && aInvoice.getInvoicedObjectIdentifier ().getValue () != null)
@@ -414,6 +418,8 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
         row.append (aRef.getNumber ());
       if (aRef.getIssueDate () != null)
         row.append (" (").append (_date (aRef.getIssueDate (), aCtx)).append (')');
+      if (aRef.getTypeCode () != null)
+        row.append (" [").append (aRef.getTypeCode ()).append (']');
       sb.append (row).append ('\n');
     }
     if (sb.length () == 0)
@@ -507,11 +513,12 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
         if (aItem.getDescription () != null)
           aDesc.append ('\n').append (aItem.getDescription ());
         for (final PhloxItemAttribute aA : aItem.attributes ())
-          if (aA.getName () != null || aA.getValue () != null)
-            aDesc.append ('\n').append (_n (aA.getName ())).append (": ").append (_n (aA.getValue ()));
+          if (aA.getName () != null || aA.getValue () != null || aA.getCode () != null)
+            aDesc.append ('\n').append (_attributeText (aA));
       }
       if (aLine.getNote () != null)
         aDesc.append ('\n').append (aLine.getNote ());
+      _appendLineExtras (aDesc, aLine, aCtx);
       aTbl.addRow (_td (_n (aLine.getID ()), aBF),
                    _td (aDesc.toString (), aBF),
                    _tdRight (_qty (aLine.getQuantity (), aLine.getQuantityUnit ()), aBF),
@@ -523,6 +530,59 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     }
     aPS.addElement (aTbl);
     aPS.addElement (new PLSpacerY (8));
+  }
+
+  private static void _appendExtra (@NonNull final StringBuilder sb,
+                                    @NonNull final String sLabel,
+                                    @Nullable final String sValue)
+  {
+    if (sValue != null && !sValue.isEmpty ())
+      sb.append ('\n').append (sLabel).append (": ").append (sValue);
+  }
+
+  private static void _appendLineExtras (@NonNull final StringBuilder sb,
+                                         @NonNull final PhloxInvoiceLine aLine,
+                                         @NonNull final PdfRenderContext aCtx)
+  {
+    if (aLine.getItem () != null)
+      _appendExtra (sb, aCtx.label ("BT-196"), aLine.getItem ().getGoodsServicesCode ());
+    if (aLine.getLineVat () != null)
+    {
+      _appendExtra (sb, aCtx.label ("BT-194"), aLine.getLineVat ().getExemptionReasonText ());
+      _appendExtra (sb, aCtx.label ("BT-195"), aLine.getLineVat ().getExemptionReasonCode ());
+    }
+    _appendExtra (sb, aCtx.label ("BT-188"), aLine.getPurchaseOrderReference ());
+    _appendExtra (sb, aCtx.label ("BT-200"), aLine.getSalesOrderReference ());
+    _appendExtra (sb, aCtx.label ("BT-201"), aLine.getSalesOrderLineReference ());
+    _appendExtra (sb, aCtx.label ("BT-189"), aLine.getDespatchAdviceReference ());
+    _appendExtra (sb, aCtx.label ("BT-190"), aLine.getDespatchAdviceLineReference ());
+    _appendExtra (sb, aCtx.label ("BT-191"), aLine.getReceivingAdviceReference ());
+    _appendExtra (sb, aCtx.label ("BT-192"), aLine.getReceivingAdviceLineReference ());
+    _appendExtra (sb, aCtx.label ("BT-198"), aLine.getDeliveryNoteReference ());
+    _appendExtra (sb, aCtx.label ("BT-199"), aLine.getDeliveryNoteLineReference ());
+    for (final PhloxLinePrecedingInvoiceRef aRef : aLine.precedingInvoiceRefs ())
+    {
+      final StringBuilder aRow = new StringBuilder ();
+      if (aRef.getNumber () != null)
+        aRow.append (aRef.getNumber ());
+      if (aRef.getIssueDate () != null)
+        aRow.append (" (").append (_date (aRef.getIssueDate (), aCtx)).append (')');
+      if (aRef.getTypeCode () != null)
+        aRow.append (" [").append (aRef.getTypeCode ()).append (']');
+      if (aRef.getLineReference () != null)
+        aRow.append (", ").append (aCtx.label ("BT-220")).append (' ').append (aRef.getLineReference ());
+      _appendExtra (sb, aCtx.label ("BG-39"), aRow.toString ());
+    }
+    final PhloxLineDelivery aDel = aLine.getDelivery ();
+    if (aDel != null)
+    {
+      _appendExtra (sb, aCtx.label ("BT-185"), aDel.getPartyName ());
+      _appendExtra (sb, aCtx.label ("BT-186"), _identifier (aDel.getLocationIdentifier ()));
+      _appendExtra (sb,
+                    aCtx.label ("BT-187"),
+                    aDel.getActualDeliveryDate () == null ? null : _date (aDel.getActualDeliveryDate (), aCtx));
+      _appendExtra (sb, aCtx.label ("BG-38"), _addressText (aDel.getPostalAddress ()));
+    }
   }
 
   @NonNull
@@ -559,7 +619,7 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
                  _thRight (aCtx.label ("section.lines.column.linetotal"), aCtx.getTableHeaderFont ()));
     for (final PhloxDocumentAllowance aA : aInvoice.documentAllowances ())
       aTbl.addRow (_td (aCtx.label ("BG-20"), aBF),
-                   _td (_n (aA.getReason ()), aBF),
+                   _td (_n (aA.getReason ()) + _allowanceExtras (aA, aCtx), aBF),
                    _tdRight (_n (aA.getVatCategoryCode ()) +
                              (aA.getVatRate () == null ? "" : " " +
                                                               PhloxFormat.percent (aA.getVatRate (),
@@ -569,7 +629,7 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
                    _tdRight (_amount (_neg (aA.getAmount ()), sCurrency, aCtx), aBF));
     for (final PhloxDocumentCharge aC : aInvoice.documentCharges ())
       aTbl.addRow (_td (aCtx.label ("BG-21"), aBF),
-                   _td (_n (aC.getReason ()), aBF),
+                   _td (_n (aC.getReason ()) + _chargeExtras (aC, aCtx), aBF),
                    _tdRight (_n (aC.getVatCategoryCode ()) +
                              (aC.getVatRate () == null ? "" : " " +
                                                               PhloxFormat.percent (aC.getVatRate (),
@@ -579,6 +639,27 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
                    _tdRight (_amount (aC.getAmount (), sCurrency, aCtx), aBF));
     aPS.addElement (aTbl);
     aPS.addElement (new PLSpacerY (6));
+  }
+
+  @NonNull
+  private static String _allowanceExtras (@NonNull final PhloxDocumentAllowance aA, @NonNull final PdfRenderContext aCtx)
+  {
+    final StringBuilder sb = new StringBuilder ();
+    _appendExtra (sb, aCtx.label ("BT-173"), aA.getExemptionReasonText ());
+    _appendExtra (sb, aCtx.label ("BT-174"), aA.getExemptionReasonCode ());
+    _appendExtra (sb, aCtx.label ("BT-213"), aA.getGoodsServicesCode ());
+    return sb.toString ();
+  }
+
+  @NonNull
+  private static String _chargeExtras (@NonNull final PhloxDocumentCharge aC, @NonNull final PdfRenderContext aCtx)
+  {
+    final StringBuilder sb = new StringBuilder ();
+    _appendExtra (sb, aCtx.label ("BT-175"), aC.getExemptionReasonText ());
+    _appendExtra (sb, aCtx.label ("BT-176"), aC.getExemptionReasonCode ());
+    _appendExtra (sb, aCtx.label ("BT-177"), aC.getNonVatTaxCode ());
+    _appendExtra (sb, aCtx.label ("BT-214"), aC.getGoodsServicesCode ());
+    return sb.toString ();
   }
 
   private static void _renderVatBreakdown (@NonNull final PLPageSet aPS,
@@ -599,7 +680,10 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     for (final PhloxVatBreakdown aV : aInvoice.vatBreakdowns ())
     {
       final String sCat = aV.getCategoryCode ();
-      aTbl.addRow (_td (sCat == null ? "" : sCat + " — " + aCtx.codeLabel ("vat.category", sCat), aBF),
+      final StringBuilder aCatText = new StringBuilder (sCat == null ? "" : sCat + " — " + aCtx.codeLabel ("vat.category", sCat));
+      _appendExtra (aCatText, aCtx.label ("BT-184"), aV.getCurrency ());
+      _appendExtra (aCatText, aCtx.label ("BT-210"), aV.getGoodsServicesCode ());
+      aTbl.addRow (_td (aCatText.toString (), aBF),
                    _tdRight (aV.getRate () == null ? "" : PhloxFormat.percent (aV.getRate (),
                                                                                aCtx.getLocale (),
                                                                                aCtx.getFormatOptions ()), aBF),
@@ -626,6 +710,13 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
              aCtx,
              aBF);
     _totRow (aTbl, aCtx.label ("BT-108"), aInvoice.getDocumentTotals ().getChargeTotal (), sCurrency, aCtx, aBF);
+    for (final PhloxThirdPartyCharge aTPC : aInvoice.getDocumentTotals ().thirdPartyCharges ())
+      _totRow (aTbl,
+               aCtx.label ("BG-34") + (aTPC.getSpecification () == null ? "" : ": " + aTPC.getSpecification ()),
+               aTPC.getAmount (),
+               sCurrency,
+               aCtx,
+               aBF);
     _totRow (aTbl, aCtx.label ("BT-109"), aInvoice.getDocumentTotals ().getTaxExclusiveTotal (), sCurrency, aCtx, aBF);
     _totRow (aTbl, aCtx.label ("BT-110"), aInvoice.getDocumentTotals ().getTaxTotal (), sCurrency, aCtx, aBF);
     _totRow (aTbl, aCtx.label ("BT-112"), aInvoice.getDocumentTotals ().getTaxInclusiveTotal (), sCurrency, aCtx, aBF);
@@ -643,6 +734,8 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
              aCtx,
              aCtx.getHeaderFont ());
     aPS.addElement (aTbl);
+    if (aInvoice.getVatExchangeRate () != null)
+      aPS.addElement (new PLText (aCtx.label ("BT-167") + ": " + _exchangeRateText (aInvoice), aCtx.getBodyFont ()));
     aPS.addElement (new PLSpacerY (6));
   }
 
@@ -724,6 +817,18 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
             .append (": ")
             .append (aDD.getDebitedAccountID ())
             .append ('\n');
+        if (aDD.getDebitedAccountProviderID () != null)
+          sb.append ("  ")
+            .append (aCtx.label ("BT-215"))
+            .append (": ")
+            .append (aDD.getDebitedAccountProviderID ())
+            .append ('\n');
+        if (aDD.getDebitedAccountName () != null)
+          sb.append ("  ")
+            .append (aCtx.label ("BT-216"))
+            .append (": ")
+            .append (aDD.getDebitedAccountName ())
+            .append ('\n');
       }
     }
     aPS.addElement (new PLText (_trim (sb), aCtx.getBodyFont ()));
@@ -734,10 +839,48 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
                                            @NonNull final PhloxInvoice aInvoice,
                                            @NonNull final PdfRenderContext aCtx)
   {
-    if (aInvoice.getPaymentTerms () == null)
+    final StringBuilder sb = new StringBuilder ();
+    for (final PhloxPaymentTerms aPT : aInvoice.paymentTerms ())
+    {
+      if (aPT.getText () != null)
+        sb.append (aPT.getText ()).append ('\n');
+      for (final PhloxEarlyPaymentDiscount aED : aPT.earlyDiscounts ())
+      {
+        sb.append (aCtx.label ("BG-35")).append (":\n");
+        if (aED.getEndDate () != null)
+          sb.append ("  ").append (aCtx.label ("BT-170")).append (": ").append (_date (aED.getEndDate (), aCtx)).append ('\n');
+        if (aED.getPercentage () != null)
+          sb.append ("  ").append (aCtx.label ("BT-171")).append (": ").append (_percent (aED.getPercentage (), aCtx)).append ('\n');
+        if (aED.getAmount () != null)
+          sb.append ("  ")
+            .append (aCtx.label ("BT-172"))
+            .append (": ")
+            .append (_amount (aED.getAmount (), aInvoice.getCurrency (), aCtx))
+            .append ('\n');
+      }
+      for (final PhloxLatePaymentPenalty aLP : aPT.latePenalties ())
+      {
+        sb.append (aCtx.label ("BG-36")).append (":\n");
+        if (aLP.getStartDate () != null)
+          sb.append ("  ").append (aCtx.label ("BT-181")).append (": ").append (_date (aLP.getStartDate (), aCtx)).append ('\n');
+        if (aLP.getYearlyInterestPercentage () != null)
+          sb.append ("  ")
+            .append (aCtx.label ("BT-182"))
+            .append (": ")
+            .append (_percent (aLP.getYearlyInterestPercentage (), aCtx))
+            .append ('\n');
+        if (aLP.getAmount () != null)
+          sb.append ("  ")
+            .append (aCtx.label ("BT-183"))
+            .append (": ")
+            .append (_amount (aLP.getAmount (), aInvoice.getCurrency (), aCtx))
+            .append ('\n');
+      }
+    }
+    if (sb.length () == 0)
       return;
-    _sectionTitle (aPS, aCtx.label ("BT-20"), aCtx);
-    aPS.addElement (new PLText (aInvoice.getPaymentTerms (), aCtx.getBodyFont ()));
+    _sectionTitle (aPS, aCtx.label ("BG-33"), aCtx);
+    aPS.addElement (new PLText (_trim (sb), aCtx.getBodyFont ()));
     aPS.addElement (new PLSpacerY (6));
   }
 
@@ -850,6 +993,91 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
   private static String _docTypeText (@Nullable final String sCode, @NonNull final PdfRenderContext aCtx)
   {
     return sCode == null ? "" : sCode + " — " + aCtx.codeLabel ("doctype", sCode);
+  }
+
+  @NonNull
+  private static String _time (@Nullable final OffsetTime aTime)
+  {
+    return aTime == null ? "" : aTime.format (DateTimeFormatter.ISO_OFFSET_TIME);
+  }
+
+  @NonNull
+  private static String _percent (@NonNull final BigDecimal aPercent, @NonNull final PdfRenderContext aCtx)
+  {
+    return PhloxFormat.percent (aPercent, aCtx.getLocale (), aCtx.getFormatOptions ());
+  }
+
+  @Nullable
+  private static String _identifier (@Nullable final PhloxIdentifier aID)
+  {
+    if (aID == null || aID.getValue () == null || aID.getValue ().isEmpty ())
+      return null;
+    return aID.getSchemeID () == null || aID.getSchemeID ().isEmpty () ? aID.getValue ()
+                                                                       : aID.getValue () + " (" + aID.getSchemeID () + ")";
+  }
+
+  @Nullable
+  private static String _buyerReferences (@NonNull final PhloxInvoice aInvoice)
+  {
+    final StringBuilder sb = new StringBuilder ();
+    for (final PhloxIdentifier aID : aInvoice.buyerReferences ())
+    {
+      final String sText = _identifier (aID);
+      if (sText != null)
+      {
+        if (sb.length () > 0)
+          sb.append (", ");
+        sb.append (sText);
+      }
+    }
+    return sb.length () == 0 ? null : sb.toString ();
+  }
+
+  @NonNull
+  private static String _exchangeRateText (@NonNull final PhloxInvoice aInvoice)
+  {
+    final StringBuilder sb = new StringBuilder (aInvoice.getVatExchangeRate ().stripTrailingZeros ().toPlainString ());
+    if (aInvoice.getVatExchangeRateSourceCurrency () != null || aInvoice.getVatExchangeRateTargetCurrency () != null)
+      sb.append (" (")
+        .append (_n (aInvoice.getVatExchangeRateSourceCurrency ()))
+        .append (" → ")
+        .append (_n (aInvoice.getVatExchangeRateTargetCurrency ()))
+        .append (')');
+    return sb.toString ();
+  }
+
+  @Nullable
+  private static String _addressText (@Nullable final PhloxPostalAddress aAddr)
+  {
+    if (aAddr == null || aAddr.isEmpty ())
+      return null;
+    final StringBuilder sb = new StringBuilder ();
+    for (final String s : new String [] { aAddr.getLine1 (),
+                                          aAddr.getLine2 (),
+                                          aAddr.getLine3 (),
+                                          aAddr.getPostCode () == null ? aAddr.getCity ()
+                                                                       : aAddr.getPostCode () + (aAddr.getCity () == null ? "" : " " + aAddr.getCity ()),
+                                          aAddr.getCountrySubdivision (),
+                                          aAddr.getCountryCode () })
+      if (s != null && !s.isEmpty ())
+      {
+        if (sb.length () > 0)
+          sb.append (", ");
+        sb.append (s);
+      }
+    return sb.length () == 0 ? null : sb.toString ();
+  }
+
+  @NonNull
+  private static String _attributeText (@NonNull final PhloxItemAttribute aA)
+  {
+    final StringBuilder sb = new StringBuilder (_n (aA.getName ()));
+    if (aA.getCode () != null)
+      sb.append (sb.length () > 0 ? " [" : "[").append (aA.getCode ()).append (']');
+    sb.append (": ").append (_n (aA.getValue ()));
+    if (aA.getValueUnit () != null)
+      sb.append (' ').append (aA.getValueUnit ());
+    return sb.toString ();
   }
 
   @NonNull

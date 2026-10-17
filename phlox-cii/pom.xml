@@ -27,7 +27,7 @@
   <artifactId>phlox-cii</artifactId>
   <packaging>jar</packaging>
   <name>phlox-cii</name>
-  <description>phlox - CII D16B source reader for EN 16931:2017</description>
+  <description>phlox - CII source reader for EN 16931:2017 (D16B) and EN 16931:2026 (D25A)</description>
   <url>https://github.com/phax/phlox/phlox-cii</url>
   <inceptionYear>2026</inceptionYear>
 
@@ -47,6 +47,10 @@
     <dependency>
       <groupId>com.helger.cii</groupId>
       <artifactId>ph-cii-d16b</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.helger.cii</groupId>
+      <artifactId>ph-cii-d25a</artifactId>
     </dependency>
 
     <dependency>

@@ -37,6 +37,9 @@ public class PhloxDocumentAllowance
   private BigDecimal m_aVatRate;
   private String m_sReason;
   private String m_sReasonCode;
+  private String m_sExemptionReasonText;
+  private String m_sExemptionReasonCode;
+  private String m_sGoodsServicesCode;
 
   /** Create an empty document-level allowance. */
   public PhloxDocumentAllowance ()
@@ -186,6 +189,69 @@ public class PhloxDocumentAllowance
   public PhloxDocumentAllowance setReasonCode (@Nullable final String sReasonCode)
   {
     m_sReasonCode = sReasonCode;
+    return this;
+  }
+
+  /** @return Document level allowance exemption reason text (BT-173). May be {@code null}. */
+  @Nullable
+  public String getExemptionReasonText ()
+  {
+    return m_sExemptionReasonText;
+  }
+
+  /**
+   * Set the document level allowance exemption reason text (BT-173).
+   *
+   * @param sExemptionReasonText
+   *        Document level allowance exemption reason text; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxDocumentAllowance setExemptionReasonText (@Nullable final String sExemptionReasonText)
+  {
+    m_sExemptionReasonText = sExemptionReasonText;
+    return this;
+  }
+
+  /** @return Document level allowance VAT exemption reason and specification code (BT-174). May be {@code null}. */
+  @Nullable
+  public String getExemptionReasonCode ()
+  {
+    return m_sExemptionReasonCode;
+  }
+
+  /**
+   * Set the document level allowance VAT exemption reason and specification code (BT-174).
+   *
+   * @param sExemptionReasonCode
+   *        Document level allowance VAT exemption reason and specification code; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxDocumentAllowance setExemptionReasonCode (@Nullable final String sExemptionReasonCode)
+  {
+    m_sExemptionReasonCode = sExemptionReasonCode;
+    return this;
+  }
+
+  /** @return Document level allowance goods/services code (BT-213). May be {@code null}. */
+  @Nullable
+  public String getGoodsServicesCode ()
+  {
+    return m_sGoodsServicesCode;
+  }
+
+  /**
+   * Set the document level allowance goods/services code (BT-213).
+   *
+   * @param sGoodsServicesCode
+   *        Document level allowance goods/services code; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxDocumentAllowance setGoodsServicesCode (@Nullable final String sGoodsServicesCode)
+  {
+    m_sGoodsServicesCode = sGoodsServicesCode;
     return this;
   }
 }

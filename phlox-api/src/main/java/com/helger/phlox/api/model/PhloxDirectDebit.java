@@ -30,6 +30,8 @@ public class PhloxDirectDebit
   private String m_sMandateReferenceID;
   private String m_sBankAssignedCreditorID;
   private String m_sDebitedAccountID;
+  private String m_sDebitedAccountProviderID;
+  private String m_sDebitedAccountName;
 
   /** Create an empty direct-debit record. */
   public PhloxDirectDebit ()
@@ -95,6 +97,48 @@ public class PhloxDirectDebit
   public PhloxDirectDebit setDebitedAccountID (@Nullable final String sDebitedAccountID)
   {
     m_sDebitedAccountID = sDebitedAccountID;
+    return this;
+  }
+
+  /** @return Debited account payment service provider identifier (BT-215). May be {@code null}. */
+  @Nullable
+  public String getDebitedAccountProviderID ()
+  {
+    return m_sDebitedAccountProviderID;
+  }
+
+  /**
+   * Set the debited account payment service provider identifier (BT-215).
+   *
+   * @param sDebitedAccountProviderID
+   *        Debited account payment service provider identifier; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxDirectDebit setDebitedAccountProviderID (@Nullable final String sDebitedAccountProviderID)
+  {
+    m_sDebitedAccountProviderID = sDebitedAccountProviderID;
+    return this;
+  }
+
+  /** @return Debited account name (BT-216). May be {@code null}. */
+  @Nullable
+  public String getDebitedAccountName ()
+  {
+    return m_sDebitedAccountName;
+  }
+
+  /**
+   * Set the debited account name (BT-216).
+   *
+   * @param sDebitedAccountName
+   *        Debited account name; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxDirectDebit setDebitedAccountName (@Nullable final String sDebitedAccountName)
+  {
+    m_sDebitedAccountName = sDebitedAccountName;
     return this;
   }
 }

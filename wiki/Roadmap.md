@@ -31,10 +31,15 @@ A box is checked when the headline deliverable is in the repo (code shipped, or 
 
 ## 0.3.0 — EN 16931:2026 support
 
-- [x] `phlox-ubl` `fromUbl25()` factory — adds the UBL 2.5 binding alongside the existing 2.1 binding (same module — see [[Source Readers]]). The semantic model (BGs/BTs) is unchanged; only the JAXB types and a handful of element-name renames differ.
-- [x] `UblInvoiceReader.autoDetect()` — sniffs `cbc:UBLVersionID` and routes to the right binding.
-- [ ] Golden-file test corpus for UBL 2.5 once EN 16931:2026 example files are published.
-- [ ] Reassess whether the CII binding needs to track a newer revision for EN 16931:2026 (TBD — depends on what the EN 16931:2026 CII syntax binding specifies).
+- [x] `phlox-ubl` `fromUbl25()` factory — adds the UBL 2.5 binding alongside the UBL 2.1 binding (same module, one reader per edition — see [[Source Readers]]).
+- [x] `UblInvoiceReader.autoDetect()` — determines the edition from BT-24 (`EEN16931Edition` of `en16931-basics`) and fails with a clear error when BT-24 is missing.
+- [x] `phlox-cii` D25A reader (`CiiInvoiceReader.fromD25A()`, `autoDetect()`) — EN 16931:2026 uses CII D25A.
+- [x] Superset intermediate model: BG-33 to BG-39 and BT-166 to BT-220 (see [[Domain Model]]).
+- [x] 2026 test corpus in `phlox-testfiles` (`2026/ubl`: 22 files, `2026/cii`: 16 files), imported from `en16931-ubl2cii` / `en16931-cii2ubl`.
+- [x] Labels (EN, DE) and code lists for the 2026 terms.
+- [x] HTML and PDF writers and the default template render the 2026 terms; `phlox-cli --en-version`.
+- [ ] Replace the imported corpus by the official EN 16931:2026 example files once they are published.
+- [ ] German wording for BG-39, BT-215 to BT-220, BT-167-1/-2, BT-177-1 and BT-193-1: the German draft of EN 16931-1 does not contain them yet (English text is used meanwhile).
 
 ## 0.4.0 — Customizable templates
 

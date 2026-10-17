@@ -31,6 +31,8 @@ public class PhloxLineVat
 {
   private String m_sCategoryCode;
   private BigDecimal m_aRate;
+  private String m_sExemptionReasonText;
+  private String m_sExemptionReasonCode;
 
   /** Create an empty line VAT information record. */
   public PhloxLineVat ()
@@ -75,6 +77,48 @@ public class PhloxLineVat
   public PhloxLineVat setRate (@Nullable final BigDecimal aRate)
   {
     m_aRate = aRate;
+    return this;
+  }
+
+  /** @return Invoiced item exemption reason text (BT-194). May be {@code null}. */
+  @Nullable
+  public String getExemptionReasonText ()
+  {
+    return m_sExemptionReasonText;
+  }
+
+  /**
+   * Set the invoiced item exemption reason text (BT-194).
+   *
+   * @param sExemptionReasonText
+   *        Invoiced item exemption reason text; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxLineVat setExemptionReasonText (@Nullable final String sExemptionReasonText)
+  {
+    m_sExemptionReasonText = sExemptionReasonText;
+    return this;
+  }
+
+  /** @return Invoiced item VAT exemption reason and specification code (BT-195). May be {@code null}. */
+  @Nullable
+  public String getExemptionReasonCode ()
+  {
+    return m_sExemptionReasonCode;
+  }
+
+  /**
+   * Set the invoiced item VAT exemption reason and specification code (BT-195).
+   *
+   * @param sExemptionReasonCode
+   *        Invoiced item VAT exemption reason and specification code; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxLineVat setExemptionReasonCode (@Nullable final String sExemptionReasonCode)
+  {
+    m_sExemptionReasonCode = sExemptionReasonCode;
     return this;
   }
 }

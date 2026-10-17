@@ -31,24 +31,28 @@ import com.helger.base.io.nonblocking.NonBlockingByteArrayOutputStream;
 import com.helger.base.string.StringHelper;
 import com.helger.diagnostics.error.list.ErrorList;
 import com.helger.io.file.SimpleFileIO;
+import com.helger.collection.commons.ICommonsList;
 import com.helger.io.resource.ClassPathResource;
 import com.helger.phlox.api.model.PhloxInvoice;
+import com.helger.phlox.api.read.IInvoiceReader;
 import com.helger.phlox.api.watermark.WatermarkSpec;
+import com.helger.phlox.cii.CiiInvoiceReader;
 import com.helger.phlox.testfiles.MockPhloxTestFiles;
 import com.helger.phlox.ubl.UblInvoiceReader;
 
-/** End-to-end smoke test: parse UBL → render PDF in EN and DE. */
+/** End-to-end smoke test: parse UBL / CII → render PDF in EN and DE. */
 public final class PdfInvoiceWriterTest
 {
   private static final Logger LOGGER = LoggerFactory.getLogger (PdfInvoiceWriterTest.class);
 
-  @Test
-  public void testRenderUblToPdf () throws Exception
+  private static void _renderAll (final IInvoiceReader <InputStream> aReader,
+                                  final ICommonsList <ClassPathResource> aFiles,
+                                  final String sLabel,
+                                  final int nMinCount) throws Exception
   {
-    final UblInvoiceReader aReader = UblInvoiceReader.fromUbl21 ();
     final PdfInvoiceWriter aWriter = new PdfInvoiceWriter ();
     int nCount = 0;
-    for (final ClassPathResource aRes : MockPhloxTestFiles.getUbl21InvoiceFiles ())
+    for (final ClassPathResource aRes : aFiles)
     {
       try (final InputStream aIS = aRes.getInputStream ())
       {
@@ -76,7 +80,31 @@ public final class PdfInvoiceWriterTest
         nCount++;
       }
     }
-    LOGGER.info ("Rendered " + nCount + " UBL invoices to PDF (×2 locales)");
-    assertTrue ("Expected at least 10 invoices rendered", nCount >= 10);
+    LOGGER.info ("Rendered " + nCount + " " + sLabel + " to PDF (×2 locales)");
+    assertTrue ("Expected at least " + nMinCount + " documents rendered", nCount >= nMinCount);
+  }
+
+  @Test
+  public void testRenderUblToPdf () throws Exception
+  {
+    _renderAll (UblInvoiceReader.fromUbl21 (), MockPhloxTestFiles.getUbl21InvoiceFiles (), "UBL 2.1 invoices", 10);
+  }
+
+  @Test
+  public void testRenderUbl25InvoicesToPdf () throws Exception
+  {
+    _renderAll (UblInvoiceReader.fromUbl25 (), MockPhloxTestFiles.getUbl25InvoiceFiles (), "UBL 2.5 invoices", 10);
+  }
+
+  @Test
+  public void testRenderUbl25CreditNotesToPdf () throws Exception
+  {
+    _renderAll (UblInvoiceReader.fromUbl25 (), MockPhloxTestFiles.getUbl25CreditNoteFiles (), "UBL 2.5 credit notes", 5);
+  }
+
+  @Test
+  public void testRenderCiiD25AToPdf () throws Exception
+  {
+    _renderAll (CiiInvoiceReader.fromD25A (), MockPhloxTestFiles.getCiiD25AFiles (), "CII D25A documents", 10);
   }
 }

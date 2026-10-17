@@ -23,6 +23,7 @@ import java.util.function.Function;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import com.helger.base.string.StringHelper;
 import com.helger.phlox.api.model.PhloxAttachment;
 import com.helger.phlox.api.model.PhloxBuyer;
 import com.helger.phlox.api.model.PhloxContact;
@@ -32,18 +33,24 @@ import com.helger.phlox.api.model.PhloxDirectDebit;
 import com.helger.phlox.api.model.PhloxDocumentAllowance;
 import com.helger.phlox.api.model.PhloxDocumentCharge;
 import com.helger.phlox.api.model.PhloxDocumentTotals;
+import com.helger.phlox.api.model.PhloxEarlyPaymentDiscount;
 import com.helger.phlox.api.model.PhloxIdentifier;
 import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.api.model.PhloxInvoiceLine;
 import com.helger.phlox.api.model.PhloxInvoiceNote;
 import com.helger.phlox.api.model.PhloxInvoicingPeriod;
 import com.helger.phlox.api.model.PhloxItem;
+import com.helger.phlox.api.model.PhloxItemAttribute;
+import com.helger.phlox.api.model.PhloxLatePaymentPenalty;
 import com.helger.phlox.api.model.PhloxLineAllowance;
 import com.helger.phlox.api.model.PhloxLineCharge;
+import com.helger.phlox.api.model.PhloxLineDelivery;
+import com.helger.phlox.api.model.PhloxLinePrecedingInvoiceRef;
 import com.helger.phlox.api.model.PhloxLineVat;
 import com.helger.phlox.api.model.PhloxPayee;
 import com.helger.phlox.api.model.PhloxPaymentCard;
 import com.helger.phlox.api.model.PhloxPaymentInstructions;
+import com.helger.phlox.api.model.PhloxPaymentTerms;
 import com.helger.phlox.api.model.PhloxPostalAddress;
 import com.helger.phlox.api.model.PhloxPrecedingInvoiceRef;
 import com.helger.phlox.api.model.PhloxPriceDetails;
@@ -51,6 +58,7 @@ import com.helger.phlox.api.model.PhloxProcessControl;
 import com.helger.phlox.api.model.PhloxSeller;
 import com.helger.phlox.api.model.PhloxSellerTaxRepresentative;
 import com.helger.phlox.api.model.PhloxSupportingDocument;
+import com.helger.phlox.api.model.PhloxThirdPartyCharge;
 import com.helger.phlox.api.model.PhloxVatBreakdown;
 
 /**
@@ -79,7 +87,7 @@ public final class PhloxModelRegistry
     _add (PhloxInvoice.class, "BT-7", PhloxInvoice::getVatPointDate);
     _add (PhloxInvoice.class, "BT-8", PhloxInvoice::getVatPointDateCode);
     _add (PhloxInvoice.class, "BT-9", PhloxInvoice::getPaymentDueDate);
-    _add (PhloxInvoice.class, "BT-10", PhloxInvoice::getBuyerReference);
+    _add (PhloxInvoice.class, "BT-10", PhloxModelRegistry::_buyerReferences);
     _add (PhloxInvoice.class, "BT-11", PhloxInvoice::getProjectReference);
     _add (PhloxInvoice.class, "BT-12", PhloxInvoice::getContractReference);
     _add (PhloxInvoice.class, "BT-13", PhloxInvoice::getPurchaseOrderReference);
@@ -89,12 +97,17 @@ public final class PhloxModelRegistry
     _add (PhloxInvoice.class, "BT-17", PhloxInvoice::getTenderOrLotReference);
     _add (PhloxInvoice.class, "BT-18", PhloxInvoice::getInvoicedObjectIdentifier);
     _add (PhloxInvoice.class, "BT-19", PhloxInvoice::getBuyerAccountingReference);
-    _add (PhloxInvoice.class, "BT-20", PhloxInvoice::getPaymentTerms);
+    _add (PhloxInvoice.class, "BT-166", PhloxInvoice::getIssueTime);
+    _add (PhloxInvoice.class, "BT-167", PhloxInvoice::getVatExchangeRate);
+    _add (PhloxInvoice.class, "BT-167-1", PhloxInvoice::getVatExchangeRateTargetCurrency);
+    _add (PhloxInvoice.class, "BT-167-2", PhloxInvoice::getVatExchangeRateSourceCurrency);
+    _add (PhloxInvoice.class, "BT-197", PhloxInvoice::getDeliveryNoteReference);
 
     // ─── Top-level BG containers and lists ───────────────────────────────
     _add (PhloxInvoice.class, "BG-1", PhloxInvoice::invoiceNotes);
     _add (PhloxInvoice.class, "BG-2", PhloxInvoice::getProcessControl);
     _add (PhloxInvoice.class, "BG-3", PhloxInvoice::precedingInvoiceRefs);
+    _add (PhloxInvoice.class, "BG-33", PhloxInvoice::paymentTerms);
     _add (PhloxInvoice.class, "BG-4", PhloxInvoice::getSeller);
     _add (PhloxInvoice.class, "BG-7", PhloxInvoice::getBuyer);
     _add (PhloxInvoice.class, "BG-10", PhloxInvoice::getPayee);
@@ -113,12 +126,24 @@ public final class PhloxModelRegistry
     _add (PhloxProcessControl.class, "BT-23", PhloxProcessControl::getBusinessProcessType);
     _add (PhloxProcessControl.class, "BT-24", PhloxProcessControl::getSpecificationIdentifier);
 
+    // ─── BG-33 / BG-35 / BG-36 — Payment terms, early discount, late penalty ─
+    _add (PhloxPaymentTerms.class, "BT-20", PhloxPaymentTerms::getText);
+    _add (PhloxPaymentTerms.class, "BG-35", PhloxPaymentTerms::earlyDiscounts);
+    _add (PhloxPaymentTerms.class, "BG-36", PhloxPaymentTerms::latePenalties);
+    _add (PhloxEarlyPaymentDiscount.class, "BT-170", PhloxEarlyPaymentDiscount::getEndDate);
+    _add (PhloxEarlyPaymentDiscount.class, "BT-171", PhloxEarlyPaymentDiscount::getPercentage);
+    _add (PhloxEarlyPaymentDiscount.class, "BT-172", PhloxEarlyPaymentDiscount::getAmount);
+    _add (PhloxLatePaymentPenalty.class, "BT-181", PhloxLatePaymentPenalty::getStartDate);
+    _add (PhloxLatePaymentPenalty.class, "BT-182", PhloxLatePaymentPenalty::getYearlyInterestPercentage);
+    _add (PhloxLatePaymentPenalty.class, "BT-183", PhloxLatePaymentPenalty::getAmount);
+
     // ─── BG-4 — Seller ───────────────────────────────────────────────────
     _add (PhloxSeller.class, "BT-27", PhloxSeller::getName);
     _add (PhloxSeller.class, "BT-28", PhloxSeller::getTradingName);
     _add (PhloxSeller.class, "BT-30", PhloxSeller::getLegalRegistration);
     _add (PhloxSeller.class, "BT-31", PhloxSeller::getVatIdentifier);
     _add (PhloxSeller.class, "BT-32", PhloxSeller::getTaxRegistration);
+    _add (PhloxSeller.class, "BT-32-1", PhloxSeller::getTaxRegistrationSchemeID);
     _add (PhloxSeller.class, "BT-33", PhloxSeller::getAdditionalLegalInfo);
     _add (PhloxSeller.class, "BT-34", PhloxSeller::getElectronicAddress);
     _add (PhloxSeller.class, "BG-5", PhloxSeller::getPostalAddress);
@@ -158,6 +183,14 @@ public final class PhloxModelRegistry
     _add (PhloxPostalAddress.class, "BT-77", PhloxPostalAddress::getCity);
     _add (PhloxPostalAddress.class, "BT-78", PhloxPostalAddress::getPostCode);
     _add (PhloxPostalAddress.class, "BT-80", PhloxPostalAddress::getCountryCode);
+    // BG-38 (line deliver-to address): BT-203..209
+    _add (PhloxPostalAddress.class, "BT-203", PhloxPostalAddress::getLine1);
+    _add (PhloxPostalAddress.class, "BT-204", PhloxPostalAddress::getLine2);
+    _add (PhloxPostalAddress.class, "BT-205", PhloxPostalAddress::getLine3);
+    _add (PhloxPostalAddress.class, "BT-206", PhloxPostalAddress::getCity);
+    _add (PhloxPostalAddress.class, "BT-207", PhloxPostalAddress::getPostCode);
+    _add (PhloxPostalAddress.class, "BT-208", PhloxPostalAddress::getCountrySubdivision);
+    _add (PhloxPostalAddress.class, "BT-209", PhloxPostalAddress::getCountryCode);
 
     // ─── Contact — BG-6 (seller) / BG-9 (buyer) ──────────────────────────
     _add (PhloxContact.class, "BT-41", PhloxContact::getName);
@@ -210,6 +243,8 @@ public final class PhloxModelRegistry
     _add (PhloxDirectDebit.class, "BT-89", PhloxDirectDebit::getMandateReferenceID);
     _add (PhloxDirectDebit.class, "BT-90", PhloxDirectDebit::getBankAssignedCreditorID);
     _add (PhloxDirectDebit.class, "BT-91", PhloxDirectDebit::getDebitedAccountID);
+    _add (PhloxDirectDebit.class, "BT-215", PhloxDirectDebit::getDebitedAccountProviderID);
+    _add (PhloxDirectDebit.class, "BT-216", PhloxDirectDebit::getDebitedAccountName);
 
     // ─── BG-20 — Document-level allowance ────────────────────────────────
     _add (PhloxDocumentAllowance.class, "BT-92", PhloxDocumentAllowance::getAmount);
@@ -217,6 +252,9 @@ public final class PhloxModelRegistry
     _add (PhloxDocumentAllowance.class, "BT-96", PhloxDocumentAllowance::getVatRate);
     _add (PhloxDocumentAllowance.class, "BT-97", PhloxDocumentAllowance::getReason);
     _add (PhloxDocumentAllowance.class, "BT-98", PhloxDocumentAllowance::getReasonCode);
+    _add (PhloxDocumentAllowance.class, "BT-173", PhloxDocumentAllowance::getExemptionReasonText);
+    _add (PhloxDocumentAllowance.class, "BT-174", PhloxDocumentAllowance::getExemptionReasonCode);
+    _add (PhloxDocumentAllowance.class, "BT-213", PhloxDocumentAllowance::getGoodsServicesCode);
 
     // ─── BG-21 — Document-level charge ───────────────────────────────────
     _add (PhloxDocumentCharge.class, "BT-99", PhloxDocumentCharge::getAmount);
@@ -224,6 +262,11 @@ public final class PhloxModelRegistry
     _add (PhloxDocumentCharge.class, "BT-103", PhloxDocumentCharge::getVatRate);
     _add (PhloxDocumentCharge.class, "BT-104", PhloxDocumentCharge::getReason);
     _add (PhloxDocumentCharge.class, "BT-105", PhloxDocumentCharge::getReasonCode);
+    _add (PhloxDocumentCharge.class, "BT-175", PhloxDocumentCharge::getExemptionReasonText);
+    _add (PhloxDocumentCharge.class, "BT-176", PhloxDocumentCharge::getExemptionReasonCode);
+    _add (PhloxDocumentCharge.class, "BT-177", PhloxDocumentCharge::getNonVatTaxCode);
+    _add (PhloxDocumentCharge.class, "BT-177-1", PhloxDocumentCharge::getNonVatTaxCodeListID);
+    _add (PhloxDocumentCharge.class, "BT-214", PhloxDocumentCharge::getGoodsServicesCode);
 
     // ─── BG-22 — Document totals ─────────────────────────────────────────
     _add (PhloxDocumentTotals.class, "BT-106", PhloxDocumentTotals::getLineNetTotal);
@@ -236,6 +279,11 @@ public final class PhloxModelRegistry
     _add (PhloxDocumentTotals.class, "BT-113", PhloxDocumentTotals::getPrepaidAmount);
     _add (PhloxDocumentTotals.class, "BT-114", PhloxDocumentTotals::getRoundingAmount);
     _add (PhloxDocumentTotals.class, "BT-115", PhloxDocumentTotals::getPayableAmount);
+    _add (PhloxDocumentTotals.class, "BG-34", PhloxDocumentTotals::thirdPartyCharges);
+
+    // ─── BG-34 — Charges on behalf of a third party ──────────────────────
+    _add (PhloxThirdPartyCharge.class, "BT-179", PhloxThirdPartyCharge::getAmount);
+    _add (PhloxThirdPartyCharge.class, "BT-180", PhloxThirdPartyCharge::getSpecification);
 
     // ─── BG-23 — VAT breakdown ───────────────────────────────────────────
     _add (PhloxVatBreakdown.class, "BT-116", PhloxVatBreakdown::getTaxableAmount);
@@ -244,6 +292,8 @@ public final class PhloxModelRegistry
     _add (PhloxVatBreakdown.class, "BT-119", PhloxVatBreakdown::getRate);
     _add (PhloxVatBreakdown.class, "BT-120", PhloxVatBreakdown::getExemptionReason);
     _add (PhloxVatBreakdown.class, "BT-121", PhloxVatBreakdown::getExemptionReasonCode);
+    _add (PhloxVatBreakdown.class, "BT-184", PhloxVatBreakdown::getCurrency);
+    _add (PhloxVatBreakdown.class, "BT-210", PhloxVatBreakdown::getGoodsServicesCode);
 
     // ─── BG-24 — Supporting document ─────────────────────────────────────
     _add (PhloxSupportingDocument.class, "BT-122", PhloxSupportingDocument::getReference);
@@ -260,7 +310,18 @@ public final class PhloxModelRegistry
     _add (PhloxInvoiceLine.class, "BT-131", PhloxInvoiceLine::getNetAmount);
     _add (PhloxInvoiceLine.class, "BT-132", PhloxInvoiceLine::getPurchaseOrderLineRef);
     _add (PhloxInvoiceLine.class, "BT-133", PhloxInvoiceLine::getAccountingCost);
+    _add (PhloxInvoiceLine.class, "BT-188", PhloxInvoiceLine::getPurchaseOrderReference);
+    _add (PhloxInvoiceLine.class, "BT-189", PhloxInvoiceLine::getDespatchAdviceReference);
+    _add (PhloxInvoiceLine.class, "BT-190", PhloxInvoiceLine::getDespatchAdviceLineReference);
+    _add (PhloxInvoiceLine.class, "BT-191", PhloxInvoiceLine::getReceivingAdviceReference);
+    _add (PhloxInvoiceLine.class, "BT-192", PhloxInvoiceLine::getReceivingAdviceLineReference);
+    _add (PhloxInvoiceLine.class, "BT-198", PhloxInvoiceLine::getDeliveryNoteReference);
+    _add (PhloxInvoiceLine.class, "BT-199", PhloxInvoiceLine::getDeliveryNoteLineReference);
+    _add (PhloxInvoiceLine.class, "BT-200", PhloxInvoiceLine::getSalesOrderReference);
+    _add (PhloxInvoiceLine.class, "BT-201", PhloxInvoiceLine::getSalesOrderLineReference);
     _add (PhloxInvoiceLine.class, "BG-26", PhloxInvoiceLine::getPeriod);
+    _add (PhloxInvoiceLine.class, "BG-37", PhloxInvoiceLine::getDelivery);
+    _add (PhloxInvoiceLine.class, "BG-39", PhloxInvoiceLine::precedingInvoiceRefs);
     _add (PhloxInvoiceLine.class, "BG-27", PhloxInvoiceLine::allowances);
     _add (PhloxInvoiceLine.class, "BG-28", PhloxInvoiceLine::charges);
     _add (PhloxInvoiceLine.class, "BG-29", PhloxInvoiceLine::getPrice);
@@ -274,6 +335,19 @@ public final class PhloxModelRegistry
     // ─── BG-3 — Preceding invoice ref ────────────────────────────────────
     _add (PhloxPrecedingInvoiceRef.class, "BT-25", PhloxPrecedingInvoiceRef::getNumber);
     _add (PhloxPrecedingInvoiceRef.class, "BT-26", PhloxPrecedingInvoiceRef::getIssueDate);
+    _add (PhloxPrecedingInvoiceRef.class, "BT-202", PhloxPrecedingInvoiceRef::getTypeCode);
+
+    // ─── BG-39 — Line-level preceding invoice ref ────────────────────────
+    _add (PhloxLinePrecedingInvoiceRef.class, "BT-217", PhloxLinePrecedingInvoiceRef::getNumber);
+    _add (PhloxLinePrecedingInvoiceRef.class, "BT-218", PhloxLinePrecedingInvoiceRef::getIssueDate);
+    _add (PhloxLinePrecedingInvoiceRef.class, "BT-219", PhloxLinePrecedingInvoiceRef::getTypeCode);
+    _add (PhloxLinePrecedingInvoiceRef.class, "BT-220", PhloxLinePrecedingInvoiceRef::getLineReference);
+
+    // ─── BG-37 — Invoice line delivery information (+ BG-38 address) ─────
+    _add (PhloxLineDelivery.class, "BT-185", PhloxLineDelivery::getPartyName);
+    _add (PhloxLineDelivery.class, "BT-186", PhloxLineDelivery::getLocationIdentifier);
+    _add (PhloxLineDelivery.class, "BT-187", PhloxLineDelivery::getActualDeliveryDate);
+    _add (PhloxLineDelivery.class, "BG-38", PhloxLineDelivery::getPostalAddress);
 
     // ─── BG-27 — Line allowance ──────────────────────────────────────────
     _add (PhloxLineAllowance.class, "BT-136", PhloxLineAllowance::getAmount);
@@ -282,6 +356,8 @@ public final class PhloxModelRegistry
     // ─── BG-28 — Line charge ─────────────────────────────────────────────
     _add (PhloxLineCharge.class, "BT-141", PhloxLineCharge::getAmount);
     _add (PhloxLineCharge.class, "BT-144", PhloxLineCharge::getReason);
+    _add (PhloxLineCharge.class, "BT-193", PhloxLineCharge::getNonVatTaxTypeCode);
+    _add (PhloxLineCharge.class, "BT-193-1", PhloxLineCharge::getNonVatTaxTypeCodeListID);
 
     // ─── BG-29 — Price details ───────────────────────────────────────────
     _add (PhloxPriceDetails.class, "BT-146", PhloxPriceDetails::getNetPrice);
@@ -289,11 +365,21 @@ public final class PhloxModelRegistry
     // ─── BG-30 — Line VAT ────────────────────────────────────────────────
     _add (PhloxLineVat.class, "BT-151", PhloxLineVat::getCategoryCode);
     _add (PhloxLineVat.class, "BT-152", PhloxLineVat::getRate);
+    _add (PhloxLineVat.class, "BT-194", PhloxLineVat::getExemptionReasonText);
+    _add (PhloxLineVat.class, "BT-195", PhloxLineVat::getExemptionReasonCode);
 
     // ─── BG-31 — Item ────────────────────────────────────────────────────
     _add (PhloxItem.class, "BT-153", PhloxItem::getName);
     _add (PhloxItem.class, "BT-154", PhloxItem::getDescription);
     _add (PhloxItem.class, "BT-155", PhloxItem::getSellerItemID);
+    _add (PhloxItem.class, "BT-196", PhloxItem::getGoodsServicesCode);
+    _add (PhloxItem.class, "BG-32", PhloxItem::attributes);
+
+    // ─── BG-32 — Item attribute ──────────────────────────────────────────
+    _add (PhloxItemAttribute.class, "BT-160", PhloxItemAttribute::getName);
+    _add (PhloxItemAttribute.class, "BT-161", PhloxItemAttribute::getValue);
+    _add (PhloxItemAttribute.class, "BT-211", PhloxItemAttribute::getCode);
+    _add (PhloxItemAttribute.class, "BT-212", PhloxItemAttribute::getValueUnit);
 
     // ─── PhloxIdentifier — flatten to scheme-prefixed value when present ─
     _add (PhloxIdentifier.class, "value", PhloxIdentifier::getValue);
@@ -306,6 +392,26 @@ public final class PhloxModelRegistry
 
   private PhloxModelRegistry ()
   {}
+
+  /**
+   * @return The comma separated buyer references (BT-10), each followed by its scheme identifier
+   *         (BT-10-1) in parentheses if present, or {@code null} if there is none.
+   */
+  @Nullable
+  private static String _buyerReferences (@NonNull final PhloxInvoice aInvoice)
+  {
+    final StringBuilder aSB = new StringBuilder ();
+    for (final PhloxIdentifier aID : aInvoice.buyerReferences ())
+      if (StringHelper.isNotEmpty (aID.getValue ()))
+      {
+        if (aSB.length () > 0)
+          aSB.append (", ");
+        aSB.append (aID.getValue ());
+        if (StringHelper.isNotEmpty (aID.getSchemeID ()))
+          aSB.append (" (").append (aID.getSchemeID ()).append (')');
+      }
+    return aSB.length () == 0 ? null : aSB.toString ();
+  }
 
   private static <T> void _add (@NonNull final Class <T> aClass,
                                 @NonNull final String sName,

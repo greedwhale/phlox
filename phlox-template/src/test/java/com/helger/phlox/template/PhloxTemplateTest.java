@@ -21,8 +21,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -32,15 +36,26 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.helger.diagnostics.error.list.ErrorList;
+import com.helger.io.resource.ClassPathResource;
 import com.helger.phlox.api.AbstractRenderContext;
 import com.helger.phlox.api.i18n.IPhloxLabelResolver;
+import com.helger.phlox.api.model.PhloxEarlyPaymentDiscount;
+import com.helger.phlox.api.model.PhloxIdentifier;
 import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.api.model.PhloxInvoiceLine;
 import com.helger.phlox.api.model.PhloxItem;
+import com.helger.phlox.api.model.PhloxLatePaymentPenalty;
+import com.helger.phlox.api.model.PhloxLineDelivery;
 import com.helger.phlox.api.model.PhloxLineVat;
+import com.helger.phlox.api.model.PhloxPaymentTerms;
 import com.helger.phlox.api.model.PhloxPriceDetails;
 import com.helger.phlox.api.model.PhloxVatBreakdown;
+import com.helger.phlox.api.read.IInvoiceReader;
+import com.helger.phlox.cii.CiiInvoiceReader;
 import com.helger.phlox.template.ast.PhloxTemplateAst;
+import com.helger.phlox.testfiles.MockPhloxTestFiles;
+import com.helger.phlox.ubl.UblInvoiceReader;
 
 /**
  * Smoke test: compile {@code default.ptpl}, render a minimal invoice through the full
@@ -80,6 +95,80 @@ public final class PhloxTemplateTest
     }
     assertNotNull ("expected at least one Heading in the rendered AST", aFirstHeading);
     assertEquals (1, ((Heading) aFirstHeading).getLevel ());
+  }
+
+  @Test
+  public void testRenderEdition2026ModelContent ()
+  {
+    final PhloxInvoice aInvoice = _buildMinimalInvoice ();
+    aInvoice.buyerReferences ().add (new PhloxIdentifier ("BR-1", "ABE"));
+    aInvoice.buyerReferences ().add (new PhloxIdentifier ("BR-2", null));
+    aInvoice.setIssueTime (OffsetTime.of (12, 5, 3, 0, ZoneOffset.ofHours (1)));
+    aInvoice.setDeliveryNoteReference ("DN-77");
+    final PhloxPaymentTerms aTerms = new PhloxPaymentTerms ().setText ("Net 30 days");
+    aTerms.earlyDiscounts ()
+          .add (new PhloxEarlyPaymentDiscount ().setEndDate (LocalDate.of (2026, 3, 25))
+                                                .setPercentage (new BigDecimal ("2")));
+    aTerms.latePenalties ()
+          .add (new PhloxLatePaymentPenalty ().setStartDate (LocalDate.of (2026, 5, 1))
+                                              .setAmount (new BigDecimal ("12.50")));
+    aInvoice.paymentTerms ().add (aTerms);
+    aInvoice.lines ()
+            .get (0)
+            .setDelivery (new PhloxLineDelivery ().setPartyName ("Line Depot")
+                                                  .setLocationIdentifier (new PhloxIdentifier ("4035813333333", "0088")));
+
+    final TestCtx aCtx = new TestCtx ();
+    aCtx.setLocale (Locale.ENGLISH);
+    final String sCommonMark = PhloxTemplate.getDefault ().renderSubstituted (aInvoice, aCtx);
+
+    assertTrue (sCommonMark.contains ("BR-1 (ABE), BR-2"));
+    assertTrue (sCommonMark.contains ("12:05:03+01:00"));
+    assertTrue (sCommonMark.contains ("DN-77"));
+    assertTrue (sCommonMark.contains ("Net 30 days"));
+    assertTrue (sCommonMark.contains ("12.50") || sCommonMark.contains ("12,50"));
+    assertTrue (sCommonMark.contains ("Line Depot"));
+    assertTrue (sCommonMark.contains ("0088:4035813333333"));
+    assertNotNull (PhloxTemplate.getDefault ().renderAst (aInvoice, aCtx));
+  }
+
+  private static void _renderFixtures (final IInvoiceReader <InputStream> aReader,
+                                       final Iterable <ClassPathResource> aFiles,
+                                       final int nMinCount)
+  {
+    int nCount = 0;
+    for (final ClassPathResource aRes : aFiles)
+    {
+      try (final InputStream aIS = aRes.getInputStream ())
+      {
+        final PhloxInvoice aInvoice = aReader.read (aIS, new ErrorList ());
+        assertNotNull ("Failed to parse " + aRes.getPath (), aInvoice);
+        for (final Locale aLocale : new Locale [] { Locale.ENGLISH, Locale.GERMAN })
+        {
+          final TestCtx aCtx = new TestCtx ();
+          aCtx.setLocale (aLocale);
+          assertNotNull ("No AST for " + aRes.getPath (), PhloxTemplate.getDefault ().renderAst (aInvoice, aCtx));
+        }
+        nCount++;
+      }
+      catch (final IOException ex)
+      {
+        throw new IllegalStateException ("Failed to open " + aRes.getPath (), ex);
+      }
+    }
+    assertTrue ("Expected at least " + nMinCount + " documents rendered", nCount >= nMinCount);
+  }
+
+  @Test
+  public void testRenderUbl25FixturesAgainstDefaultTemplate ()
+  {
+    _renderFixtures (UblInvoiceReader.fromUbl25 (), MockPhloxTestFiles.getAllUbl25Files (), 20);
+  }
+
+  @Test
+  public void testRenderCiiD25AFixturesAgainstDefaultTemplate ()
+  {
+    _renderFixtures (CiiInvoiceReader.fromD25A (), MockPhloxTestFiles.getCiiD25AFiles (), 10);
   }
 
   @Test

@@ -70,5 +70,20 @@
       <artifactId>phlox-testfiles</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.helger.phlox</groupId>
+      <artifactId>phlox-ubl</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.helger.phlox</groupId>
+      <artifactId>phlox-cii</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

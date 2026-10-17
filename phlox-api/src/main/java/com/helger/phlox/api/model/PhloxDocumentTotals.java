@@ -21,6 +21,10 @@ import java.math.BigDecimal;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import com.helger.annotation.style.ReturnsMutableObject;
+import com.helger.collection.commons.CommonsArrayList;
+import com.helger.collection.commons.ICommonsList;
+
 /**
  * BG-22 DOCUMENT TOTALS (1..1). Carries the full ten-line ladder of monetary totals defined
  * by EN 16931: BT-106 (sum of line net amounts), BT-107 (sum of allowances), BT-108 (sum of
@@ -42,6 +46,7 @@ public class PhloxDocumentTotals
   private BigDecimal m_aPrepaidAmount;
   private BigDecimal m_aRoundingAmount;
   private BigDecimal m_aPayableAmount;
+  private final ICommonsList <PhloxThirdPartyCharge> m_aThirdPartyCharges = new CommonsArrayList <> ();
 
   /** Create an empty totals record. */
   public PhloxDocumentTotals ()
@@ -255,5 +260,15 @@ public class PhloxDocumentTotals
   {
     m_aPayableAmount = aPayableAmount;
     return this;
+  }
+
+  /**
+   * @return Mutable list of charges collected on behalf of a third party (BG-34). Never {@code null}; empty when none are present.
+   */
+  @NonNull
+  @ReturnsMutableObject
+  public ICommonsList <PhloxThirdPartyCharge> thirdPartyCharges ()
+  {
+    return m_aThirdPartyCharges;
   }
 }

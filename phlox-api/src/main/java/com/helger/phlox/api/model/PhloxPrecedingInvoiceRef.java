@@ -31,6 +31,7 @@ public class PhloxPrecedingInvoiceRef
 {
   private String m_sNumber;
   private LocalDate m_aIssueDate;
+  private String m_sTypeCode;
 
   /** Create an empty preceding-invoice reference. */
   public PhloxPrecedingInvoiceRef ()
@@ -75,6 +76,27 @@ public class PhloxPrecedingInvoiceRef
   public PhloxPrecedingInvoiceRef setIssueDate (@Nullable final LocalDate aIssueDate)
   {
     m_aIssueDate = aIssueDate;
+    return this;
+  }
+
+  /** @return Preceding invoice type code (BT-202). May be {@code null}. */
+  @Nullable
+  public String getTypeCode ()
+  {
+    return m_sTypeCode;
+  }
+
+  /**
+   * Set the preceding invoice type code (BT-202).
+   *
+   * @param sTypeCode
+   *        Preceding invoice type code; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxPrecedingInvoiceRef setTypeCode (@Nullable final String sTypeCode)
+  {
+    m_sTypeCode = sTypeCode;
     return this;
   }
 }

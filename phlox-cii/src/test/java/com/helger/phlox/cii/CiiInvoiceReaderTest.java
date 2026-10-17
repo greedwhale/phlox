@@ -16,6 +16,7 @@
  */
 package com.helger.phlox.cii;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -30,12 +31,13 @@ import org.slf4j.LoggerFactory;
 
 import com.helger.collection.commons.ICommonsList;
 import com.helger.diagnostics.error.list.ErrorList;
+import com.helger.en16931.basics.EEN16931Edition;
 import com.helger.io.resource.ClassPathResource;
 import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.testfiles.MockPhloxTestFiles;
 
 /**
- * Smoke + shape tests for {@link CiiInvoiceReader}. The corpus is sliced into tiers (core,
+ * Smoke + shape tests for {@link CiiInvoiceReader} reading CII D16B (EN 16931:2017). The corpus is sliced into tiers (core,
  * XRechnung 1.2.2 / 2.0.0 / 3.0.2, technical, issues) so that a failure tells us which
  * upstream subset broke. Each well-formed file must parse without fatal errors and must yield
  * an invoice that carries the EN 16931 mandatory fields. The single intentionally-malformed
@@ -116,7 +118,7 @@ public final class CiiInvoiceReaderTest
                 nExpectedCount,
                 aTier.size () >= nExpectedCount);
 
-    final CiiInvoiceReader aReader = new CiiInvoiceReader ();
+    final CiiInvoiceReader aReader = CiiInvoiceReader.fromD16B ();
     int nCount = 0;
     for (final ClassPathResource aRes : aTier)
     {
@@ -125,6 +127,7 @@ public final class CiiInvoiceReaderTest
         final ErrorList aErrors = new ErrorList ();
         final PhloxInvoice aModel = aReader.read (aIS, aErrors);
         _assertMandatoryFields (aModel, aRes, aErrors);
+        assertEquals ("Edition of " + aRes.getPath (), EEN16931Edition.EN2017, aModel.getEdition ());
         nCount++;
       }
       catch (final IOException ex)

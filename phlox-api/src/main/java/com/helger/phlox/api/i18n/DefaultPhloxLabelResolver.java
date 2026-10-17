@@ -24,6 +24,8 @@ import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.helger.base.string.StringReplace;
+
 /**
  * Default {@link IPhloxLabelResolver} backed by two {@link ResourceBundle}s loaded from the
  * {@code phlox-api} classpath: {@code phlox-labels} for BG/BT labels and section titles, and
@@ -71,7 +73,8 @@ public final class DefaultPhloxLabelResolver implements IPhloxLabelResolver
                               @NonNull final String sCode,
                               @NonNull final Locale aLocale)
   {
-    final String sFullKey = sListName + "." + sCode;
+    // The logical list name may be dotted ("vat.category"), the bundle keys are not ("vatcategory")
+    final String sFullKey = StringReplace.replaceAll (sListName, ".", "") + "." + sCode;
     try
     {
       return ResourceBundle.getBundle (BUNDLE_CODELISTS, aLocale).getString (sFullKey);

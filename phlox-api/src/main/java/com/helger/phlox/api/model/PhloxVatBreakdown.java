@@ -22,9 +22,10 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-23 VAT BREAKDOWN (1..n). Carries BT-116 (taxable amount), BT-117 (tax amount), BT-118
- * (VAT category code), BT-119 (VAT rate), BT-120 (exemption reason text) and BT-121
- * (exemption reason code).
+ * BG-23 VAT BREAKDOWN (1..n). Carries BT-116 (taxable amount), BT-117 (tax amount, optional since
+ * EN 16931:2026 to support margin schemes), BT-118 (VAT category code), BT-119 (VAT rate), BT-120
+ * (exemption reason text), BT-121 (exemption reason and specification code) and, since EN
+ * 16931:2026, BT-184 (VAT breakdown currency) and BT-210 (goods/services code).
  *
  * @author Philip Helger
  */
@@ -36,6 +37,8 @@ public class PhloxVatBreakdown
   private BigDecimal m_aRate;
   private String m_sExemptionReason;
   private String m_sExemptionReasonCode;
+  private String m_sCurrency;
+  private String m_sGoodsServicesCode;
 
   /** Create an empty VAT breakdown. */
   public PhloxVatBreakdown ()
@@ -164,6 +167,48 @@ public class PhloxVatBreakdown
   public PhloxVatBreakdown setExemptionReasonCode (@Nullable final String sExemptionReasonCode)
   {
     m_sExemptionReasonCode = sExemptionReasonCode;
+    return this;
+  }
+
+  /** @return VAT breakdown currency (BT-184). May be {@code null}. */
+  @Nullable
+  public String getCurrency ()
+  {
+    return m_sCurrency;
+  }
+
+  /**
+   * Set the VAT breakdown currency (BT-184).
+   *
+   * @param sCurrency
+   *        VAT breakdown currency; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxVatBreakdown setCurrency (@Nullable final String sCurrency)
+  {
+    m_sCurrency = sCurrency;
+    return this;
+  }
+
+  /** @return VAT breakdown goods/services code (BT-210). May be {@code null}. */
+  @Nullable
+  public String getGoodsServicesCode ()
+  {
+    return m_sGoodsServicesCode;
+  }
+
+  /**
+   * Set the VAT breakdown goods/services code (BT-210).
+   *
+   * @param sGoodsServicesCode
+   *        VAT breakdown goods/services code; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxVatBreakdown setGoodsServicesCode (@Nullable final String sGoodsServicesCode)
+  {
+    m_sGoodsServicesCode = sGoodsServicesCode;
     return this;
   }
 }

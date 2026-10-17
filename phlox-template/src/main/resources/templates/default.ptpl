@@ -35,14 +35,19 @@
   ─── Header — document-level BTs ────────────────────────────────────────
   BT-1   Invoice number                       (1..1)
   BT-2   Invoice issue date                   (1..1)
+  BT-166 Invoice issue time                   (0..1, EN 16931:2026)
   BT-3   Invoice type code                    (1..1, UNTDID 1001)
   BT-5   Invoice currency code                (1..1, ISO 4217)
   BT-9   Payment due date                     (0..1)
-  BT-10  Buyer reference                      (0..1)
+  BT-10  Buyer reference                      (0..n since EN 16931:2026; comma-joined, scheme in parentheses)
+  BT-167 VAT accounting currency exchange rate (0..1, EN 16931:2026; BT-167-2 source, BT-167-1 target currency)
 }}
 # {{label:section.header.title.invoice}}: {{BT-1}}
 
 **{{label:BT-2}}:** {{BT-2 | date:long}}
+{{?BT-166}}
+**{{label:BT-166}}:** {{BT-166}}
+{{/BT-166}}
 {{?BT-3}}
 **{{label:BT-3}}:** {{BT-3 | code:doctype}}
 {{/BT-3}}
@@ -52,6 +57,9 @@
 {{?BT-5}}
 **{{label:BT-5}}:** {{BT-5}}
 {{/BT-5}}
+{{?BT-167}}
+**{{label:BT-167}}:** {{BT-167}}{{?BT-167-2}} ({{BT-167-2}} → {{BT-167-1}}){{/BT-167-2}}
+{{/BT-167}}
 {{?BT-10}}
 **{{label:BT-10}}:** {{BT-10}}
 {{/BT-10}}
@@ -257,12 +265,14 @@
   BT-14  Sales order reference                (0..1)
   BT-15  Receiving advice reference           (0..1)
   BT-16  Despatch advice reference            (0..1)
+  BT-197 Delivery note reference              (0..1, EN 16931:2026)
   BT-17  Tender or lot reference              (0..1)
   BT-18  Invoiced object identifier           (0..1)
   BT-19  Buyer accounting reference           (0..1)
   BG-3   Preceding invoice reference          (0..n)
     BT-25  Preceding invoice number           (1..1)
     BT-26  Preceding invoice issue date       (0..1)
+    BT-202 Preceding invoice type code        (0..1, EN 16931:2026)
 
   The "references_present" key is a synthesized boolean exposed by the
   Mustache adapter: true when at least one of the BTs above or BG-3 is set.
@@ -276,11 +286,12 @@
 {{/BT-13}}{{?BT-14}}- **{{label:BT-14}}:** {{BT-14}}
 {{/BT-14}}{{?BT-15}}- **{{label:BT-15}}:** {{BT-15}}
 {{/BT-15}}{{?BT-16}}- **{{label:BT-16}}:** {{BT-16}}
-{{/BT-16}}{{?BT-17}}- **{{label:BT-17}}:** {{BT-17}}
+{{/BT-16}}{{?BT-197}}- **{{label:BT-197}}:** {{BT-197}}
+{{/BT-197}}{{?BT-17}}- **{{label:BT-17}}:** {{BT-17}}
 {{/BT-17}}{{?BT-18}}- **{{label:BT-18}}:** {{BT-18}}
 {{/BT-18}}{{?BT-19}}- **{{label:BT-19}}:** {{BT-19}}
 {{/BT-19}}
-{{#BG-3}}- **{{label:BG-3}}:** {{BT-25}}{{?BT-26}} ({{BT-26 | date:medium}}){{/BT-26}}
+{{#BG-3}}- **{{label:BG-3}}:** {{BT-25}}{{?BT-26}} ({{BT-26 | date:medium}}){{/BT-26}}{{?BT-202}} [{{BT-202}}]{{/BT-202}}
 {{/BG-3}}
 {{/references_present}}
 
@@ -337,6 +348,20 @@
     BT-141 Charge amount                      (1..1)
     BT-144 Charge reason                      (0..1)
 
+  EN 16931:2026 additions, per line (all optional):
+  BT-188 Invoice line purchase order reference         BT-200 Invoice line sales order reference
+  BT-201 Invoice line sales order line reference       BT-189 Invoice line despatch advice reference
+  BT-190 Invoice line despatch advice line reference   BT-191 Invoice line receiving advice reference
+  BT-192 Invoice line receiving advice line reference  BT-198 Invoice line delivery note reference
+  BT-199 Invoice line delivery note line reference     BT-196 Goods/services code (BG-31)
+  BT-194 Invoiced item exemption reason text (BG-30)   BT-195 Invoiced item VAT exemption reason code (BG-30)
+  BG-37  Invoice line delivery information             (0..1)
+    BT-185 Deliver to party name       BT-186 Deliver to location identifier   BT-187 Actual delivery date
+  BG-38  Invoice line deliver to address               (0..1)
+    BT-203 Address line 1  BT-206 City  BT-207 Post code  BT-209 Country code
+  BG-39  Line-level preceding invoice reference        (0..n)
+    BT-217 Reference  BT-218 Issue date  BT-219 Type code  BT-220 Line reference
+
   "line_extras_present" is a synthesized boolean exposed by the adapter.
 }}
 {{?line_extras_present}}
@@ -354,6 +379,53 @@
 > {{label:BG-28}} ({{label:BT-126}} {{..BT-126}}): +{{BT-141 | amount}}{{?BT-144}} — {{BT-144}}{{/BT-144}}
 {{/BG-28}}
 {{/BG-28}}
+{{?BT-188}}
+> **{{label:BT-126}} {{BT-126}} — {{label:BT-188}}:** {{BT-188}}
+{{/BT-188}}
+{{?BT-200}}
+> **{{label:BT-126}} {{BT-126}} — {{label:BT-200}}:** {{BT-200}}
+{{/BT-200}}
+{{?BT-201}}
+> **{{label:BT-126}} {{BT-126}} — {{label:BT-201}}:** {{BT-201}}
+{{/BT-201}}
+{{?BT-189}}
+> **{{label:BT-126}} {{BT-126}} — {{label:BT-189}}:** {{BT-189}}
+{{/BT-189}}
+{{?BT-190}}
+> **{{label:BT-126}} {{BT-126}} — {{label:BT-190}}:** {{BT-190}}
+{{/BT-190}}
+{{?BT-191}}
+> **{{label:BT-126}} {{BT-126}} — {{label:BT-191}}:** {{BT-191}}
+{{/BT-191}}
+{{?BT-192}}
+> **{{label:BT-126}} {{BT-126}} — {{label:BT-192}}:** {{BT-192}}
+{{/BT-192}}
+{{?BT-198}}
+> **{{label:BT-126}} {{BT-126}} — {{label:BT-198}}:** {{BT-198}}
+{{/BT-198}}
+{{?BT-199}}
+> **{{label:BT-126}} {{BT-126}} — {{label:BT-199}}:** {{BT-199}}
+{{/BT-199}}
+{{?BG-31.BT-196}}
+> **{{label:BT-126}} {{BT-126}} — {{label:BT-196}}:** {{BG-31.BT-196}}
+{{/BG-31.BT-196}}
+{{?BG-30.BT-194}}
+> **{{label:BT-126}} {{BT-126}} — {{label:BT-194}}:** {{BG-30.BT-194}}
+{{/BG-30.BT-194}}
+{{?BG-30.BT-195}}
+> **{{label:BT-126}} {{BT-126}} — {{label:BT-195}}:** {{BG-30.BT-195}}
+{{/BG-30.BT-195}}
+{{?BG-37}}
+> **{{label:BT-126}} {{BT-126}} — {{label:BG-37}}:** {{?BG-37.BT-185}}{{BG-37.BT-185}} {{/BG-37.BT-185}}{{?BG-37.BT-186}}({{BG-37.BT-186}}) {{/BG-37.BT-186}}{{?BG-37.BT-187}}{{BG-37.BT-187 | date:long}}{{/BG-37.BT-187}}
+{{?BG-37.BG-38}}
+> {{label:BG-38}}: {{?BG-37.BG-38.BT-203}}{{BG-37.BG-38.BT-203}}, {{/BG-37.BG-38.BT-203}}{{?BG-37.BG-38.BT-207}}{{BG-37.BG-38.BT-207}} {{/BG-37.BG-38.BT-207}}{{BG-37.BG-38.BT-206}}, {{BG-37.BG-38.BT-209 | code:country}}
+{{/BG-37.BG-38}}
+{{/BG-37}}
+{{?BG-39}}
+{{#BG-39}}
+> {{label:BG-39}} ({{label:BT-126}} {{..BT-126}}): {{BT-217}}{{?BT-218}} ({{BT-218 | date:medium}}){{/BT-218}}{{?BT-219}} [{{BT-219}}]{{/BT-219}}{{?BT-220}}, {{label:BT-220}} {{BT-220}}{{/BT-220}}
+{{/BG-39}}
+{{/BG-39}}
 {{/BG-25}}
 {{/line_extras_present}}
 
@@ -365,13 +437,16 @@
     BT-96  Allowance VAT rate                 (0..1, percentage)
     BT-97  Allowance reason                   (0..1)
     BT-98  Allowance reason code              (0..1, UNTDID 5189)
+    BT-173 Exemption reason text              (0..1, EN 16931:2026)
+    BT-174 VAT exemption reason code          (0..1, EN 16931:2026)
+    BT-213 Goods/services code                (0..1, EN 16931:2026)
 }}
 {{?BG-20}}
 ## {{label:section.allowancescharges.title}}
 
 | {{label:BT-97}} | {{label:BT-92}} | {{label:BT-95}} | {{label:BT-96}} |
 |---|---:|---|---:|
-{{#BG-20}}| {{?BT-97}}{{BT-97}}{{/BT-97}}{{?BT-98}} *({{BT-98 \| code:allowancereason}})*{{/BT-98}} | −{{BT-92 \| amount}} | {{BT-95 \| code:vatcategory}} | {{BT-96 \| percent}} |
+{{#BG-20}}| {{?BT-97}}{{BT-97}}{{/BT-97}}{{?BT-98}} *({{BT-98 \| code:allowancereason}})*{{/BT-98}}{{?BT-173}} — {{BT-173}}{{/BT-173}}{{?BT-174}} ({{BT-174}}){{/BT-174}}{{?BT-213}} [{{BT-213}}]{{/BT-213}} | −{{BT-92 \| amount}} | {{BT-95 \| code:vatcategory}} | {{BT-96 \| percent}} |
 {{/BG-20}}
 {{/BG-20}}
 
@@ -383,6 +458,10 @@
     BT-103 Charge VAT rate                    (0..1, percentage)
     BT-104 Charge reason                      (0..1)
     BT-105 Charge reason code                 (0..1, UNTDID 7161)
+    BT-175 Exemption reason text              (0..1, EN 16931:2026)
+    BT-176 VAT exemption reason code          (0..1, EN 16931:2026)
+    BT-177 Non-VAT tax code                   (0..1, EN 16931:2026)
+    BT-214 Goods/services code                (0..1, EN 16931:2026)
 
   If BG-20 is absent, the section heading needs to be opened here instead.
 }}
@@ -393,7 +472,7 @@
 {{/BG-20}}
 | {{label:BT-104}} | {{label:BT-99}} | {{label:BT-102}} | {{label:BT-103}} |
 |---|---:|---|---:|
-{{#BG-21}}| {{?BT-104}}{{BT-104}}{{/BT-104}}{{?BT-105}} *({{BT-105 \| code:chargereason}})*{{/BT-105}} | +{{BT-99 \| amount}} | {{BT-102 \| code:vatcategory}} | {{BT-103 \| percent}} |
+{{#BG-21}}| {{?BT-104}}{{BT-104}}{{/BT-104}}{{?BT-105}} *({{BT-105 \| code:chargereason}})*{{/BT-105}}{{?BT-175}} — {{BT-175}}{{/BT-175}}{{?BT-176}} ({{BT-176}}){{/BT-176}}{{?BT-177}} <{{BT-177}}>{{/BT-177}}{{?BT-214}} [{{BT-214}}]{{/BT-214}} | +{{BT-99 \| amount}} | {{BT-102 \| code:vatcategory}} | {{BT-103 \| percent}} |
 {{/BG-21}}
 {{/BG-21}}
 
@@ -406,13 +485,15 @@
     BT-119 VAT category rate                  (0..1, percentage)
     BT-120 VAT exemption reason text          (0..1)
     BT-121 VAT exemption reason code          (0..1)
+    BT-184 VAT breakdown currency             (0..1, EN 16931:2026)
+    BT-210 VAT breakdown goods/services code  (0..1, EN 16931:2026)
 }}
 {{?BG-23}}
 ## {{label:section.vatbreakdown.title}}
 
 | {{label:BT-118}} | {{label:BT-116}} | {{label:BT-119}} | {{label:BT-117}} |
 |---|---:|---:|---:|
-{{#BG-23}}| {{BT-118 \| code:vatcategory}}{{?BT-121}} *({{BT-121 \| code:vatexemption}})*{{/BT-121}} | {{BT-116 \| amount}} | {{BT-119 \| percent}} | {{BT-117 \| amount}} |
+{{#BG-23}}| {{BT-118 \| code:vatcategory}}{{?BT-121}} *({{BT-121 \| code:vatexemption}})*{{/BT-121}}{{?BT-184}} ({{BT-184}}){{/BT-184}}{{?BT-210}} [{{BT-210}}]{{/BT-210}} | {{BT-116 \| amount}} | {{BT-119 \| percent}} | {{BT-117 \| amount}} |
 {{/BG-23}}
 {{#BG-23}}
 {{?BT-120}}
@@ -434,6 +515,9 @@
     BT-113 Paid amount                        (0..1)
     BT-114 Rounding amount                    (0..1)
     BT-115 Amount due for payment             (1..1)
+  BG-34  Charges on behalf of a third party   (0..n, EN 16931:2026)
+    BT-179 Collected amount                   (1..1)
+    BT-180 Charges specification              (1..1)
 
   {{class:totals-due}} on the BT-115 row triggers the highlighted cell
   fill — see [[Template Language]] § Block attributes.
@@ -445,7 +529,8 @@
 {{?BG-22.BT-106}}| {{label:BT-106}} | {{BG-22.BT-106 \| amount}} |
 {{/BG-22.BT-106}}{{?BG-22.BT-107}}| {{label:BT-107}} | −{{BG-22.BT-107 \| amount}} |
 {{/BG-22.BT-107}}{{?BG-22.BT-108}}| {{label:BT-108}} | +{{BG-22.BT-108 \| amount}} |
-{{/BG-22.BT-108}}| **{{label:BT-109}}** | **{{BG-22.BT-109 \| amount}}** |
+{{/BG-22.BT-108}}{{#BG-22.BG-34}}| {{label:BG-34}}{{?BT-180}}: {{BT-180}}{{/BT-180}} | +{{BT-179 \| amount}} |
+{{/BG-22.BG-34}}| **{{label:BT-109}}** | **{{BG-22.BT-109 \| amount}}** |
 | {{label:BT-110}} | {{BG-22.BT-110 \| amount}} |
 {{?BG-22.BT-111}}| {{label:BT-111}} | {{BG-22.BT-111 \| amount:BT-6}} |
 {{/BG-22.BT-111}}| **{{label:BT-112}}** | **{{BG-22.BT-112 \| amount}}** |
@@ -471,6 +556,8 @@
     BT-89  Mandate reference identifier       (0..1)
     BT-90  Bank-assigned creditor identifier  (0..1)
     BT-91  Debited account identifier         (0..1)
+    BT-215 Debited account PSP identifier     (0..1, EN 16931:2026)
+    BT-216 Debited account name               (0..1, EN 16931:2026)
 }}
 {{?BG-16}}
 ## {{label:section.payment.title}}
@@ -502,19 +589,41 @@
 {{?BG-16.BG-19.BT-89}}- {{label:BT-89}}: `{{BG-16.BG-19.BT-89}}`
 {{/BG-16.BG-19.BT-89}}{{?BG-16.BG-19.BT-90}}- {{label:BT-90}}: {{BG-16.BG-19.BT-90}}
 {{/BG-16.BG-19.BT-90}}{{?BG-16.BG-19.BT-91}}- {{label:BT-91}}: `{{BG-16.BG-19.BT-91}}`
-{{/BG-16.BG-19.BT-91}}
+{{/BG-16.BG-19.BT-91}}{{?BG-16.BG-19.BT-215}}- {{label:BT-215}}: {{BG-16.BG-19.BT-215}}
+{{/BG-16.BG-19.BT-215}}{{?BG-16.BG-19.BT-216}}- {{label:BT-216}}: {{BG-16.BG-19.BT-216}}
+{{/BG-16.BG-19.BT-216}}
 {{/BG-16.BG-19}}
 {{/BG-16}}
 
 {{!
-  ─── BT-20 — Payment terms (free-text, header-level) ────────────────────
-  BT-20  Payment terms description            (0..1)
+  ─── BG-33 — Payment terms (+ BG-35 Early discount, + BG-36 Late penalty) ─
+  BG-33  Payment terms                        (0..n)
+    BT-20  Payment term text                  (0..1)
+  BG-35  Early payment discount               (0..n, EN 16931:2026)
+    BT-170 Discount end date                  (1..1)
+    BT-171 Discount percentage                (0..1)
+    BT-172 Discount amount                    (0..1)
+  BG-36  Late payment penalty                 (0..n, EN 16931:2026)
+    BT-181 Penalty start date                 (1..1)
+    BT-182 Penalty yearly interest percentage (0..1)
+    BT-183 Penalty amount                     (0..1)
 }}
-{{?BT-20}}
-### {{label:BT-20}}
+{{?BG-33}}
+### {{label:BG-33}}
 
+{{#BG-33}}
+{{?BT-20}}
 {{BT-20}}
+
 {{/BT-20}}
+{{#BG-35}}
+- **{{label:BG-35}}:** {{BT-170 | date:long}}{{?BT-171}}, {{BT-171 | percent}}{{/BT-171}}{{?BT-172}}, {{BT-172 | amount}}{{/BT-172}}
+{{/BG-35}}
+{{#BG-36}}
+- **{{label:BG-36}}:** {{BT-181 | date:long}}{{?BT-182}}, {{BT-182 | percent}}{{/BT-182}}{{?BT-183}}, {{BT-183 | amount}}{{/BT-183}}
+{{/BG-36}}
+{{/BG-33}}
+{{/BG-33}}
 
 {{!
   ─── BG-24 — Supporting documents ───────────────────────────────────────

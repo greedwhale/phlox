@@ -16,6 +16,7 @@
  */
 package com.helger.phlox.html;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -31,24 +32,28 @@ import org.slf4j.LoggerFactory;
 import com.helger.base.string.StringHelper;
 import com.helger.diagnostics.error.list.ErrorList;
 import com.helger.io.file.SimpleFileIO;
+import com.helger.collection.commons.ICommonsList;
 import com.helger.io.resource.ClassPathResource;
 import com.helger.phlox.api.model.PhloxInvoice;
+import com.helger.phlox.api.read.IInvoiceReader;
 import com.helger.phlox.api.watermark.WatermarkSpec;
+import com.helger.phlox.cii.CiiInvoiceReader;
 import com.helger.phlox.testfiles.MockPhloxTestFiles;
 import com.helger.phlox.ubl.UblInvoiceReader;
 
-/** End-to-end smoke test: parse UBL → render HTML in EN and DE. */
+/** End-to-end smoke test: parse UBL / CII → render HTML in EN and DE. */
 public final class HtmlInvoiceWriterTest
 {
   private static final Logger LOGGER = LoggerFactory.getLogger (HtmlInvoiceWriterTest.class);
 
-  @Test
-  public void testRenderUblToHtml ()
+  private static void _renderAll (final IInvoiceReader <InputStream> aReader,
+                                  final ICommonsList <ClassPathResource> aFiles,
+                                  final String sLabel,
+                                  final int nMinCount)
   {
-    final UblInvoiceReader aReader = UblInvoiceReader.fromUbl21 ();
     final HtmlInvoiceWriter aWriter = new HtmlInvoiceWriter ();
     int nCount = 0;
-    for (final ClassPathResource aRes : MockPhloxTestFiles.getUbl21InvoiceFiles ())
+    for (final ClassPathResource aRes : aFiles)
     {
       try (final InputStream aIS = aRes.getInputStream ())
       {
@@ -77,7 +82,71 @@ public final class HtmlInvoiceWriterTest
         throw new RuntimeException ("Failed to open " + aRes.getPath (), ex);
       }
     }
-    LOGGER.info ("Rendered " + nCount + " UBL invoices to HTML (×2 locales)");
-    assertTrue ("Expected at least 10 invoices rendered", nCount >= 10);
+    LOGGER.info ("Rendered " + nCount + " " + sLabel + " to HTML (×2 locales)");
+    assertTrue ("Expected at least " + nMinCount + " documents rendered", nCount >= nMinCount);
+  }
+
+  private static String _renderEn (final IInvoiceReader <InputStream> aReader, final String sPath)
+  {
+    try (final InputStream aIS = new ClassPathResource (MockPhloxTestFiles.BASE_PATH + sPath).getInputStream ())
+    {
+      final PhloxInvoice aModel = aReader.read (aIS, new ErrorList ());
+      assertNotNull ("Failed to parse " + sPath, aModel);
+      return new HtmlInvoiceWriter ().writeAsString (aModel, new HtmlRenderContext ().setLocale (Locale.ENGLISH));
+    }
+    catch (final java.io.IOException ex)
+    {
+      throw new RuntimeException ("Failed to open " + sPath, ex);
+    }
+  }
+
+  @Test
+  public void testRenderUblToHtml ()
+  {
+    _renderAll (UblInvoiceReader.fromUbl21 (), MockPhloxTestFiles.getUbl21InvoiceFiles (), "UBL 2.1 invoices", 10);
+  }
+
+  @Test
+  public void testRenderUbl25InvoicesToHtml ()
+  {
+    _renderAll (UblInvoiceReader.fromUbl25 (), MockPhloxTestFiles.getUbl25InvoiceFiles (), "UBL 2.5 invoices", 10);
+  }
+
+  @Test
+  public void testRenderUbl25CreditNotesToHtml ()
+  {
+    _renderAll (UblInvoiceReader.fromUbl25 (), MockPhloxTestFiles.getUbl25CreditNoteFiles (), "UBL 2.5 credit notes", 5);
+  }
+
+  @Test
+  public void testRenderCiiD25AToHtml ()
+  {
+    _renderAll (CiiInvoiceReader.fromD25A (), MockPhloxTestFiles.getCiiD25AFiles (), "CII D25A documents", 10);
+  }
+
+  @Test
+  public void testRenderNew2026ContentToHtml ()
+  {
+    // BG-37 / BG-38 invoice line delivery information
+    final String sUbl = _renderEn (UblInvoiceReader.fromUbl25 (), "2026/ubl/invoice/d25a-new-linedelivery-invoice-ubl.xml");
+    assertTrue (sUbl.contains ("4035813333333"));
+    assertTrue (sUbl.contains ("Innsbruck"));
+    final String sCii = _renderEn (CiiInvoiceReader.fromD25A (), "2026/cii/d25a-new-linedelivery-invoice.xml");
+    assertTrue (sCii.contains ("4035813333333"));
+    assertTrue (sCii.contains ("Innsbruck"));
+
+    // BG-33 / BG-35 / BG-36 payment terms with early discount and late penalty
+    final String sTerms = _renderEn (UblInvoiceReader.fromUbl25 (), "2026/ubl/invoice/d25a-new-paymentterms-invoice-ubl.xml");
+    assertTrue (sTerms.contains ("Net 30 days"));
+    assertTrue (sTerms.contains ("2.64"));
+    assertTrue (sTerms.contains ("12.5"));
+  }
+
+  @Test
+  public void test2017HtmlDoesNotContain2026Sections ()
+  {
+    final String sHtml = _renderEn (UblInvoiceReader.fromUbl21 (), "2017/ubl/invoice/ubl-tc434-example1.xml");
+    assertEquals (-1, sHtml.indexOf ("payment-discount"));
+    assertEquals (-1, sHtml.indexOf ("payment-penalty"));
   }
 }

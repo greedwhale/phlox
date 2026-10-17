@@ -16,7 +16,9 @@
  */
 package com.helger.phlox.api.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.OffsetTime;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -24,6 +26,7 @@ import org.jspecify.annotations.Nullable;
 import com.helger.annotation.style.ReturnsMutableObject;
 import com.helger.collection.commons.CommonsArrayList;
 import com.helger.collection.commons.ICommonsList;
+import com.helger.en16931.basics.EEN16931Edition;
 
 /**
  * Root of the EN 16931 intermediate model. One instance represents one Invoice or one Credit Note,
@@ -31,8 +34,8 @@ import com.helger.collection.commons.ICommonsList;
  * {@code null} when not present in the source; all collections are non-{@code null} and empty when
  * not populated.
  * <p>
- * Header-level BTs sit directly on this class (BT-1 through BT-20). Each business group (BG-1
- * through BG-25) is exposed as either a single nested object or a mutable list of nested objects.
+ * Header-level BTs sit directly on this class (BT-1 through BT-19, BT-166, BT-167, BT-197). Each
+ * business group (BG-1 through BG-25 and BG-33) is exposed as either a single nested object or a mutable list of nested objects.
  *
  * @author Philip Helger
  */
@@ -48,7 +51,6 @@ public class PhloxInvoice
   private LocalDate m_aVatPointDate;
   private String m_sVatPointDateCode;
   private LocalDate m_aPaymentDueDate;
-  private String m_sBuyerReference;
   private String m_sProjectReference;
   private String m_sContractReference;
   private String m_sPurchaseOrderReference;
@@ -58,7 +60,6 @@ public class PhloxInvoice
   private String m_sTenderOrLotReference;
   private PhloxIdentifier m_aInvoicedObjectIdentifier;
   private String m_sBuyerAccountingReference;
-  private String m_sPaymentTerms;
 
   private final ICommonsList <PhloxInvoiceNote> m_aInvoiceNotes = new CommonsArrayList <> ();
   private PhloxProcessControl m_aProcessControl = new PhloxProcessControl ();
@@ -76,6 +77,14 @@ public class PhloxInvoice
   private final ICommonsList <PhloxVatBreakdown> m_aVatBreakdowns = new CommonsArrayList <> ();
   private final ICommonsList <PhloxSupportingDocument> m_aSupportingDocuments = new CommonsArrayList <> ();
   private final ICommonsList <PhloxInvoiceLine> m_aLines = new CommonsArrayList <> ();
+  private EEN16931Edition m_eEdition;
+  private OffsetTime m_aIssueTime;
+  private BigDecimal m_aVatExchangeRate;
+  private String m_sVatExchangeRateTargetCurrency;
+  private String m_sVatExchangeRateSourceCurrency;
+  private String m_sDeliveryNoteReference;
+  private final ICommonsList <PhloxIdentifier> m_aBuyerReferences = new CommonsArrayList <> ();
+  private final ICommonsList <PhloxPaymentTerms> m_aPaymentTerms = new CommonsArrayList <> ();
 
   /** Create an empty invoice (defaults to {@link EPhloxDocumentKind#INVOICE}). */
   public PhloxInvoice ()
@@ -282,27 +291,6 @@ public class PhloxInvoice
     return this;
   }
 
-  /** @return Buyer reference (BT-10). May be {@code null}. */
-  @Nullable
-  public String getBuyerReference ()
-  {
-    return m_sBuyerReference;
-  }
-
-  /**
-   * Set the buyer reference (BT-10).
-   *
-   * @param sBuyerReference
-   *        Buyer reference; may be {@code null}.
-   * @return this for chaining.
-   */
-  @NonNull
-  public PhloxInvoice setBuyerReference (@Nullable final String sBuyerReference)
-  {
-    m_sBuyerReference = sBuyerReference;
-    return this;
-  }
-
   /** @return Project reference (BT-11). May be {@code null}. */
   @Nullable
   public String getProjectReference ()
@@ -489,27 +477,6 @@ public class PhloxInvoice
   public PhloxInvoice setBuyerAccountingReference (@Nullable final String sBuyerAccountingReference)
   {
     m_sBuyerAccountingReference = sBuyerAccountingReference;
-    return this;
-  }
-
-  /** @return Payment terms description (BT-20). May be {@code null}. */
-  @Nullable
-  public String getPaymentTerms ()
-  {
-    return m_sPaymentTerms;
-  }
-
-  /**
-   * Set the payment terms description (BT-20).
-   *
-   * @param sPaymentTerms
-   *        Payment terms text; may be {@code null}.
-   * @return this for chaining.
-   */
-  @NonNull
-  public PhloxInvoice setPaymentTerms (@Nullable final String sPaymentTerms)
-  {
-    m_sPaymentTerms = sPaymentTerms;
     return this;
   }
 
@@ -776,5 +743,151 @@ public class PhloxInvoice
   public ICommonsList <PhloxInvoiceLine> lines ()
   {
     return m_aLines;
+  }
+
+  /** @return EN 16931 edition the document was read as. May be {@code null}. */
+  @Nullable
+  public EEN16931Edition getEdition ()
+  {
+    return m_eEdition;
+  }
+
+  /**
+   * Set the EN 16931 edition the document was read as.
+   *
+   * @param eEdition
+   *        EN 16931 edition the document was read as; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoice setEdition (@Nullable final EEN16931Edition eEdition)
+  {
+    m_eEdition = eEdition;
+    return this;
+  }
+
+  /** @return Invoice issue time (BT-166). May be {@code null}. */
+  @Nullable
+  public OffsetTime getIssueTime ()
+  {
+    return m_aIssueTime;
+  }
+
+  /**
+   * Set the invoice issue time (BT-166).
+   *
+   * @param aIssueTime
+   *        Invoice issue time; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoice setIssueTime (@Nullable final OffsetTime aIssueTime)
+  {
+    m_aIssueTime = aIssueTime;
+    return this;
+  }
+
+  /** @return VAT accounting currency exchange rate (BT-167). May be {@code null}. */
+  @Nullable
+  public BigDecimal getVatExchangeRate ()
+  {
+    return m_aVatExchangeRate;
+  }
+
+  /**
+   * Set the VAT accounting currency exchange rate (BT-167).
+   *
+   * @param aVatExchangeRate
+   *        VAT accounting currency exchange rate; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoice setVatExchangeRate (@Nullable final BigDecimal aVatExchangeRate)
+  {
+    m_aVatExchangeRate = aVatExchangeRate;
+    return this;
+  }
+
+  /** @return VAT accounting currency exchange rate target currency code (BT-167-1). May be {@code null}. */
+  @Nullable
+  public String getVatExchangeRateTargetCurrency ()
+  {
+    return m_sVatExchangeRateTargetCurrency;
+  }
+
+  /**
+   * Set the VAT accounting currency exchange rate target currency code (BT-167-1).
+   *
+   * @param sVatExchangeRateTargetCurrency
+   *        VAT accounting currency exchange rate target currency code; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoice setVatExchangeRateTargetCurrency (@Nullable final String sVatExchangeRateTargetCurrency)
+  {
+    m_sVatExchangeRateTargetCurrency = sVatExchangeRateTargetCurrency;
+    return this;
+  }
+
+  /** @return VAT accounting currency exchange rate source currency code (BT-167-2). May be {@code null}. */
+  @Nullable
+  public String getVatExchangeRateSourceCurrency ()
+  {
+    return m_sVatExchangeRateSourceCurrency;
+  }
+
+  /**
+   * Set the VAT accounting currency exchange rate source currency code (BT-167-2).
+   *
+   * @param sVatExchangeRateSourceCurrency
+   *        VAT accounting currency exchange rate source currency code; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoice setVatExchangeRateSourceCurrency (@Nullable final String sVatExchangeRateSourceCurrency)
+  {
+    m_sVatExchangeRateSourceCurrency = sVatExchangeRateSourceCurrency;
+    return this;
+  }
+
+  /** @return Delivery note reference (BT-197). May be {@code null}. */
+  @Nullable
+  public String getDeliveryNoteReference ()
+  {
+    return m_sDeliveryNoteReference;
+  }
+
+  /**
+   * Set the delivery note reference (BT-197).
+   *
+   * @param sDeliveryNoteReference
+   *        Delivery note reference; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoice setDeliveryNoteReference (@Nullable final String sDeliveryNoteReference)
+  {
+    m_sDeliveryNoteReference = sDeliveryNoteReference;
+    return this;
+  }
+
+  /**
+   * @return Mutable list of buyer references (BT-10 / BT-10-1). Never {@code null}; empty when none are present.
+   */
+  @NonNull
+  @ReturnsMutableObject
+  public ICommonsList <PhloxIdentifier> buyerReferences ()
+  {
+    return m_aBuyerReferences;
+  }
+
+  /**
+   * @return Mutable list of payment terms (BG-33). Never {@code null}; empty when none are present.
+   */
+  @NonNull
+  @ReturnsMutableObject
+  public ICommonsList <PhloxPaymentTerms> paymentTerms ()
+  {
+    return m_aPaymentTerms;
   }
 }

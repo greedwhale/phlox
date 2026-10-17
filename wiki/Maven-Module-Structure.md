@@ -80,34 +80,34 @@ The contract layer. Contains:
 - **Formatting helpers:** `PhloxFormat` (date/amount/percent/code-label formatting).
 - **Resource bundles:** `phlox-labels_en.properties`, `phlox-labels_de.properties`, `phlox-codelists_en.properties`, `phlox-codelists_de.properties`. See [[Localization]].
 
-**Dependencies:** `ph-commons` only. No JAXB, no PDF, no HTML libraries.
+**Dependencies:** `ph-commons` and `com.helger:en16931-basics` (for `EEN16931Edition`, the 2017/2026 edition enum). No JAXB, no PDF, no HTML libraries.
 
 ### `phlox-ubl`
 
 Reads UBL Invoice and CreditNote documents into a `PhloxInvoice`. Supports **both** UBL versions that EN 16931 has a syntax binding for:
 
-- **UBL 2.1** — EN 16931:2017 (current edition).
-- **UBL 2.5** — EN 16931:2026 (upcoming edition).
+- **UBL 2.1** — EN 16931:2017.
+- **UBL 2.5** — EN 16931:2026.
 
-No other UBL versions are in scope. Both bindings live in this single module because the reader logic and field-by-field mapping are nearly identical — see [[Source Readers]] for the rationale.
+No other UBL versions are in scope. Both bindings live in this single module, behind one public facade; the mapping itself is implemented once per edition — see [[Source Readers]].
 
 **Contains:**
 
-- `UblInvoiceReader implements IInvoiceReader<InputStream, PhloxInvoice>` with `fromUbl21()`, `fromUbl25()`, and `autoDetect()` factory methods.
-- Internal helpers for walking the UBL JAXB tree (shared between the two version bindings).
+- `UblInvoiceReader implements IInvoiceReader<InputStream>` with `fromUbl21()`, `fromUbl25()`, and `autoDetect()` factory methods (BT-24 based edition detection).
+- Package-private `Ubl21InvoiceReader` (EN 2017) and `Ubl25InvoiceReader` (EN 2026), each walking its own JAXB tree.
 
 **Dependencies:** `phlox-api`, `com.helger.ubl:ph-ubl21`, `com.helger.ubl:ph-ubl25`.
 
 ### `phlox-cii`
 
-Reads CII D16B `CrossIndustryInvoice` documents into a `PhloxInvoice`.
+Reads CII `CrossIndustryInvoice` documents into a `PhloxInvoice`: D16B (EN 16931:2017) and D25A (EN 16931:2026).
 
 **Contains:**
 
-- `CiiInvoiceReader implements IInvoiceReader<InputStream>`.
-- Internal helpers for walking the CII JAXB tree, code-list-driven dispatch.
+- `CiiInvoiceReader implements IInvoiceReader<InputStream>` with `fromD16B()`, `fromD25A()`, and `autoDetect()` factory methods (BT-24 based edition detection).
+- Package-private `CiiD16BInvoiceReader` and `CiiD25AInvoiceReader`, each walking its own JAXB tree.
 
-**Dependencies:** `phlox-api`, `com.helger.cii:ph-cii-d16b`.
+**Dependencies:** `phlox-api`, `com.helger.cii:ph-cii-d16b`, `com.helger.cii:ph-cii-d25a`.
 
 ### `phlox-template`
 
@@ -191,7 +191,7 @@ phlox-testfiles/src/main/resources/external/en16931/
 │   ├── ubl/
 │   │   ├── invoice/                 # *.xml — UBL 2.5 Invoice
 │   │   └── creditnote/              # *.xml — UBL 2.5 CreditNote
-│   └── cii/                         # *.xml — TBD syntax revision once published
+│   └── cii/                         # *.xml — CII D25A Invoice and CreditNote (flat)
 ```
 
 Everything under `2017/cii/xrechnung/` and `2017/cii/issues/` is imported from `../en16931-cii2ubl/en16931-cii2ubl/src/test/resources/external/cii/`, preserving filenames and subdirectory structure. Provenance is documented in `2017/cii/README.md`.

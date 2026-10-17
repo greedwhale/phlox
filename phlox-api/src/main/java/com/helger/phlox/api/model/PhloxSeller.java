@@ -43,6 +43,7 @@ public class PhloxSeller
   private PhloxIdentifier m_aElectronicAddress;
   private PhloxPostalAddress m_aPostalAddress;
   private PhloxContact m_aContact;
+  private String m_sTaxRegistrationSchemeID;
 
   /** Create an empty seller. */
   public PhloxSeller ()
@@ -245,6 +246,27 @@ public class PhloxSeller
   public PhloxSeller setContact (@Nullable final PhloxContact aContact)
   {
     m_aContact = aContact;
+    return this;
+  }
+
+  /** @return Seller tax registration identifier scheme identifier (BT-32-1). May be {@code null}. */
+  @Nullable
+  public String getTaxRegistrationSchemeID ()
+  {
+    return m_sTaxRegistrationSchemeID;
+  }
+
+  /**
+   * Set the seller tax registration identifier scheme identifier (BT-32-1).
+   *
+   * @param sTaxRegistrationSchemeID
+   *        Seller tax registration identifier scheme identifier; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxSeller setTaxRegistrationSchemeID (@Nullable final String sTaxRegistrationSchemeID)
+  {
+    m_sTaxRegistrationSchemeID = sTaxRegistrationSchemeID;
     return this;
   }
 }

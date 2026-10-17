@@ -56,6 +56,11 @@
     </dependency>
     <dependency>
       <groupId>com.helger.phlox</groupId>
+      <artifactId>phlox-cii</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.helger.phlox</groupId>
       <artifactId>phlox-testfiles</artifactId>
       <scope>test</scope>
     </dependency>

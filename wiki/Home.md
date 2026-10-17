@@ -2,6 +2,8 @@ Welcome to the **phlox** wiki!
 
 `phlox` is a Java library for **visualizing electronic invoices**. It reads invoices in either UBL or CII syntax, lifts them into a syntax-neutral intermediate model that carries every EN 16931 business term (BG/BT), and serializes that model into HTML or PDF — in multiple human languages.
 
+The name is taken from the flower [phlox](https://en.wikipedia.org/wiki/Phlox) — it starts with "ph" like the other projects of the same author, and it fits a project about visualization.
+
 > **Status:** Specification phase. No code has been written yet. This wiki captures the agreed design before implementation begins.
 
 ## At a glance
@@ -39,11 +41,11 @@ The intermediate model is the heart of the design: every reader populates the sa
 
 | Concern | Supported |
 |---------|-----------|
-| Source syntax | UBL 2.1 Invoice + CreditNote (EN 16931:2017) and CII D16B; UBL 2.5 (EN 16931:2026) planned for 0.3.0 |
+| Source syntax | UBL 2.1 and CII D16B (EN 16931:2017); UBL 2.5 and CII D25A (EN 16931:2026); edition auto-detected from BT-24 |
 | Source validation | XSD only (Schematron is out of scope — use `phive-rules-en16931`) |
 | Output format | HTML5, PDF |
 | Languages | English (`en`), German (`de`) |
-| EN 16931 coverage | All BGs (BG-1..BG-32) and BTs (BT-1..BT-165) |
+| EN 16931 coverage | All BGs (BG-1..BG-39) and BTs (BT-1..BT-220) of EN 16931:2017 and EN 16931:2026 |
 | Watermarking | User watermark + program/edition watermark (HTML + PDF) — see [[Watermarking]] |
 | Customization | Optional `.ptpl` templates (JMustache + CommonMark) — see [[Template Language]]; lands in 0.4.0 |
 

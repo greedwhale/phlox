@@ -20,8 +20,9 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-32 ITEM ATTRIBUTES (0..n on an item). Carries BT-160 (item attribute name) and BT-161
- * (item attribute value).
+ * BG-32 ITEM ATTRIBUTE (0..n on an item). Carries BT-160 (item attribute name, optional since EN
+ * 16931:2026), BT-161 (item attribute value) and, since EN 16931:2026, BT-211 (item attribute
+ * code) and BT-212 (unit of measure code of a numeric value).
  *
  * @author Philip Helger
  */
@@ -29,6 +30,8 @@ public class PhloxItemAttribute
 {
   private String m_sName;
   private String m_sValue;
+  private String m_sCode;
+  private String m_sValueUnit;
 
   /** Create an empty item attribute. */
   public PhloxItemAttribute ()
@@ -87,6 +90,48 @@ public class PhloxItemAttribute
   public PhloxItemAttribute setValue (@Nullable final String sValue)
   {
     m_sValue = sValue;
+    return this;
+  }
+
+  /** @return Item attribute code (BT-211). May be {@code null}. */
+  @Nullable
+  public String getCode ()
+  {
+    return m_sCode;
+  }
+
+  /**
+   * Set the item attribute code (BT-211).
+   *
+   * @param sCode
+   *        Item attribute code; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxItemAttribute setCode (@Nullable final String sCode)
+  {
+    m_sCode = sCode;
+    return this;
+  }
+
+  /** @return Item attribute value unit of measure code (BT-212). May be {@code null}. */
+  @Nullable
+  public String getValueUnit ()
+  {
+    return m_sValueUnit;
+  }
+
+  /**
+   * Set the item attribute value unit of measure code (BT-212).
+   *
+   * @param sValueUnit
+   *        Item attribute value unit of measure code; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxItemAttribute setValueUnit (@Nullable final String sValueUnit)
+  {
+    m_sValueUnit = sValueUnit;
     return this;
   }
 }

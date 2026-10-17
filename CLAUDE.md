@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this project is
 
-**phlox** is a visualizer for EN 16931 electronic invoices (the EU structured e-invoicing standard). It reads UBL (2.1 / 2.5) or CII (D16B) XML into a syntax-neutral intermediate model, then writes HTML or PDF in EN/DE.
+**phlox** is a visualizer for EN 16931 electronic invoices (the EU structured e-invoicing standard). It reads UBL (2.1 / 2.5) or CII (D16B / D25A) XML into a syntax-neutral intermediate model, then writes HTML or PDF in EN/DE.
+
+Both editions of the standard are supported: EN 16931:2017 (UBL 2.1, CII D16B) and EN 16931:2026 (UBL 2.5, CII D25A). The model is a superset of both; terms that only exist in 2026 stay empty for 2017 documents. The edition is detected from BT-24 (`EEN16931Edition` from `com.helger:en16931-basics`) or chosen explicitly via the reader factories (`UblInvoiceReader.fromUbl21()/fromUbl25()/autoDetect()`, `CiiInvoiceReader.fromD16B()/fromD25A()/autoDetect()`).
 
 ## Architecture (read this before changing code)
 
@@ -17,11 +19,11 @@ Module dependency rules are strict:
 
 Modules:
 - `phlox-parent-pom` — root BOM, no sources
-- `phlox-api` — intermediate model + SPIs + I18N (and the `IPhloxTemplate` marker)
+- `phlox-api` — intermediate model + SPIs + I18N (and the `IPhloxTemplate` marker); depends on `en16931-basics` for `EEN16931Edition`
 - `phlox-testfiles` — shared EN 16931 example invoices; regular `jar` (not `test-jar`), consumed with `<scope>test</scope>`
-- `phlox-ubl` — UBL 2.1 **and** 2.5 reader (factories: `fromUbl21()`, `fromUbl25()`, `autoDetect()`)
-- `phlox-cii` — CII D16B reader
-- `phlox-template` — JMustache + commonmark-java parser, the `PhloxTemplate` factories, and the default `.ptpl` resource. Compile-scope dep of `phlox-html` and `phlox-pdf` (both writers gain a `*TemplateEmitter` that walks the AST). See `wiki/Template-Language.md`.
+- `phlox-ubl` — UBL 2.1 (EN 2017) **and** 2.5 (EN 2026) reader; public facade `UblInvoiceReader` delegating to package-private `Ubl21InvoiceReader` / `Ubl25InvoiceReader` (factories: `fromUbl21()`, `fromUbl25()`, `autoDetect()`)
+- `phlox-cii` — CII D16B (EN 2017) and D25A (EN 2026) reader; public facade `CiiInvoiceReader` delegating to package-private `CiiD16BInvoiceReader` / `CiiD25AInvoiceReader` (factories: `fromD16B()`, `fromD25A()`, `autoDetect()`)
+- `phlox-template` — JMustache + commonmark-java parser, the `PhloxTemplate` factories, and the default `.ptpl` resource. Today `phlox-html` and `phlox-pdf` do **not** depend on it: both writers read the model getters directly, and the template path (`PhloxTemplate.renderAst`) is separate. A `*TemplateEmitter` that walks the AST is planned. When adding a BT/BG, extend the writers **and** `default.ptpl` / `PhloxModelRegistry`. See `wiki/Template-Language.md`.
 - `phlox-html` — HTML5 writer
 - `phlox-pdf` — PDF writer (PDFBox via ph-pdf-layout)
 - `phlox-cli` — picocli CLI; produces `phlox-cli-full.jar` (shaded fat JAR, main class `PhloxCli`)
@@ -37,7 +39,7 @@ Modules:
 
 ## Build / test
 
-Standard Maven (Java 17+, Maven 3.x). Worth knowing:
+Standard Maven (Java 25 — `maven.compiler.release` is 25 — Maven 3.x). Worth knowing:
 - Single module: `mvn -pl phlox-ubl test`
 - Single test method: `mvn -Dtest=PdfInvoiceWriterTest#testHelloWorld test`
 - CLI deliverable is `phlox-cli/target/phlox-cli-full.jar` (shaded), **not** `phlox-cli.jar`.

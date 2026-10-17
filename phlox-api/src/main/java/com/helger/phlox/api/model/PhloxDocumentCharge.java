@@ -22,9 +22,11 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-21 DOCUMENT LEVEL CHARGE (0..n). Carries BT-99 (charge amount), BT-100 (base amount),
- * BT-101 (percentage), BT-102 (VAT category code), BT-103 (VAT rate), BT-104 (reason text)
- * and BT-105 (reason code). Mirror of {@link PhloxDocumentAllowance}.
+ * BG-21 DOCUMENT LEVEL CHARGE (0..n; "charges and taxes" since EN 16931:2026). Carries BT-99
+ * (charge amount), BT-100 (base amount), BT-101 (percentage), BT-102 (VAT category code), BT-103
+ * (VAT rate), BT-104 (reason text) and BT-105 (reason code). Since EN 16931:2026 also BT-175 /
+ * BT-176 (exemption reason text and code), BT-177 / BT-177-1 (non-VAT tax code and its list
+ * identifier) and BT-214 (goods/services code). Mirror of {@link PhloxDocumentAllowance}.
  *
  * @author Philip Helger
  */
@@ -37,6 +39,11 @@ public class PhloxDocumentCharge
   private BigDecimal m_aVatRate;
   private String m_sReason;
   private String m_sReasonCode;
+  private String m_sExemptionReasonText;
+  private String m_sExemptionReasonCode;
+  private String m_sNonVatTaxCode;
+  private String m_sNonVatTaxCodeListID;
+  private String m_sGoodsServicesCode;
 
   /** Create an empty document-level charge. */
   public PhloxDocumentCharge ()
@@ -186,6 +193,111 @@ public class PhloxDocumentCharge
   public PhloxDocumentCharge setReasonCode (@Nullable final String sReasonCode)
   {
     m_sReasonCode = sReasonCode;
+    return this;
+  }
+
+  /** @return Document level charge or tax exemption reason text (BT-175). May be {@code null}. */
+  @Nullable
+  public String getExemptionReasonText ()
+  {
+    return m_sExemptionReasonText;
+  }
+
+  /**
+   * Set the document level charge or tax exemption reason text (BT-175).
+   *
+   * @param sExemptionReasonText
+   *        Document level charge or tax exemption reason text; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxDocumentCharge setExemptionReasonText (@Nullable final String sExemptionReasonText)
+  {
+    m_sExemptionReasonText = sExemptionReasonText;
+    return this;
+  }
+
+  /** @return VAT exemption reason and specification code of the document level charge or tax (BT-176). May be {@code null}. */
+  @Nullable
+  public String getExemptionReasonCode ()
+  {
+    return m_sExemptionReasonCode;
+  }
+
+  /**
+   * Set the VAT exemption reason and specification code of the document level charge or tax (BT-176).
+   *
+   * @param sExemptionReasonCode
+   *        VAT exemption reason and specification code of the document level charge or tax; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxDocumentCharge setExemptionReasonCode (@Nullable final String sExemptionReasonCode)
+  {
+    m_sExemptionReasonCode = sExemptionReasonCode;
+    return this;
+  }
+
+  /** @return Document level non-VAT tax code (BT-177). May be {@code null}. */
+  @Nullable
+  public String getNonVatTaxCode ()
+  {
+    return m_sNonVatTaxCode;
+  }
+
+  /**
+   * Set the document level non-VAT tax code (BT-177).
+   *
+   * @param sNonVatTaxCode
+   *        Document level non-VAT tax code; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxDocumentCharge setNonVatTaxCode (@Nullable final String sNonVatTaxCode)
+  {
+    m_sNonVatTaxCode = sNonVatTaxCode;
+    return this;
+  }
+
+  /** @return Document level non-VAT tax code list identifier (BT-177-1). May be {@code null}. */
+  @Nullable
+  public String getNonVatTaxCodeListID ()
+  {
+    return m_sNonVatTaxCodeListID;
+  }
+
+  /**
+   * Set the document level non-VAT tax code list identifier (BT-177-1).
+   *
+   * @param sNonVatTaxCodeListID
+   *        Document level non-VAT tax code list identifier; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxDocumentCharge setNonVatTaxCodeListID (@Nullable final String sNonVatTaxCodeListID)
+  {
+    m_sNonVatTaxCodeListID = sNonVatTaxCodeListID;
+    return this;
+  }
+
+  /** @return Document level charge goods/services code (BT-214). May be {@code null}. */
+  @Nullable
+  public String getGoodsServicesCode ()
+  {
+    return m_sGoodsServicesCode;
+  }
+
+  /**
+   * Set the document level charge goods/services code (BT-214).
+   *
+   * @param sGoodsServicesCode
+   *        Document level charge goods/services code; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxDocumentCharge setGoodsServicesCode (@Nullable final String sGoodsServicesCode)
+  {
+    m_sGoodsServicesCode = sGoodsServicesCode;
     return this;
   }
 }

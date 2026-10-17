@@ -27,7 +27,7 @@
   <artifactId>phlox-ubl</artifactId>
   <packaging>jar</packaging>
   <name>phlox-ubl</name>
-  <description>phlox - UBL source reader for EN 16931:2017 (UBL 2.1)</description>
+  <description>phlox - UBL source reader for EN 16931:2017 (UBL 2.1) and EN 16931:2026 (UBL 2.5)</description>
   <url>https://github.com/phax/phlox/phlox-ubl</url>
   <inceptionYear>2026</inceptionYear>
 
@@ -47,6 +47,10 @@
     <dependency>
       <groupId>com.helger.ubl</groupId>
       <artifactId>ph-ubl21</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.helger.ubl</groupId>
+      <artifactId>ph-ubl25</artifactId>
     </dependency>
 
     <dependency>

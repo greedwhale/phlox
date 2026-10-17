@@ -353,6 +353,9 @@ public final class PhloxInvoiceMustacheContext
     final Object aValue = _walkDottedPath (aCtx, sHead);
     if (aValue == null)
       return null;
+    // Lists (BG-3, BG-25, …) must reach JMustache untouched so that {{#BG-x}} sections iterate
+    if (aValue instanceof Iterable <?>)
+      return aValue;
     if (aModifiers.isEmpty ())
       return _renderLeaf (aValue, aEnv);
     return _applyModifiers (aValue, aModifiers, aEnv);
@@ -558,6 +561,7 @@ public final class PhloxInvoiceMustacheContext
         StringHelper.isNotEmpty (aInv.getReceivingAdviceReference ()) ||
         StringHelper.isNotEmpty (aInv.getDespatchAdviceReference ()) ||
         StringHelper.isNotEmpty (aInv.getTenderOrLotReference ()) ||
+        StringHelper.isNotEmpty (aInv.getDeliveryNoteReference ()) ||
         StringHelper.isNotEmpty (aInv.getBuyerAccountingReference ()))
       return true;
     final PhloxIdentifier aObj = aInv.getInvoicedObjectIdentifier ();
@@ -578,11 +582,29 @@ public final class PhloxInvoiceMustacheContext
       final ICommonsList <PhloxLineCharge> aCharge = aLine.charges ();
       if (aCharge != null && !aCharge.isEmpty ())
         return true;
+      if (StringHelper.isNotEmpty (aLine.getPurchaseOrderReference ()) ||
+          StringHelper.isNotEmpty (aLine.getSalesOrderReference ()) ||
+          StringHelper.isNotEmpty (aLine.getSalesOrderLineReference ()) ||
+          StringHelper.isNotEmpty (aLine.getDespatchAdviceReference ()) ||
+          StringHelper.isNotEmpty (aLine.getDespatchAdviceLineReference ()) ||
+          StringHelper.isNotEmpty (aLine.getReceivingAdviceReference ()) ||
+          StringHelper.isNotEmpty (aLine.getReceivingAdviceLineReference ()) ||
+          StringHelper.isNotEmpty (aLine.getDeliveryNoteReference ()) ||
+          StringHelper.isNotEmpty (aLine.getDeliveryNoteLineReference ()) ||
+          aLine.getDelivery () != null ||
+          !aLine.precedingInvoiceRefs ().isEmpty ())
+        return true;
+      if (aLine.getItem () != null && StringHelper.isNotEmpty (aLine.getItem ().getGoodsServicesCode ()))
+        return true;
+      if (aLine.getLineVat () != null &&
+          (StringHelper.isNotEmpty (aLine.getLineVat ().getExemptionReasonText ()) ||
+           StringHelper.isNotEmpty (aLine.getLineVat ().getExemptionReasonCode ())))
+        return true;
     }
     return false;
   }
 
-  // ─── Pipe splitter respecting `\|` escapes (GFM table cells) ──────────
+  // ─── Pipe splitter; `\|` (GFM table cells) separates modifiers like `|` ─────
   @NonNull
   private static ICommonsList <String> _splitOnPipe (@NonNull final String sIn)
   {
@@ -591,19 +613,17 @@ public final class PhloxInvoiceMustacheContext
     for (int i = 0; i < sIn.length (); i++)
     {
       final char c = sIn.charAt (i);
-      if (c == '\\' && i + 1 < sIn.length () && sIn.charAt (i + 1) == '|')
+      // Inside GFM table cells the pipe has to be written as "\\|", so both forms separate modifiers
+      final boolean bEscaped = c == '\\' && i + 1 < sIn.length () && sIn.charAt (i + 1) == '|';
+      if (bEscaped || c == '|')
       {
-        aCurrent.append ('|');
-        i++;
+        aOut.add (aCurrent.toString ().trim ());
+        aCurrent.setLength (0);
+        if (bEscaped)
+          i++;
       }
       else
-        if (c == '|')
-        {
-          aOut.add (aCurrent.toString ().trim ());
-          aCurrent.setLength (0);
-        }
-        else
-          aCurrent.append (c);
+        aCurrent.append (c);
     }
     aOut.add (aCurrent.toString ().trim ());
     return aOut;

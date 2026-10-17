@@ -161,6 +161,14 @@ A trailing `| modifier` selects an explicit formatter, exactly the same pipe con
 
 Modifiers are pure functions over the resolved value and the active `RenderContext.Locale`. They do not see neighboring template state.
 
+### EN 16931:2026 terms
+
+All BGs and BTs of EN 16931:2026 (BG-33 to BG-39, BT-166 to BT-220) resolve like the 2017 ones; they are empty for EN 16931:2017 documents, so wrap them in `{{?…}}` / `{{#…}}` sections. Notes:
+
+- `{{BT-10}}` renders the buyer references comma-joined, each followed by its scheme identifier in parentheses (BT-10 is a list since 2026).
+- BT-20 is addressed inside BG-33: `{{#BG-33}}{{BT-20}}{{/BG-33}}`. BG-35 and BG-36 are lists inside BG-33; BG-34 is a list inside BG-22; BG-37 is a single object and BG-39 a list inside BG-25.
+- List-valued paths (`{{#BG-x}}`) reach JMustache unchanged, so sections iterate over the elements. Inside GFM table cells a modifier separator may be written `\|` or `|`; both separate modifiers.
+
 ### Labels
 
 `{{label:BT-1}}` returns the localized label for the BT, resolved through `IPhloxLabelResolver` exactly like the built-in writers. `{{label:BG-4}}` works the same way for BGs. `{{label:section.parties.title}}` reads an arbitrary key from the resource bundle, so templates can use the same translation file as the rest of the library.

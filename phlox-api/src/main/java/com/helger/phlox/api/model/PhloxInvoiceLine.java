@@ -51,6 +51,17 @@ public class PhloxInvoiceLine
   private PhloxPriceDetails m_aPrice;
   private PhloxLineVat m_aLineVat;
   private PhloxItem m_aItem;
+  private String m_sPurchaseOrderReference;
+  private String m_sSalesOrderReference;
+  private String m_sSalesOrderLineReference;
+  private String m_sDespatchAdviceReference;
+  private String m_sDespatchAdviceLineReference;
+  private String m_sReceivingAdviceReference;
+  private String m_sReceivingAdviceLineReference;
+  private String m_sDeliveryNoteReference;
+  private String m_sDeliveryNoteLineReference;
+  private PhloxLineDelivery m_aDelivery;
+  private final ICommonsList <PhloxLinePrecedingInvoiceRef> m_aPrecedingInvoiceRefs = new CommonsArrayList <> ();
 
   /** Create an empty invoice line. */
   public PhloxInvoiceLine ()
@@ -328,5 +339,225 @@ public class PhloxInvoiceLine
   {
     m_aItem = aItem;
     return this;
+  }
+
+  /** @return Invoice line purchase order reference (BT-188). May be {@code null}. */
+  @Nullable
+  public String getPurchaseOrderReference ()
+  {
+    return m_sPurchaseOrderReference;
+  }
+
+  /**
+   * Set the invoice line purchase order reference (BT-188).
+   *
+   * @param sPurchaseOrderReference
+   *        Invoice line purchase order reference; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoiceLine setPurchaseOrderReference (@Nullable final String sPurchaseOrderReference)
+  {
+    m_sPurchaseOrderReference = sPurchaseOrderReference;
+    return this;
+  }
+
+  /** @return Invoice line sales order reference (BT-200). May be {@code null}. */
+  @Nullable
+  public String getSalesOrderReference ()
+  {
+    return m_sSalesOrderReference;
+  }
+
+  /**
+   * Set the invoice line sales order reference (BT-200).
+   *
+   * @param sSalesOrderReference
+   *        Invoice line sales order reference; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoiceLine setSalesOrderReference (@Nullable final String sSalesOrderReference)
+  {
+    m_sSalesOrderReference = sSalesOrderReference;
+    return this;
+  }
+
+  /** @return Invoice line sales order line reference (BT-201). May be {@code null}. */
+  @Nullable
+  public String getSalesOrderLineReference ()
+  {
+    return m_sSalesOrderLineReference;
+  }
+
+  /**
+   * Set the invoice line sales order line reference (BT-201).
+   *
+   * @param sSalesOrderLineReference
+   *        Invoice line sales order line reference; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoiceLine setSalesOrderLineReference (@Nullable final String sSalesOrderLineReference)
+  {
+    m_sSalesOrderLineReference = sSalesOrderLineReference;
+    return this;
+  }
+
+  /** @return Invoice line despatch advice reference (BT-189). May be {@code null}. */
+  @Nullable
+  public String getDespatchAdviceReference ()
+  {
+    return m_sDespatchAdviceReference;
+  }
+
+  /**
+   * Set the invoice line despatch advice reference (BT-189).
+   *
+   * @param sDespatchAdviceReference
+   *        Invoice line despatch advice reference; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoiceLine setDespatchAdviceReference (@Nullable final String sDespatchAdviceReference)
+  {
+    m_sDespatchAdviceReference = sDespatchAdviceReference;
+    return this;
+  }
+
+  /** @return Invoice line despatch advice line reference (BT-190). May be {@code null}. */
+  @Nullable
+  public String getDespatchAdviceLineReference ()
+  {
+    return m_sDespatchAdviceLineReference;
+  }
+
+  /**
+   * Set the invoice line despatch advice line reference (BT-190).
+   *
+   * @param sDespatchAdviceLineReference
+   *        Invoice line despatch advice line reference; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoiceLine setDespatchAdviceLineReference (@Nullable final String sDespatchAdviceLineReference)
+  {
+    m_sDespatchAdviceLineReference = sDespatchAdviceLineReference;
+    return this;
+  }
+
+  /** @return Invoice line receiving advice reference (BT-191). May be {@code null}. */
+  @Nullable
+  public String getReceivingAdviceReference ()
+  {
+    return m_sReceivingAdviceReference;
+  }
+
+  /**
+   * Set the invoice line receiving advice reference (BT-191).
+   *
+   * @param sReceivingAdviceReference
+   *        Invoice line receiving advice reference; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoiceLine setReceivingAdviceReference (@Nullable final String sReceivingAdviceReference)
+  {
+    m_sReceivingAdviceReference = sReceivingAdviceReference;
+    return this;
+  }
+
+  /** @return Invoice line receiving advice line reference (BT-192). May be {@code null}. */
+  @Nullable
+  public String getReceivingAdviceLineReference ()
+  {
+    return m_sReceivingAdviceLineReference;
+  }
+
+  /**
+   * Set the invoice line receiving advice line reference (BT-192).
+   *
+   * @param sReceivingAdviceLineReference
+   *        Invoice line receiving advice line reference; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoiceLine setReceivingAdviceLineReference (@Nullable final String sReceivingAdviceLineReference)
+  {
+    m_sReceivingAdviceLineReference = sReceivingAdviceLineReference;
+    return this;
+  }
+
+  /** @return Invoice line delivery note reference (BT-198). May be {@code null}. */
+  @Nullable
+  public String getDeliveryNoteReference ()
+  {
+    return m_sDeliveryNoteReference;
+  }
+
+  /**
+   * Set the invoice line delivery note reference (BT-198).
+   *
+   * @param sDeliveryNoteReference
+   *        Invoice line delivery note reference; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoiceLine setDeliveryNoteReference (@Nullable final String sDeliveryNoteReference)
+  {
+    m_sDeliveryNoteReference = sDeliveryNoteReference;
+    return this;
+  }
+
+  /** @return Invoice line delivery note line reference (BT-199). May be {@code null}. */
+  @Nullable
+  public String getDeliveryNoteLineReference ()
+  {
+    return m_sDeliveryNoteLineReference;
+  }
+
+  /**
+   * Set the invoice line delivery note line reference (BT-199).
+   *
+   * @param sDeliveryNoteLineReference
+   *        Invoice line delivery note line reference; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoiceLine setDeliveryNoteLineReference (@Nullable final String sDeliveryNoteLineReference)
+  {
+    m_sDeliveryNoteLineReference = sDeliveryNoteLineReference;
+    return this;
+  }
+
+  /** @return Invoice line delivery information (BG-37). May be {@code null}. */
+  @Nullable
+  public PhloxLineDelivery getDelivery ()
+  {
+    return m_aDelivery;
+  }
+
+  /**
+   * Set the invoice line delivery information (BG-37).
+   *
+   * @param aDelivery
+   *        Invoice line delivery information; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxInvoiceLine setDelivery (@Nullable final PhloxLineDelivery aDelivery)
+  {
+    m_aDelivery = aDelivery;
+    return this;
+  }
+
+  /**
+   * @return Mutable list of line-level preceding invoice references (BG-39). Never {@code null}; empty when none are present.
+   */
+  @NonNull
+  @ReturnsMutableObject
+  public ICommonsList <PhloxLinePrecedingInvoiceRef> precedingInvoiceRefs ()
+  {
+    return m_aPrecedingInvoiceRefs;
   }
 }

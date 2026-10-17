@@ -22,9 +22,10 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
- * BG-28 INVOICE LINE CHARGE (0..n on a line). Carries BT-141 (charge amount), BT-142 (base
- * amount), BT-143 (percentage), BT-144 (reason text) and BT-145 (reason code). Same shape as
- * {@link PhloxLineAllowance}.
+ * BG-28 INVOICE LINE CHARGE (0..n on a line; "charges and taxes" since EN 16931:2026). Carries
+ * BT-141 (charge amount), BT-142 (base amount), BT-143 (percentage), BT-144 (reason text) and
+ * BT-145 (reason code). Since EN 16931:2026 also BT-193 / BT-193-1 (non-VAT tax type code and its
+ * list identifier). Same shape as {@link PhloxLineAllowance}.
  *
  * @author Philip Helger
  */
@@ -35,6 +36,8 @@ public class PhloxLineCharge
   private BigDecimal m_aPercentage;
   private String m_sReason;
   private String m_sReasonCode;
+  private String m_sNonVatTaxTypeCode;
+  private String m_sNonVatTaxTypeCodeListID;
 
   /** Create an empty line charge. */
   public PhloxLineCharge ()
@@ -142,6 +145,48 @@ public class PhloxLineCharge
   public PhloxLineCharge setReasonCode (@Nullable final String sReasonCode)
   {
     m_sReasonCode = sReasonCode;
+    return this;
+  }
+
+  /** @return Invoice line-level non-VAT tax type code (BT-193). May be {@code null}. */
+  @Nullable
+  public String getNonVatTaxTypeCode ()
+  {
+    return m_sNonVatTaxTypeCode;
+  }
+
+  /**
+   * Set the invoice line-level non-VAT tax type code (BT-193).
+   *
+   * @param sNonVatTaxTypeCode
+   *        Invoice line-level non-VAT tax type code; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxLineCharge setNonVatTaxTypeCode (@Nullable final String sNonVatTaxTypeCode)
+  {
+    m_sNonVatTaxTypeCode = sNonVatTaxTypeCode;
+    return this;
+  }
+
+  /** @return Invoice line tax type code list identifier (BT-193-1). May be {@code null}. */
+  @Nullable
+  public String getNonVatTaxTypeCodeListID ()
+  {
+    return m_sNonVatTaxTypeCodeListID;
+  }
+
+  /**
+   * Set the invoice line tax type code list identifier (BT-193-1).
+   *
+   * @param sNonVatTaxTypeCodeListID
+   *        Invoice line tax type code list identifier; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxLineCharge setNonVatTaxTypeCodeListID (@Nullable final String sNonVatTaxTypeCodeListID)
+  {
+    m_sNonVatTaxTypeCodeListID = sNonVatTaxTypeCodeListID;
     return this;
   }
 }

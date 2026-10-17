@@ -2,7 +2,9 @@
 
 This page defines the **intermediate model** — the central Java data structure that every reader populates and every writer consumes. It is intentionally a 1:1 mapping of the EN 16931 semantic model: one Java type per Business Group (BG), one field per Business Term (BT).
 
-The shape below is derived from the EN 16931 three-way mapping at `../en16931-cii2ubl/docs/en16931-3way-mapping.md`. Every cardinality below matches that document.
+The shape below is derived from the EN 16931 three-way mapping at `../en16931-cii2ubl/docs/en16931-3way-mapping.md` (2017) and `../en16931-cii2ubl/docs/en16931-2026-syntax.md` (2026).
+
+**One model for both editions.** The model is a superset: it carries every BG/BT of EN 16931:2017 *and* of EN 16931:2026. Terms that only exist in 2026 (marked *2026* below) stay empty (`null` / empty list) when an EN 16931:2017 document is read. `PhloxInvoice.getEdition()` tells which edition the reader assumed (`EEN16931Edition` from `en16931-basics`).
 
 ## Conventions
 
@@ -38,15 +40,18 @@ Where a row spans a value plus its scheme (e.g. `BT-29 / BT-29-1`), the `Type` c
 ```
 PhloxInvoice                              (root; corresponds to "the document")
   ├─ EPhloxDocumentKind eKind             INVOICE | CREDIT_NOTE
+  ├─ EEN16931Edition eEdition             EN2017 | EN2026 (set by the reader)
   ├─ String sNumber                       BT-1
   ├─ LocalDate aIssueDate                 BT-2
+  ├─ OffsetTime aIssueTime                BT-166 (2026)
   ├─ String sTypeCode                     BT-3
   ├─ String sCurrency                     BT-5
   ├─ String sVatAccountingCurrency        BT-6
+  ├─ BigDecimal aVatExchangeRate          BT-167 (2026), with BT-167-1 / BT-167-2 currency codes
   ├─ LocalDate aVatPointDate              BT-7
   ├─ String sVatPointDateCode             BT-8
   ├─ LocalDate aPaymentDueDate            BT-9
-  ├─ String sBuyerReference               BT-10
+  ├─ ICommonsList <PhloxIdentifier>       BT-10 / BT-10-1 (0..n since 2026)
   ├─ String sProjectReference             BT-11
   ├─ String sContractReference            BT-12
   ├─ String sPurchaseOrderReference       BT-13
@@ -56,7 +61,7 @@ PhloxInvoice                              (root; corresponds to "the document")
   ├─ String sTenderOrLotReference         BT-17
   ├─ PhloxInvoicedObjectIdentifier        BT-18 / BT-18-1
   ├─ String sBuyerAccountingReference     BT-19
-  ├─ String sPaymentTerms                 BT-20
+  ├─ String sDeliveryNoteReference        BT-197 (2026)
   │
   ├─ ICommonsList <PhloxInvoiceNote>           BG-1   (0..n)
   ├─ PhloxProcessControl                       BG-2   (1..1)
@@ -70,7 +75,8 @@ PhloxInvoice                              (root; corresponds to "the document")
   ├─ PhloxPaymentInstructions                  BG-16  (0..1)  → BG-17/BG-18/BG-19 nested
   ├─ ICommonsList <PhloxDocumentAllowance>     BG-20  (0..n)
   ├─ ICommonsList <PhloxDocumentCharge>        BG-21  (0..n)
-  ├─ PhloxDocumentTotals                       BG-22  (1..1)
+  ├─ ICommonsList <PhloxPaymentTerms>          BG-33  (0..n, 2026; carries BT-20, BG-35, BG-36)
+  ├─ PhloxDocumentTotals                       BG-22  (1..1)  → BG-34 nested (2026)
   ├─ ICommonsList <PhloxVatBreakdown>          BG-23  (1..n)
   ├─ ICommonsList <PhloxSupportingDocument>    BG-24  (0..n)
   └─ ICommonsList <PhloxInvoiceLine>           BG-25  (1..n)
@@ -84,13 +90,16 @@ These live directly on `PhloxInvoice` and correspond to fields the EN 16931 mode
 |----|------|------|-------|------------|
 | BT-1 | Invoice number | Identifier | 1..1 | `m_sNumber` |
 | BT-2 | Invoice issue date | Date | 1..1 | `m_aIssueDate` |
+| BT-166 | Invoice issue time (*2026*) | Time with offset | 0..1 | `m_aIssueTime` |
 | BT-3 | Invoice type code | Code | 1..1 | `m_sTypeCode` |
 | BT-5 | Invoice currency code | Code | 1..1 | `m_sCurrency` |
 | BT-6 | VAT accounting currency code | Code | 0..1 | `m_sVatAccountingCurrency` |
+| BT-167 | VAT accounting currency exchange rate (*2026*) | Number | 0..1 | `m_aVatExchangeRate` |
+| BT-167-1 / BT-167-2 | Exchange rate target / source currency code (*2026*) | Code | 0..1 | `m_sVatExchangeRateTargetCurrency` / `m_sVatExchangeRateSourceCurrency` |
 | BT-7 | VAT point date | Date | 0..1 | `m_aVatPointDate` |
 | BT-8 | VAT point date code | Code | 0..1 | `m_sVatPointDateCode` |
 | BT-9 | Payment due date | Date | 0..1 | `m_aPaymentDueDate` |
-| BT-10 | Buyer reference | Text | 0..1 | `m_sBuyerReference` |
+| BT-10 / BT-10-1 | Buyer reference + scheme (0..n and Identifier since 2026) | Identifier | 0..n | `m_aBuyerReferences` |
 | BT-11 | Project reference | Document Reference | 0..1 | `m_sProjectReference` |
 | BT-12 | Contract reference | Document Reference | 0..1 | `m_sContractReference` |
 | BT-13 | Purchase order reference | Document Reference | 0..1 | `m_sPurchaseOrderReference` |
@@ -100,7 +109,21 @@ These live directly on `PhloxInvoice` and correspond to fields the EN 16931 mode
 | BT-17 | Tender or lot reference | Document Reference | 0..1 | `m_sTenderOrLotReference` |
 | BT-18 / BT-18-1 | Invoiced object identifier + scheme | Identifier | 0..1 | `m_aInvoicedObjectIdentifier` |
 | BT-19 | Buyer accounting reference | Text | 0..1 | `m_sBuyerAccountingReference` |
-| BT-20 | Payment terms | Text | 0..1 | `m_sPaymentTerms` |
+| BT-197 | Delivery note reference (*2026*) | Document Reference | 0..1 | `m_sDeliveryNoteReference` |
+
+BT-20 (payment terms text) moved into BG-33 — see below.
+
+## BG-33 Payment Terms (0..n) — `PhloxPaymentTerms` (*2026*)
+
+Replaces the single BT-20 string of the 2017 model. Readers of EN 16931:2017 documents create one entry that only carries the text.
+
+| BT / BG | Name | Type | Card. | Field |
+|---------|------|------|-------|-------|
+| BT-20 | Payment term text | Text | 0..1 | `m_sText` |
+| BG-35 | Early payment discounts | — | 0..n | `m_aEarlyDiscounts` (`PhloxEarlyPaymentDiscount`) |
+| BG-36 | Late payment penalties | — | 0..n | `m_aLatePenalties` (`PhloxLatePaymentPenalty`) |
+
+`PhloxEarlyPaymentDiscount` (BG-35): BT-170 discount end date (`Date`, 1..1), BT-171 percentage, BT-172 amount. `PhloxLatePaymentPenalty` (BG-36): BT-181 start date (`Date`, 1..1), BT-182 yearly interest percentage, BT-183 amount.
 
 ## BG-1 Invoice Note (0..n) — `PhloxInvoiceNote`
 
@@ -122,6 +145,7 @@ These live directly on `PhloxInvoice` and correspond to fields the EN 16931 mode
 |----|------|------|-------|-------|
 | BT-25 | Preceding Invoice number | Document Reference | 1..1 | `m_sNumber` |
 | BT-26 | Preceding Invoice issue date | Date | 0..1 | `m_aIssueDate` |
+| BT-202 | Preceding invoice type code (*2026*) | Code | 0..1 | `m_sTypeCode` |
 
 ## BG-4 Seller (1..1) — `PhloxSeller`
 
@@ -133,6 +157,7 @@ These live directly on `PhloxInvoice` and correspond to fields the EN 16931 mode
 | BT-30 / BT-30-1 | Legal registration ID + schemeID | Identifier | 0..1 | `m_aLegalRegistration` |
 | BT-31 | Seller VAT identifier | Identifier | 0..1 | `m_sVatIdentifier` |
 | BT-32 | Seller tax registration ID | Identifier | 0..1 | `m_sTaxRegistration` |
+| BT-32-1 | Seller tax registration scheme identifier (*2026*) | Identifier | 0..1 | `m_sTaxRegistrationSchemeID` |
 | BT-33 | Seller additional legal info | Text | 0..1 | `m_sAdditionalLegalInfo` |
 | BT-34 / BT-34-1 | Electronic address + schemeID | Identifier | 1..1 | `m_aElectronicAddress` |
 | — | Postal address (BG-5) | — | 1..1 | `m_aPostalAddress` |
@@ -240,6 +265,8 @@ Shared shape with BG-9.
 | BT-89 | Mandate reference ID | Identifier | 0..1 | `m_sMandateReferenceID` |
 | BT-90 | Bank assigned creditor ID | Identifier | 0..1 | `m_sBankAssignedCreditorID` |
 | BT-91 | Debited account ID | Identifier | 0..1 | `m_sDebitedAccountID` |
+| BT-215 | Debited account payment service provider identifier (*2026*) | Identifier | 0..1 | `m_sDebitedAccountProviderID` |
+| BT-216 | Debited account name (*2026*) | Text | 0..1 | `m_sDebitedAccountName` |
 
 ## BG-20 Document-Level Allowance (0..n) — `PhloxDocumentAllowance`
 
@@ -252,8 +279,13 @@ Shared shape with BG-9.
 | BT-96 | VAT rate | Percentage | 0..1 | `m_aVatRate` |
 | BT-97 | Allowance reason | Text | 0..1 | `m_sReason` |
 | BT-98 | Allowance reason code | Code | 0..1 | `m_sReasonCode` |
+| BT-173 | Allowance exemption reason text (*2026*) | Text | 0..1 | `m_sExemptionReasonText` |
+| BT-174 | Allowance VAT exemption reason and specification code (*2026*) | Code | 0..1 | `m_sExemptionReasonCode` |
+| BT-213 | Allowance goods/services code (*2026*) | Code | 0..1 | `m_sGoodsServicesCode` |
 
-## BG-21 Document-Level Charge (0..n) — `PhloxDocumentCharge`
+## BG-21 Document-Level Charge or Tax (0..n) — `PhloxDocumentCharge`
+
+Renamed "Document level charges and taxes" in EN 16931:2026; BT-99…BT-104 became "charge or tax …".
 
 | BT | Name | Type | Card. | Field |
 |----|------|------|-------|-------|
@@ -264,6 +296,10 @@ Shared shape with BG-9.
 | BT-103 | VAT rate | Percentage | 0..1 | `m_aVatRate` |
 | BT-104 | Charge reason | Text | 0..1 | `m_sReason` |
 | BT-105 | Charge reason code | Code | 0..1 | `m_sReasonCode` |
+| BT-175 | Charge or tax exemption reason text (*2026*) | Text | 0..1 | `m_sExemptionReasonText` |
+| BT-176 | VAT exemption reason and specification code (*2026*) | Code | 0..1 | `m_sExemptionReasonCode` |
+| BT-177 / BT-177-1 | Non-VAT tax code + list identifier (*2026*) | Code | 0..1 | `m_sNonVatTaxCode` / `m_sNonVatTaxCodeListID` |
+| BT-214 | Charge goods/services code (*2026*) | Code | 0..1 | `m_sGoodsServicesCode` |
 
 ## BG-22 Document Totals (1..1) — `PhloxDocumentTotals`
 
@@ -280,6 +316,15 @@ Shared shape with BG-9.
 | BT-114 | Rounding amount | Amount | 0..1 | `m_aRoundingAmount` |
 | BT-115 | Amount due for payment | Amount | 1..1 | `m_aPayableAmount` |
 
+### BG-34 Charges on Behalf of a Third Party (0..n) — `PhloxThirdPartyCharge` (*2026*)
+
+| BT | Name | Type | Card. | Field |
+|----|------|------|-------|-------|
+| BT-179 | Charge amount collected on behalf of a third party | Amount | 1..1 | `m_aAmount` |
+| BT-180 | Charges specification | Text | 1..1 | `m_sSpecification` |
+
+Held in `PhloxDocumentTotals.thirdPartyCharges ()`.
+
 > BT-111 is the only amount on the model whose currency may differ from BT-5. The Mustache adapter routes `{{BT-111 | amount}}` through BT-6 when present (see [[Template Language]] format modifiers).
 
 ## BG-23 VAT Breakdown (1..n) — `PhloxVatBreakdown`
@@ -287,11 +332,13 @@ Shared shape with BG-9.
 | BT | Name | Type | Card. | Field |
 |----|------|------|-------|-------|
 | BT-116 | Taxable amount | Amount | 1..1 | `m_aTaxableAmount` |
-| BT-117 | Tax amount | Amount | 1..1 | `m_aTaxAmount` |
+| BT-117 | Tax amount (0..1 since 2026, margin schemes) | Amount | 0..1 | `m_aTaxAmount` |
 | BT-118 | VAT category code | Code | 1..1 | `m_sCategoryCode` |
 | BT-119 | VAT rate | Percentage | 0..1 | `m_aRate` |
 | BT-120 | Exemption reason text | Text | 0..1 | `m_sExemptionReason` |
-| BT-121 | Exemption reason code | Code | 0..1 | `m_sExemptionReasonCode` |
+| BT-121 | Exemption reason and specification code | Code | 0..1 | `m_sExemptionReasonCode` |
+| BT-184 | VAT breakdown currency (*2026*) | Code | 0..1 | `m_sCurrency` |
+| BT-210 | VAT breakdown goods/services code (*2026*) | Code | 0..1 | `m_sGoodsServicesCode` |
 
 ## BG-24 Additional Supporting Document (0..n) — `PhloxSupportingDocument`
 
@@ -316,6 +363,13 @@ Shared shape with BG-9.
 | BT-131 | Line net amount | Amount | 1..1 | `m_aNetAmount` |
 | BT-132 | Referenced purchase-order line | Document Reference | 0..1 | `m_sPurchaseOrderLineRef` |
 | BT-133 | Line buyer accounting reference | Text | 0..1 | `m_sAccountingCost` |
+| BT-188 | Line purchase order reference (*2026*) | Document Reference | 0..1 | `m_sPurchaseOrderReference` |
+| BT-200 / BT-201 | Line sales order reference / line reference (*2026*) | Document Reference | 0..1 | `m_sSalesOrderReference` / `m_sSalesOrderLineReference` |
+| BT-189 / BT-190 | Line despatch advice reference / line reference (*2026*) | Document Reference | 0..1 | `m_sDespatchAdviceReference` / `m_sDespatchAdviceLineReference` |
+| BT-191 / BT-192 | Line receiving advice reference / line reference (*2026*) | Document Reference | 0..1 | `m_sReceivingAdviceReference` / `m_sReceivingAdviceLineReference` |
+| BT-198 / BT-199 | Line delivery note reference / line reference (*2026*) | Document Reference | 0..1 | `m_sDeliveryNoteReference` / `m_sDeliveryNoteLineReference` |
+| — | Line delivery information (BG-37 / BG-38, *2026*) | — | 0..1 | `m_aDelivery` |
+| — | Line-level preceding invoice references (BG-39, *2026*) | — | 0..n | `m_aPrecedingInvoiceRefs` |
 | — | Line period (BG-26) | — | 0..1 | `m_aPeriod` |
 | — | Line allowances (BG-27) | — | 0..n | `m_aAllowances` |
 | — | Line charges (BG-28) | — | 0..n | `m_aCharges` |
@@ -325,15 +379,33 @@ Shared shape with BG-9.
 
 ### BG-26 Invoice Line Period (0..1) — `PhloxInvoicingPeriod` (reused)
 
-Fields BT-134 / BT-135 — same shape as BG-14; both `Date`.
+Fields BT-134 / BT-135 — same shape as BG-14; both `Date`. In EN 16931:2026 BG-26 is nested under the new BG-37; the model keeps it directly on `PhloxInvoiceLine`.
+
+### BG-37 / BG-38 Invoice Line Delivery Information and Deliver-To Address (0..1) — `PhloxLineDelivery` (*2026*)
+
+| BT | Name | Type | Card. | Field |
+|----|------|------|-------|-------|
+| BT-185 | Deliver to party name | Text | 0..1 | `m_sPartyName` |
+| BT-186 / BT-186-1 | Deliver to location identifier + scheme | Identifier | 0..1 | `m_aLocationIdentifier` |
+| BT-187 | Actual delivery date | Date | 0..1 | `m_aActualDeliveryDate` |
+| BT-203 … BT-209 | Deliver to address (BG-38) | — | 0..1 | `m_aPostalAddress` (`PhloxPostalAddress`) |
+
+### BG-39 Line-Level Preceding Invoice Reference (0..n) — `PhloxLinePrecedingInvoiceRef` (*2026*)
+
+| BT | Name | Type | Card. | Field |
+|----|------|------|-------|-------|
+| BT-217 | Preceding invoice reference | Document Reference | 1..1 | `m_sNumber` |
+| BT-218 | Preceding invoice issue date | Date | 0..1 | `m_aIssueDate` |
+| BT-219 | Preceding invoice type code | Code | 0..1 | `m_sTypeCode` |
+| BT-220 | Preceding invoice line reference | Document Reference | 0..1 | `m_sLineReference` |
 
 ### BG-27 Line Allowance (0..n) — `PhloxLineAllowance`
 
 Fields BT-136 through BT-140 — analogous to BG-20 minus the VAT category fields. Types: BT-136 `Amount`, BT-137 `Amount`, BT-138 `Percentage`, BT-139 `Text`, BT-140 `Code`.
 
-### BG-28 Line Charge (0..n) — `PhloxLineCharge`
+### BG-28 Line Charge or Tax (0..n) — `PhloxLineCharge`
 
-Fields BT-141 through BT-145 — analogous to BG-21 minus the VAT category fields. Types: BT-141 `Amount`, BT-142 `Amount`, BT-143 `Percentage`, BT-144 `Text`, BT-145 `Code`.
+Fields BT-141 through BT-145 — analogous to BG-21 minus the VAT category fields. Types: BT-141 `Amount`, BT-142 `Amount`, BT-143 `Percentage`, BT-144 `Text`, BT-145 `Code`. *2026:* BT-193 / BT-193-1 non-VAT tax type code + list identifier (`m_sNonVatTaxTypeCode` / `m_sNonVatTaxTypeCodeListID`).
 
 ### BG-29 Price Details (1..1) — `PhloxPriceDetails`
 
@@ -351,6 +423,8 @@ Fields BT-141 through BT-145 — analogous to BG-21 minus the VAT category field
 |----|------|------|-------|-------|
 | BT-151 | Item VAT category code | Code | 1..1 | `m_sCategoryCode` |
 | BT-152 | Item VAT rate | Percentage | 0..1 | `m_aRate` |
+| BT-194 | Invoiced item exemption reason text (*2026*) | Text | 0..1 | `m_sExemptionReasonText` |
+| BT-195 | Invoiced item VAT exemption reason and specification code (*2026*) | Code | 0..1 | `m_sExemptionReasonCode` |
 
 ### BG-31 Item Information (1..1) — `PhloxItem`
 
@@ -363,14 +437,17 @@ Fields BT-141 through BT-145 — analogous to BG-21 minus the VAT category field
 | BT-157 / BT-157-1 | Standard item identifier + schemeID | Identifier | 0..1 | `m_aStandardItemID` |
 | BT-158 / BT-158-1 / BT-158-2 | Classifications | Identifier | 0..n | `m_aClassifications` |
 | BT-159 | Country of origin | Code | 0..1 | `m_sCountryOfOrigin` |
+| BT-196 | Goods/services code (*2026*) | Code | 0..1 | `m_sGoodsServicesCode` |
 | — | Item attributes (BG-32) | — | 0..n | `m_aAttributes` |
 
-### BG-32 Item Attributes (0..n) — `PhloxItemAttribute`
+### BG-32 Item Attribute (0..n) — `PhloxItemAttribute`
 
 | BT | Name | Type | Card. | Field |
 |----|------|------|-------|-------|
-| BT-160 | Attribute name | Text | 1..1 | `m_sName` |
+| BT-160 | Attribute name (0..1 since 2026) | Text | 0..1 | `m_sName` |
 | BT-161 | Attribute value | Text | 1..1 | `m_sValue` |
+| BT-211 | Attribute code (*2026*) | Code | 0..1 | `m_sCode` |
+| BT-212 | Attribute value unit of measure code (*2026*) | Code | 0..1 | `m_sValueUnit` |
 
 ## Reusable value-object types
 

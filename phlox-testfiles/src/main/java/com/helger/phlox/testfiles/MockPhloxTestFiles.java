@@ -188,6 +188,50 @@ public final class MockPhloxTestFiles
                                                           "2017/cii/issues/issue47.xml",
                                                           "2017/cii/issues/issue1121.xml" };
 
+  // EN 16931:2026 / UBL 2.5 — Invoices
+  private static final String [] UBL25_INVOICE_FILES = { "2026/ubl/invoice/d25a-coverage-card-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-coverage-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-edge-directdebit-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-edge-empty-commodity-classification-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-edge-payment-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-edge-price-discount-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-edge-tax-currency-same-as-document-currency-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-edge-zero-bt111-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-full-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-header-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-minimal-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-new-allowchg-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-new-bg34-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-new-header-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-new-linedelivery-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-new-lineref-invoice-ubl.xml",
+                                                         "2026/ubl/invoice/d25a-new-paymentterms-invoice-ubl.xml" };
+
+  // EN 16931:2026 / UBL 2.5 — Credit notes
+  private static final String [] UBL25_CREDITNOTE_FILES = { "2026/ubl/creditnote/d25a-full-creditnote-ubl.xml",
+                                                            "2026/ubl/creditnote/d25a-header-creditnote-ubl.xml",
+                                                            "2026/ubl/creditnote/d25a-minimal-creditnote-ubl.xml",
+                                                            "2026/ubl/creditnote/d25a-new-bg34-creditnote-ubl.xml",
+                                                            "2026/ubl/creditnote/d25a-typecode81-creditnote-ubl.xml" };
+
+  // EN 16931:2026 / CII D25A — Invoices and credit notes
+  private static final String [] CII_D25A_FILES = { "2026/cii/d25a-edge-directdebit-invoice.xml",
+                                                    "2026/cii/d25a-edge-payment-invoice.xml",
+                                                    "2026/cii/d25a-full-creditnote.xml",
+                                                    "2026/cii/d25a-full-invoice.xml",
+                                                    "2026/cii/d25a-header-creditnote.xml",
+                                                    "2026/cii/d25a-header-invoice.xml",
+                                                    "2026/cii/d25a-minimal-creditnote.xml",
+                                                    "2026/cii/d25a-minimal-invoice.xml",
+                                                    "2026/cii/d25a-new-allowchg-invoice.xml",
+                                                    "2026/cii/d25a-new-bg34-creditnote.xml",
+                                                    "2026/cii/d25a-new-bg34-invoice.xml",
+                                                    "2026/cii/d25a-new-header-invoice.xml",
+                                                    "2026/cii/d25a-new-linedelivery-invoice.xml",
+                                                    "2026/cii/d25a-new-lineref-invoice.xml",
+                                                    "2026/cii/d25a-new-paymentterms-invoice.xml",
+                                                    "2026/cii/d25a-typecode81-creditnote.xml" };
+
   private MockPhloxTestFiles ()
   {}
 
@@ -294,6 +338,43 @@ public final class MockPhloxTestFiles
     aList.addAll (_toResources (CII_D16B_TECHNICAL_FILES));
     aList.addAll (_toResources (CII_D16B_ISSUE_FILES));
     return aList;
+  }
+
+  /** @return Classpath resources for all EN 16931:2026 UBL 2.5 Invoice example files. */
+  @NonNull
+  @ReturnsMutableCopy
+  public static ICommonsList <ClassPathResource> getUbl25InvoiceFiles ()
+  {
+    return _toResources (UBL25_INVOICE_FILES);
+  }
+
+  /** @return Classpath resources for all EN 16931:2026 UBL 2.5 CreditNote example files. */
+  @NonNull
+  @ReturnsMutableCopy
+  public static ICommonsList <ClassPathResource> getUbl25CreditNoteFiles ()
+  {
+    return _toResources (UBL25_CREDITNOTE_FILES);
+  }
+
+  /** @return Classpath resources for all UBL 2.5 example files (Invoice and CreditNote). */
+  @NonNull
+  @ReturnsMutableCopy
+  public static ICommonsList <ClassPathResource> getAllUbl25Files ()
+  {
+    final ICommonsList <ClassPathResource> aList = _toResources (UBL25_INVOICE_FILES);
+    aList.addAll (_toResources (UBL25_CREDITNOTE_FILES));
+    return aList;
+  }
+
+  /**
+   * @return Classpath resources for all EN 16931:2026 CII D25A example files (Invoices and
+   *         CreditNotes).
+   */
+  @NonNull
+  @ReturnsMutableCopy
+  public static ICommonsList <ClassPathResource> getCiiD25AFiles ()
+  {
+    return _toResources (CII_D25A_FILES);
   }
 
   @NonNull

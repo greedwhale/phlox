@@ -41,6 +41,7 @@ public class PhloxItem
   private final ICommonsList <PhloxItemClassification> m_aClassifications = new CommonsArrayList <> ();
   private String m_sCountryOfOrigin;
   private final ICommonsList <PhloxItemAttribute> m_aAttributes = new CommonsArrayList <> ();
+  private String m_sGoodsServicesCode;
 
   /** Create an empty item. */
   public PhloxItem ()
@@ -192,5 +193,26 @@ public class PhloxItem
   public ICommonsList <PhloxItemAttribute> attributes ()
   {
     return m_aAttributes;
+  }
+
+  /** @return Goods/services code (BT-196). May be {@code null}. */
+  @Nullable
+  public String getGoodsServicesCode ()
+  {
+    return m_sGoodsServicesCode;
+  }
+
+  /**
+   * Set the goods/services code (BT-196).
+   *
+   * @param sGoodsServicesCode
+   *        Goods/services code; may be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PhloxItem setGoodsServicesCode (@Nullable final String sGoodsServicesCode)
+  {
+    m_sGoodsServicesCode = sGoodsServicesCode;
+    return this;
   }
 }

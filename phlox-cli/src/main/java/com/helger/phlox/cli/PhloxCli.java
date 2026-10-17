@@ -86,6 +86,11 @@ public class PhloxCli implements Callable <Integer>
            defaultValue = "AUTO")
   ESourceSyntax syntax;
 
+  @Option (names = "--en-version",
+           description = "EN 16931 edition of the input: auto, 2017 or 2026. Default: auto (reads BT-24 Specification identifier).",
+           defaultValue = "auto")
+  String enVersion;
+
   @Option (names = { "-l", "--lang" },
            description = "Output language code (e.g. 'en', 'de'). Default: en.",
            defaultValue = "en")
@@ -116,12 +121,28 @@ public class PhloxCli implements Callable <Integer>
     final byte [] aBytes = inputFile != null ? Files.readAllBytes (inputFile) : _readAllStdin ();
     final ESourceSyntax eSyntax = syntax == ESourceSyntax.AUTO ? _sniffSyntax (aBytes) : syntax;
 
+    if (!"auto".equalsIgnoreCase (enVersion) && !"2017".equals (enVersion) && !"2026".equals (enVersion))
+    {
+      System.err.println ("Unsupported --en-version '" + enVersion + "'. Use auto, 2017 or 2026.");
+      return Integer.valueOf (2);
+    }
+
     final ErrorList aErrors = new ErrorList ();
     final PhloxInvoice aInvoice;
     if (eSyntax == ESourceSyntax.CII)
-      aInvoice = new CiiInvoiceReader ().read (new NonBlockingByteArrayInputStream (aBytes), aErrors);
+    {
+      final CiiInvoiceReader aReader = "2017".equals (enVersion) ? CiiInvoiceReader.fromD16B ()
+                                                                  : "2026".equals (enVersion) ? CiiInvoiceReader.fromD25A ()
+                                                                                              : CiiInvoiceReader.autoDetect ();
+      aInvoice = aReader.read (new NonBlockingByteArrayInputStream (aBytes), aErrors);
+    }
     else
-      aInvoice = UblInvoiceReader.fromUbl21 ().read (new NonBlockingByteArrayInputStream (aBytes), aErrors);
+    {
+      final UblInvoiceReader aReader = "2017".equals (enVersion) ? UblInvoiceReader.fromUbl21 ()
+                                                                  : "2026".equals (enVersion) ? UblInvoiceReader.fromUbl25 ()
+                                                                                              : UblInvoiceReader.autoDetect ();
+      aInvoice = aReader.read (new NonBlockingByteArrayInputStream (aBytes), aErrors);
+    }
 
     if (aInvoice == null || aErrors.containsAtLeastOneError ())
     {
