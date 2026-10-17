@@ -19,6 +19,7 @@ package com.helger.phlox.template.adapter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.FormatStyle;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -393,20 +394,20 @@ public final class PhloxInvoiceMustacheContext
   {
     if (aValue == null)
       return false;
-    if (aValue instanceof Boolean)
-      return ((Boolean) aValue).booleanValue ();
-    if (aValue instanceof String)
-      return !((String) aValue).isEmpty ();
-    if (aValue instanceof java.util.Collection)
-      return !((java.util.Collection <?>) aValue).isEmpty ();
+    if (aValue instanceof final Boolean bValue)
+      return bValue.booleanValue ();
+    if (aValue instanceof final String sValue)
+      return !sValue.isEmpty ();
+    if (aValue instanceof final Collection <?> aCollection)
+      return !aCollection.isEmpty ();
     return true;
   }
 
   @NonNull
   private static String _renderLeaf (@NonNull final Object aValue, @NonNull final PhloxRenderEnv aEnv)
   {
-    if (aValue instanceof String)
-      return (String) aValue;
+    if (aValue instanceof final String sValue)
+      return sValue;
     if (aValue instanceof final PhloxIdentifier aID)
     {
       final String sScheme = aID.getSchemeID ();
@@ -415,10 +416,8 @@ public final class PhloxInvoiceMustacheContext
         return "";
       return sScheme == null || sScheme.isEmpty () ? sVal : sScheme + ":" + sVal;
     }
-    if (aValue instanceof LocalDate)
-      return PhloxFormat.date ((LocalDate) aValue, aEnv.getLocale (), aEnv.getFormatOptions ());
-    if (aValue instanceof BigDecimal)
-    {}
+    if (aValue instanceof final LocalDate aDate)
+      return PhloxFormat.date (aDate, aEnv.getLocale (), aEnv.getFormatOptions ());
     return aValue.toString ();
   }
 
@@ -452,23 +451,23 @@ public final class PhloxInvoiceMustacheContext
         return aValue.toString ();
       case "amount":
       {
-        if (!(aValue instanceof BigDecimal))
+        if (!(aValue instanceof final BigDecimal aAmount))
           return aValue.toString ();
         final String sCurrencyBt = sArg != null && !sArg.isEmpty () ? sArg : "BT-5";
         final String sCurrency = _resolveCurrency (sCurrencyBt, aEnv);
-        return PhloxFormat.amount ((BigDecimal) aValue, sCurrency, aEnv.getLocale (), aEnv.getFormatOptions ());
+        return PhloxFormat.amount (aAmount, sCurrency, aEnv.getLocale (), aEnv.getFormatOptions ());
       }
       case "percent":
-        if (!(aValue instanceof BigDecimal))
+        if (!(aValue instanceof final BigDecimal aPercentage))
           return aValue.toString ();
-        return PhloxFormat.percent ((BigDecimal) aValue, aEnv.getLocale (), aEnv.getFormatOptions ());
+        return PhloxFormat.percent (aPercentage, aEnv.getLocale (), aEnv.getFormatOptions ());
       case "date":
       {
-        if (!(aValue instanceof LocalDate))
+        if (!(aValue instanceof final LocalDate aDate))
           return aValue.toString ();
         final FormatStyle eStyle = _parseDateStyle (sArg);
         return PDTFormatter.getFormatterDate (eStyle, aEnv.getLocale (), EDTFormatterMode.PRINT)
-                           .format ((LocalDate) aValue);
+                           .format (aDate);
       }
       case "code":
       {

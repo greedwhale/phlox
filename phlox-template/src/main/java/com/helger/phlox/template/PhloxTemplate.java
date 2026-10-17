@@ -306,7 +306,7 @@ public final class PhloxTemplate implements IPhloxTemplate
    *        Source invoice to substitute into the template.
    * @param aCtx
    *        Render context driving locale, label resolver, format options and image resolution.
-   * @return The post-processed {@link PhloxTemplateAst} ready for an emitter.
+   * @return The post-processed {@link PhloxTemplateAst} ready for an emi1tter.
    * @throws PhloxTemplateException
    *         when any stage fails (compile, execute, parse, post-pass).
    */

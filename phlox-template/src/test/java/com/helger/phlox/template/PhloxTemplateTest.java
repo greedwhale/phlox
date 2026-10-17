@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.commonmark.node.Heading;
 import org.commonmark.node.Node;
+import org.jspecify.annotations.NonNull;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,8 +59,8 @@ import com.helger.phlox.testfiles.MockPhloxTestFiles;
 import com.helger.phlox.ubl.UblInvoiceReader;
 
 /**
- * Smoke test: compile {@code default.ptpl}, render a minimal invoice through the full
- * substitute → parse → post-pass pipeline, and assert the result is structurally sane.
+ * Smoke test: compile {@code default.ptpl}, render a minimal invoice through the full substitute →
+ * parse → post-pass pipeline, and assert the result is structurally sane.
  */
 public final class PhloxTemplateTest
 {
@@ -68,6 +69,51 @@ public final class PhloxTemplateTest
   /** Concrete subclass purely so the abstract base can be instantiated in this test. */
   private static final class TestCtx extends AbstractRenderContext <TestCtx>
   {}
+
+  @NonNull
+  private static PhloxInvoice _buildMinimalInvoice ()
+  {
+    final PhloxInvoice aInv = new PhloxInvoice ();
+    aInv.setNumber ("INV-001");
+    aInv.setIssueDate (LocalDate.of (2026, 3, 15));
+    aInv.setTypeCode ("380");
+    aInv.setCurrency ("EUR");
+
+    aInv.getSeller ().setName ("ACME Sellers Inc.");
+    aInv.getBuyer ().setName ("Smith Co.");
+
+    aInv.getDocumentTotals ().setLineNetTotal (new BigDecimal ("100.00"));
+    aInv.getDocumentTotals ().setTaxExclusiveTotal (new BigDecimal ("100.00"));
+    aInv.getDocumentTotals ().setTaxTotal (new BigDecimal ("19.00"));
+    aInv.getDocumentTotals ().setTaxInclusiveTotal (new BigDecimal ("119.00"));
+    aInv.getDocumentTotals ().setPayableAmount (new BigDecimal ("119.00"));
+
+    final PhloxVatBreakdown aVat = new PhloxVatBreakdown ();
+    aVat.setCategoryCode ("S");
+    aVat.setRate (new BigDecimal ("19"));
+    aVat.setTaxableAmount (new BigDecimal ("100.00"));
+    aVat.setTaxAmount (new BigDecimal ("19.00"));
+    aInv.vatBreakdowns ().add (aVat);
+
+    final PhloxInvoiceLine aLine = new PhloxInvoiceLine ();
+    aLine.setID ("1");
+    aLine.setQuantity (new BigDecimal ("2"));
+    aLine.setQuantityUnit ("EA");
+    aLine.setNetAmount (new BigDecimal ("100.00"));
+    final PhloxItem aItem = new PhloxItem ();
+    aItem.setName ("Widget");
+    aLine.setItem (aItem);
+    final PhloxPriceDetails aPrice = new PhloxPriceDetails ();
+    aPrice.setNetPrice (new BigDecimal ("50.00"));
+    aLine.setPrice (aPrice);
+    final PhloxLineVat aLineVat = new PhloxLineVat ();
+    aLineVat.setCategoryCode ("S");
+    aLineVat.setRate (new BigDecimal ("19"));
+    aLine.setLineVat (aLineVat);
+    aInv.lines ().add (aLine);
+
+    return aInv;
+  }
 
   @Test
   public void testRenderAstAgainstDefaultTemplate ()
@@ -84,17 +130,17 @@ public final class PhloxTemplateTest
 
     // The default template opens with `# {{label:section.header.title.invoice}}: {{BT-1}}`,
     // so the very first child block must be a level-1 Heading.
-    Node aFirstHeading = null;
+    Heading aFirstHeading = null;
     for (Node n = aAst.getRoot ().getFirstChild (); n != null; n = n.getNext ())
     {
-      if (n instanceof Heading)
+      if (n instanceof final Heading aHeading)
       {
-        aFirstHeading = n;
+        aFirstHeading = aHeading;
         break;
       }
     }
     assertNotNull ("expected at least one Heading in the rendered AST", aFirstHeading);
-    assertEquals (1, ((Heading) aFirstHeading).getLevel ());
+    assertEquals (1, aFirstHeading.getLevel ());
   }
 
   @Test
@@ -116,7 +162,8 @@ public final class PhloxTemplateTest
     aInvoice.lines ()
             .get (0)
             .setDelivery (new PhloxLineDelivery ().setPartyName ("Line Depot")
-                                                  .setLocationIdentifier (new PhloxIdentifier ("4035813333333", "0088")));
+                                                  .setLocationIdentifier (new PhloxIdentifier ("4035813333333",
+                                                                                               "0088")));
 
     final TestCtx aCtx = new TestCtx ();
     aCtx.setLocale (Locale.ENGLISH);
@@ -186,8 +233,7 @@ public final class PhloxTemplateTest
     assertTrue ("expected seller name in output", sCommonMark.contains ("ACME Sellers Inc."));
     assertTrue ("expected buyer name in output", sCommonMark.contains ("Smith Co."));
     // The synthesized boolean `logo` is false → the attachment:logo line must be absent.
-    assertTrue ("expected no attachment:logo when no logo set",
-                !sCommonMark.contains ("attachment:logo"));
+    assertTrue ("expected no attachment:logo when no logo set", !sCommonMark.contains ("attachment:logo"));
   }
 
   @Test
@@ -303,49 +349,5 @@ public final class PhloxTemplateTest
     {
       return m_aLabelCount.get ();
     }
-  }
-
-  private static PhloxInvoice _buildMinimalInvoice ()
-  {
-    final PhloxInvoice aInv = new PhloxInvoice ();
-    aInv.setNumber ("INV-001");
-    aInv.setIssueDate (LocalDate.of (2026, 3, 15));
-    aInv.setTypeCode ("380");
-    aInv.setCurrency ("EUR");
-
-    aInv.getSeller ().setName ("ACME Sellers Inc.");
-    aInv.getBuyer ().setName ("Smith Co.");
-
-    aInv.getDocumentTotals ().setLineNetTotal (new BigDecimal ("100.00"));
-    aInv.getDocumentTotals ().setTaxExclusiveTotal (new BigDecimal ("100.00"));
-    aInv.getDocumentTotals ().setTaxTotal (new BigDecimal ("19.00"));
-    aInv.getDocumentTotals ().setTaxInclusiveTotal (new BigDecimal ("119.00"));
-    aInv.getDocumentTotals ().setPayableAmount (new BigDecimal ("119.00"));
-
-    final PhloxVatBreakdown aVat = new PhloxVatBreakdown ();
-    aVat.setCategoryCode ("S");
-    aVat.setRate (new BigDecimal ("19"));
-    aVat.setTaxableAmount (new BigDecimal ("100.00"));
-    aVat.setTaxAmount (new BigDecimal ("19.00"));
-    aInv.vatBreakdowns ().add (aVat);
-
-    final PhloxInvoiceLine aLine = new PhloxInvoiceLine ();
-    aLine.setID ("1");
-    aLine.setQuantity (new BigDecimal ("2"));
-    aLine.setQuantityUnit ("EA");
-    aLine.setNetAmount (new BigDecimal ("100.00"));
-    final PhloxItem aItem = new PhloxItem ();
-    aItem.setName ("Widget");
-    aLine.setItem (aItem);
-    final PhloxPriceDetails aPrice = new PhloxPriceDetails ();
-    aPrice.setNetPrice (new BigDecimal ("50.00"));
-    aLine.setPrice (aPrice);
-    final PhloxLineVat aLineVat = new PhloxLineVat ();
-    aLineVat.setCategoryCode ("S");
-    aLineVat.setRate (new BigDecimal ("19"));
-    aLine.setLineVat (aLineVat);
-    aInv.lines ().add (aLine);
-
-    return aInv;
   }
 }

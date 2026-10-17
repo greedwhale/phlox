@@ -24,51 +24,16 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import com.helger.base.string.StringHelper;
-import com.helger.phlox.api.model.PhloxAttachment;
-import com.helger.phlox.api.model.PhloxBuyer;
-import com.helger.phlox.api.model.PhloxContact;
-import com.helger.phlox.api.model.PhloxCreditTransfer;
-import com.helger.phlox.api.model.PhloxDeliveryInformation;
-import com.helger.phlox.api.model.PhloxDirectDebit;
-import com.helger.phlox.api.model.PhloxDocumentAllowance;
-import com.helger.phlox.api.model.PhloxDocumentCharge;
-import com.helger.phlox.api.model.PhloxDocumentTotals;
-import com.helger.phlox.api.model.PhloxEarlyPaymentDiscount;
-import com.helger.phlox.api.model.PhloxIdentifier;
-import com.helger.phlox.api.model.PhloxInvoice;
-import com.helger.phlox.api.model.PhloxInvoiceLine;
-import com.helger.phlox.api.model.PhloxInvoiceNote;
-import com.helger.phlox.api.model.PhloxInvoicingPeriod;
-import com.helger.phlox.api.model.PhloxItem;
-import com.helger.phlox.api.model.PhloxItemAttribute;
-import com.helger.phlox.api.model.PhloxLatePaymentPenalty;
-import com.helger.phlox.api.model.PhloxLineAllowance;
-import com.helger.phlox.api.model.PhloxLineCharge;
-import com.helger.phlox.api.model.PhloxLineDelivery;
-import com.helger.phlox.api.model.PhloxLinePrecedingInvoiceRef;
-import com.helger.phlox.api.model.PhloxLineVat;
-import com.helger.phlox.api.model.PhloxPayee;
-import com.helger.phlox.api.model.PhloxPaymentCard;
-import com.helger.phlox.api.model.PhloxPaymentInstructions;
-import com.helger.phlox.api.model.PhloxPaymentTerms;
-import com.helger.phlox.api.model.PhloxPostalAddress;
-import com.helger.phlox.api.model.PhloxPrecedingInvoiceRef;
-import com.helger.phlox.api.model.PhloxPriceDetails;
-import com.helger.phlox.api.model.PhloxProcessControl;
-import com.helger.phlox.api.model.PhloxSeller;
-import com.helger.phlox.api.model.PhloxSellerTaxRepresentative;
-import com.helger.phlox.api.model.PhloxSupportingDocument;
-import com.helger.phlox.api.model.PhloxThirdPartyCharge;
-import com.helger.phlox.api.model.PhloxVatBreakdown;
+import com.helger.phlox.api.model.*;
 
 /**
  * Static (Class, BT/BG name) → getter registry. Drives the Mustache adapter's name resolution.
  * Every BT/BG referenced by {@code default.ptpl} (and by extension, every BT/BG documented in
  * {@code wiki/Domain-Model.md}) is registered here.
  * <p>
- * Multiple BG positions sharing a Java type — e.g. {@code PhloxPostalAddress} is reached via
- * BG-5 (BT-35..40), BG-8 (BT-50..55), BG-12 (BT-64..69) and BG-15 (BT-75..80) — register all
- * BT aliases against the single Java class so any usage site resolves correctly.
+ * Multiple BG positions sharing a Java type — e.g. {@code PhloxPostalAddress} is reached via BG-5
+ * (BT-35..40), BG-8 (BT-50..55), BG-12 (BT-64..69) and BG-15 (BT-75..80) — register all BT aliases
+ * against the single Java class so any usage site resolves correctly.
  *
  * @author Philip Helger
  */
@@ -152,10 +117,10 @@ public final class PhloxModelRegistry
     _add (PhloxBuyer.class, "BG-8", PhloxBuyer::getPostalAddress);
     _add (PhloxBuyer.class, "BG-9", PhloxBuyer::getContact);
 
-    // BG-5 (seller):       BT-35..40
-    // BG-8 (buyer):        BT-50..55
-    // BG-12 (tax rep):     BT-64, BT-66, BT-67, BT-69
-    // BG-15 (deliver-to):  BT-75, BT-77, BT-78, BT-80
+    // BG-5 (seller): BT-35..40
+    // BG-8 (buyer): BT-50..55
+    // BG-12 (tax rep): BT-64, BT-66, BT-67, BT-69
+    // BG-15 (deliver-to): BT-75, BT-77, BT-78, BT-80
     _add (PhloxPostalAddress.class, "BT-35", PhloxPostalAddress::getLine1);
     _add (PhloxPostalAddress.class, "BT-36", PhloxPostalAddress::getLine2);
     _add (PhloxPostalAddress.class, "BT-37", PhloxPostalAddress::getCity);
@@ -382,7 +347,7 @@ public final class PhloxModelRegistry
 
   private static <T> void _add (@NonNull final Class <T> aClass,
                                 @NonNull final String sName,
-                                @NonNull final Function <? super T, ?> aGetter)
+                                @NonNull final Function <? super T, Object> aGetter)
   {
     final Map <String, Function <Object, Object>> aMap = REG.computeIfAbsent (aClass, k -> new HashMap <> ());
     @SuppressWarnings ("unchecked")
@@ -397,8 +362,8 @@ public final class PhloxModelRegistry
    *        The current context value (model object).
    * @param sName
    *        The bare BT/BG name (no modifier, no leading {@code ?}).
-   * @return The resolved value, or {@code null} when the name is not known for the context's
-   *         type or the getter returned {@code null}.
+   * @return The resolved value, or {@code null} when the name is not known for the context's type
+   *         or the getter returned {@code null}.
    */
   @Nullable
   public static Object resolve (@NonNull final Object aCtx, @NonNull final String sName)

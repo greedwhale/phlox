@@ -20,6 +20,7 @@ import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.jspecify.annotations.NonNull;
 
+import com.helger.base.wrapper.Wrapper;
 import com.helger.phlox.api.AbstractRenderContext;
 import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.template.PhloxTemplateException.EStage;
@@ -113,11 +114,11 @@ public final class PhloxLocalizedTemplate
   @NonNull
   public String renderSubstituted (@NonNull final PhloxInvoice aInvoice, @NonNull final AbstractRenderContext <?> aCtx)
   {
-    final String [] aOut = new String [1];
+    final Wrapper <String> aOut = new Wrapper <> ();
     PhloxInvoiceMustacheContext.withEnv (aInvoice, aCtx, () -> {
       try
       {
-        aOut[0] = m_aMustache.execute (aInvoice);
+        aOut.set (m_aMustache.execute (aInvoice));
       }
       catch (final MustacheException ex)
       {
@@ -131,6 +132,6 @@ public final class PhloxLocalizedTemplate
         throw new PhloxTemplateException (EStage.SUBSTITUTE, null, "JMustache execute failed: " + ex.getMessage (), ex);
       }
     });
-    return aOut[0];
+    return aOut.get ();
   }
 }

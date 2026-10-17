@@ -135,8 +135,8 @@ public final class PhloxTemplatePostParser
     while (aChild != null)
     {
       final Node aNext = aChild.getNext ();
-      if (aChild instanceof Paragraph)
-        _processParagraph ((Paragraph) aChild);
+      if (aChild instanceof final Paragraph aParagraph)
+        _processParagraph (aParagraph);
       else
         _processSentinels (aChild); // recurse into block containers (BlockQuote, ListItem, etc.)
       aChild = aNext;
@@ -153,9 +153,8 @@ public final class PhloxTemplatePostParser
     while (aInline != null)
     {
       final Node aNextInline = aInline.getNext ();
-      if (aInline instanceof Text)
+      if (aInline instanceof final Text aText)
       {
-        final Text aText = (Text) aInline;
         final String sOriginal = aText.getLiteral ();
         final StringBuilder aRemaining = new StringBuilder ();
         final Matcher mClass = CLASS_SENTINEL.matcher (sOriginal);
@@ -315,8 +314,8 @@ public final class PhloxTemplatePostParser
     Node aChild = aImage.getFirstChild ();
     while (aChild != null)
     {
-      if (aChild instanceof Text)
-        return ((Text) aChild).getLiteral ();
+      if (aChild instanceof final Text aText)
+        return aText.getLiteral ();
       aChild = aChild.getNext ();
     }
     return null;
