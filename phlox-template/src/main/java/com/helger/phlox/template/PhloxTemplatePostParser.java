@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.commonmark.ext.gfm.tables.TableCell;
+import org.commonmark.ext.gfm.tables.TableRow;
 import org.commonmark.node.AbstractVisitor;
 import org.commonmark.node.Image;
 import org.commonmark.node.Node;
@@ -193,6 +195,54 @@ public final class PhloxTemplatePostParser
     _attachClassesTo (aParagraph, aClassesFound);
   }
 
+  /**
+   * A line {@code {{class:name}}} inside a table is parsed by the GFM extension as a row whose first
+   * cell holds the sentinel. Such a row carries the class of the row that follows it.
+   *
+   * @param aRow
+   *        The table row to check. Never {@code null}.
+   * @return {@code true} if the row only consists of class sentinels and was removed.
+   */
+  private boolean _processClassRow (@NonNull final TableRow aRow)
+  {
+    final List <String> aClassesFound = new ArrayList <> ();
+    boolean bFirstCell = true;
+    for (Node aCell = aRow.getFirstChild (); aCell instanceof TableCell; aCell = aCell.getNext ())
+    {
+      if (bFirstCell)
+      {
+        bFirstCell = false;
+        for (Node aInline = aCell.getFirstChild (); aInline != null; aInline = aInline.getNext ())
+        {
+          if (!(aInline instanceof final Text aText))
+            return false;
+          final Matcher mClass = CLASS_SENTINEL.matcher (aText.getLiteral ());
+          int nLastEnd = 0;
+          while (mClass.find ())
+          {
+            if (!aText.getLiteral ().substring (nLastEnd, mClass.start ()).isBlank ())
+              return false;
+            aClassesFound.add (mClass.group (1));
+            nLastEnd = mClass.end ();
+          }
+          if (!aText.getLiteral ().substring (nLastEnd).isBlank ())
+            return false;
+        }
+      }
+      else
+        if (aCell.getFirstChild () != null)
+          return false;
+    }
+    if (aClassesFound.isEmpty ())
+      return false;
+
+    final Node aNextRow = aRow.getNext ();
+    if (aNextRow != null)
+      _attachClassesTo (aNextRow, aClassesFound);
+    aRow.unlink ();
+    return true;
+  }
+
   private void _processSentinels (@NonNull final Node aRoot)
   {
     // Two-pass scan: collect candidate paragraphs first to avoid mutating during iteration.
@@ -203,7 +253,12 @@ public final class PhloxTemplatePostParser
       if (aChild instanceof final Paragraph aParagraph)
         _processParagraph (aParagraph);
       else
-        _processSentinels (aChild); // recurse into block containers (BlockQuote, ListItem, etc.)
+        if (aChild instanceof final TableRow aRow && _processClassRow (aRow))
+        {
+          // Removed - nothing to recurse into
+        }
+        else
+          _processSentinels (aChild); // recurse into block containers (BlockQuote, ListItem, etc.)
       aChild = aNext;
     }
   }

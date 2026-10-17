@@ -133,7 +133,7 @@ Renders a `PhloxInvoice` to HTML5.
 
 - `HtmlInvoiceWriter implements IInvoiceWriter<String>` (with overloads that return `HCHtml` or stream to an `OutputStream`).
 - Section renderer classes (`HeaderSectionRenderer`, `PartiesSectionRenderer`, `LinesSectionRenderer`, ...) used when no template is set on the context.
-- `HTMLTemplateEmitter` — a commonmark-java `AbstractVisitor` subclass that walks a `PhloxTemplateAst` and produces an `HCNode` tree. Used when `RenderContext.getTemplate() != null`.
+- `HtmlTemplateEmitter` — walks the CommonMark tree of a `PhloxTemplateAst` and produces an `HCHtml` document (same head, stylesheet, watermarks and page wrapper as the built-in writer, shared via the package-private `HtmlDocumentSupport`). Used by `HtmlInvoiceWriter` when `HtmlRenderContext.getTemplate() != null`.
 - A default CSS stylesheet, loaded from a classpath resource.
 
 **Dependencies:** `phlox-api`, `phlox-template`, `com.helger.photon:ph-oton-html`.
@@ -146,7 +146,7 @@ Renders a `PhloxInvoice` to PDF.
 
 - `PdfInvoiceWriter implements IInvoiceWriter<Void>` (writes to a supplied `OutputStream` or `File`).
 - Section renderer classes mirroring `phlox-html`'s layout, used when no template is set on the context.
-- `PDFTemplateEmitter` — a commonmark-java `AbstractVisitor` subclass that walks a `PhloxTemplateAst` and produces `PLPageSet` content; paragraphs feed their inline content through `ph-pdf-layout`'s CommonMark-compatible inline parser.
+- `PdfTemplateEmitter` — a commonmark-java `AbstractVisitor` subclass that walks a `PhloxTemplateAst` and produces `PLPageSet` content; paragraphs feed their inline content through `ph-pdf-layout`'s CommonMark-compatible inline parser.
 - Default `FontSpec` set (Helvetica regular + bold).
 
 **Dependencies:** `phlox-api`, `phlox-template`, `com.helger:ph-pdf-layout`.

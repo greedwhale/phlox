@@ -108,10 +108,10 @@
 *{{BG-4.BT-28}}*
 {{/BG-4.BT-28}}
 
-{{?BG-4.BG-5.BT-35}}{{BG-4.BG-5.BT-35}}\
-{{/BG-4.BG-5.BT-35}}{{?BG-4.BG-5.BT-36}}{{BG-4.BG-5.BT-36}}\
-{{/BG-4.BG-5.BT-36}}{{?BG-4.BG-5.BT-38}}{{BG-4.BG-5.BT-38}} {{/BG-4.BG-5.BT-38}}{{BG-4.BG-5.BT-37}}{{?BG-4.BG-5.BT-39}}, {{BG-4.BG-5.BT-39}}{{/BG-4.BG-5.BT-39}}\
-{{BG-4.BG-5.BT-40 | code:country}}
+{{?BG-4.BG-5.BT-35}}{{BG-4.BG-5.BT-35}}
+{{/BG-4.BG-5.BT-35}}{{?BG-4.BG-5.BT-36}}{{BG-4.BG-5.BT-36}}
+{{/BG-4.BG-5.BT-36}}{{?BG-4.BG-5.BT-37}}{{?BG-4.BG-5.BT-38}}{{BG-4.BG-5.BT-38}} {{/BG-4.BG-5.BT-38}}{{BG-4.BG-5.BT-37}}{{?BG-4.BG-5.BT-39}}, {{BG-4.BG-5.BT-39}}{{/BG-4.BG-5.BT-39}}
+{{/BG-4.BG-5.BT-37}}{{BG-4.BG-5.BT-40 | code:country}}
 
 {{?BG-4.BT-31}}**{{label:BT-31}}:** {{BG-4.BT-31}}
 {{/BG-4.BT-31}}
@@ -156,10 +156,10 @@
 *{{BG-7.BT-45}}*
 {{/BG-7.BT-45}}
 
-{{?BG-7.BG-8.BT-50}}{{BG-7.BG-8.BT-50}}\
-{{/BG-7.BG-8.BT-50}}{{?BG-7.BG-8.BT-51}}{{BG-7.BG-8.BT-51}}\
-{{/BG-7.BG-8.BT-51}}{{?BG-7.BG-8.BT-53}}{{BG-7.BG-8.BT-53}} {{/BG-7.BG-8.BT-53}}{{BG-7.BG-8.BT-52}}{{?BG-7.BG-8.BT-54}}, {{BG-7.BG-8.BT-54}}{{/BG-7.BG-8.BT-54}}\
-{{BG-7.BG-8.BT-55 | code:country}}
+{{?BG-7.BG-8.BT-50}}{{BG-7.BG-8.BT-50}}
+{{/BG-7.BG-8.BT-50}}{{?BG-7.BG-8.BT-51}}{{BG-7.BG-8.BT-51}}
+{{/BG-7.BG-8.BT-51}}{{?BG-7.BG-8.BT-52}}{{?BG-7.BG-8.BT-53}}{{BG-7.BG-8.BT-53}} {{/BG-7.BG-8.BT-53}}{{BG-7.BG-8.BT-52}}{{?BG-7.BG-8.BT-54}}, {{BG-7.BG-8.BT-54}}{{/BG-7.BG-8.BT-54}}
+{{/BG-7.BG-8.BT-52}}{{BG-7.BG-8.BT-55 | code:country}}
 
 {{?BG-7.BT-48}}**{{label:BT-48}}:** {{BG-7.BT-48}}
 {{/BG-7.BT-48}}
@@ -210,9 +210,9 @@
 {{/BG-11.BT-63}}
 {{?BG-11.BG-12}}
 
-{{?BG-11.BG-12.BT-64}}{{BG-11.BG-12.BT-64}}\
-{{/BG-11.BG-12.BT-64}}{{?BG-11.BG-12.BT-67}}{{BG-11.BG-12.BT-67}} {{/BG-11.BG-12.BT-67}}{{BG-11.BG-12.BT-66}}\
-{{BG-11.BG-12.BT-69 | code:country}}
+{{?BG-11.BG-12.BT-64}}{{BG-11.BG-12.BT-64}}
+{{/BG-11.BG-12.BT-64}}{{?BG-11.BG-12.BT-66}}{{?BG-11.BG-12.BT-67}}{{BG-11.BG-12.BT-67}} {{/BG-11.BG-12.BT-67}}{{BG-11.BG-12.BT-66}}
+{{/BG-11.BG-12.BT-66}}{{BG-11.BG-12.BT-69 | code:country}}
 {{/BG-11.BG-12}}
 {{/BG-11}}
 
@@ -239,9 +239,9 @@
 {{/BG-13.BT-72}}
 {{?BG-13.BG-15}}
 
-{{?BG-13.BG-15.BT-75}}{{BG-13.BG-15.BT-75}}\
-{{/BG-13.BG-15.BT-75}}{{?BG-13.BG-15.BT-78}}{{BG-13.BG-15.BT-78}} {{/BG-13.BG-15.BT-78}}{{BG-13.BG-15.BT-77}}\
-{{BG-13.BG-15.BT-80 | code:country}}
+{{?BG-13.BG-15.BT-75}}{{BG-13.BG-15.BT-75}}
+{{/BG-13.BG-15.BT-75}}{{?BG-13.BG-15.BT-77}}{{?BG-13.BG-15.BT-78}}{{BG-13.BG-15.BT-78}} {{/BG-13.BG-15.BT-78}}{{BG-13.BG-15.BT-77}}
+{{/BG-13.BG-15.BT-77}}{{BG-13.BG-15.BT-80 | code:country}}
 {{/BG-13.BG-15}}
 {{/BG-13}}
 
@@ -335,7 +335,7 @@
 
 | {{label:section.lines.column.number}} | {{label:section.lines.column.description}} | {{label:section.lines.column.quantity}} | {{label:section.lines.column.unitprice}} | {{label:section.lines.column.vat}} | {{label:section.lines.column.linetotal}} |
 |---:|---|---:|---:|---:|---:|
-{{#BG-25}}| {{BT-126}} | **{{BG-31.BT-153}}**{{?BG-31.BT-154}}\ {{BG-31.BT-154}}{{/BG-31.BT-154}}{{?BG-31.BT-155}}\ *{{label:BT-155}}: {{BG-31.BT-155}}*{{/BG-31.BT-155}} | {{BT-129}} {{BT-130 | code:unit}} | {{BG-29.BT-146 | amount}} | {{BG-30.BT-152 | percent}} | {{BT-131 | amount}} |
+{{#BG-25}}| {{BT-126}} | **{{BG-31.BT-153}}**{{?BG-31.BT-154}}<br>{{BG-31.BT-154}}{{/BG-31.BT-154}}{{?BG-31.BT-155}}<br>*{{label:BT-155}}: {{BG-31.BT-155}}*{{/BG-31.BT-155}} | {{BT-129}} {{BT-130 | code:unit}} | {{BG-29.BT-146 | amount}} | {{BG-30.BT-152 | percent}} | {{BT-131 | amount}} |
 {{/BG-25}}
 
 {{!

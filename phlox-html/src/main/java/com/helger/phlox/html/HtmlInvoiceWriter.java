@@ -29,14 +29,10 @@ import java.util.Base64;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-import com.helger.html.css.DefaultCSSClassProvider;
-import com.helger.html.css.ICSSClassProvider;
 import com.helger.html.hc.html.embedded.HCImg;
 import com.helger.html.hc.html.grouping.HCDiv;
 import com.helger.html.hc.html.grouping.HCP;
-import com.helger.html.hc.html.metadata.HCStyle;
 import com.helger.html.hc.html.root.HCHtml;
-import com.helger.html.hc.html.sections.HCBody;
 import com.helger.url.SimpleURL;
 import com.helger.html.hc.html.sections.HCH1;
 import com.helger.html.hc.html.sections.HCH2;
@@ -45,8 +41,8 @@ import com.helger.html.hc.html.tabular.HCTable;
 import com.helger.html.hc.html.tabular.IHCCell;
 import com.helger.html.hc.html.textlevel.HCSpan;
 import com.helger.html.hc.render.HCRenderer;
+import com.helger.phlox.api.PhloxRuntimeException;
 import com.helger.phlox.api.i18n.PhloxFormat;
-import com.helger.phlox.api.model.EPhloxDocumentKind;
 import com.helger.phlox.api.model.PhloxAttachment;
 import com.helger.phlox.api.model.PhloxBuyer;
 import com.helger.phlox.api.model.PhloxContact;
@@ -79,9 +75,9 @@ import com.helger.phlox.api.model.PhloxSellerTaxRepresentative;
 import com.helger.phlox.api.model.PhloxSupportingDocument;
 import com.helger.phlox.api.model.PhloxThirdPartyCharge;
 import com.helger.phlox.api.model.PhloxVatBreakdown;
-import com.helger.phlox.api.watermark.PhloxProgramWatermark;
-import com.helger.phlox.api.watermark.WatermarkSpec;
 import com.helger.phlox.api.write.IInvoiceWriter;
+import com.helger.phlox.api.template.IPhloxTemplate;
+import com.helger.phlox.template.PhloxTemplate;
 
 /**
  * Renders a {@link PhloxInvoice} as an HTML5 document. Built on {@code ph-oton-html}.
@@ -106,12 +102,6 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       sb.append (PhloxFormat.percent (aLine.getLineVat ().getRate (), aCtx.getLocale (), aCtx.getFormatOptions ()));
     }
     return sb.toString ();
-  }
-
-  @NonNull
-  private static ICSSClassProvider _cls (@NonNull final String sName)
-  {
-    return DefaultCSSClassProvider.create (sName);
   }
 
   @NonNull
@@ -181,7 +171,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
   {
     if (sValue == null || sValue.isEmpty ())
       return;
-    aCell.addChild (new HCDiv ().addClass (_cls (sPrefix + "extra")).addChild (sLabel + ": " + sValue));
+    aCell.addChild (new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "extra")).addChild (sLabel + ": " + sValue));
   }
 
   @NonNull
@@ -219,14 +209,6 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
   private static BigDecimal _neg (@Nullable final BigDecimal aBD)
   {
     return aBD == null ? null : aBD.negate ();
-  }
-
-  @NonNull
-  private static String _titleString (@NonNull final PhloxInvoice aInvoice, @NonNull final HtmlRenderContext aCtx)
-  {
-    return aInvoice.getKind () == EPhloxDocumentKind.CREDIT_NOTE
-                                                                ? aCtx.label ("section.header.title.creditnote")
-                                                                : aCtx.label ("section.header.title.invoice");
   }
 
   @NonNull
@@ -296,9 +278,9 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
     if (aAmount == null)
       return;
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aRow = new HCDiv ().addClass (_cls (sPrefix + "total-row"));
-    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "total-label")).addChild (sLabel));
-    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "total-amount")).addChild (_amount (aAmount, sCurrency, aCtx)));
+    final HCDiv aRow = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "total-row"));
+    aRow.addChild (new HCSpan ().addClass (HtmlDocumentSupport.cls (sPrefix + "total-label")).addChild (sLabel));
+    aRow.addChild (new HCSpan ().addClass (HtmlDocumentSupport.cls (sPrefix + "total-amount")).addChild (_amount (aAmount, sCurrency, aCtx)));
     aOut.addChild (aRow);
   }
 
@@ -325,9 +307,9 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
   {
     if (sValue == null || sValue.isEmpty ())
       return;
-    final HCDiv aRow = new HCDiv ().addClass (_cls (sPrefix + "kv"));
-    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "kv-label")).addChild (sLabel));
-    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "kv-value")).addChild (sValue));
+    final HCDiv aRow = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "kv"));
+    aRow.addChild (new HCSpan ().addClass (HtmlDocumentSupport.cls (sPrefix + "kv-label")).addChild (sLabel));
+    aRow.addChild (new HCSpan ().addClass (HtmlDocumentSupport.cls (sPrefix + "kv-value")).addChild (sValue));
     aOut.addChild (aRow);
   }
 
@@ -340,9 +322,9 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
     if (sBP == null && sSpec == null && !aCtx.isIncludeEmptySections ())
       return;
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-process"));
+    final HCDiv aSec = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-process"));
     aPage.addChild (aSec);
-    final HCDiv aRow = new HCDiv ().addClass (_cls (sPrefix + "kvrow"));
+    final HCDiv aRow = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "kvrow"));
     _kv (aRow, aCtx.label ("BT-23"), sBP, sPrefix);
     _kv (aRow, aCtx.label ("BT-24"), sSpec, sPrefix);
     aSec.addChild (aRow);
@@ -366,9 +348,9 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
   {
     if (sValue == null || sValue.isEmpty ())
       return;
-    final HCDiv aRow = new HCDiv ().addClass (_cls (sPrefix + "kv-line"));
-    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "kv-label")).addChild (sLabel + ": "));
-    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "kv-value")).addChild (sValue));
+    final HCDiv aRow = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "kv-line"));
+    aRow.addChild (new HCSpan ().addClass (HtmlDocumentSupport.cls (sPrefix + "kv-label")).addChild (sLabel + ": "));
+    aRow.addChild (new HCSpan ().addClass (HtmlDocumentSupport.cls (sPrefix + "kv-value")).addChild (sValue));
     aOut.addChild (aRow);
   }
 
@@ -379,7 +361,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
     if (aC == null || aC.isEmpty ())
       return;
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aDiv = new HCDiv ().addClass (_cls (sPrefix + "contact"));
+    final HCDiv aDiv = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "contact"));
     if (aC.getName () != null)
       _kvLine (aDiv, aCtx.label ("BT-41"), aC.getName (), sPrefix);
     if (aC.getTelephone () != null)
@@ -395,7 +377,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       return;
     final HCDiv aD = new HCDiv ().addChild (sText);
     if (sClass != null)
-      aD.addClass (_cls (sClass));
+      aD.addClass (HtmlDocumentSupport.cls (sClass));
     aOut.addChild (aD);
   }
 
@@ -406,7 +388,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
     if (aAddr == null || aAddr.isEmpty ())
       return;
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aA = new HCDiv ().addClass (_cls (sPrefix + "address"));
+    final HCDiv aA = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "address"));
     _line (aA, aAddr.getLine1 (), null);
     _line (aA, aAddr.getLine2 (), null);
     _line (aA, aAddr.getLine3 (), null);
@@ -466,7 +448,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
                                      @NonNull final String sTitle,
                                      @NonNull final String sPrefix)
   {
-    aOut.addChild (new HCH2 ().addClass (_cls (sPrefix + "section-title")).addChild (sTitle));
+    aOut.addChild (new HCH2 ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-title")).addChild (sTitle));
   }
 
   private static void _renderParties (@NonNull final HCDiv aPage,
@@ -474,22 +456,22 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
                                       @NonNull final HtmlRenderContext aCtx)
   {
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-parties"));
+    final HCDiv aSec = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-parties"));
     aPage.addChild (aSec);
     _sectionTitle (aSec, aCtx.label ("section.parties.title"), sPrefix);
 
-    final HCDiv aGrid = new HCDiv ().addClass (_cls (sPrefix + "parties-grid"));
+    final HCDiv aGrid = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "parties-grid"));
     aSec.addChild (aGrid);
 
     // Seller
-    final HCDiv aSeller = new HCDiv ().addClass (_cls (sPrefix + "party-seller"));
-    aSeller.addChild (new HCH2 ().addClass (_cls (sPrefix + "party-title")).addChild (aCtx.label ("BG-4")));
+    final HCDiv aSeller = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "party-seller"));
+    aSeller.addChild (new HCH2 ().addClass (HtmlDocumentSupport.cls (sPrefix + "party-title")).addChild (aCtx.label ("BG-4")));
     _renderSeller (aSeller, aInvoice.getSeller (), aCtx);
     aGrid.addChild (aSeller);
 
     // Buyer
-    final HCDiv aBuyer = new HCDiv ().addClass (_cls (sPrefix + "party-buyer"));
-    aBuyer.addChild (new HCH2 ().addClass (_cls (sPrefix + "party-title")).addChild (aCtx.label ("BG-7")));
+    final HCDiv aBuyer = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "party-buyer"));
+    aBuyer.addChild (new HCH2 ().addClass (HtmlDocumentSupport.cls (sPrefix + "party-title")).addChild (aCtx.label ("BG-7")));
     _renderBuyer (aBuyer, aInvoice.getBuyer (), aCtx);
     aGrid.addChild (aBuyer);
   }
@@ -502,7 +484,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
     if (aInvoice.getPayee () != null)
     {
       final PhloxPayee aPayee = aInvoice.getPayee ();
-      final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-payee"));
+      final HCDiv aSec = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-payee"));
       aPage.addChild (aSec);
       _sectionTitle (aSec, aCtx.label ("BG-10"), sPrefix);
       _line (aSec, aPayee.getName (), sPrefix + "party-name");
@@ -515,7 +497,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
     if (aInvoice.getSellerTaxRepresentative () != null)
     {
       final PhloxSellerTaxRepresentative aR = aInvoice.getSellerTaxRepresentative ();
-      final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-taxrep"));
+      final HCDiv aSec = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-taxrep"));
       aPage.addChild (aSec);
       _sectionTitle (aSec, aCtx.label ("BG-11"), sPrefix);
       _line (aSec, aR.getName (), sPrefix + "party-name");
@@ -530,9 +512,9 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
                                          @NonNull final HtmlRenderContext aCtx)
   {
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-refs"));
+    final HCDiv aSec = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-refs"));
     boolean bAny = false;
-    final HCDiv aGrid = new HCDiv ().addClass (_cls (sPrefix + "kvgrid"));
+    final HCDiv aGrid = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "kvgrid"));
     bAny |= _kvOpt (aGrid, aCtx.label ("BT-10"), _buyerReferences (aInvoice), sPrefix);
     bAny |= _kvOpt (aGrid, aCtx.label ("BT-11"), aInvoice.getProjectReference (), sPrefix);
     bAny |= _kvOpt (aGrid, aCtx.label ("BT-12"), aInvoice.getContractReference (), sPrefix);
@@ -557,7 +539,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       aSec.addChild (aGrid);
     for (final PhloxPrecedingInvoiceRef aRef : aInvoice.precedingInvoiceRefs ())
     {
-      final HCDiv aLine = new HCDiv ().addClass (_cls (sPrefix + "preceding-ref"));
+      final HCDiv aLine = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "preceding-ref"));
       final StringBuilder sb = new StringBuilder (aCtx.label ("BG-3")).append (": ");
       if (aRef.getNumber () != null)
         sb.append (aRef.getNumber ());
@@ -577,14 +559,14 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
     if (aInvoice.invoiceNotes ().isEmpty () && !aCtx.isIncludeEmptySections ())
       return;
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-notes"));
+    final HCDiv aSec = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-notes"));
     aPage.addChild (aSec);
     _sectionTitle (aSec, aCtx.label ("section.notes.title"), sPrefix);
     for (final PhloxInvoiceNote aN : aInvoice.invoiceNotes ())
     {
-      final HCP aP = new HCP ().addClass (_cls (sPrefix + "note"));
+      final HCP aP = new HCP ().addClass (HtmlDocumentSupport.cls (sPrefix + "note"));
       if (aN.getSubjectCode () != null)
-        aP.addChild (new HCSpan ().addClass (_cls (sPrefix + "note-code"))
+        aP.addChild (new HCSpan ().addClass (HtmlDocumentSupport.cls (sPrefix + "note-code"))
                                   .addChild ("[" + aN.getSubjectCode () + "] "));
       aP.addChild (aN.getContent ());
       aSec.addChild (aP);
@@ -599,7 +581,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       return;
     final PhloxDeliveryInformation aD = aInvoice.getDeliveryInformation ();
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-delivery"));
+    final HCDiv aSec = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-delivery"));
     aPage.addChild (aSec);
     _sectionTitle (aSec, aCtx.label ("section.delivery.title"), sPrefix);
     if (aD.getPartyName () != null)
@@ -617,7 +599,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       return;
     final PhloxInvoicingPeriod aP = aInvoice.getInvoicingPeriod ();
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-period"));
+    final HCDiv aSec = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-period"));
     aPage.addChild (aSec);
     _sectionTitle (aSec, aCtx.label ("BG-14"), sPrefix);
     if (aP.getStartDate () != null)
@@ -634,10 +616,10 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       return;
     final String sPrefix = aCtx.getCssClassPrefix ();
     final String sCurrency = aInvoice.getCurrency ();
-    final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-lines"));
+    final HCDiv aSec = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-lines"));
     aPage.addChild (aSec);
     _sectionTitle (aSec, aCtx.label ("section.lines.title"), sPrefix);
-    final HCTable aTbl = new HCTable ().addClass (_cls (sPrefix + "lines-table"));
+    final HCTable aTbl = new HCTable ().addClass (HtmlDocumentSupport.cls (sPrefix + "lines-table"));
     aSec.addChild (aTbl);
     final HCRow aHead = aTbl.getHead ().addRow ();
     aHead.addCell (aCtx.label ("section.lines.column.number"));
@@ -655,16 +637,16 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       if (aItem != null)
       {
         if (aItem.getName () != null)
-          aDesc.addChild (new HCDiv ().addClass (_cls (sPrefix + "item-name")).addChild (aItem.getName ()));
+          aDesc.addChild (new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "item-name")).addChild (aItem.getName ()));
         if (aItem.getDescription () != null)
-          aDesc.addChild (new HCDiv ().addClass (_cls (sPrefix + "item-desc")).addChild (aItem.getDescription ()));
+          aDesc.addChild (new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "item-desc")).addChild (aItem.getDescription ()));
         for (final PhloxItemAttribute aA : aItem.attributes ())
           if (aA.getName () != null || aA.getValue () != null || aA.getCode () != null)
-            aDesc.addChild (new HCDiv ().addClass (_cls (sPrefix + "item-attr"))
+            aDesc.addChild (new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "item-attr"))
                                         .addChild (_attributeText (aA)));
       }
       if (aLine.getNote () != null)
-        aDesc.addChild (new HCDiv ().addClass (_cls (sPrefix + "line-note")).addChild (aLine.getNote ()));
+        aDesc.addChild (new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "line-note")).addChild (aLine.getNote ()));
       _renderLineExtras (aDesc, aLine, aCtx);
       aRow.addCell (_qty (aLine.getQuantity (), aLine.getQuantityUnit ()));
       aRow.addCell (aLine.getPrice () == null ? "" : _amount (aLine.getPrice ().getNetPrice (), sCurrency, aCtx));
@@ -674,7 +656,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       for (final PhloxLineAllowance aA : aLine.allowances ())
       {
         final HCRow aSub = aTbl.getBody ().addRow ();
-        aSub.addClass (_cls (sPrefix + "line-allowance"));
+        aSub.addClass (HtmlDocumentSupport.cls (sPrefix + "line-allowance"));
         aSub.addCell ("");
         aSub.addCell (_n (aCtx.label ("BG-27")) + (aA.getReason () == null ? "" : ": " + aA.getReason ()));
         aSub.addCell ("");
@@ -685,7 +667,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       for (final PhloxLineCharge aC : aLine.charges ())
       {
         final HCRow aSub = aTbl.getBody ().addRow ();
-        aSub.addClass (_cls (sPrefix + "line-charge"));
+        aSub.addClass (HtmlDocumentSupport.cls (sPrefix + "line-charge"));
         aSub.addCell ("");
         aSub.addCell (_n (aCtx.label ("BG-28")) +
                       (aC.getReason () == null ? "" : ": " + aC.getReason ()) +
@@ -706,10 +688,10 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       return;
     final String sPrefix = aCtx.getCssClassPrefix ();
     final String sCurrency = aInvoice.getCurrency ();
-    final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-ac"));
+    final HCDiv aSec = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-ac"));
     aPage.addChild (aSec);
     _sectionTitle (aSec, aCtx.label ("section.allowancescharges.title"), sPrefix);
-    final HCTable aTbl = new HCTable ().addClass (_cls (sPrefix + "ac-table"));
+    final HCTable aTbl = new HCTable ().addClass (HtmlDocumentSupport.cls (sPrefix + "ac-table"));
     aSec.addChild (aTbl);
     final HCRow aH = aTbl.getHead ().addRow ();
     aH.addCell ("");
@@ -763,10 +745,10 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       return;
     final String sPrefix = aCtx.getCssClassPrefix ();
     final String sCurrency = aInvoice.getCurrency ();
-    final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-vat"));
+    final HCDiv aSec = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-vat"));
     aPage.addChild (aSec);
     _sectionTitle (aSec, aCtx.label ("section.vatbreakdown.title"), sPrefix);
-    final HCTable aTbl = new HCTable ().addClass (_cls (sPrefix + "vat-table"));
+    final HCTable aTbl = new HCTable ().addClass (HtmlDocumentSupport.cls (sPrefix + "vat-table"));
     aSec.addChild (aTbl);
     final HCRow aH = aTbl.getHead ().addRow ();
     aH.addCell (aCtx.label ("BT-151"));
@@ -797,10 +779,10 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
   {
     final String sPrefix = aCtx.getCssClassPrefix ();
     final String sCurrency = aInvoice.getCurrency ();
-    final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-totals"));
+    final HCDiv aSec = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-totals"));
     aPage.addChild (aSec);
     _sectionTitle (aSec, aCtx.label ("section.totals.title"), sPrefix);
-    final HCDiv aBox = new HCDiv ().addClass (_cls (sPrefix + "totals-ladder"));
+    final HCDiv aBox = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "totals-ladder"));
     aSec.addChild (aBox);
     _totalLine (aBox, aCtx.label ("BT-106"), aInvoice.getDocumentTotals ().getLineNetTotal (), sCurrency, aCtx);
     _totalLine (aBox,
@@ -824,7 +806,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
                 sCurrency,
                 aCtx);
     _totalLine (aBox, aCtx.label ("BT-114"), aInvoice.getDocumentTotals ().getRoundingAmount (), sCurrency, aCtx);
-    _totalLine (aBox.addClass (_cls (sPrefix + "totals-due")),
+    _totalLine (aBox.addClass (HtmlDocumentSupport.cls (sPrefix + "totals-due")),
                 aCtx.label ("BT-115"),
                 aInvoice.getDocumentTotals ().getPayableAmount (),
                 sCurrency,
@@ -841,7 +823,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
     if (aPI == null && aInvoice.getPaymentDueDate () == null && !aCtx.isIncludeEmptySections ())
       return;
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-payment"));
+    final HCDiv aSec = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-payment"));
     aPage.addChild (aSec);
     _sectionTitle (aSec, aCtx.label ("section.payment.title"), sPrefix);
     if (aInvoice.getPaymentDueDate () != null)
@@ -859,7 +841,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
         _kvLine (aSec, aCtx.label ("BT-83"), aPI.getRemittanceInformation (), sPrefix);
       for (final PhloxCreditTransfer aCT : aPI.creditTransfers ())
       {
-        final HCDiv aCTDiv = new HCDiv ().addClass (_cls (sPrefix + "credit-transfer"));
+        final HCDiv aCTDiv = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "credit-transfer"));
         if (aCT.getAccountIdentifier () != null)
           _kvLine (aCTDiv, aCtx.label ("BT-84"), aCT.getAccountIdentifier (), sPrefix);
         if (aCT.getAccountName () != null)
@@ -871,7 +853,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       if (aPI.getPaymentCard () != null)
       {
         final PhloxPaymentCard aPC = aPI.getPaymentCard ();
-        final HCDiv aCDiv = new HCDiv ().addClass (_cls (sPrefix + "payment-card"));
+        final HCDiv aCDiv = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "payment-card"));
         aCDiv.addChild (new HCDiv ().addChild (aCtx.label ("BG-18")));
         if (aPC.getPan () != null)
           _kvLine (aCDiv, aCtx.label ("BT-87"), aPC.getPan (), sPrefix);
@@ -882,7 +864,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       if (aPI.getDirectDebit () != null)
       {
         final PhloxDirectDebit aDD = aPI.getDirectDebit ();
-        final HCDiv aDDDiv = new HCDiv ().addClass (_cls (sPrefix + "direct-debit"));
+        final HCDiv aDDDiv = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "direct-debit"));
         aDDDiv.addChild (new HCDiv ().addChild (aCtx.label ("BG-19")));
         if (aDD.getMandateReferenceID () != null)
           _kvLine (aDDDiv, aCtx.label ("BT-89"), aDD.getMandateReferenceID (), sPrefix);
@@ -908,7 +890,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
     if (!bAny)
       return;
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-paymentterms"));
+    final HCDiv aSec = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-paymentterms"));
     aPage.addChild (aSec);
     _sectionTitle (aSec, aCtx.label ("BG-33"), sPrefix);
     for (final PhloxPaymentTerms aPT : aInvoice.paymentTerms ())
@@ -917,7 +899,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
         aSec.addChild (new HCP ().addChild (aPT.getText ()));
       for (final PhloxEarlyPaymentDiscount aED : aPT.earlyDiscounts ())
       {
-        final HCDiv aDiv = new HCDiv ().addClass (_cls (sPrefix + "payment-discount"));
+        final HCDiv aDiv = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "payment-discount"));
         aDiv.addChild (new HCDiv ().addChild (aCtx.label ("BG-35")));
         _kvLine (aDiv, aCtx.label ("BT-170"), aED.getEndDate () == null ? null : _date (aED.getEndDate (), aCtx), sPrefix);
         _kvLine (aDiv, aCtx.label ("BT-171"), _percent (aED.getPercentage (), aCtx), sPrefix);
@@ -926,7 +908,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       }
       for (final PhloxLatePaymentPenalty aLP : aPT.latePenalties ())
       {
-        final HCDiv aDiv = new HCDiv ().addClass (_cls (sPrefix + "payment-penalty"));
+        final HCDiv aDiv = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "payment-penalty"));
         aDiv.addChild (new HCDiv ().addChild (aCtx.label ("BG-36")));
         _kvLine (aDiv, aCtx.label ("BT-181"), aLP.getStartDate () == null ? null : _date (aLP.getStartDate (), aCtx), sPrefix);
         _kvLine (aDiv, aCtx.label ("BT-182"), _percent (aLP.getYearlyInterestPercentage (), aCtx), sPrefix);
@@ -943,12 +925,12 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
     if (aInvoice.supportingDocuments ().isEmpty ())
       return;
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-supportingdocs"));
+    final HCDiv aSec = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-supportingdocs"));
     aPage.addChild (aSec);
     _sectionTitle (aSec, aCtx.label ("section.supportingdocs.title"), sPrefix);
     for (final PhloxSupportingDocument aD : aInvoice.supportingDocuments ())
     {
-      final HCDiv aDDiv = new HCDiv ().addClass (_cls (sPrefix + "supporting-doc"));
+      final HCDiv aDDiv = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "supporting-doc"));
       if (aD.getReference () != null)
         _kvLine (aDDiv, aCtx.label ("BT-122"), aD.getReference (), sPrefix);
       if (aD.getDescription () != null)
@@ -957,15 +939,6 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
         _kvLine (aDDiv, aCtx.label ("BT-124"), aD.getExternalLocation (), sPrefix);
       aSec.addChild (aDDiv);
     }
-  }
-
-  @NonNull
-  private static HCDiv _renderWatermark (@NonNull final WatermarkSpec aSpec, @NonNull final String sCssClass)
-  {
-    final HCDiv aD = new HCDiv ().addClass (_cls (sCssClass));
-    aD.addChild (aSpec.getText ());
-    aD.customAttrs ().putIn ("aria-hidden", "true");
-    return aD;
   }
 
   @Nullable
@@ -977,7 +950,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
                             aLogo.getMimeCode () +
                             ";base64," +
                             Base64.getEncoder ().encodeToString (aLogo.getBinary ());
-    return new HCImg ().setSrc (new SimpleURL (sDataUri)).addClass (_cls (sPrefix + "logo"));
+    return new HCImg ().setSrc (new SimpleURL (sDataUri)).addClass (HtmlDocumentSupport.cls (sPrefix + "logo"));
   }
 
   private static void _renderHeader (@NonNull final HCDiv aPage,
@@ -985,7 +958,7 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
                                      @NonNull final HtmlRenderContext aCtx)
   {
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aHdr = new HCDiv ().addClass (_cls (sPrefix + "section-header"));
+    final HCDiv aHdr = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "section-header"));
     aPage.addChild (aHdr);
 
     if (aCtx.getLogo () != null)
@@ -995,57 +968,17 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
         aHdr.addChild (aImg);
     }
 
-    final HCH1 aTitle = new HCH1 ().addClass (_cls (sPrefix + "title"));
-    aTitle.addChild (_titleString (aInvoice, aCtx));
+    final HCH1 aTitle = new HCH1 ().addClass (HtmlDocumentSupport.cls (sPrefix + "title"));
+    aTitle.addChild (HtmlDocumentSupport.titleString (aInvoice, aCtx));
     aHdr.addChild (aTitle);
 
-    final HCDiv aMeta = new HCDiv ().addClass (_cls (sPrefix + "header-meta"));
+    final HCDiv aMeta = new HCDiv ().addClass (HtmlDocumentSupport.cls (sPrefix + "header-meta"));
     _kv (aMeta, aCtx.label ("BT-1"), aInvoice.getNumber (), sPrefix);
     _kv (aMeta, aCtx.label ("BT-2"), _date (aInvoice.getIssueDate (), aCtx), sPrefix);
     _kv (aMeta, aCtx.label ("BT-166"), _time (aInvoice.getIssueTime ()), sPrefix);
     _kv (aMeta, aCtx.label ("BT-3"), _docTypeText (aInvoice.getTypeCode (), aCtx), sPrefix);
     _kv (aMeta, aCtx.label ("BT-5"), aInvoice.getCurrency (), sPrefix);
     aHdr.addChild (aMeta);
-  }
-
-  /** Embedded default stylesheet — minimal, prefix-aware. */
-  @NonNull
-  private static String _defaultCss (@NonNull final String p)
-  {
-    return "body{font-family:sans-serif;margin:2rem;color:#222;}"
-           + "." + p + "page{max-width:840px;margin:0 auto;}"
-           + "." + p + "section-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;}"
-           + "." + p + "title{margin:0 0 .5rem 0;font-size:1.6rem;}"
-           + "." + p + "logo{max-height:80px;}"
-           + "." + p + "header-meta{display:grid;grid-template-columns:auto auto;gap:.25rem 1rem;}"
-           + "." + p + "section-title{font-size:1rem;margin:1.5rem 0 .5rem 0;border-bottom:1px solid #ccc;padding-bottom:.2rem;}"
-           + "." + p + "parties-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}"
-           + "." + p + "party-title{font-size:.9rem;color:#555;margin:0 0 .25rem 0;text-transform:uppercase;}"
-           + "." + p + "party-name{font-weight:bold;}"
-           + "." + p + "address div{line-height:1.4;}"
-           + "." + p + "contact{margin-top:.5rem;font-size:.9rem;color:#444;}"
-           + "." + p + "kv-label{color:#666;margin-right:.5rem;}"
-           + "." + p + "kvgrid{display:grid;grid-template-columns:auto 1fr;column-gap:1rem;row-gap:.2rem;}"
-           + "." + p + "lines-table,." + p + "vat-table,." + p + "ac-table{width:100%;border-collapse:collapse;margin-top:.5rem;}"
-           + "." + p + "lines-table th,." + p + "vat-table th,." + p + "ac-table th{background:#f5f5f5;text-align:left;padding:.4rem .5rem;border-bottom:1px solid #ccc;}"
-           + "." + p + "lines-table td,." + p + "vat-table td,." + p + "ac-table td{padding:.4rem .5rem;border-bottom:1px solid #eee;vertical-align:top;}"
-           // Right-align numeric columns in each table, applies to both <th> and <td>:
-           //   lines-table cols 3..6 = quantity, unit price, VAT, line total
-           //   ac-table cols 3..4 = VAT, amount
-           //   vat-table cols 2..4 = rate, taxable amount, tax amount
-           + "." + p + "lines-table th:nth-child(n+3),." + p + "lines-table td:nth-child(n+3){text-align:right;font-variant-numeric:tabular-nums;}"
-           + "." + p + "ac-table th:nth-child(n+3),." + p + "ac-table td:nth-child(n+3){text-align:right;font-variant-numeric:tabular-nums;}"
-           + "." + p + "vat-table th:nth-child(n+2),." + p + "vat-table td:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums;}"
-           + "." + p + "item-name{font-weight:bold;}"
-           + "." + p + "item-desc,." + p + "item-attr,." + p + "line-note{color:#555;font-size:.9rem;}"
-           + "." + p + "totals-ladder{display:grid;grid-template-columns:1fr auto;row-gap:.25rem;max-width:480px;margin-left:auto;}"
-           + "." + p + "total-row{display:contents;}"
-           + "." + p + "total-label{padding-right:1rem;}"
-           + "." + p + "total-amount{text-align:right;font-variant-numeric:tabular-nums;}"
-           + "." + p + "totals-due ." + p + "total-row:last-child ." + p + "total-amount{font-weight:bold;border-top:2px solid #000;padding-top:.25rem;}"
-           + "." + p + "watermark-user{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-45deg);font-size:6em;color:rgba(128,128,128,0.12);pointer-events:none;z-index:9999;user-select:none;}"
-           + "." + p + "watermark-program{position:fixed;bottom:4mm;right:4mm;font-size:0.5em;color:rgba(128,128,128,0.35);pointer-events:none;z-index:9999;}"
-           + "@media print{." + p + "watermark-user{position:fixed;}}";
   }
 
   /**
@@ -1060,33 +993,18 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
   @NonNull
   public HCHtml writeAsHcHtml (@NonNull final PhloxInvoice aInvoice, @NonNull final HtmlRenderContext aCtx)
   {
-    final HCHtml aHtml = new HCHtml ();
-    final String sPrefix = aCtx.getCssClassPrefix ();
-
-    // <head>
-    aHtml.head ().setPageTitle (_titleString (aInvoice, aCtx));
-    if (aCtx.isEmbeddedStylesheet ())
+    final IPhloxTemplate aTemplate = aCtx.getTemplate ();
+    if (aTemplate != null)
     {
-      final HCStyle aStyle = new HCStyle ();
-      aStyle.setStyleContent (_defaultCss (sPrefix) +
-                              (aCtx.getCustomStylesheet () == null ? "" : "\n" + aCtx.getCustomStylesheet ()));
-      aHtml.head ().addCSS (aStyle);
+      if (!(aTemplate instanceof final PhloxTemplate aPhloxTemplate))
+        throw new PhloxRuntimeException ("Unsupported template implementation " + aTemplate.getClass ().getName ());
+      return new HtmlTemplateEmitter (aCtx).emit (aPhloxTemplate.renderAst (aInvoice, aCtx));
     }
 
-    // <body>
-    final HCBody aBody = aHtml.body ();
-
-    // Watermarks
-    final WatermarkSpec aUW = aCtx.getUserWatermark ();
-    if (aUW != null)
-      aBody.addChild (_renderWatermark (aUW, sPrefix + "watermark-user"));
-    final WatermarkSpec aPW = PhloxProgramWatermark.getInstance ();
-    if (aPW != null)
-      aBody.addChild (_renderWatermark (aPW, sPrefix + "watermark-program"));
-
-    // Page wrapper
-    final HCDiv aPage = new HCDiv ().addClass (_cls (sPrefix + "page"));
-    aBody.addChild (aPage);
+    final HCHtml aHtml = new HCHtml ();
+    final HCDiv aPage = HtmlDocumentSupport.createPage (aHtml,
+                                                        HtmlDocumentSupport.titleString (aInvoice, aCtx),
+                                                        aCtx);
 
     // Sections
     _renderHeader (aPage, aInvoice, aCtx);

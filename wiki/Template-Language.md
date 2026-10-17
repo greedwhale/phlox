@@ -338,7 +338,7 @@ How each CommonMark / GFM / Mustache construct lands in the two output formats:
 | GFM table | `<table>…</table>` | `PLTable` |
 | Inline image `![alt](url)` | `<img src="…" alt="…">` (inline inside `<p>`) | `PLImage` as a standalone block; the surrounding paragraph is split into pre-image `PLRichText` + `PLImage` + post-image `PLRichText` (see "Images" below) |
 | `{{pagebreak}}` | `<div style="page-break-after:always"></div>` | `PLPageBreak` |
-| `{{class:name}}` before block | class attribute on next block | `PLTableCell` fill / `PLBox` fill from `PdfRenderContext` style map |
+| `{{class:name}}` before block (or before a table row) | class attribute on the next block / table row | `PLTableCell` fill / `PLBox` fill from `PdfRenderContext` style map |
 
 ## Limitations
 

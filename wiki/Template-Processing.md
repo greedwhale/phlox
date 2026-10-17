@@ -72,7 +72,7 @@ this one describes the engine that turns a `.ptpl` source file plus a `PhloxInvo
                          ▼                       ▼
    ┌──────────────────────────────┐ ┌──────────────────────────────┐
    │  STAGE 3a — HTML emit        │ │  STAGE 3b — PDF emit         │
-   │  HTMLTemplateEmitter         │ │  PDFTemplateEmitter          │
+   │  HtmlTemplateEmitter         │ │  PdfTemplateEmitter          │
    │  AbstractVisitor → HCNode    │ │  AbstractVisitor → PLPageSet │
    │  inline: ph-oton-html types  │ │  inline: PLRichText via      │
    │                              │ │  ph-pdf-layout CommonMark    │
@@ -264,7 +264,7 @@ A `PhloxTemplateAst` value object holding:
 
 Each writer module ships an emitter that subclasses commonmark-java's `AbstractVisitor`. They share the visit pattern; they differ only in the output API.
 
-### `HTMLTemplateEmitter` (phlox-html)
+### `HtmlTemplateEmitter` (phlox-html)
 
 Walks the AST and builds an `HCNode` tree, the same shape `HtmlInvoiceWriter` produces from its hard-coded section grammar. Mapping:
 
@@ -287,10 +287,12 @@ Walks the AST and builds an `HCNode` tree, the same shape `HtmlInvoiceWriter` pr
 | `Image` (resolved via image map) | `HCImg` with a data-URI `src` |
 | `PhloxPageBreakNode` | `HCDiv` with `style="page-break-after: always"` |
 | Text | `HCTextNode` (escapes automatically) |
+| `SoftLineBreak` / `HardLineBreak` | `HCBR` — a line break in the template is a line break in the output |
+| `<br>` (raw inline HTML) | `HCBR` — the only way to break a line inside a table cell. All other raw HTML is emitted as escaped text |
 
-The block-class map is consulted at each block visit and the corresponding class is prefixed with `HtmlRenderContext.getCssClassPrefix()` and added to the emitted `HCNode`. The CSS prefix logic is the same as in the hard-coded writer.
+A `{{class:name}}` line inside a table is parsed by GFM as a one-cell row; the post-pass removes that row and attaches the class to the row that follows it (emitted as `<tr class="phlox-name">`). The block-class map is consulted at each block visit and the corresponding class is prefixed with `HtmlRenderContext.getCssClassPrefix()` and added to the emitted `HCNode`. The CSS prefix logic is the same as in the hard-coded writer.
 
-### `PDFTemplateEmitter` (phlox-pdf)
+### `PdfTemplateEmitter` (phlox-pdf)
 
 Walks the AST and builds `PLPageSet` content via `ph-pdf-layout`:
 
@@ -369,7 +371,7 @@ public final String write (@Nonnull final PhloxInvoice aInvoice,
     // `aTpl.localize(aCtx.getLocale())` once, hold the result, and feed every
     // invoice through it directly — bypassing the cache lookup.
     final PhloxTemplateAst aAst = ((PhloxTemplate) aTpl).renderAst (aInvoice, aCtx);
-    final HCHtml aHtml = new HTMLTemplateEmitter (aCtx).emit (aAst);
+    final HCHtml aHtml = new HtmlTemplateEmitter (aCtx).emit (aAst);
     return HCRenderer.getAsHTMLString (aHtml, HCSettings.getMutableConversionSettings ());
   }
   // Fall through to the 0.1.0 section renderers
@@ -379,7 +381,7 @@ public final String write (@Nonnull final PhloxInvoice aInvoice,
 
 The decision is one null-check. When unset, the template engine is not touched — none of `phlox-template`'s code paths execute, none of JMustache or commonmark-java is loaded into the class verifier. The hard-coded section grammar from [[Output Writers]] is the unchanged 0.1.0 behaviour.
 
-`PdfInvoiceWriter` follows the same shape with `PDFTemplateEmitter` and `PdfRenderContext`. When the same invoice is rendered into both HTML and PDF, callers can build the `PhloxTemplateAst` once and pass it to both emitters explicitly via `HTMLTemplateEmitter.emit(ast)` / `PDFTemplateEmitter.emit(ast, out)`, paying stages 1 and 2 only once.
+`PdfInvoiceWriter` follows the same shape with `PdfTemplateEmitter` and `PdfRenderContext`. When the same invoice is rendered into both HTML and PDF, callers can build the `PhloxTemplateAst` once and pass it to both emitters explicitly via `HtmlTemplateEmitter.emit(ast)` / `PdfTemplateEmitter.emit(ast, out)`, paying stages 1 and 2 only once.
 
 ## Loading the default template
 

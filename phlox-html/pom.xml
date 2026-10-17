@@ -45,6 +45,10 @@
       <artifactId>phlox-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.helger.phlox</groupId>
+      <artifactId>phlox-template</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.helger.photon</groupId>
       <artifactId>ph-oton-html</artifactId>
     </dependency>

@@ -10,7 +10,7 @@ mvn clean test         # Run all unit tests
 mvn clean package      # Build all JARs (including phlox-cli fat JAR)
 ```
 
-Requires **Java 25** (`maven.compiler.release` is 25).
+Requires **Java 17+**. The code is compiled with `release 17`.
 
 ## Coding style
 

@@ -11,6 +11,7 @@ Initial specification.
 - Source syntaxes: UBL 2.1 and CII D16B (EN 16931:2017), UBL 2.5 and CII D25A (EN 16931:2026). Readers: `UblInvoiceReader.fromUbl21 ()` / `fromUbl25 ()` / `autoDetect ()` and `CiiInvoiceReader.fromD16B ()` / `fromD25A ()` / `autoDetect ()`; `autoDetect ()` takes the edition from BT-24. See [[Source Readers]].
 - BT-10 (buyer reference) is a list of identifiers and BT-20 (payment terms) moved into BG-33 `PhloxPaymentTerms`, following EN 16931:2026.
 - `phlox-cli`: new option `--en-version auto|2017|2026`.
+- HTML output can be driven by a `.ptpl` template: `HtmlRenderContext.setTemplate (PhloxTemplate.getDefault ())` makes `HtmlInvoiceWriter` render through the new `HtmlTemplateEmitter`. `{{class:name}}` now also works in front of a table row, and `<br>` is the way to break a line inside a table cell. `.ptpl` modifiers are separated by a plain `|`.
 - Label and code-list bundles cover the 2026 terms; German wording follows the German draft of EN 16931-1:2026 where available.
 - Module split: `phlox-parent`, `phlox-api`, `phlox-ubl`, `phlox-cii`, `phlox-template`, `phlox-html`, `phlox-pdf`, `phlox-cli`, `phlox-testfiles`. See [[Maven Module Structure]].
 - Configuration: split `RenderContext` (in `phlox-api`) → `HtmlRenderContext` (in `phlox-html`) / `PdfRenderContext` (in `phlox-pdf`) so each writer has type-safe options and `ph-pdf-layout`/`ph-oton-html` types never leak into `phlox-api`. See [[Configuration Properties]].
