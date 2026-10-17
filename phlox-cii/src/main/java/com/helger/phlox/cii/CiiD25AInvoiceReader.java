@@ -140,7 +140,6 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
     if (aSCTT == null)
       return aModel;
 
-    // === Header Trade Agreement ===
     final HeaderTradeAgreementType aHTA = aSCTT.getApplicableHeaderTradeAgreement ();
     if (aHTA != null)
     {
@@ -193,7 +192,6 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
       }
     }
 
-    // === Header Trade Delivery ===
     final HeaderTradeDeliveryType aHTD = aSCTT.getApplicableHeaderTradeDelivery ();
     if (aHTD != null)
     {
@@ -237,7 +235,6 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
       }
     }
 
-    // === Header Trade Settlement ===
     final HeaderTradeSettlementType aHTS = aSCTT.getApplicableHeaderTradeSettlement ();
     if (aHTS != null)
     {
@@ -349,8 +346,6 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
 
     return aModel;
   }
-
-  // ===== Sellers / Buyers =====
 
   /**
    * Read the party identifiers (BT-29, BT-46, BT-60, BT-71 and their scheme identifiers). Since EN
@@ -498,8 +493,6 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
     return aOut;
   }
 
-  // ===== Period =====
-
   @NonNull
   private static PhloxInvoicingPeriod _readPeriod (@NonNull final SpecifiedPeriodType aSP)
   {
@@ -508,8 +501,6 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
     aOut.setEndDate (_dateTime (aSP.getEndDateTime ()));
     return aOut;
   }
-
-  // ===== Payment Instructions =====
 
   /**
    * Read the BG-33 payment terms (BT-20) with the nested BG-35 early payment discount and BG-36
@@ -644,8 +635,6 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
       aModel.setPaymentInstructions (aPI);
   }
 
-  // ===== Allowances / Charges =====
-
   /**
    * Get the {@code true} if the reason code carries {@code @listID="5153"} (UNTDID 5153 duty or tax.
    *
@@ -716,8 +705,6 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
     return aOut;
   }
 
-  // ===== Totals =====
-
   private static void _readTotals (@NonNull final TradeSettlementHeaderMonetarySummationType aS,
                                    @NonNull final PhloxInvoice aModel)
   {
@@ -750,8 +737,6 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
     }
   }
 
-  // ===== Supporting document =====
-
   @NonNull
   private static PhloxSupportingDocument _readSupportingDocument (@NonNull final ReferencedDocumentType aRD)
   {
@@ -771,8 +756,6 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
     }
     return aOut;
   }
-
-  // ===== Lines =====
 
   @NonNull
   private static PhloxLineDelivery _readLineDelivery (@NonNull final LineTradeDeliveryType aLTD)
@@ -1028,8 +1011,6 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
     }
     return aOut;
   }
-
-  // ===== Helpers =====
 
   @Nullable
   private static String _codeValue (@Nullable final AllowanceChargeReasonCodeType aCode)

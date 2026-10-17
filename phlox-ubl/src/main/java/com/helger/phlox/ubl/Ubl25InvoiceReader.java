@@ -74,8 +74,6 @@ final class Ubl25InvoiceReader extends AbstractUblInvoiceReader
     return aCreditNote == null ? null : readCreditNote (aCreditNote, aErrors);
   }
 
-  // ===== Document level helpers =====
-
   private static void _readIssueTime (@Nullable final XMLOffsetTime aTime,
                                       @NonNull final PhloxInvoice aModel,
                                       @NonNull final ErrorList aErrors)
@@ -471,8 +469,6 @@ final class Ubl25InvoiceReader extends AbstractUblInvoiceReader
 
     return aModel;
   }
-
-  // ===== Internal walkers =====
 
   private static void _readSeller (@NonNull final SupplierPartyType aSP, @NonNull final PhloxSeller aSeller)
   {

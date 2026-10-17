@@ -346,8 +346,6 @@ final class Ubl21InvoiceReader extends AbstractUblInvoiceReader
     return aModel;
   }
 
-  // ===== Internal walkers =====
-
   private static void _addBuyerReference (@NonNull final PhloxInvoice aModel, @Nullable final String sBuyerReference)
   {
     // BT-10 — EN 16931:2017 has no scheme identifier (BT-10-1)
@@ -936,8 +934,6 @@ final class Ubl21InvoiceReader extends AbstractUblInvoiceReader
       aOut.attributes ().add (new PhloxItemAttribute (str (aIP.getNameValue ()), str (aIP.getValueValue ())));
     return aOut;
   }
-
-  // ===== Helpers =====
 
   @NonNull
   private static PhloxInvoiceNote _parseInvoiceNote (@NonNull final String sRaw)

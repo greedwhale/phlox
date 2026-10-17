@@ -64,10 +64,6 @@ import com.samskivert.mustache.Template;
  */
 public final class PhloxTemplate implements IPhloxTemplate
 {
-  // ─────────────────────────────────────────────────────────────────────
-  // Localize cache key — (Locale, IPhloxLabelResolver identity)
-  // ─────────────────────────────────────────────────────────────────────
-
   /**
    * Cache key for the localize step. Locale uses value equality (so {@code Locale.GERMAN} and
    * {@code new Locale("de")} hit the same entry); the resolver uses reference identity, so callers
@@ -178,10 +174,6 @@ public final class PhloxTemplate implements IPhloxTemplate
     return new PhloxLocalizedTemplate (sBaked, aTemplate, m_aCMParser);
   }
 
-  // ─────────────────────────────────────────────────────────────────────
-  // Factories
-  // ─────────────────────────────────────────────────────────────────────
-
   /**
    * Build a template from a raw {@code .ptpl} source string. The source is held as-is; no label
    * substitution or JMustache compile happens until {@link #localize} is called.
@@ -274,10 +266,6 @@ public final class PhloxTemplate implements IPhloxTemplate
     return aLocal;
   }
 
-  // ─────────────────────────────────────────────────────────────────────
-  // Stage 0 + 0a — produce a PhloxLocalizedTemplate
-  // ─────────────────────────────────────────────────────────────────────
-
   /**
    * Return a locale-baked, JMustache-compiled variant of this template. Subsequent calls with the
    * same {@code (locale, resolver instance)} pair return the cached instance. The cache keys the
@@ -309,10 +297,6 @@ public final class PhloxTemplate implements IPhloxTemplate
   {
     return localize (aCtx.getLocale (), aCtx.getLabelResolver ());
   }
-
-  // ─────────────────────────────────────────────────────────────────────
-  // End-to-end render entry points (cache-hit on subsequent renders)
-  // ─────────────────────────────────────────────────────────────────────
 
   /**
    * Run the full pipeline (stages 0 / 0a / 1 / 2 / 2a) and return the parsed AST + sidecar maps.

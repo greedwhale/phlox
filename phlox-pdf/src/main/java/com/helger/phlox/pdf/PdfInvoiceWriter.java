@@ -236,8 +236,6 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     aCS.restoreGraphicsState ();
   }
 
-  // ===== Sections =====
-
   private static void _renderHeader (@NonNull final PLPageSet aPS,
                                      @NonNull final PhloxInvoice aInvoice,
                                      @NonNull final PdfRenderContext aCtx)
@@ -905,8 +903,6 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     }
     aPS.addElement (new PLText (_trim (sb), aCtx.getBodyFont ()));
   }
-
-  // ===== Helpers =====
 
   private static void _sectionTitle (@NonNull final PLPageSet aPS,
                                      @NonNull final String sTitle,

@@ -201,7 +201,6 @@ final class CiiD16BInvoiceReader extends AbstractCiiInvoiceReader
     if (aSCTT == null)
       return aModel;
 
-    // === Header Trade Agreement ===
     final HeaderTradeAgreementType aHTA = aSCTT.getApplicableHeaderTradeAgreement ();
     if (aHTA != null)
     {
@@ -251,7 +250,6 @@ final class CiiD16BInvoiceReader extends AbstractCiiInvoiceReader
       }
     }
 
-    // === Header Trade Delivery ===
     final HeaderTradeDeliveryType aHTD = aSCTT.getApplicableHeaderTradeDelivery ();
     if (aHTD != null)
     {
@@ -292,7 +290,6 @@ final class CiiD16BInvoiceReader extends AbstractCiiInvoiceReader
       }
     }
 
-    // === Header Trade Settlement ===
     final HeaderTradeSettlementType aHTS = aSCTT.getApplicableHeaderTradeSettlement ();
     if (aHTS != null)
     {
@@ -383,8 +380,6 @@ final class CiiD16BInvoiceReader extends AbstractCiiInvoiceReader
 
     return aModel;
   }
-
-  // ===== Sellers / Buyers =====
 
   private static void _readSeller (@NonNull final TradePartyType aTP, @NonNull final PhloxSeller aSeller)
   {
@@ -519,8 +514,6 @@ final class CiiD16BInvoiceReader extends AbstractCiiInvoiceReader
     return aOut;
   }
 
-  // ===== Period =====
-
   @NonNull
   private static PhloxInvoicingPeriod _readPeriod (@NonNull final SpecifiedPeriodType aSP)
   {
@@ -529,8 +522,6 @@ final class CiiD16BInvoiceReader extends AbstractCiiInvoiceReader
     aOut.setEndDate (_dateTime (aSP.getEndDateTime ()));
     return aOut;
   }
-
-  // ===== Payment Instructions =====
 
   private static void _readPaymentInstructions (@NonNull final HeaderTradeSettlementType aHTS,
                                                 @NonNull final PhloxInvoice aModel)
@@ -634,8 +625,6 @@ final class CiiD16BInvoiceReader extends AbstractCiiInvoiceReader
       aModel.setPaymentInstructions (aPI);
   }
 
-  // ===== Allowances / Charges =====
-
   @NonNull
   private static PhloxDocumentAllowance _readDocAllowance (@NonNull final TradeAllowanceChargeType aAC)
   {
@@ -680,8 +669,6 @@ final class CiiD16BInvoiceReader extends AbstractCiiInvoiceReader
     return aOut;
   }
 
-  // ===== Totals =====
-
   private static void _readTotals (@NonNull final TradeSettlementHeaderMonetarySummationType aS,
                                    @NonNull final PhloxInvoice aModel)
   {
@@ -714,8 +701,6 @@ final class CiiD16BInvoiceReader extends AbstractCiiInvoiceReader
     }
   }
 
-  // ===== Supporting document =====
-
   @NonNull
   private static PhloxSupportingDocument _readSupportingDocument (@NonNull final ReferencedDocumentType aRD)
   {
@@ -735,8 +720,6 @@ final class CiiD16BInvoiceReader extends AbstractCiiInvoiceReader
     }
     return aOut;
   }
-
-  // ===== Lines =====
 
   @NonNull
   private static PhloxInvoiceLine _readLine (@NonNull final SupplyChainTradeLineItemType aLine)
@@ -898,8 +881,6 @@ final class CiiD16BInvoiceReader extends AbstractCiiInvoiceReader
     }
     return aOut;
   }
-
-  // ===== Helpers =====
 
   @Nullable
   private static String _codeValue (@Nullable final AllowanceChargeReasonCodeType aCode)

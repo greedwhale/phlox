@@ -305,10 +305,6 @@ public final class PhloxTemplateTest
     }
   }
 
-  // ─────────────────────────────────────────────────────────────────────
-  // Fixture builder
-  // ─────────────────────────────────────────────────────────────────────
-
   private static PhloxInvoice _buildMinimalInvoice ()
   {
     final PhloxInvoice aInv = new PhloxInvoice ();

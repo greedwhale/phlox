@@ -128,7 +128,6 @@ public final class PhloxTemplatePostParser
     return m_aImageMap;
   }
 
-  // ─── Sentinel extraction ──────────────────────────────────────────────
   private void _processSentinels (@NonNull final Node aRoot)
   {
     // Two-pass scan: collect candidate paragraphs first to avoid mutating during iteration.
@@ -226,7 +225,6 @@ public final class PhloxTemplatePostParser
     m_aBlockClassMap.put (aTarget, sExisting == null ? sJoined : sExisting + " " + sJoined);
   }
 
-  // ─── Image URL resolution ─────────────────────────────────────────────
   private final class ImageResolver extends AbstractVisitor
   {
     @Override

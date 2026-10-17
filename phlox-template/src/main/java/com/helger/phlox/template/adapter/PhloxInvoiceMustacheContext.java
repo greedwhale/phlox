@@ -67,7 +67,6 @@ import com.samskivert.mustache.Mustache;
 @NotThreadSafe
 public final class PhloxInvoiceMustacheContext
 {
-  // ─── Sentinels emitted into the substituted CommonMark stream ─────────
   /** Opening literal of the {@code {{class:…}}} sentinel; the post-pass scans for this prefix. */
   public static final String SENTINEL_CLASS_PREFIX = "[[PHLOX:CLASS=";
   /**
@@ -83,15 +82,12 @@ public final class PhloxInvoiceMustacheContext
 
   private static final Logger LOGGER = LoggerFactory.getLogger (PhloxInvoiceMustacheContext.class);
 
-  // ─── Internal encoding tokens used during preprocessing ───────────────
   // Replace dots in presence-check paths so JMustache does not split them.
   private static final char DOT_PLACEHOLDER = '§';
   private static final String PRESENCE_PREFIX = "¤PRESENT¤";
 
-  // ─── Per-render execution context handed to the singleton fetcher ─────
   private static final ThreadLocal <PhloxRenderEnv> ENV = new ThreadLocal <> ();
 
-  // ─── Mustache plumbing ────────────────────────────────────────────────
   private static final Mustache.Collector COLLECTOR = new PhloxCollector ();
 
   private PhloxInvoiceMustacheContext ()
@@ -176,7 +172,6 @@ public final class PhloxInvoiceMustacheContext
     return _encodePresenceChecks (sLabelBaked);
   }
 
-  // ─── Stage 0a: strip {{! comment }} blocks ────────────────────────────
   // Required because the default template's multi-line comments contain literal Mustache
   // tags ({{label:...}}, {{?BT-X}}) as documentation, and standard Mustache comment parsing
   // ends at the FIRST {{!…}} inner `}}` — which would leave the rest of the comment text
@@ -193,7 +188,6 @@ public final class PhloxInvoiceMustacheContext
     return INLINE_COMMENT.matcher (sNoBlock).replaceAll ("");
   }
 
-  // ─── Stage 0b: bake every {{label:KEY}} via IPhloxLabelResolver ───────
   // The KEY may itself contain dots ({{label:section.header.title.invoice}}) — we don't care,
   // because the substitution happens before Mustache compile so JMustache never sees a
   // multi-segment label path.
@@ -215,7 +209,6 @@ public final class PhloxInvoiceMustacheContext
     return out.toString ();
   }
 
-  // ─── Stage 1b: encode {{?X}}…{{/X}} as {{#?X_encoded}}…{{/?X_encoded}} ─
   // Hand-rolled scanner — skips {{!comment}} regions entirely so the {{?BT-X}} examples
   // that appear inside the default template's comment blocks are NOT rewritten.
   @NonNull
@@ -296,10 +289,6 @@ public final class PhloxInvoiceMustacheContext
     return out.toString ();
   }
 
-  // ─────────────────────────────────────────────────────────────────────
-  // Resolution path — called by the Collector's VariableFetcher.get(...)
-  // ─────────────────────────────────────────────────────────────────────
-
   /**
    * Master name-resolution entry point. Receives the current Mustache context and the raw variable
    * name from the substituted source (post-preprocessing).
@@ -378,7 +367,6 @@ public final class PhloxInvoiceMustacheContext
     return aCurrent;
   }
 
-  // ─── Path walker for presence checks ──────────────────────────────────
   @Nullable
   private static Object _walkPath (@NonNull final Object aCtx,
                                    @NonNull final PhloxRenderEnv aEnv,
@@ -414,7 +402,6 @@ public final class PhloxInvoiceMustacheContext
     return true;
   }
 
-  // ─── Leaf formatting — pick a default formatter from the Java type ────
   @NonNull
   private static String _renderLeaf (@NonNull final Object aValue, @NonNull final PhloxRenderEnv aEnv)
   {
@@ -435,7 +422,6 @@ public final class PhloxInvoiceMustacheContext
     return aValue.toString ();
   }
 
-  // ─── Modifier pipeline ────────────────────────────────────────────────
   @NonNull
   private static String _applyModifiers (@NonNull final Object aValueIn,
                                          @NonNull final List <String> aModifiers,
@@ -553,7 +539,6 @@ public final class PhloxInvoiceMustacheContext
     };
   }
 
-  // ─── Synthesized booleans ─────────────────────────────────────────────
   private static boolean _referencesPresent (@NonNull final PhloxInvoice aInv)
   {
     if (StringHelper.isNotEmpty (aInv.getProjectReference ()) ||
@@ -606,7 +591,6 @@ public final class PhloxInvoiceMustacheContext
     return false;
   }
 
-  // ─── Pipe splitter; `\|` (GFM table cells) separates modifiers like `|` ─────
   @NonNull
   private static ICommonsList <String> _splitOnPipe (@NonNull final String sIn)
   {
@@ -630,10 +614,6 @@ public final class PhloxInvoiceMustacheContext
     aOut.add (aCurrent.toString ().trim ());
     return aOut;
   }
-
-  // ─────────────────────────────────────────────────────────────────────
-  // Mustache.Collector + VariableFetcher implementation
-  // ─────────────────────────────────────────────────────────────────────
 
   private static final class PhloxCollector implements Mustache.Collector
   {
@@ -671,7 +651,6 @@ public final class PhloxInvoiceMustacheContext
     }
   }
 
-  // ─── Test seam ────────────────────────────────────────────────────────
   /** Visible for tests — exposes the in-effect env on the current thread. */
   @Nullable
   @VisibleForTesting

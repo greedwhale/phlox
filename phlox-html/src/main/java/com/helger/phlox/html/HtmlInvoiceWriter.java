@@ -198,8 +198,6 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
     return aHtml;
   }
 
-  // ===== Sections =====
-
   private static void _renderHeader (@NonNull final HCDiv aPage,
                                      @NonNull final PhloxInvoice aInvoice,
                                      @NonNull final HtmlRenderContext aCtx)
@@ -887,8 +885,6 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       aSec.addChild (aDDiv);
     }
   }
-
-  // ===== Helpers =====
 
   @NonNull
   private static ICSSClassProvider _cls (@NonNull final String sName)
