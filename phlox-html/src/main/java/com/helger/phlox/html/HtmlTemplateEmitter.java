@@ -106,6 +106,34 @@ public final class HtmlTemplateEmitter
       aElement.addClass (HtmlDocumentSupport.cls (m_aCtx.getCssClassPrefix () + sBlockClass));
   }
 
+  @Nullable
+  private HCImg _createImage (@NonNull final PhloxTemplateAst aAst, @NonNull final Image aImage)
+  {
+    final PhloxResolvedImage aResolved = aAst.getResolvedImage (aImage);
+    final String sSrc;
+    if (aResolved != null)
+      sSrc = "data:" +
+             (aResolved.getMimeCode () == null ? "application/octet-stream" : aResolved.getMimeCode ()) +
+             ";base64," +
+             Base64.getEncoder ().encodeToString (aResolved.getBinary ());
+    else
+    {
+      if (LOGO_URL.equals (aImage.getDestination ()) || aImage.getDestination ().startsWith ("attachment:"))
+      {
+        // Nothing to show for an attachment that could not be resolved
+        LOGGER.warn ("Template image '" + aImage.getDestination () + "' could not be resolved - skipping it");
+        return null;
+      }
+      sSrc = aImage.getDestination ();
+    }
+    final HCImg aImg = new HCImg ().setSrc (new SimpleURL (sSrc));
+    if (aResolved != null && aResolved.getAltText () != null)
+      aImg.setAlt (aResolved.getAltText ());
+    if (LOGO_URL.equals (aImage.getDestination ()))
+      aImg.addClass (HtmlDocumentSupport.cls (m_aCtx.getCssClassPrefix () + "logo"));
+    return aImg;
+  }
+
   private void _addChildrenRecursive (@NonNull final PhloxTemplateAst aAst,
                                       @NonNull final Node aParent,
                                       @NonNull final IHCNodeWithChildren <?> aTarget)
@@ -199,34 +227,6 @@ public final class HtmlTemplateEmitter
       }
     }
     aTarget.addChild (aTbl);
-  }
-
-  @Nullable
-  private HCImg _createImage (@NonNull final PhloxTemplateAst aAst, @NonNull final Image aImage)
-  {
-    final PhloxResolvedImage aResolved = aAst.getResolvedImage (aImage);
-    final String sSrc;
-    if (aResolved != null)
-      sSrc = "data:" +
-             (aResolved.getMimeCode () == null ? "application/octet-stream" : aResolved.getMimeCode ()) +
-             ";base64," +
-             Base64.getEncoder ().encodeToString (aResolved.getBinary ());
-    else
-    {
-      if (LOGO_URL.equals (aImage.getDestination ()) || aImage.getDestination ().startsWith ("attachment:"))
-      {
-        // Nothing to show for an attachment that could not be resolved
-        LOGGER.warn ("Template image '" + aImage.getDestination () + "' could not be resolved - skipping it");
-        return null;
-      }
-      sSrc = aImage.getDestination ();
-    }
-    final HCImg aImg = new HCImg ().setSrc (new SimpleURL (sSrc));
-    if (aResolved != null && aResolved.getAltText () != null)
-      aImg.setAlt (aResolved.getAltText ());
-    if (LOGO_URL.equals (aImage.getDestination ()))
-      aImg.addClass (HtmlDocumentSupport.cls (m_aCtx.getCssClassPrefix () + "logo"));
-    return aImg;
   }
 
   private void _emitList (@NonNull final PhloxTemplateAst aAst,

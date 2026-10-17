@@ -294,28 +294,40 @@ A `{{class:name}}` line inside a table is parsed by GFM as a one-cell row; the p
 
 ### `PdfTemplateEmitter` (phlox-pdf)
 
-Walks the AST and builds `PLPageSet` content via `ph-pdf-layout`:
+Walks the AST and builds the content of a `PLPageSet` (page size and margins from `PdfRenderContext`) via `ph-pdf-layout`:
 
 | AST node | `ph-pdf-layout` output |
 |---|---|
-| `Heading(level=1..3)` | `PLText` with `PdfRenderContext.getHeaderFont()`, size decreasing per level |
-| `Paragraph` | A single `PLRichText` constructed by feeding the paragraph's serialised inline markup through ph-pdf-layout's CommonMark inline parser |
-| `BulletList` / `OrderedList` | The list-block helper from ph-pdf-layout's CommonMark-compatible block module |
-| `BlockQuote` | Indented `PLBox` with a left border |
-| `FencedCodeBlock` | Indented `PLText` with a monospace `FontSpec` |
-| `Table` | `PLTable`; column count and alignment from the AST; column widths from a `widths=` attribute on the table (default: even split); header row styled with `PdfRenderContext.getTableHeaderFont()` |
-| `ThematicBreak` | A thin horizontal `PLBox` border line |
-| `Image` (resolved) | `PLImage` (block-level; if it appears inline within a `Paragraph`, the post-pass already split the paragraph around it) |
+| `Heading(level=1)` | `PLRichText` in bold 18 pt |
+| `Heading(level=2)` | `PLRichText` with `PdfRenderContext.getHeaderFont()` and a grey bottom border |
+| `Heading(level=3..6)` | `PLRichText` with the bold body font |
+| `Paragraph` | One `PLRichText`; a paragraph that only holds an `Image` becomes a block image |
+| `BulletList` / `OrderedList` | `PLBulletPointList` (filled dot / numbers starting at the list's start number) |
+| `BlockQuote` | `PLBox` with a grey left border |
+| `FencedCodeBlock` / `IndentedCodeBlock` | `PLBox` with grey fill around monospace `PLText` lines |
+| `Table` | `PLTable`; alignment per column from the AST; the columns share the width in proportion to their longest content (limits: at least 9, at most 40 characters of weight); header cells use `PdfRenderContext.getTableHeaderFont()` on a grey fill |
+| `ThematicBreak` | A thin grey line |
+| `Image` (resolved) | `PLImage`; the logo is scaled to 40 pt height, other images to at most 200 pt width; only raster formats that `ImageIO` reads (PNG, JPEG, GIF) are supported |
 | `PhloxPageBreakNode` | `PLPageBreak` |
-| Inline nodes | Folded back into the paragraph's CommonMark source before handing to ph-pdf-layout's inline parser, so `**bold**`, `*italic*`, `~~strike~~`, `` `code` ``, `[link](…)` all render natively |
-
-The block-class map drives `PLTableCell` fill colours and `PLBox` background colours via a style map exposed on `PdfRenderContext`. The default style map provides one entry (`totals-due` → light grey fill); callers add more via `PdfRenderContext.putBlockStyle("name", BlockStyle)`.
 
 ### Inline strategy
 
-The PDF emitter does **not** walk inline nodes itself. For each `Paragraph` (or table cell) it serialises the inline AST back to CommonMark, then hands that string to `ph-pdf-layout`'s CommonMark inline parser. This keeps the inline rendering in lock-step between the two writers — both end up parsing the same CommonMark inline grammar — and avoids reimplementing ten kinds of styling per emitter.
+`ph-pdf-layout` itself has a single style per text element. The optional module **`ph-pdf-layout-richtext`** adds `PLRichText`, which takes a small markup string. The emitter therefore folds the inline nodes of each paragraph, heading or table cell into that markup and lets `PLRichText.createFromMarkup` do the wrapping:
 
-The HTML emitter does walk inline nodes itself, because `HCNode` types map straight from commonmark inline types with no lossy intermediate string form.
+| Inline node | Result |
+|---|---|
+| `StrongEmphasis` / `Emphasis` | `**bold**` / `*italic*` (the bold font of the Helvetica family) |
+| `Link` | `{link[uri]}…{link}` for the schemes `http`, `https`, `mailto`, `tel`, `ftp`, `ftps`; any other target (for example `attachment:BG-24[0]`) stays plain text |
+| `SoftLineBreak` / `HardLineBreak` / `<br>` | A hard line break |
+| `Strikethrough` | `~~strikethrough~~` |
+| `Code` | Plain text (the markup has no monospace) |
+| inline `Image` | Skipped (only block level images are supported) |
+
+Text of table cells is not vertically splittable, so a table moves whole rows to the next page rather than splitting a row.
+
+### Block styles
+
+A `{{class:name}}` hint (before a block, or before a table row) is looked up with `PdfRenderContext.getBlockStyle(name)`. A `PdfBlockStyle` holds an optional fill colour and an optional text colour. The default context registers one style, `totals-due` (light grey fill). Add your own with `PdfRenderContext.putBlockStyle("warn", new PdfBlockStyle(PLColor.YELLOW, PLColor.RED))`. A class without a style is logged at WARN and rendered unstyled.
 
 ## Threading and caching
 

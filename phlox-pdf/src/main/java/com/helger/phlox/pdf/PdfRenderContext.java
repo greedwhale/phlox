@@ -18,11 +18,15 @@ package com.helger.phlox.pdf;
 
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
-import com.helger.phlox.api.AbstractRenderContext;
+import com.helger.collection.commons.CommonsHashMap;
+import com.helger.collection.commons.ICommonsMap;
+import com.helger.pdflayout.base.PLColor;
 import com.helger.pdflayout.spec.FontSpec;
 import com.helger.pdflayout.spec.MarginSpec;
 import com.helger.pdflayout.spec.PreloadFont;
+import com.helger.phlox.api.AbstractRenderContext;
 
 /**
  * PDF-specific render context. Adds page size, margins and font settings on top of the shared
@@ -48,10 +52,7 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
   private FontSpec m_aBodyFont = DEFAULT_BODY_FONT;
   private FontSpec m_aHeaderFont = DEFAULT_HEADER_FONT;
   private FontSpec m_aTableHeaderFont = DEFAULT_TABLE_HEADER_FONT;
-
-  /** Create a new context with the default PDF settings. */
-  public PdfRenderContext ()
-  {}
+  private final ICommonsMap <String, PdfBlockStyle> m_aBlockStyles = new CommonsHashMap <> ();
 
   /**
    * Create a new context pre-populated with the shared settings of another context.
@@ -189,5 +190,42 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
   {
     m_aTableHeaderFont = aTableHeaderFont;
     return this;
+  }
+
+  /**
+   * Set the look of the blocks and table rows that a template marked with {@code {{class:name}}}.
+   * A block class without a style is rendered unstyled.
+   *
+   * @param sName
+   *        The class name as used in the template, without prefix. Never {@code null}.
+   * @param aStyle
+   *        The style. Never {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PdfRenderContext putBlockStyle (@NonNull final String sName, @NonNull final PdfBlockStyle aStyle)
+  {
+    m_aBlockStyles.put (sName, aStyle);
+    return this;
+  }
+
+  /** Create a new context with the default PDF settings. */
+  public PdfRenderContext ()
+  {
+    // The row with the amount due of the default template
+    putBlockStyle ("totals-due", PdfBlockStyle.fill (PLColor.gray (0xe8)));
+  }
+
+  /**
+   * Get the look of a block class.
+   *
+   * @param sName
+   *        The class name as used in the template, without prefix. Never {@code null}.
+   * @return The style or {@code null} if no style is registered for that name.
+   */
+  @Nullable
+  public PdfBlockStyle getBlockStyle (@NonNull final String sName)
+  {
+    return m_aBlockStyles.get (sName);
   }
 }

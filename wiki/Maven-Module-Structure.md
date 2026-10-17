@@ -146,10 +146,10 @@ Renders a `PhloxInvoice` to PDF.
 
 - `PdfInvoiceWriter implements IInvoiceWriter<Void>` (writes to a supplied `OutputStream` or `File`).
 - Section renderer classes mirroring `phlox-html`'s layout, used when no template is set on the context.
-- `PdfTemplateEmitter` — a commonmark-java `AbstractVisitor` subclass that walks a `PhloxTemplateAst` and produces `PLPageSet` content; paragraphs feed their inline content through `ph-pdf-layout`'s CommonMark-compatible inline parser.
+- `PdfTemplateEmitter` — walks the CommonMark tree of a `PhloxTemplateAst` and produces `PLPageSet` content; inline styling goes through `PLRichText` from `ph-pdf-layout-richtext`. Used by `PdfInvoiceWriter` when `PdfRenderContext.getTemplate() != null`; `PdfRenderContext.putBlockStyle (...)` styles `{{class:name}}` blocks.
 - Default `FontSpec` set (Helvetica regular + bold).
 
-**Dependencies:** `phlox-api`, `phlox-template`, `com.helger:ph-pdf-layout`.
+**Dependencies:** `phlox-api`, `phlox-template`, `com.helger:ph-pdf-layout`, `com.helger:ph-pdf-layout-richtext`.
 
 ### `phlox-cli`
 

@@ -23,7 +23,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetTime;
 import java.time.format.DateTimeFormatter;
-import java.util.regex.Pattern;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -37,12 +36,15 @@ import org.jspecify.annotations.Nullable;
 
 import com.helger.annotation.WillClose;
 import com.helger.base.string.StringHelper;
+import com.helger.phlox.api.PhloxRuntimeException;
 import com.helger.phlox.api.i18n.PhloxFormat;
 import com.helger.phlox.api.model.*;
+import com.helger.phlox.api.template.IPhloxTemplate;
 import com.helger.phlox.api.watermark.EWatermarkPosition;
 import com.helger.phlox.api.watermark.PhloxProgramWatermark;
 import com.helger.phlox.api.watermark.WatermarkSpec;
 import com.helger.phlox.api.write.IInvoiceWriter;
+import com.helger.phlox.template.PhloxTemplate;
 import com.helger.pdflayout.IPDDocumentCustomizer;
 import com.helger.pdflayout.PDFCreationException;
 import com.helger.pdflayout.PageLayoutPDF;
@@ -70,12 +72,6 @@ import com.helger.pdflayout.spec.WidthSpec;
  */
 public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
 {
-  /**
-   * A currency symbol that is directly followed by a digit, as in {@code €10.00}. The glyph of the
-   * symbol touches the first digit in the PDF fonts, so a gap is inserted.
-   */
-  private static final Pattern CURRENCY_SYMBOL_BEFORE_DIGIT = Pattern.compile ("(\\p{Sc}+)(?=\\p{Nd})");
-
   /** Create a new PDF invoice writer. */
   public PdfInvoiceWriter ()
   {}
@@ -327,8 +323,7 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
                                  @NonNull final PdfRenderContext aCtx)
   {
     final String sAmount = PhloxFormat.amount (aAmount, sCurrency, aCtx.getLocale (), aCtx.getFormatOptions ());
-    // Non-breaking space, so that the symbol and the number are never split over two lines
-    return CURRENCY_SYMBOL_BEFORE_DIGIT.matcher (sAmount).replaceFirst ("$1\u00A0");
+    return PdfTextSupport.separateCurrencySymbol (sAmount);
   }
 
   private static void _renderVatBreakdown (@NonNull final PLPageSet aPS,
@@ -1048,23 +1043,35 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
   private PageLayoutPDF _build (@NonNull final PhloxInvoice aInvoice, @NonNull final PdfRenderContext aCtx)
   {
     final PageLayoutPDF aPdf = new PageLayoutPDF ();
-    final PLPageSet aPS = new PLPageSet (aCtx.getPageSize ()).setMargin (aCtx.getMargins ());
 
-    _renderHeader (aPS, aInvoice, aCtx);
-    _renderProcessControl (aPS, aInvoice, aCtx);
-    _renderParties (aPS, aInvoice, aCtx);
-    _renderOptionalParties (aPS, aInvoice, aCtx);
-    _renderReferences (aPS, aInvoice, aCtx);
-    _renderInvoiceNotes (aPS, aInvoice, aCtx);
-    _renderDelivery (aPS, aInvoice, aCtx);
-    _renderInvoicingPeriod (aPS, aInvoice, aCtx);
-    _renderLines (aPS, aInvoice, aCtx);
-    _renderAllowancesCharges (aPS, aInvoice, aCtx);
-    _renderVatBreakdown (aPS, aInvoice, aCtx);
-    _renderTotals (aPS, aInvoice, aCtx);
-    _renderPayment (aPS, aInvoice, aCtx);
-    _renderPaymentTerms (aPS, aInvoice, aCtx);
-    _renderSupportingDocuments (aPS, aInvoice, aCtx);
+    final IPhloxTemplate aTemplate = aCtx.getTemplate ();
+    final PLPageSet aPS;
+    if (aTemplate != null)
+    {
+      if (!(aTemplate instanceof final PhloxTemplate aPhloxTemplate))
+        throw new PhloxRuntimeException ("Unsupported template implementation " + aTemplate.getClass ().getName ());
+      aPS = new PdfTemplateEmitter (aCtx).emit (aPhloxTemplate.renderAst (aInvoice, aCtx));
+    }
+    else
+    {
+      aPS = new PLPageSet (aCtx.getPageSize ()).setMargin (aCtx.getMargins ());
+
+      _renderHeader (aPS, aInvoice, aCtx);
+      _renderProcessControl (aPS, aInvoice, aCtx);
+      _renderParties (aPS, aInvoice, aCtx);
+      _renderOptionalParties (aPS, aInvoice, aCtx);
+      _renderReferences (aPS, aInvoice, aCtx);
+      _renderInvoiceNotes (aPS, aInvoice, aCtx);
+      _renderDelivery (aPS, aInvoice, aCtx);
+      _renderInvoicingPeriod (aPS, aInvoice, aCtx);
+      _renderLines (aPS, aInvoice, aCtx);
+      _renderAllowancesCharges (aPS, aInvoice, aCtx);
+      _renderVatBreakdown (aPS, aInvoice, aCtx);
+      _renderTotals (aPS, aInvoice, aCtx);
+      _renderPayment (aPS, aInvoice, aCtx);
+      _renderPaymentTerms (aPS, aInvoice, aCtx);
+      _renderSupportingDocuments (aPS, aInvoice, aCtx);
+    }
 
     aPdf.addPageSet (aPS);
 

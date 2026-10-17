@@ -45,8 +45,16 @@
       <artifactId>phlox-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.helger.phlox</groupId>
+      <artifactId>phlox-template</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.helger</groupId>
       <artifactId>ph-pdf-layout</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.helger</groupId>
+      <artifactId>ph-pdf-layout-richtext</artifactId>
     </dependency>
 
     <dependency>
