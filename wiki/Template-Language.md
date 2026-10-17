@@ -167,7 +167,7 @@ All BGs and BTs of EN 16931:2026 (BG-33 to BG-39, BT-166 to BT-220) resolve like
 
 - `{{BT-10}}` renders the buyer references comma-joined, each followed by its scheme identifier in parentheses (BT-10 is a list since 2026).
 - BT-20 is addressed inside BG-33: `{{#BG-33}}{{BT-20}}{{/BG-33}}`. BG-35 and BG-36 are lists inside BG-33; BG-34 is a list inside BG-22; BG-37 is a single object and BG-39 a list inside BG-25.
-- List-valued paths (`{{#BG-x}}`) reach JMustache unchanged, so sections iterate over the elements. Inside GFM table cells a modifier separator may be written `\|` or `|`; both separate modifiers.
+- List-valued paths (`{{#BG-x}}`) reach JMustache unchanged, so sections iterate over the elements. Modifiers are always separated by a plain `|`, also inside Markdown table rows: placeholders are substituted before the Markdown is parsed, so no `\|` escape is needed (the escaped pipes in the tables of this wiki page are only for GitHub's own table renderer).
 
 ### Labels
 

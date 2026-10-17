@@ -324,10 +324,8 @@ public final class PhloxInvoiceMustacheContext
       }
       else
       {
-        out.append (bAtStart ? Character.toString (c).toUpperCase (aEnv.getLocale ()).charAt (0) : Character.toString (
-                                                                                                                       c)
-                                                                                                            .toLowerCase (aEnv.getLocale ())
-                                                                                                            .charAt (0));
+        out.append (bAtStart ? Character.toString (c).toUpperCase (aEnv.getLocale ()).charAt (0)
+                             : Character.toString (c).toLowerCase (aEnv.getLocale ()).charAt (0));
         bAtStart = false;
       }
     }
@@ -346,13 +344,14 @@ public final class PhloxInvoiceMustacheContext
   }
 
   @Nullable
-  private static Object _applyOneModifier (@Nullable final Object aValue,
+  private static String _applyOneModifier (@Nullable final Object aValue,
                                            @NonNull final String sName,
                                            @Nullable final String sArg,
                                            @NonNull final PhloxRenderEnv aEnv)
   {
     if (aValue == null)
       return "";
+
     switch (sName)
     {
       case "raw":
@@ -374,8 +373,7 @@ public final class PhloxInvoiceMustacheContext
         if (!(aValue instanceof final LocalDate aDate))
           return aValue.toString ();
         final FormatStyle eStyle = _parseDateStyle (sArg);
-        return PDTFormatter.getFormatterDate (eStyle, aEnv.getLocale (), EDTFormatterMode.PRINT)
-                           .format (aDate);
+        return PDTFormatter.getFormatterDate (eStyle, aEnv.getLocale (), EDTFormatterMode.PRINT).format (aDate);
       }
       case "code":
       {
@@ -488,23 +486,8 @@ public final class PhloxInvoiceMustacheContext
   private static ICommonsList <String> _splitOnPipe (@NonNull final String sIn)
   {
     final ICommonsList <String> aOut = new CommonsArrayList <> ();
-    final StringBuilder aCurrent = new StringBuilder ();
-    for (int i = 0; i < sIn.length (); i++)
-    {
-      final char c = sIn.charAt (i);
-      // Inside GFM table cells the pipe has to be written as "\\|", so both forms separate modifiers
-      final boolean bEscaped = c == '\\' && i + 1 < sIn.length () && sIn.charAt (i + 1) == '|';
-      if (bEscaped || c == '|')
-      {
-        aOut.add (aCurrent.toString ().trim ());
-        aCurrent.setLength (0);
-        if (bEscaped)
-          i++;
-      }
-      else
-        aCurrent.append (c);
-    }
-    aOut.add (aCurrent.toString ().trim ());
+    for (final String sPart : StringHelper.getExploded ('|', sIn))
+      aOut.add (sPart.trim ());
     return aOut;
   }
 
@@ -609,7 +592,7 @@ public final class PhloxInvoiceMustacheContext
       return Boolean.valueOf (_isTruthy (_walkPath (aCtx, aEnv, sPath)));
     }
 
-    // 2. Modifier pipeline — split unescaped pipes
+    // 2. Modifier pipeline — split on pipes
     final List <String> aParts = _splitOnPipe (sRawName);
     final String sHead = aParts.get (0);
     final List <String> aModifiers = aParts.size () > 1 ? aParts.subList (1, aParts.size ()) : List.of ();

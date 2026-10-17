@@ -335,7 +335,7 @@
 
 | {{label:section.lines.column.number}} | {{label:section.lines.column.description}} | {{label:section.lines.column.quantity}} | {{label:section.lines.column.unitprice}} | {{label:section.lines.column.vat}} | {{label:section.lines.column.linetotal}} |
 |---:|---|---:|---:|---:|---:|
-{{#BG-25}}| {{BT-126}} | **{{BG-31.BT-153}}**{{?BG-31.BT-154}}\ {{BG-31.BT-154}}{{/BG-31.BT-154}}{{?BG-31.BT-155}}\ *{{label:BT-155}}: {{BG-31.BT-155}}*{{/BG-31.BT-155}} | {{BT-129}} {{BT-130 \| code:unit}} | {{BG-29.BT-146 \| amount}} | {{BG-30.BT-152 \| percent}} | {{BT-131 \| amount}} |
+{{#BG-25}}| {{BT-126}} | **{{BG-31.BT-153}}**{{?BG-31.BT-154}}\ {{BG-31.BT-154}}{{/BG-31.BT-154}}{{?BG-31.BT-155}}\ *{{label:BT-155}}: {{BG-31.BT-155}}*{{/BG-31.BT-155}} | {{BT-129}} {{BT-130 | code:unit}} | {{BG-29.BT-146 | amount}} | {{BG-30.BT-152 | percent}} | {{BT-131 | amount}} |
 {{/BG-25}}
 
 {{!
@@ -446,7 +446,7 @@
 
 | {{label:BT-97}} | {{label:BT-92}} | {{label:BT-95}} | {{label:BT-96}} |
 |---|---:|---|---:|
-{{#BG-20}}| {{?BT-97}}{{BT-97}}{{/BT-97}}{{?BT-98}} *({{BT-98 \| code:allowancereason}})*{{/BT-98}}{{?BT-173}} — {{BT-173}}{{/BT-173}}{{?BT-174}} ({{BT-174}}){{/BT-174}}{{?BT-213}} [{{BT-213}}]{{/BT-213}} | −{{BT-92 \| amount}} | {{BT-95 \| code:vatcategory}} | {{BT-96 \| percent}} |
+{{#BG-20}}| {{?BT-97}}{{BT-97}}{{/BT-97}}{{?BT-98}} *({{BT-98 | code:allowancereason}})*{{/BT-98}}{{?BT-173}} — {{BT-173}}{{/BT-173}}{{?BT-174}} ({{BT-174}}){{/BT-174}}{{?BT-213}} [{{BT-213}}]{{/BT-213}} | −{{BT-92 | amount}} | {{BT-95 | code:vatcategory}} | {{BT-96 | percent}} |
 {{/BG-20}}
 {{/BG-20}}
 
@@ -472,7 +472,7 @@
 {{/BG-20}}
 | {{label:BT-104}} | {{label:BT-99}} | {{label:BT-102}} | {{label:BT-103}} |
 |---|---:|---|---:|
-{{#BG-21}}| {{?BT-104}}{{BT-104}}{{/BT-104}}{{?BT-105}} *({{BT-105 \| code:chargereason}})*{{/BT-105}}{{?BT-175}} — {{BT-175}}{{/BT-175}}{{?BT-176}} ({{BT-176}}){{/BT-176}}{{?BT-177}} <{{BT-177}}>{{/BT-177}}{{?BT-214}} [{{BT-214}}]{{/BT-214}} | +{{BT-99 \| amount}} | {{BT-102 \| code:vatcategory}} | {{BT-103 \| percent}} |
+{{#BG-21}}| {{?BT-104}}{{BT-104}}{{/BT-104}}{{?BT-105}} *({{BT-105 | code:chargereason}})*{{/BT-105}}{{?BT-175}} — {{BT-175}}{{/BT-175}}{{?BT-176}} ({{BT-176}}){{/BT-176}}{{?BT-177}} <{{BT-177}}>{{/BT-177}}{{?BT-214}} [{{BT-214}}]{{/BT-214}} | +{{BT-99 | amount}} | {{BT-102 | code:vatcategory}} | {{BT-103 | percent}} |
 {{/BG-21}}
 {{/BG-21}}
 
@@ -493,7 +493,7 @@
 
 | {{label:BT-118}} | {{label:BT-116}} | {{label:BT-119}} | {{label:BT-117}} |
 |---|---:|---:|---:|
-{{#BG-23}}| {{BT-118 \| code:vatcategory}}{{?BT-121}} *({{BT-121 \| code:vatexemption}})*{{/BT-121}}{{?BT-184}} ({{BT-184}}){{/BT-184}}{{?BT-210}} [{{BT-210}}]{{/BT-210}} | {{BT-116 \| amount}} | {{BT-119 \| percent}} | {{BT-117 \| amount}} |
+{{#BG-23}}| {{BT-118 | code:vatcategory}}{{?BT-121}} *({{BT-121 | code:vatexemption}})*{{/BT-121}}{{?BT-184}} ({{BT-184}}){{/BT-184}}{{?BT-210}} [{{BT-210}}]{{/BT-210}} | {{BT-116 | amount}} | {{BT-119 | percent}} | {{BT-117 | amount}} |
 {{/BG-23}}
 {{#BG-23}}
 {{?BT-120}}
@@ -526,18 +526,18 @@
 
 | | |
 |---|---:|
-{{?BG-22.BT-106}}| {{label:BT-106}} | {{BG-22.BT-106 \| amount}} |
-{{/BG-22.BT-106}}{{?BG-22.BT-107}}| {{label:BT-107}} | −{{BG-22.BT-107 \| amount}} |
-{{/BG-22.BT-107}}{{?BG-22.BT-108}}| {{label:BT-108}} | +{{BG-22.BT-108 \| amount}} |
-{{/BG-22.BT-108}}{{#BG-22.BG-34}}| {{label:BG-34}}{{?BT-180}}: {{BT-180}}{{/BT-180}} | +{{BT-179 \| amount}} |
-{{/BG-22.BG-34}}| **{{label:BT-109}}** | **{{BG-22.BT-109 \| amount}}** |
-| {{label:BT-110}} | {{BG-22.BT-110 \| amount}} |
-{{?BG-22.BT-111}}| {{label:BT-111}} | {{BG-22.BT-111 \| amount:BT-6}} |
-{{/BG-22.BT-111}}| **{{label:BT-112}}** | **{{BG-22.BT-112 \| amount}}** |
-{{?BG-22.BT-113}}| {{label:BT-113}} | −{{BG-22.BT-113 \| amount}} |
-{{/BG-22.BT-113}}{{?BG-22.BT-114}}| {{label:BT-114}} | {{BG-22.BT-114 \| amount}} |
+{{?BG-22.BT-106}}| {{label:BT-106}} | {{BG-22.BT-106 | amount}} |
+{{/BG-22.BT-106}}{{?BG-22.BT-107}}| {{label:BT-107}} | −{{BG-22.BT-107 | amount}} |
+{{/BG-22.BT-107}}{{?BG-22.BT-108}}| {{label:BT-108}} | +{{BG-22.BT-108 | amount}} |
+{{/BG-22.BT-108}}{{#BG-22.BG-34}}| {{label:BG-34}}{{?BT-180}}: {{BT-180}}{{/BT-180}} | +{{BT-179 | amount}} |
+{{/BG-22.BG-34}}| **{{label:BT-109}}** | **{{BG-22.BT-109 | amount}}** |
+| {{label:BT-110}} | {{BG-22.BT-110 | amount}} |
+{{?BG-22.BT-111}}| {{label:BT-111}} | {{BG-22.BT-111 | amount:BT-6}} |
+{{/BG-22.BT-111}}| **{{label:BT-112}}** | **{{BG-22.BT-112 | amount}}** |
+{{?BG-22.BT-113}}| {{label:BT-113}} | −{{BG-22.BT-113 | amount}} |
+{{/BG-22.BT-113}}{{?BG-22.BT-114}}| {{label:BT-114}} | {{BG-22.BT-114 | amount}} |
 {{/BG-22.BT-114}}{{class:totals-due}}
-| **{{label:section.totals.due}}** | **{{BG-22.BT-115 \| amount}}** |
+| **{{label:section.totals.due}}** | **{{BG-22.BT-115 | amount}}** |
 
 {{!
   ─── BG-16 — Payment instructions (+ BG-17, BG-18, BG-19) ───────────────

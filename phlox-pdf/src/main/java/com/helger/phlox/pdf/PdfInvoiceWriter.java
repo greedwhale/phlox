@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetTime;
 import java.time.format.DateTimeFormatter;
+import java.util.regex.Pattern;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -69,6 +70,12 @@ import com.helger.pdflayout.spec.WidthSpec;
  */
 public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
 {
+  /**
+   * A currency symbol that is directly followed by a digit, as in {@code €10.00}. The glyph of the
+   * symbol touches the first digit in the PDF fonts, so a gap is inserted.
+   */
+  private static final Pattern CURRENCY_SYMBOL_BEFORE_DIGIT = Pattern.compile ("(\\p{Sc}+)(?=\\p{Nd})");
+
   /** Create a new PDF invoice writer. */
   public PdfInvoiceWriter ()
   {}
@@ -319,7 +326,9 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
                                  @Nullable final String sCurrency,
                                  @NonNull final PdfRenderContext aCtx)
   {
-    return PhloxFormat.amount (aAmount, sCurrency, aCtx.getLocale (), aCtx.getFormatOptions ());
+    final String sAmount = PhloxFormat.amount (aAmount, sCurrency, aCtx.getLocale (), aCtx.getFormatOptions ());
+    // Non-breaking space, so that the symbol and the number are never split over two lines
+    return CURRENCY_SYMBOL_BEFORE_DIGIT.matcher (sAmount).replaceFirst ("$1\u00A0");
   }
 
   private static void _renderVatBreakdown (@NonNull final PLPageSet aPS,
