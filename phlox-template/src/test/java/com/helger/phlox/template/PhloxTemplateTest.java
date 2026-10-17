@@ -70,6 +70,32 @@ public final class PhloxTemplateTest
   private static final class TestCtx extends AbstractRenderContext <TestCtx>
   {}
 
+  /** Spy resolver that counts label lookups. */
+  private static final class CountingResolver implements IPhloxLabelResolver
+  {
+    private final AtomicInteger m_aLabelCount = new AtomicInteger ();
+    private final AtomicInteger m_aCodeCount = new AtomicInteger ();
+
+    @Override
+    public String getLabel (final String sKey, final Locale aLocale)
+    {
+      m_aLabelCount.incrementAndGet ();
+      return "L(" + sKey + ")";
+    }
+
+    @Override
+    public String getCodeLabel (final String sListName, final String sCode, final Locale aLocale)
+    {
+      m_aCodeCount.incrementAndGet ();
+      return sCode;
+    }
+
+    int count ()
+    {
+      return m_aLabelCount.get ();
+    }
+  }
+
   @NonNull
   private static PhloxInvoice _buildMinimalInvoice ()
   {
@@ -113,6 +139,33 @@ public final class PhloxTemplateTest
     aInv.lines ().add (aLine);
 
     return aInv;
+  }
+
+  private static void _renderFixtures (final IInvoiceReader <InputStream> aReader,
+                                       final Iterable <ClassPathResource> aFiles,
+                                       final int nMinCount)
+  {
+    int nCount = 0;
+    for (final ClassPathResource aRes : aFiles)
+    {
+      try (final InputStream aIS = aRes.getInputStream ())
+      {
+        final PhloxInvoice aInvoice = aReader.read (aIS, new ErrorList ());
+        assertNotNull ("Failed to parse " + aRes.getPath (), aInvoice);
+        for (final Locale aLocale : new Locale [] { Locale.ENGLISH, Locale.GERMAN })
+        {
+          final TestCtx aCtx = new TestCtx ();
+          aCtx.setLocale (aLocale);
+          assertNotNull ("No AST for " + aRes.getPath (), PhloxTemplate.getDefault ().renderAst (aInvoice, aCtx));
+        }
+        nCount++;
+      }
+      catch (final IOException ex)
+      {
+        throw new IllegalStateException ("Failed to open " + aRes.getPath (), ex);
+      }
+    }
+    assertTrue ("Expected at least " + nMinCount + " documents rendered", nCount >= nMinCount);
   }
 
   @Test
@@ -177,33 +230,6 @@ public final class PhloxTemplateTest
     assertTrue (sCommonMark.contains ("Line Depot"));
     assertTrue (sCommonMark.contains ("0088:4035813333333"));
     assertNotNull (PhloxTemplate.getDefault ().renderAst (aInvoice, aCtx));
-  }
-
-  private static void _renderFixtures (final IInvoiceReader <InputStream> aReader,
-                                       final Iterable <ClassPathResource> aFiles,
-                                       final int nMinCount)
-  {
-    int nCount = 0;
-    for (final ClassPathResource aRes : aFiles)
-    {
-      try (final InputStream aIS = aRes.getInputStream ())
-      {
-        final PhloxInvoice aInvoice = aReader.read (aIS, new ErrorList ());
-        assertNotNull ("Failed to parse " + aRes.getPath (), aInvoice);
-        for (final Locale aLocale : new Locale [] { Locale.ENGLISH, Locale.GERMAN })
-        {
-          final TestCtx aCtx = new TestCtx ();
-          aCtx.setLocale (aLocale);
-          assertNotNull ("No AST for " + aRes.getPath (), PhloxTemplate.getDefault ().renderAst (aInvoice, aCtx));
-        }
-        nCount++;
-      }
-      catch (final IOException ex)
-      {
-        throw new IllegalStateException ("Failed to open " + aRes.getPath (), ex);
-      }
-    }
-    assertTrue ("Expected at least " + nMinCount + " documents rendered", nCount >= nMinCount);
   }
 
   @Test
@@ -323,31 +349,5 @@ public final class PhloxTemplateTest
     final PhloxLocalizedTemplate aLocalized = aTpl.localize (aCtx);
     assertTrue ("locale-baked source must not contain any {{label:...}} markers",
                 !aLocalized.getLocaleBakedSource ().contains ("{{label:"));
-  }
-
-  /** Spy resolver that counts label lookups. */
-  private static final class CountingResolver implements IPhloxLabelResolver
-  {
-    private final AtomicInteger m_aLabelCount = new AtomicInteger ();
-    private final AtomicInteger m_aCodeCount = new AtomicInteger ();
-
-    @Override
-    public String getLabel (final String sKey, final Locale aLocale)
-    {
-      m_aLabelCount.incrementAndGet ();
-      return "L(" + sKey + ")";
-    }
-
-    @Override
-    public String getCodeLabel (final String sListName, final String sCode, final Locale aLocale)
-    {
-      m_aCodeCount.incrementAndGet ();
-      return sCode;
-    }
-
-    int count ()
-    {
-      return m_aLabelCount.get ();
-    }
   }
 }

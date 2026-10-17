@@ -112,57 +112,6 @@ public class CiiInvoiceReader implements IInvoiceReader <InputStream>
     return m_eEdition;
   }
 
-  @Override
-  @Nullable
-  public PhloxInvoice read (@NonNull final InputStream aSource, @NonNull final ErrorList aErrors)
-  {
-    final Document aDoc = DOMReader.readXMLDOM (aSource);
-    if (aDoc == null)
-    {
-      aErrors.add (SingleError.builderError ().errorText ("Source could not be parsed as XML").build ());
-      return null;
-    }
-
-    EEN16931Edition eEdition = m_eEdition;
-    if (eEdition == null)
-    {
-      eEdition = EEN16931Edition.detect (aDoc);
-      if (eEdition == null)
-      {
-        aErrors.add (SingleError.builderError ()
-                                .errorText ("The EN 16931 edition could not be determined because BT-24 (Specification identifier) is missing or is not an EN 16931 identifier. Use CiiInvoiceReader.fromD16B() or CiiInvoiceReader.fromD25A() to select the edition explicitly.")
-                                .build ());
-        return null;
-      }
-    }
-
-    switch (eEdition)
-    {
-      case EN2017:
-      {
-        final un.unece.uncefact.data.standard.crossindustryinvoice._100.CrossIndustryInvoiceType aCii = new CIID16BCrossIndustryInvoiceTypeMarshaller ().read (aDoc);
-        if (aCii == null)
-        {
-          aErrors.add (SingleError.builderError ().errorText ("Source could not be parsed as CII D16B").build ());
-          return null;
-        }
-        return readCrossIndustryInvoice (aCii, aErrors);
-      }
-      case EN2026:
-      {
-        final CrossIndustryInvoiceType aCii = new CIID25ACrossIndustryInvoiceTypeMarshaller ().read (aDoc);
-        if (aCii == null)
-        {
-          aErrors.add (SingleError.builderError ().errorText ("Source could not be parsed as CII D25A").build ());
-          return null;
-        }
-        return readCrossIndustryInvoice (aCii, aErrors);
-      }
-      default:
-        throw new IllegalStateException ("Unsupported EN 16931 edition " + eEdition);
-    }
-  }
-
   /**
    * Read an already-parsed CII D16B document (EN 16931:2017) into a {@link PhloxInvoice}.
    * Convenience overload that discards any collected warnings.
@@ -226,5 +175,56 @@ public class CiiInvoiceReader implements IInvoiceReader <InputStream>
                                                 @NonNull final ErrorList aErrors)
   {
     return new CiiD25AInvoiceReader ().readCrossIndustryInvoice (aCii, aErrors);
+  }
+
+  @Override
+  @Nullable
+  public PhloxInvoice read (@NonNull final InputStream aSource, @NonNull final ErrorList aErrors)
+  {
+    final Document aDoc = DOMReader.readXMLDOM (aSource);
+    if (aDoc == null)
+    {
+      aErrors.add (SingleError.builderError ().errorText ("Source could not be parsed as XML").build ());
+      return null;
+    }
+
+    EEN16931Edition eEdition = m_eEdition;
+    if (eEdition == null)
+    {
+      eEdition = EEN16931Edition.detect (aDoc);
+      if (eEdition == null)
+      {
+        aErrors.add (SingleError.builderError ()
+                                .errorText ("The EN 16931 edition could not be determined because BT-24 (Specification identifier) is missing or is not an EN 16931 identifier. Use CiiInvoiceReader.fromD16B() or CiiInvoiceReader.fromD25A() to select the edition explicitly.")
+                                .build ());
+        return null;
+      }
+    }
+
+    switch (eEdition)
+    {
+      case EN2017:
+      {
+        final un.unece.uncefact.data.standard.crossindustryinvoice._100.CrossIndustryInvoiceType aCii = new CIID16BCrossIndustryInvoiceTypeMarshaller ().read (aDoc);
+        if (aCii == null)
+        {
+          aErrors.add (SingleError.builderError ().errorText ("Source could not be parsed as CII D16B").build ());
+          return null;
+        }
+        return readCrossIndustryInvoice (aCii, aErrors);
+      }
+      case EN2026:
+      {
+        final CrossIndustryInvoiceType aCii = new CIID25ACrossIndustryInvoiceTypeMarshaller ().read (aDoc);
+        if (aCii == null)
+        {
+          aErrors.add (SingleError.builderError ().errorText ("Source could not be parsed as CII D25A").build ());
+          return null;
+        }
+        return readCrossIndustryInvoice (aCii, aErrors);
+      }
+      default:
+        throw new IllegalStateException ("Unsupported EN 16931 edition " + eEdition);
+    }
   }
 }

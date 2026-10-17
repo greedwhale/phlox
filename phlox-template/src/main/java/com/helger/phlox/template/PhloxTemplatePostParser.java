@@ -77,6 +77,24 @@ public final class PhloxTemplatePostParser
   private final Map <Node, String> m_aBlockClassMap = new HashMap <> ();
   private final Map <Image, PhloxResolvedImage> m_aImageMap = new HashMap <> ();
 
+  private final class ImageResolver extends AbstractVisitor
+  {
+    @Override
+    public void visit (final Image aImage)
+    {
+      final String sDest = aImage.getDestination ();
+      if (sDest == null || sDest.isEmpty ())
+      {
+        super.visit (aImage);
+        return;
+      }
+      final PhloxResolvedImage aResolved = _resolveImage (sDest, aImage);
+      if (aResolved != null)
+        m_aImageMap.put (aImage, aResolved);
+      super.visit (aImage);
+    }
+  }
+
   /**
    * Construct a post-parser bound to the given invoice and render context. Both are needed
    * for image-URL resolution (the invoice supplies BG-24 supporting docs, the render context
@@ -94,53 +112,13 @@ public final class PhloxTemplatePostParser
     m_aContext = aContext;
   }
 
-  /**
-   * Run both post-passes against the document root.
-   *
-   * @param aRoot
-   *        The document root. Never {@code null}.
-   */
-  public void process (@NonNull final Node aRoot)
+  private void _attachClassesTo (@NonNull final Node aTarget, @NonNull final List <String> aClasses)
   {
-    _processSentinels (aRoot);
-    aRoot.accept (new ImageResolver ());
-  }
-
-  /**
-   * Get the sidecar map of block → CSS class assigned by {@code {{class:…}}} sentinels.
-   *
-   * @return Sidecar map of block → CSS class assigned by {@code {{class:…}}} sentinels.
-   */
-  @NonNull
-  public Map <Node, String> getBlockClassMap ()
-  {
-    return m_aBlockClassMap;
-  }
-
-  /**
-   * Get the sidecar map of {@link Image} node → resolved binary payload.
-   *
-   * @return Sidecar map of {@link Image} node → resolved binary payload.
-   */
-  @NonNull
-  public Map <Image, PhloxResolvedImage> getImageMap ()
-  {
-    return m_aImageMap;
-  }
-
-  private void _processSentinels (@NonNull final Node aRoot)
-  {
-    // Two-pass scan: collect candidate paragraphs first to avoid mutating during iteration.
-    Node aChild = aRoot.getFirstChild ();
-    while (aChild != null)
-    {
-      final Node aNext = aChild.getNext ();
-      if (aChild instanceof final Paragraph aParagraph)
-        _processParagraph (aParagraph);
-      else
-        _processSentinels (aChild); // recurse into block containers (BlockQuote, ListItem, etc.)
-      aChild = aNext;
-    }
+    if (aClasses.isEmpty ())
+      return;
+    final String sExisting = m_aBlockClassMap.get (aTarget);
+    final String sJoined = String.join (" ", aClasses);
+    m_aBlockClassMap.put (aTarget, sExisting == null ? sJoined : sExisting + " " + sJoined);
   }
 
   private void _processParagraph (@NonNull final Paragraph aParagraph)
@@ -215,31 +193,47 @@ public final class PhloxTemplatePostParser
     _attachClassesTo (aParagraph, aClassesFound);
   }
 
-  private void _attachClassesTo (@NonNull final Node aTarget, @NonNull final List <String> aClasses)
+  private void _processSentinels (@NonNull final Node aRoot)
   {
-    if (aClasses.isEmpty ())
-      return;
-    final String sExisting = m_aBlockClassMap.get (aTarget);
-    final String sJoined = String.join (" ", aClasses);
-    m_aBlockClassMap.put (aTarget, sExisting == null ? sJoined : sExisting + " " + sJoined);
+    // Two-pass scan: collect candidate paragraphs first to avoid mutating during iteration.
+    Node aChild = aRoot.getFirstChild ();
+    while (aChild != null)
+    {
+      final Node aNext = aChild.getNext ();
+      if (aChild instanceof final Paragraph aParagraph)
+        _processParagraph (aParagraph);
+      else
+        _processSentinels (aChild); // recurse into block containers (BlockQuote, ListItem, etc.)
+      aChild = aNext;
+    }
   }
 
-  private final class ImageResolver extends AbstractVisitor
+  @Nullable
+  private static String _firstTextOf (@NonNull final Image aImage)
   {
-    @Override
-    public void visit (final Image aImage)
+    Node aChild = aImage.getFirstChild ();
+    while (aChild != null)
     {
-      final String sDest = aImage.getDestination ();
-      if (sDest == null || sDest.isEmpty ())
-      {
-        super.visit (aImage);
-        return;
-      }
-      final PhloxResolvedImage aResolved = _resolveImage (sDest, aImage);
-      if (aResolved != null)
-        m_aImageMap.put (aImage, aResolved);
-      super.visit (aImage);
+      if (aChild instanceof final Text aText)
+        return aText.getLiteral ();
+      aChild = aChild.getNext ();
     }
+    return null;
+  }
+
+  @Nullable
+  private static String _guessMime (@NonNull final String sPath)
+  {
+    final String sLower = sPath.toLowerCase (Locale.ROOT);
+    if (sLower.endsWith (".png"))
+      return "image/png";
+    if (sLower.endsWith (".jpg") || sLower.endsWith (".jpeg"))
+      return "image/jpeg";
+    if (sLower.endsWith (".gif"))
+      return "image/gif";
+    if (sLower.endsWith (".svg"))
+      return "image/svg+xml";
+    return null;
   }
 
   @Nullable
@@ -308,32 +302,38 @@ public final class PhloxTemplatePostParser
                                       "unsupported image URL scheme; expected one of: data:, attachment:, classpath:");
   }
 
-  @Nullable
-  private static String _firstTextOf (@NonNull final Image aImage)
+  /**
+   * Run both post-passes against the document root.
+   *
+   * @param aRoot
+   *        The document root. Never {@code null}.
+   */
+  public void process (@NonNull final Node aRoot)
   {
-    Node aChild = aImage.getFirstChild ();
-    while (aChild != null)
-    {
-      if (aChild instanceof final Text aText)
-        return aText.getLiteral ();
-      aChild = aChild.getNext ();
-    }
-    return null;
+    _processSentinels (aRoot);
+    aRoot.accept (new ImageResolver ());
   }
 
-  @Nullable
-  private static String _guessMime (@NonNull final String sPath)
+  /**
+   * Get the sidecar map of block → CSS class assigned by {@code {{class:…}}} sentinels.
+   *
+   * @return Sidecar map of block → CSS class assigned by {@code {{class:…}}} sentinels.
+   */
+  @NonNull
+  public Map <Node, String> getBlockClassMap ()
   {
-    final String sLower = sPath.toLowerCase (Locale.ROOT);
-    if (sLower.endsWith (".png"))
-      return "image/png";
-    if (sLower.endsWith (".jpg") || sLower.endsWith (".jpeg"))
-      return "image/jpeg";
-    if (sLower.endsWith (".gif"))
-      return "image/gif";
-    if (sLower.endsWith (".svg"))
-      return "image/svg+xml";
-    return null;
+    return m_aBlockClassMap;
+  }
+
+  /**
+   * Get the sidecar map of {@link Image} node → resolved binary payload.
+   *
+   * @return Sidecar map of {@link Image} node → resolved binary payload.
+   */
+  @NonNull
+  public Map <Image, PhloxResolvedImage> getImageMap ()
+  {
+    return m_aImageMap;
   }
 
   /**

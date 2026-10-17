@@ -47,49 +47,31 @@ public final class CiiInvoiceReaderTest
 {
   private static final Logger LOGGER = LoggerFactory.getLogger (CiiInvoiceReaderTest.class);
 
-  @Test
-  public void testReadCoreFiles ()
+  private static void _assertMandatoryFields (final PhloxInvoice aModel,
+                                              @NonNull final ClassPathResource aRes,
+                                              @NonNull final ErrorList aErrors)
   {
-    _readAllAndAssertWellFormed (MockPhloxTestFiles.getCiiD16BCoreFiles (), "core", 15);
-  }
+    final String sPath = aRes.getPath ();
+    assertNotNull ("Reader returned null for " + sPath + " — errors: " + aErrors, aModel);
 
-  @Test
-  public void testReadXRechnung122Files ()
-  {
-    _readAllAndAssertWellFormed (MockPhloxTestFiles.getCiiD16BXRechnung122Files (), "xrechnung/1.2.2", 21);
-  }
+    // Header-level mandatory BTs.
+    assertNotNull ("BT-1 (invoice number) missing in " + sPath, aModel.getNumber ());
+    assertNotNull ("BT-2 (issue date) missing in " + sPath, aModel.getIssueDate ());
+    assertNotNull ("BT-5 (currency) missing in " + sPath, aModel.getCurrency ());
 
-  @Test
-  public void testReadXRechnung200Files ()
-  {
-    _readAllAndAssertWellFormed (MockPhloxTestFiles.getCiiD16BXRechnung200Files (), "xrechnung/2.0.0", 19);
-  }
+    // BG-4 seller — must exist with a name.
+    assertNotNull ("BG-4 (seller) missing in " + sPath, aModel.getSeller ());
+    assertNotNull ("BT-27 (seller name) missing in " + sPath, aModel.getSeller ().getName ());
 
-  @Test
-  public void testReadXRechnung302Files ()
-  {
-    _readAllAndAssertWellFormed (MockPhloxTestFiles.getCiiD16BXRechnung302Files (), "xrechnung/3.0.2", 33);
-  }
+    // BG-7 buyer — must exist with a name.
+    assertNotNull ("BG-7 (buyer) missing in " + sPath, aModel.getBuyer ());
+    assertNotNull ("BT-44 (buyer name) missing in " + sPath, aModel.getBuyer ().getName ());
 
-  @Test
-  public void testReadTechnicalFiles ()
-  {
-    _readAllAndAssertWellFormed (MockPhloxTestFiles.getCiiD16BTechnicalFiles (), "xrechnung/technical", 6);
-  }
+    // BG-22 totals — mandatory.
+    assertNotNull ("BG-22 (document totals) missing in " + sPath, aModel.getDocumentTotals ());
 
-  @Test
-  public void testReadIssueFiles ()
-  {
-    _readAllAndAssertWellFormed (MockPhloxTestFiles.getCiiD16BIssueFiles (), "issues", 10);
-  }
-
-  @Test
-  public void testReadEntireCorpus ()
-  {
-    // Sanity check: the union accessor returns every well-formed file across all tiers.
-    final ICommonsList <ClassPathResource> aAll = MockPhloxTestFiles.getCiiD16BFiles ();
-    assertTrue ("Expected at least 100 well-formed CII files; got " + aAll.size (), aAll.size () >= 100);
-    _readAllAndAssertWellFormed (aAll, "all", aAll.size ());
+    // BG-25 lines — at least one mandatory per EN 16931.
+    assertFalse ("BG-25 (invoice lines) empty in " + sPath, aModel.lines ().isEmpty ());
   }
 
   /**
@@ -138,30 +120,48 @@ public final class CiiInvoiceReaderTest
     LOGGER.info ("Tier '" + sTierName + "' — parsed " + nCount + " CII D16B files");
   }
 
-  private static void _assertMandatoryFields (final PhloxInvoice aModel,
-                                              @NonNull final ClassPathResource aRes,
-                                              @NonNull final ErrorList aErrors)
+  @Test
+  public void testReadCoreFiles ()
   {
-    final String sPath = aRes.getPath ();
-    assertNotNull ("Reader returned null for " + sPath + " — errors: " + aErrors, aModel);
+    _readAllAndAssertWellFormed (MockPhloxTestFiles.getCiiD16BCoreFiles (), "core", 15);
+  }
 
-    // Header-level mandatory BTs.
-    assertNotNull ("BT-1 (invoice number) missing in " + sPath, aModel.getNumber ());
-    assertNotNull ("BT-2 (issue date) missing in " + sPath, aModel.getIssueDate ());
-    assertNotNull ("BT-5 (currency) missing in " + sPath, aModel.getCurrency ());
+  @Test
+  public void testReadXRechnung122Files ()
+  {
+    _readAllAndAssertWellFormed (MockPhloxTestFiles.getCiiD16BXRechnung122Files (), "xrechnung/1.2.2", 21);
+  }
 
-    // BG-4 seller — must exist with a name.
-    assertNotNull ("BG-4 (seller) missing in " + sPath, aModel.getSeller ());
-    assertNotNull ("BT-27 (seller name) missing in " + sPath, aModel.getSeller ().getName ());
+  @Test
+  public void testReadXRechnung200Files ()
+  {
+    _readAllAndAssertWellFormed (MockPhloxTestFiles.getCiiD16BXRechnung200Files (), "xrechnung/2.0.0", 19);
+  }
 
-    // BG-7 buyer — must exist with a name.
-    assertNotNull ("BG-7 (buyer) missing in " + sPath, aModel.getBuyer ());
-    assertNotNull ("BT-44 (buyer name) missing in " + sPath, aModel.getBuyer ().getName ());
+  @Test
+  public void testReadXRechnung302Files ()
+  {
+    _readAllAndAssertWellFormed (MockPhloxTestFiles.getCiiD16BXRechnung302Files (), "xrechnung/3.0.2", 33);
+  }
 
-    // BG-22 totals — mandatory.
-    assertNotNull ("BG-22 (document totals) missing in " + sPath, aModel.getDocumentTotals ());
+  @Test
+  public void testReadTechnicalFiles ()
+  {
+    _readAllAndAssertWellFormed (MockPhloxTestFiles.getCiiD16BTechnicalFiles (), "xrechnung/technical", 6);
+  }
 
-    // BG-25 lines — at least one mandatory per EN 16931.
-    assertFalse ("BG-25 (invoice lines) empty in " + sPath, aModel.lines ().isEmpty ());
+  @Test
+  public void testReadIssueFiles ()
+  {
+    _readAllAndAssertWellFormed (MockPhloxTestFiles.getCiiD16BIssueFiles (), "issues", 10);
+  }
+
+  @Test
+  public void testReadEntireCorpus ()
+  {
+    // Sanity check: the union accessor returns every well-formed file across all tiers.
+    final ICommonsList <ClassPathResource> aAll = MockPhloxTestFiles.getCiiD16BFiles ();
+    assertTrue ("Expected at least 100 well-formed CII files; got " + aAll.size (), aAll.size () >= 100);
+    _readAllAndAssertWellFormed (aAll, "all", aAll.size ());
   }
 }

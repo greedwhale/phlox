@@ -53,10 +53,6 @@ import picocli.CommandLine.Option;
           description = "Render EN 16931 electronic invoices (UBL / CII) to HTML or PDF.")
 public class PhloxCli implements Callable <Integer>
 {
-  /** Create a new CLI instance. */
-  public PhloxCli ()
-  {}
-
   /** The supported output formats. */
   public enum EOutputFormat
   {
@@ -120,6 +116,18 @@ public class PhloxCli implements Callable <Integer>
            defaultValue = "-45")
   float watermarkRotation;
 
+  /** Create a new CLI instance. */
+  public PhloxCli ()
+  {}
+
+  private static byte [] _readAllStdin () throws IOException
+  {
+    try (final BufferedInputStream aIn = new BufferedInputStream (System.in))
+    {
+      return aIn.readAllBytes ();
+    }
+  }
+
   /**
    * Command line entry point.
    *
@@ -130,6 +138,15 @@ public class PhloxCli implements Callable <Integer>
   {
     final int nExit = new CommandLine (new PhloxCli ()).execute (args);
     System.exit (nExit);
+  }
+
+  /** Decide source syntax by sniffing the root element / namespace. */
+  static ESourceSyntax _sniffSyntax (final byte [] aBytes)
+  {
+    final String sHead = new String (aBytes, 0, Math.min (aBytes.length, 2048), StandardCharsets.UTF_8);
+    if (sHead.contains ("CrossIndustryInvoice") || sHead.contains ("uncefact:data:standard"))
+      return ESourceSyntax.CII;
+    return ESourceSyntax.UBL;
   }
 
   @Override
@@ -201,22 +218,5 @@ public class PhloxCli implements Callable <Integer>
         }
     }
     return Integer.valueOf (0);
-  }
-
-  private static byte [] _readAllStdin () throws IOException
-  {
-    try (final BufferedInputStream aIn = new BufferedInputStream (System.in))
-    {
-      return aIn.readAllBytes ();
-    }
-  }
-
-  /** Decide source syntax by sniffing the root element / namespace. */
-  static ESourceSyntax _sniffSyntax (final byte [] aBytes)
-  {
-    final String sHead = new String (aBytes, 0, Math.min (aBytes.length, 2048), StandardCharsets.UTF_8);
-    if (sHead.contains ("CrossIndustryInvoice") || sHead.contains ("uncefact:data:standard"))
-      return ESourceSyntax.CII;
-    return ESourceSyntax.UBL;
   }
 }

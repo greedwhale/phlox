@@ -235,6 +235,15 @@ public final class MockPhloxTestFiles
   private MockPhloxTestFiles ()
   {}
 
+  @NonNull
+  private static ICommonsList <ClassPathResource> _toResources (final String @NonNull [] aRelativePaths)
+  {
+    final ICommonsList <ClassPathResource> aList = new CommonsArrayList <> (aRelativePaths.length);
+    for (final String sRelative : aRelativePaths)
+      aList.add (new ClassPathResource (BASE_PATH + sRelative));
+    return aList;
+  }
+
   /**
    * Get the classpath resources for all EN 16931:2017 UBL 2.1 Invoice example files.
    *
@@ -421,14 +430,5 @@ public final class MockPhloxTestFiles
   public static ICommonsList <ClassPathResource> getCiiD25AFiles ()
   {
     return _toResources (CII_D25A_FILES);
-  }
-
-  @NonNull
-  private static ICommonsList <ClassPathResource> _toResources (final String @NonNull [] aRelativePaths)
-  {
-    final ICommonsList <ClassPathResource> aList = new CommonsArrayList <> (aRelativePaths.length);
-    for (final String sRelative : aRelativePaths)
-      aList.add (new ClassPathResource (BASE_PATH + sRelative));
-    return aList;
   }
 }

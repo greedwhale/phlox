@@ -94,136 +94,241 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
   public HtmlInvoiceWriter ()
   {}
 
-  /**
-   * Render the invoice and write it as UTF-8 HTML5 to the given stream. The stream is closed
-   * by the writer.
-   *
-   * @param aInvoice
-   *        The invoice.
-   * @param aCtx
-   *        The HTML render context.
-   * @param aOut
-   *        The output stream.
-   */
-  @Override
-  public void writeTo (@NonNull final PhloxInvoice aInvoice,
-                       @NonNull final HtmlRenderContext aCtx,
-                       @NonNull final OutputStream aOut)
+  private static String _lineVatCell (@NonNull final PhloxInvoiceLine aLine, @NonNull final HtmlRenderContext aCtx)
   {
-    final String sHtml = writeAsString (aInvoice, aCtx);
-    try (final OutputStream aClosing = aOut)
+    final StringBuilder sb = new StringBuilder ();
+    if (aLine.getLineVat ().getCategoryCode () != null)
+      sb.append (aLine.getLineVat ().getCategoryCode ());
+    if (aLine.getLineVat ().getRate () != null)
     {
-      aClosing.write (sHtml.getBytes (StandardCharsets.UTF_8));
+      if (sb.length () > 0)
+        sb.append (' ');
+      sb.append (PhloxFormat.percent (aLine.getLineVat ().getRate (), aCtx.getLocale (), aCtx.getFormatOptions ()));
     }
-    catch (final IOException ex)
-    {
-      throw new UncheckedIOException (ex);
-    }
+    return sb.toString ();
   }
 
-  /**
-   * Render the invoice and return the HTML markup as a {@code String}. Equivalent to
-   * {@link #writeTo(PhloxInvoice, HtmlRenderContext, OutputStream)} but keeps the result in
-   * memory.
-   *
-   * @param aInvoice
-   *        The invoice.
-   * @param aCtx
-   *        The HTML render context.
-   * @return The HTML5 document as a {@code String}.
-   */
   @NonNull
-  public String writeAsString (@NonNull final PhloxInvoice aInvoice, @NonNull final HtmlRenderContext aCtx)
+  private static ICSSClassProvider _cls (@NonNull final String sName)
   {
-    return HCRenderer.getAsHTMLString (writeAsHcHtml (aInvoice, aCtx));
+    return DefaultCSSClassProvider.create (sName);
   }
 
-  /**
-   * Build the HTML tree as an {@link HCHtml} object without serializing.
-   *
-   * @param aInvoice
-   *        The invoice to render.
-   * @param aCtx
-   *        The context.
-   * @return The populated {@link HCHtml}.
-   */
   @NonNull
-  public HCHtml writeAsHcHtml (@NonNull final PhloxInvoice aInvoice, @NonNull final HtmlRenderContext aCtx)
+  private static String _time (@Nullable final OffsetTime aTime)
   {
-    final HCHtml aHtml = new HCHtml ();
-    final String sPrefix = aCtx.getCssClassPrefix ();
-
-    // <head>
-    aHtml.head ().setPageTitle (_titleString (aInvoice, aCtx));
-    if (aCtx.isEmbeddedStylesheet ())
-    {
-      final HCStyle aStyle = new HCStyle ();
-      aStyle.setStyleContent (_defaultCss (sPrefix) +
-                              (aCtx.getCustomStylesheet () == null ? "" : "\n" + aCtx.getCustomStylesheet ()));
-      aHtml.head ().addCSS (aStyle);
-    }
-
-    // <body>
-    final HCBody aBody = aHtml.body ();
-
-    // Watermarks
-    final WatermarkSpec aUW = aCtx.getUserWatermark ();
-    if (aUW != null)
-      aBody.addChild (_renderWatermark (aUW, sPrefix + "watermark-user"));
-    final WatermarkSpec aPW = PhloxProgramWatermark.getInstance ();
-    if (aPW != null)
-      aBody.addChild (_renderWatermark (aPW, sPrefix + "watermark-program"));
-
-    // Page wrapper
-    final HCDiv aPage = new HCDiv ().addClass (_cls (sPrefix + "page"));
-    aBody.addChild (aPage);
-
-    // Sections
-    _renderHeader (aPage, aInvoice, aCtx);
-    _renderProcessControl (aPage, aInvoice, aCtx);
-    _renderParties (aPage, aInvoice, aCtx);
-    _renderOptionalParties (aPage, aInvoice, aCtx);
-    _renderReferences (aPage, aInvoice, aCtx);
-    _renderInvoiceNotes (aPage, aInvoice, aCtx);
-    _renderDelivery (aPage, aInvoice, aCtx);
-    _renderInvoicingPeriod (aPage, aInvoice, aCtx);
-    _renderLines (aPage, aInvoice, aCtx);
-    _renderAllowancesCharges (aPage, aInvoice, aCtx);
-    _renderVatBreakdown (aPage, aInvoice, aCtx);
-    _renderTotals (aPage, aInvoice, aCtx);
-    _renderPayment (aPage, aInvoice, aCtx);
-    _renderPaymentTerms (aPage, aInvoice, aCtx);
-    _renderSupportingDocuments (aPage, aInvoice, aCtx);
-
-    return aHtml;
+    return aTime == null ? "" : aTime.format (DateTimeFormatter.ISO_OFFSET_TIME);
   }
 
-  private static void _renderHeader (@NonNull final HCDiv aPage,
-                                     @NonNull final PhloxInvoice aInvoice,
-                                     @NonNull final HtmlRenderContext aCtx)
+  @Nullable
+  private static String _percent (@Nullable final BigDecimal aPercent, @NonNull final HtmlRenderContext aCtx)
+  {
+    return aPercent == null ? null : PhloxFormat.percent (aPercent, aCtx.getLocale (), aCtx.getFormatOptions ());
+  }
+
+  @Nullable
+  private static String _identifier (@Nullable final PhloxIdentifier aID)
+  {
+    if (aID == null || aID.getValue () == null || aID.getValue ().isEmpty ())
+      return null;
+    return aID.getSchemeID () == null || aID.getSchemeID ().isEmpty () ? aID.getValue ()
+                                                                       : aID.getValue () + " (" + aID.getSchemeID () + ")";
+  }
+
+  @Nullable
+  private static String _buyerReferences (@NonNull final PhloxInvoice aInvoice)
+  {
+    final StringBuilder sb = new StringBuilder ();
+    for (final PhloxIdentifier aID : aInvoice.buyerReferences ())
+    {
+      final String sText = _identifier (aID);
+      if (sText != null)
+      {
+        if (sb.length () > 0)
+          sb.append (", ");
+        sb.append (sText);
+      }
+    }
+    return sb.length () == 0 ? null : sb.toString ();
+  }
+
+  @Nullable
+  private static String _addressText (@Nullable final PhloxPostalAddress aAddr)
+  {
+    if (aAddr == null || aAddr.isEmpty ())
+      return null;
+    final StringBuilder sb = new StringBuilder ();
+    for (final String s : new String [] { aAddr.getLine1 (),
+                                          aAddr.getLine2 (),
+                                          aAddr.getLine3 (),
+                                          aAddr.getPostCode () == null ? aAddr.getCity ()
+                                                                       : aAddr.getPostCode () + (aAddr.getCity () == null ? "" : " " + aAddr.getCity ()),
+                                          aAddr.getCountrySubdivision (),
+                                          aAddr.getCountryCode () })
+      if (s != null && !s.isEmpty ())
+      {
+        if (sb.length () > 0)
+          sb.append (", ");
+        sb.append (s);
+      }
+    return sb.length () == 0 ? null : sb.toString ();
+  }
+
+  private static void _extra (@NonNull final IHCCell <?> aCell,
+                              @NonNull final String sLabel,
+                              @Nullable final String sValue,
+                              @NonNull final String sPrefix)
+  {
+    if (sValue == null || sValue.isEmpty ())
+      return;
+    aCell.addChild (new HCDiv ().addClass (_cls (sPrefix + "extra")).addChild (sLabel + ": " + sValue));
+  }
+
+  @NonNull
+  private static String _n (@Nullable final String s)
+  {
+    return s == null ? "" : s;
+  }
+
+  @NonNull
+  private static String _exchangeRateText (@NonNull final PhloxInvoice aInvoice)
+  {
+    final StringBuilder sb = new StringBuilder (aInvoice.getVatExchangeRate ().stripTrailingZeros ().toPlainString ());
+    if (aInvoice.getVatExchangeRateSourceCurrency () != null || aInvoice.getVatExchangeRateTargetCurrency () != null)
+      sb.append (" (")
+        .append (_n (aInvoice.getVatExchangeRateSourceCurrency ()))
+        .append (" → ")
+        .append (_n (aInvoice.getVatExchangeRateTargetCurrency ()))
+        .append (')');
+    return sb.toString ();
+  }
+
+  @NonNull
+  private static String _attributeText (@NonNull final PhloxItemAttribute aA)
+  {
+    final StringBuilder sb = new StringBuilder (_n (aA.getName ()));
+    if (aA.getCode () != null)
+      sb.append (sb.length () > 0 ? " [" : "[").append (aA.getCode ()).append (']');
+    sb.append (": ").append (_n (aA.getValue ()));
+    if (aA.getValueUnit () != null)
+      sb.append (' ').append (aA.getValueUnit ());
+    return sb.toString ();
+  }
+
+  @Nullable
+  private static BigDecimal _neg (@Nullable final BigDecimal aBD)
+  {
+    return aBD == null ? null : aBD.negate ();
+  }
+
+  @NonNull
+  private static String _titleString (@NonNull final PhloxInvoice aInvoice, @NonNull final HtmlRenderContext aCtx)
+  {
+    return aInvoice.getKind () == EPhloxDocumentKind.CREDIT_NOTE
+                                                                ? aCtx.label ("section.header.title.creditnote")
+                                                                : aCtx.label ("section.header.title.invoice");
+  }
+
+  @NonNull
+  private static String _date (@Nullable final LocalDate aDate, @NonNull final HtmlRenderContext aCtx)
+  {
+    return PhloxFormat.date (aDate, aCtx.getLocale (), aCtx.getFormatOptions ());
+  }
+
+  private static void _renderLineExtras (@NonNull final IHCCell <?> aDesc,
+                                          @NonNull final PhloxInvoiceLine aLine,
+                                          @NonNull final HtmlRenderContext aCtx)
   {
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aHdr = new HCDiv ().addClass (_cls (sPrefix + "section-header"));
-    aPage.addChild (aHdr);
-
-    if (aCtx.getLogo () != null)
+    if (aLine.getItem () != null)
+      _extra (aDesc, aCtx.label ("BT-196"), aLine.getItem ().getGoodsServicesCode (), sPrefix);
+    if (aLine.getLineVat () != null)
     {
-      final HCImg aImg = _logoImg (aCtx.getLogo (), sPrefix);
-      if (aImg != null)
-        aHdr.addChild (aImg);
+      _extra (aDesc, aCtx.label ("BT-194"), aLine.getLineVat ().getExemptionReasonText (), sPrefix);
+      _extra (aDesc, aCtx.label ("BT-195"), aLine.getLineVat ().getExemptionReasonCode (), sPrefix);
     }
+    _extra (aDesc, aCtx.label ("BT-188"), aLine.getPurchaseOrderReference (), sPrefix);
+    _extra (aDesc, aCtx.label ("BT-200"), aLine.getSalesOrderReference (), sPrefix);
+    _extra (aDesc, aCtx.label ("BT-201"), aLine.getSalesOrderLineReference (), sPrefix);
+    _extra (aDesc, aCtx.label ("BT-189"), aLine.getDespatchAdviceReference (), sPrefix);
+    _extra (aDesc, aCtx.label ("BT-190"), aLine.getDespatchAdviceLineReference (), sPrefix);
+    _extra (aDesc, aCtx.label ("BT-191"), aLine.getReceivingAdviceReference (), sPrefix);
+    _extra (aDesc, aCtx.label ("BT-192"), aLine.getReceivingAdviceLineReference (), sPrefix);
+    _extra (aDesc, aCtx.label ("BT-198"), aLine.getDeliveryNoteReference (), sPrefix);
+    _extra (aDesc, aCtx.label ("BT-199"), aLine.getDeliveryNoteLineReference (), sPrefix);
+    for (final PhloxLinePrecedingInvoiceRef aRef : aLine.precedingInvoiceRefs ())
+    {
+      final StringBuilder sb = new StringBuilder ();
+      if (aRef.getNumber () != null)
+        sb.append (aRef.getNumber ());
+      if (aRef.getIssueDate () != null)
+        sb.append (" (").append (_date (aRef.getIssueDate (), aCtx)).append (')');
+      if (aRef.getTypeCode () != null)
+        sb.append (" [").append (aRef.getTypeCode ()).append (']');
+      if (aRef.getLineReference () != null)
+        sb.append (", ").append (aCtx.label ("BT-220")).append (' ').append (aRef.getLineReference ());
+      _extra (aDesc, aCtx.label ("BG-39"), sb.toString (), sPrefix);
+    }
+    final PhloxLineDelivery aDel = aLine.getDelivery ();
+    if (aDel != null)
+    {
+      _extra (aDesc, aCtx.label ("BT-185"), aDel.getPartyName (), sPrefix);
+      _extra (aDesc, aCtx.label ("BT-186"), _identifier (aDel.getLocationIdentifier ()), sPrefix);
+      _extra (aDesc, aCtx.label ("BT-187"), aDel.getActualDeliveryDate () == null ? null : _date (aDel.getActualDeliveryDate (), aCtx), sPrefix);
+      _extra (aDesc, aCtx.label ("BG-38"), _addressText (aDel.getPostalAddress ()), sPrefix);
+    }
+  }
 
-    final HCH1 aTitle = new HCH1 ().addClass (_cls (sPrefix + "title"));
-    aTitle.addChild (_titleString (aInvoice, aCtx));
-    aHdr.addChild (aTitle);
+  @NonNull
+  private static String _amount (@Nullable final BigDecimal aAmount,
+                                 @Nullable final String sCurrency,
+                                 @NonNull final HtmlRenderContext aCtx)
+  {
+    return PhloxFormat.amount (aAmount, sCurrency, aCtx.getLocale (), aCtx.getFormatOptions ());
+  }
 
-    final HCDiv aMeta = new HCDiv ().addClass (_cls (sPrefix + "header-meta"));
-    _kv (aMeta, aCtx.label ("BT-1"), aInvoice.getNumber (), sPrefix);
-    _kv (aMeta, aCtx.label ("BT-2"), _date (aInvoice.getIssueDate (), aCtx), sPrefix);
-    _kv (aMeta, aCtx.label ("BT-166"), _time (aInvoice.getIssueTime ()), sPrefix);
-    _kv (aMeta, aCtx.label ("BT-3"), _docTypeText (aInvoice.getTypeCode (), aCtx), sPrefix);
-    _kv (aMeta, aCtx.label ("BT-5"), aInvoice.getCurrency (), sPrefix);
-    aHdr.addChild (aMeta);
+  private static void _totalLine (@NonNull final HCDiv aOut,
+                                  @NonNull final String sLabel,
+                                  @Nullable final BigDecimal aAmount,
+                                  @Nullable final String sCurrency,
+                                  @NonNull final HtmlRenderContext aCtx)
+  {
+    if (aAmount == null)
+      return;
+    final String sPrefix = aCtx.getCssClassPrefix ();
+    final HCDiv aRow = new HCDiv ().addClass (_cls (sPrefix + "total-row"));
+    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "total-label")).addChild (sLabel));
+    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "total-amount")).addChild (_amount (aAmount, sCurrency, aCtx)));
+    aOut.addChild (aRow);
+  }
+
+  @NonNull
+  private static String _qty (@Nullable final BigDecimal aQty, @Nullable final String sUnit)
+  {
+    if (aQty == null)
+      return "";
+    return aQty.stripTrailingZeros ().toPlainString () + (sUnit == null ? "" : " " + sUnit);
+  }
+
+  @NonNull
+  private static String _docTypeText (@Nullable final String sCode, @NonNull final HtmlRenderContext aCtx)
+  {
+    if (sCode == null)
+      return "";
+    return sCode + " — " + aCtx.codeLabel ("doctype", sCode);
+  }
+
+  private static void _kv (@NonNull final HCDiv aOut,
+                           @NonNull final String sLabel,
+                           @Nullable final String sValue,
+                           @NonNull final String sPrefix)
+  {
+    if (sValue == null || sValue.isEmpty ())
+      return;
+    final HCDiv aRow = new HCDiv ().addClass (_cls (sPrefix + "kv"));
+    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "kv-label")).addChild (sLabel));
+    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "kv-value")).addChild (sValue));
+    aOut.addChild (aRow);
   }
 
   private static void _renderProcessControl (@NonNull final HCDiv aPage,
@@ -243,29 +348,80 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
     aSec.addChild (aRow);
   }
 
-  private static void _renderParties (@NonNull final HCDiv aPage,
-                                      @NonNull final PhloxInvoice aInvoice,
+  private static boolean _kvOpt (@NonNull final HCDiv aOut,
+                                 @NonNull final String sLabel,
+                                 @Nullable final String sValue,
+                                 @NonNull final String sPrefix)
+  {
+    if (sValue == null || sValue.isEmpty ())
+      return false;
+    _kv (aOut, sLabel, sValue, sPrefix);
+    return true;
+  }
+
+  private static void _kvLine (@NonNull final HCDiv aOut,
+                               @NonNull final String sLabel,
+                               @Nullable final String sValue,
+                               @NonNull final String sPrefix)
+  {
+    if (sValue == null || sValue.isEmpty ())
+      return;
+    final HCDiv aRow = new HCDiv ().addClass (_cls (sPrefix + "kv-line"));
+    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "kv-label")).addChild (sLabel + ": "));
+    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "kv-value")).addChild (sValue));
+    aOut.addChild (aRow);
+  }
+
+  private static void _renderContact (@NonNull final HCDiv aOut,
+                                      @Nullable final PhloxContact aC,
                                       @NonNull final HtmlRenderContext aCtx)
   {
+    if (aC == null || aC.isEmpty ())
+      return;
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-parties"));
-    aPage.addChild (aSec);
-    _sectionTitle (aSec, aCtx.label ("section.parties.title"), sPrefix);
+    final HCDiv aDiv = new HCDiv ().addClass (_cls (sPrefix + "contact"));
+    if (aC.getName () != null)
+      _kvLine (aDiv, aCtx.label ("BT-41"), aC.getName (), sPrefix);
+    if (aC.getTelephone () != null)
+      _kvLine (aDiv, aCtx.label ("BT-42"), aC.getTelephone (), sPrefix);
+    if (aC.getEmail () != null)
+      _kvLine (aDiv, aCtx.label ("BT-43"), aC.getEmail (), sPrefix);
+    aOut.addChild (aDiv);
+  }
 
-    final HCDiv aGrid = new HCDiv ().addClass (_cls (sPrefix + "parties-grid"));
-    aSec.addChild (aGrid);
+  private static void _line (@NonNull final HCDiv aOut, @Nullable final String sText, @Nullable final String sClass)
+  {
+    if (sText == null || sText.isEmpty ())
+      return;
+    final HCDiv aD = new HCDiv ().addChild (sText);
+    if (sClass != null)
+      aD.addClass (_cls (sClass));
+    aOut.addChild (aD);
+  }
 
-    // Seller
-    final HCDiv aSeller = new HCDiv ().addClass (_cls (sPrefix + "party-seller"));
-    aSeller.addChild (new HCH2 ().addClass (_cls (sPrefix + "party-title")).addChild (aCtx.label ("BG-4")));
-    _renderSeller (aSeller, aInvoice.getSeller (), aCtx);
-    aGrid.addChild (aSeller);
-
-    // Buyer
-    final HCDiv aBuyer = new HCDiv ().addClass (_cls (sPrefix + "party-buyer"));
-    aBuyer.addChild (new HCH2 ().addClass (_cls (sPrefix + "party-title")).addChild (aCtx.label ("BG-7")));
-    _renderBuyer (aBuyer, aInvoice.getBuyer (), aCtx);
-    aGrid.addChild (aBuyer);
+  private static void _renderAddress (@NonNull final HCDiv aOut,
+                                      @Nullable final PhloxPostalAddress aAddr,
+                                      @NonNull final HtmlRenderContext aCtx)
+  {
+    if (aAddr == null || aAddr.isEmpty ())
+      return;
+    final String sPrefix = aCtx.getCssClassPrefix ();
+    final HCDiv aA = new HCDiv ().addClass (_cls (sPrefix + "address"));
+    _line (aA, aAddr.getLine1 (), null);
+    _line (aA, aAddr.getLine2 (), null);
+    _line (aA, aAddr.getLine3 (), null);
+    final StringBuilder aLast = new StringBuilder ();
+    if (aAddr.getPostCode () != null)
+      aLast.append (aAddr.getPostCode ()).append (' ');
+    if (aAddr.getCity () != null)
+      aLast.append (aAddr.getCity ());
+    if (aLast.length () > 0)
+      aA.addChild (new HCDiv ().addChild (aLast.toString ()));
+    if (aAddr.getCountrySubdivision () != null)
+      aA.addChild (new HCDiv ().addChild (aAddr.getCountrySubdivision ()));
+    if (aAddr.getCountryCode () != null)
+      aA.addChild (new HCDiv ().addChild (aAddr.getCountryCode ()));
+    aOut.addChild (aA);
   }
 
   private static void _renderSeller (@NonNull final HCDiv aOut,
@@ -306,46 +462,36 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
     _renderContact (aOut, aB.getContact (), aCtx);
   }
 
-  private static void _renderAddress (@NonNull final HCDiv aOut,
-                                      @Nullable final PhloxPostalAddress aAddr,
-                                      @NonNull final HtmlRenderContext aCtx)
+  private static void _sectionTitle (@NonNull final HCDiv aOut,
+                                     @NonNull final String sTitle,
+                                     @NonNull final String sPrefix)
   {
-    if (aAddr == null || aAddr.isEmpty ())
-      return;
-    final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aA = new HCDiv ().addClass (_cls (sPrefix + "address"));
-    _line (aA, aAddr.getLine1 (), null);
-    _line (aA, aAddr.getLine2 (), null);
-    _line (aA, aAddr.getLine3 (), null);
-    final StringBuilder aLast = new StringBuilder ();
-    if (aAddr.getPostCode () != null)
-      aLast.append (aAddr.getPostCode ()).append (' ');
-    if (aAddr.getCity () != null)
-      aLast.append (aAddr.getCity ());
-    if (aLast.length () > 0)
-      aA.addChild (new HCDiv ().addChild (aLast.toString ()));
-    if (aAddr.getCountrySubdivision () != null)
-      aA.addChild (new HCDiv ().addChild (aAddr.getCountrySubdivision ()));
-    if (aAddr.getCountryCode () != null)
-      aA.addChild (new HCDiv ().addChild (aAddr.getCountryCode ()));
-    aOut.addChild (aA);
+    aOut.addChild (new HCH2 ().addClass (_cls (sPrefix + "section-title")).addChild (sTitle));
   }
 
-  private static void _renderContact (@NonNull final HCDiv aOut,
-                                      @Nullable final PhloxContact aC,
+  private static void _renderParties (@NonNull final HCDiv aPage,
+                                      @NonNull final PhloxInvoice aInvoice,
                                       @NonNull final HtmlRenderContext aCtx)
   {
-    if (aC == null || aC.isEmpty ())
-      return;
     final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aDiv = new HCDiv ().addClass (_cls (sPrefix + "contact"));
-    if (aC.getName () != null)
-      _kvLine (aDiv, aCtx.label ("BT-41"), aC.getName (), sPrefix);
-    if (aC.getTelephone () != null)
-      _kvLine (aDiv, aCtx.label ("BT-42"), aC.getTelephone (), sPrefix);
-    if (aC.getEmail () != null)
-      _kvLine (aDiv, aCtx.label ("BT-43"), aC.getEmail (), sPrefix);
-    aOut.addChild (aDiv);
+    final HCDiv aSec = new HCDiv ().addClass (_cls (sPrefix + "section-parties"));
+    aPage.addChild (aSec);
+    _sectionTitle (aSec, aCtx.label ("section.parties.title"), sPrefix);
+
+    final HCDiv aGrid = new HCDiv ().addClass (_cls (sPrefix + "parties-grid"));
+    aSec.addChild (aGrid);
+
+    // Seller
+    final HCDiv aSeller = new HCDiv ().addClass (_cls (sPrefix + "party-seller"));
+    aSeller.addChild (new HCH2 ().addClass (_cls (sPrefix + "party-title")).addChild (aCtx.label ("BG-4")));
+    _renderSeller (aSeller, aInvoice.getSeller (), aCtx);
+    aGrid.addChild (aSeller);
+
+    // Buyer
+    final HCDiv aBuyer = new HCDiv ().addClass (_cls (sPrefix + "party-buyer"));
+    aBuyer.addChild (new HCH2 ().addClass (_cls (sPrefix + "party-title")).addChild (aCtx.label ("BG-7")));
+    _renderBuyer (aBuyer, aInvoice.getBuyer (), aCtx);
+    aGrid.addChild (aBuyer);
   }
 
   private static void _renderOptionalParties (@NonNull final HCDiv aPage,
@@ -552,64 +698,6 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
     }
   }
 
-  private static void _renderLineExtras (@NonNull final IHCCell <?> aDesc,
-                                          @NonNull final PhloxInvoiceLine aLine,
-                                          @NonNull final HtmlRenderContext aCtx)
-  {
-    final String sPrefix = aCtx.getCssClassPrefix ();
-    if (aLine.getItem () != null)
-      _extra (aDesc, aCtx.label ("BT-196"), aLine.getItem ().getGoodsServicesCode (), sPrefix);
-    if (aLine.getLineVat () != null)
-    {
-      _extra (aDesc, aCtx.label ("BT-194"), aLine.getLineVat ().getExemptionReasonText (), sPrefix);
-      _extra (aDesc, aCtx.label ("BT-195"), aLine.getLineVat ().getExemptionReasonCode (), sPrefix);
-    }
-    _extra (aDesc, aCtx.label ("BT-188"), aLine.getPurchaseOrderReference (), sPrefix);
-    _extra (aDesc, aCtx.label ("BT-200"), aLine.getSalesOrderReference (), sPrefix);
-    _extra (aDesc, aCtx.label ("BT-201"), aLine.getSalesOrderLineReference (), sPrefix);
-    _extra (aDesc, aCtx.label ("BT-189"), aLine.getDespatchAdviceReference (), sPrefix);
-    _extra (aDesc, aCtx.label ("BT-190"), aLine.getDespatchAdviceLineReference (), sPrefix);
-    _extra (aDesc, aCtx.label ("BT-191"), aLine.getReceivingAdviceReference (), sPrefix);
-    _extra (aDesc, aCtx.label ("BT-192"), aLine.getReceivingAdviceLineReference (), sPrefix);
-    _extra (aDesc, aCtx.label ("BT-198"), aLine.getDeliveryNoteReference (), sPrefix);
-    _extra (aDesc, aCtx.label ("BT-199"), aLine.getDeliveryNoteLineReference (), sPrefix);
-    for (final PhloxLinePrecedingInvoiceRef aRef : aLine.precedingInvoiceRefs ())
-    {
-      final StringBuilder sb = new StringBuilder ();
-      if (aRef.getNumber () != null)
-        sb.append (aRef.getNumber ());
-      if (aRef.getIssueDate () != null)
-        sb.append (" (").append (_date (aRef.getIssueDate (), aCtx)).append (')');
-      if (aRef.getTypeCode () != null)
-        sb.append (" [").append (aRef.getTypeCode ()).append (']');
-      if (aRef.getLineReference () != null)
-        sb.append (", ").append (aCtx.label ("BT-220")).append (' ').append (aRef.getLineReference ());
-      _extra (aDesc, aCtx.label ("BG-39"), sb.toString (), sPrefix);
-    }
-    final PhloxLineDelivery aDel = aLine.getDelivery ();
-    if (aDel != null)
-    {
-      _extra (aDesc, aCtx.label ("BT-185"), aDel.getPartyName (), sPrefix);
-      _extra (aDesc, aCtx.label ("BT-186"), _identifier (aDel.getLocationIdentifier ()), sPrefix);
-      _extra (aDesc, aCtx.label ("BT-187"), aDel.getActualDeliveryDate () == null ? null : _date (aDel.getActualDeliveryDate (), aCtx), sPrefix);
-      _extra (aDesc, aCtx.label ("BG-38"), _addressText (aDel.getPostalAddress ()), sPrefix);
-    }
-  }
-
-  private static String _lineVatCell (@NonNull final PhloxInvoiceLine aLine, @NonNull final HtmlRenderContext aCtx)
-  {
-    final StringBuilder sb = new StringBuilder ();
-    if (aLine.getLineVat ().getCategoryCode () != null)
-      sb.append (aLine.getLineVat ().getCategoryCode ());
-    if (aLine.getLineVat ().getRate () != null)
-    {
-      if (sb.length () > 0)
-        sb.append (' ');
-      sb.append (PhloxFormat.percent (aLine.getLineVat ().getRate (), aCtx.getLocale (), aCtx.getFormatOptions ()));
-    }
-    return sb.toString ();
-  }
-
   private static void _renderAllowancesCharges (@NonNull final HCDiv aPage,
                                                 @NonNull final PhloxInvoice aInvoice,
                                                 @NonNull final HtmlRenderContext aCtx)
@@ -745,21 +833,6 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
       _kvLine (aSec, aCtx.label ("BT-167"), _exchangeRateText (aInvoice), sPrefix);
   }
 
-  private static void _totalLine (@NonNull final HCDiv aOut,
-                                  @NonNull final String sLabel,
-                                  @Nullable final BigDecimal aAmount,
-                                  @Nullable final String sCurrency,
-                                  @NonNull final HtmlRenderContext aCtx)
-  {
-    if (aAmount == null)
-      return;
-    final String sPrefix = aCtx.getCssClassPrefix ();
-    final HCDiv aRow = new HCDiv ().addClass (_cls (sPrefix + "total-row"));
-    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "total-label")).addChild (sLabel));
-    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "total-amount")).addChild (_amount (aAmount, sCurrency, aCtx)));
-    aOut.addChild (aRow);
-  }
-
   private static void _renderPayment (@NonNull final HCDiv aPage,
                                       @NonNull final PhloxInvoice aInvoice,
                                       @NonNull final HtmlRenderContext aCtx)
@@ -887,211 +960,6 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
   }
 
   @NonNull
-  private static ICSSClassProvider _cls (@NonNull final String sName)
-  {
-    return DefaultCSSClassProvider.create (sName);
-  }
-
-  @NonNull
-  private static String _time (@Nullable final OffsetTime aTime)
-  {
-    return aTime == null ? "" : aTime.format (DateTimeFormatter.ISO_OFFSET_TIME);
-  }
-
-  @Nullable
-  private static String _percent (@Nullable final BigDecimal aPercent, @NonNull final HtmlRenderContext aCtx)
-  {
-    return aPercent == null ? null : PhloxFormat.percent (aPercent, aCtx.getLocale (), aCtx.getFormatOptions ());
-  }
-
-  @Nullable
-  private static String _identifier (@Nullable final PhloxIdentifier aID)
-  {
-    if (aID == null || aID.getValue () == null || aID.getValue ().isEmpty ())
-      return null;
-    return aID.getSchemeID () == null || aID.getSchemeID ().isEmpty () ? aID.getValue ()
-                                                                       : aID.getValue () + " (" + aID.getSchemeID () + ")";
-  }
-
-  @Nullable
-  private static String _buyerReferences (@NonNull final PhloxInvoice aInvoice)
-  {
-    final StringBuilder sb = new StringBuilder ();
-    for (final PhloxIdentifier aID : aInvoice.buyerReferences ())
-    {
-      final String sText = _identifier (aID);
-      if (sText != null)
-      {
-        if (sb.length () > 0)
-          sb.append (", ");
-        sb.append (sText);
-      }
-    }
-    return sb.length () == 0 ? null : sb.toString ();
-  }
-
-  @NonNull
-  private static String _exchangeRateText (@NonNull final PhloxInvoice aInvoice)
-  {
-    final StringBuilder sb = new StringBuilder (aInvoice.getVatExchangeRate ().stripTrailingZeros ().toPlainString ());
-    if (aInvoice.getVatExchangeRateSourceCurrency () != null || aInvoice.getVatExchangeRateTargetCurrency () != null)
-      sb.append (" (")
-        .append (_n (aInvoice.getVatExchangeRateSourceCurrency ()))
-        .append (" → ")
-        .append (_n (aInvoice.getVatExchangeRateTargetCurrency ()))
-        .append (')');
-    return sb.toString ();
-  }
-
-  @Nullable
-  private static String _addressText (@Nullable final PhloxPostalAddress aAddr)
-  {
-    if (aAddr == null || aAddr.isEmpty ())
-      return null;
-    final StringBuilder sb = new StringBuilder ();
-    for (final String s : new String [] { aAddr.getLine1 (),
-                                          aAddr.getLine2 (),
-                                          aAddr.getLine3 (),
-                                          aAddr.getPostCode () == null ? aAddr.getCity ()
-                                                                       : aAddr.getPostCode () + (aAddr.getCity () == null ? "" : " " + aAddr.getCity ()),
-                                          aAddr.getCountrySubdivision (),
-                                          aAddr.getCountryCode () })
-      if (s != null && !s.isEmpty ())
-      {
-        if (sb.length () > 0)
-          sb.append (", ");
-        sb.append (s);
-      }
-    return sb.length () == 0 ? null : sb.toString ();
-  }
-
-  @NonNull
-  private static String _attributeText (@NonNull final PhloxItemAttribute aA)
-  {
-    final StringBuilder sb = new StringBuilder (_n (aA.getName ()));
-    if (aA.getCode () != null)
-      sb.append (sb.length () > 0 ? " [" : "[").append (aA.getCode ()).append (']');
-    sb.append (": ").append (_n (aA.getValue ()));
-    if (aA.getValueUnit () != null)
-      sb.append (' ').append (aA.getValueUnit ());
-    return sb.toString ();
-  }
-
-  private static void _extra (@NonNull final IHCCell <?> aCell,
-                              @NonNull final String sLabel,
-                              @Nullable final String sValue,
-                              @NonNull final String sPrefix)
-  {
-    if (sValue == null || sValue.isEmpty ())
-      return;
-    aCell.addChild (new HCDiv ().addClass (_cls (sPrefix + "extra")).addChild (sLabel + ": " + sValue));
-  }
-
-  @NonNull
-  private static String _n (@Nullable final String s)
-  {
-    return s == null ? "" : s;
-  }
-
-  @Nullable
-  private static BigDecimal _neg (@Nullable final BigDecimal aBD)
-  {
-    return aBD == null ? null : aBD.negate ();
-  }
-
-  @NonNull
-  private static String _titleString (@NonNull final PhloxInvoice aInvoice, @NonNull final HtmlRenderContext aCtx)
-  {
-    return aInvoice.getKind () == EPhloxDocumentKind.CREDIT_NOTE
-                                                                ? aCtx.label ("section.header.title.creditnote")
-                                                                : aCtx.label ("section.header.title.invoice");
-  }
-
-  @NonNull
-  private static String _date (@Nullable final LocalDate aDate, @NonNull final HtmlRenderContext aCtx)
-  {
-    return PhloxFormat.date (aDate, aCtx.getLocale (), aCtx.getFormatOptions ());
-  }
-
-  @NonNull
-  private static String _amount (@Nullable final BigDecimal aAmount,
-                                 @Nullable final String sCurrency,
-                                 @NonNull final HtmlRenderContext aCtx)
-  {
-    return PhloxFormat.amount (aAmount, sCurrency, aCtx.getLocale (), aCtx.getFormatOptions ());
-  }
-
-  @NonNull
-  private static String _qty (@Nullable final BigDecimal aQty, @Nullable final String sUnit)
-  {
-    if (aQty == null)
-      return "";
-    return aQty.stripTrailingZeros ().toPlainString () + (sUnit == null ? "" : " " + sUnit);
-  }
-
-  @NonNull
-  private static String _docTypeText (@Nullable final String sCode, @NonNull final HtmlRenderContext aCtx)
-  {
-    if (sCode == null)
-      return "";
-    return sCode + " — " + aCtx.codeLabel ("doctype", sCode);
-  }
-
-  private static void _kv (@NonNull final HCDiv aOut,
-                           @NonNull final String sLabel,
-                           @Nullable final String sValue,
-                           @NonNull final String sPrefix)
-  {
-    if (sValue == null || sValue.isEmpty ())
-      return;
-    final HCDiv aRow = new HCDiv ().addClass (_cls (sPrefix + "kv"));
-    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "kv-label")).addChild (sLabel));
-    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "kv-value")).addChild (sValue));
-    aOut.addChild (aRow);
-  }
-
-  private static boolean _kvOpt (@NonNull final HCDiv aOut,
-                                 @NonNull final String sLabel,
-                                 @Nullable final String sValue,
-                                 @NonNull final String sPrefix)
-  {
-    if (sValue == null || sValue.isEmpty ())
-      return false;
-    _kv (aOut, sLabel, sValue, sPrefix);
-    return true;
-  }
-
-  private static void _kvLine (@NonNull final HCDiv aOut,
-                               @NonNull final String sLabel,
-                               @Nullable final String sValue,
-                               @NonNull final String sPrefix)
-  {
-    if (sValue == null || sValue.isEmpty ())
-      return;
-    final HCDiv aRow = new HCDiv ().addClass (_cls (sPrefix + "kv-line"));
-    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "kv-label")).addChild (sLabel + ": "));
-    aRow.addChild (new HCSpan ().addClass (_cls (sPrefix + "kv-value")).addChild (sValue));
-    aOut.addChild (aRow);
-  }
-
-  private static void _line (@NonNull final HCDiv aOut, @Nullable final String sText, @Nullable final String sClass)
-  {
-    if (sText == null || sText.isEmpty ())
-      return;
-    final HCDiv aD = new HCDiv ().addChild (sText);
-    if (sClass != null)
-      aD.addClass (_cls (sClass));
-    aOut.addChild (aD);
-  }
-
-  private static void _sectionTitle (@NonNull final HCDiv aOut,
-                                     @NonNull final String sTitle,
-                                     @NonNull final String sPrefix)
-  {
-    aOut.addChild (new HCH2 ().addClass (_cls (sPrefix + "section-title")).addChild (sTitle));
-  }
-
-  @NonNull
   private static HCDiv _renderWatermark (@NonNull final WatermarkSpec aSpec, @NonNull final String sCssClass)
   {
     final HCDiv aD = new HCDiv ().addClass (_cls (sCssClass));
@@ -1110,6 +978,34 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
                             ";base64," +
                             Base64.getEncoder ().encodeToString (aLogo.getBinary ());
     return new HCImg ().setSrc (new SimpleURL (sDataUri)).addClass (_cls (sPrefix + "logo"));
+  }
+
+  private static void _renderHeader (@NonNull final HCDiv aPage,
+                                     @NonNull final PhloxInvoice aInvoice,
+                                     @NonNull final HtmlRenderContext aCtx)
+  {
+    final String sPrefix = aCtx.getCssClassPrefix ();
+    final HCDiv aHdr = new HCDiv ().addClass (_cls (sPrefix + "section-header"));
+    aPage.addChild (aHdr);
+
+    if (aCtx.getLogo () != null)
+    {
+      final HCImg aImg = _logoImg (aCtx.getLogo (), sPrefix);
+      if (aImg != null)
+        aHdr.addChild (aImg);
+    }
+
+    final HCH1 aTitle = new HCH1 ().addClass (_cls (sPrefix + "title"));
+    aTitle.addChild (_titleString (aInvoice, aCtx));
+    aHdr.addChild (aTitle);
+
+    final HCDiv aMeta = new HCDiv ().addClass (_cls (sPrefix + "header-meta"));
+    _kv (aMeta, aCtx.label ("BT-1"), aInvoice.getNumber (), sPrefix);
+    _kv (aMeta, aCtx.label ("BT-2"), _date (aInvoice.getIssueDate (), aCtx), sPrefix);
+    _kv (aMeta, aCtx.label ("BT-166"), _time (aInvoice.getIssueTime ()), sPrefix);
+    _kv (aMeta, aCtx.label ("BT-3"), _docTypeText (aInvoice.getTypeCode (), aCtx), sPrefix);
+    _kv (aMeta, aCtx.label ("BT-5"), aInvoice.getCurrency (), sPrefix);
+    aHdr.addChild (aMeta);
   }
 
   /** Embedded default stylesheet — minimal, prefix-aware. */
@@ -1150,5 +1046,109 @@ public class HtmlInvoiceWriter implements IInvoiceWriter <HtmlRenderContext>
            + "." + p + "watermark-user{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-45deg);font-size:6em;color:rgba(128,128,128,0.12);pointer-events:none;z-index:9999;user-select:none;}"
            + "." + p + "watermark-program{position:fixed;bottom:4mm;right:4mm;font-size:0.5em;color:rgba(128,128,128,0.35);pointer-events:none;z-index:9999;}"
            + "@media print{." + p + "watermark-user{position:fixed;}}";
+  }
+
+  /**
+   * Build the HTML tree as an {@link HCHtml} object without serializing.
+   *
+   * @param aInvoice
+   *        The invoice to render.
+   * @param aCtx
+   *        The context.
+   * @return The populated {@link HCHtml}.
+   */
+  @NonNull
+  public HCHtml writeAsHcHtml (@NonNull final PhloxInvoice aInvoice, @NonNull final HtmlRenderContext aCtx)
+  {
+    final HCHtml aHtml = new HCHtml ();
+    final String sPrefix = aCtx.getCssClassPrefix ();
+
+    // <head>
+    aHtml.head ().setPageTitle (_titleString (aInvoice, aCtx));
+    if (aCtx.isEmbeddedStylesheet ())
+    {
+      final HCStyle aStyle = new HCStyle ();
+      aStyle.setStyleContent (_defaultCss (sPrefix) +
+                              (aCtx.getCustomStylesheet () == null ? "" : "\n" + aCtx.getCustomStylesheet ()));
+      aHtml.head ().addCSS (aStyle);
+    }
+
+    // <body>
+    final HCBody aBody = aHtml.body ();
+
+    // Watermarks
+    final WatermarkSpec aUW = aCtx.getUserWatermark ();
+    if (aUW != null)
+      aBody.addChild (_renderWatermark (aUW, sPrefix + "watermark-user"));
+    final WatermarkSpec aPW = PhloxProgramWatermark.getInstance ();
+    if (aPW != null)
+      aBody.addChild (_renderWatermark (aPW, sPrefix + "watermark-program"));
+
+    // Page wrapper
+    final HCDiv aPage = new HCDiv ().addClass (_cls (sPrefix + "page"));
+    aBody.addChild (aPage);
+
+    // Sections
+    _renderHeader (aPage, aInvoice, aCtx);
+    _renderProcessControl (aPage, aInvoice, aCtx);
+    _renderParties (aPage, aInvoice, aCtx);
+    _renderOptionalParties (aPage, aInvoice, aCtx);
+    _renderReferences (aPage, aInvoice, aCtx);
+    _renderInvoiceNotes (aPage, aInvoice, aCtx);
+    _renderDelivery (aPage, aInvoice, aCtx);
+    _renderInvoicingPeriod (aPage, aInvoice, aCtx);
+    _renderLines (aPage, aInvoice, aCtx);
+    _renderAllowancesCharges (aPage, aInvoice, aCtx);
+    _renderVatBreakdown (aPage, aInvoice, aCtx);
+    _renderTotals (aPage, aInvoice, aCtx);
+    _renderPayment (aPage, aInvoice, aCtx);
+    _renderPaymentTerms (aPage, aInvoice, aCtx);
+    _renderSupportingDocuments (aPage, aInvoice, aCtx);
+
+    return aHtml;
+  }
+
+  /**
+   * Render the invoice and return the HTML markup as a {@code String}. Equivalent to
+   * {@link #writeTo(PhloxInvoice, HtmlRenderContext, OutputStream)} but keeps the result in
+   * memory.
+   *
+   * @param aInvoice
+   *        The invoice.
+   * @param aCtx
+   *        The HTML render context.
+   * @return The HTML5 document as a {@code String}.
+   */
+  @NonNull
+  public String writeAsString (@NonNull final PhloxInvoice aInvoice, @NonNull final HtmlRenderContext aCtx)
+  {
+    return HCRenderer.getAsHTMLString (writeAsHcHtml (aInvoice, aCtx));
+  }
+
+  /**
+   * Render the invoice and write it as UTF-8 HTML5 to the given stream. The stream is closed
+   * by the writer.
+   *
+   * @param aInvoice
+   *        The invoice.
+   * @param aCtx
+   *        The HTML render context.
+   * @param aOut
+   *        The output stream.
+   */
+  @Override
+  public void writeTo (@NonNull final PhloxInvoice aInvoice,
+                       @NonNull final HtmlRenderContext aCtx,
+                       @NonNull final OutputStream aOut)
+  {
+    final String sHtml = writeAsString (aInvoice, aCtx);
+    try (final OutputStream aClosing = aOut)
+    {
+      aClosing.write (sHtml.getBytes (StandardCharsets.UTF_8));
+    }
+    catch (final IOException ex)
+    {
+      throw new UncheckedIOException (ex);
+    }
   }
 }

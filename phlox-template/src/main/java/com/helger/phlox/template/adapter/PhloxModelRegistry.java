@@ -41,6 +41,41 @@ public final class PhloxModelRegistry
 {
   private static final Map <Class <?>, Map <String, Function <Object, Object>>> REG = new HashMap <> ();
 
+  private PhloxModelRegistry ()
+  {}
+
+  /**
+   * Get the comma separated buyer references (BT-10), each followed by its scheme identifier.
+   *
+   * @return The comma separated buyer references (BT-10), each followed by its scheme identifier
+   *         (BT-10-1) in parentheses if present, or {@code null} if there is none.
+   */
+  @Nullable
+  private static String _buyerReferences (@NonNull final PhloxInvoice aInvoice)
+  {
+    final StringBuilder aSB = new StringBuilder ();
+    for (final PhloxIdentifier aID : aInvoice.buyerReferences ())
+      if (StringHelper.isNotEmpty (aID.getValue ()))
+      {
+        if (aSB.length () > 0)
+          aSB.append (", ");
+        aSB.append (aID.getValue ());
+        if (StringHelper.isNotEmpty (aID.getSchemeID ()))
+          aSB.append (" (").append (aID.getSchemeID ()).append (')');
+      }
+    return aSB.length () == 0 ? null : aSB.toString ();
+  }
+
+  private static <T> void _add (@NonNull final Class <T> aClass,
+                                @NonNull final String sName,
+                                @NonNull final Function <? super T, Object> aGetter)
+  {
+    final Map <String, Function <Object, Object>> aMap = REG.computeIfAbsent (aClass, k -> new HashMap <> ());
+    @SuppressWarnings ("unchecked")
+    final Function <Object, Object> aBoxed = o -> aGetter.apply ((T) o);
+    aMap.put (sName, aBoxed);
+  }
+
   static
   {
     _add (PhloxInvoice.class, "BT-1", PhloxInvoice::getNumber);
@@ -318,41 +353,6 @@ public final class PhloxModelRegistry
 
     _add (PhloxAttachment.class, "filename", PhloxAttachment::getFilename);
     _add (PhloxAttachment.class, "mimeCode", PhloxAttachment::getMimeCode);
-  }
-
-  private PhloxModelRegistry ()
-  {}
-
-  /**
-   * Get the comma separated buyer references (BT-10), each followed by its scheme identifier.
-   *
-   * @return The comma separated buyer references (BT-10), each followed by its scheme identifier
-   *         (BT-10-1) in parentheses if present, or {@code null} if there is none.
-   */
-  @Nullable
-  private static String _buyerReferences (@NonNull final PhloxInvoice aInvoice)
-  {
-    final StringBuilder aSB = new StringBuilder ();
-    for (final PhloxIdentifier aID : aInvoice.buyerReferences ())
-      if (StringHelper.isNotEmpty (aID.getValue ()))
-      {
-        if (aSB.length () > 0)
-          aSB.append (", ");
-        aSB.append (aID.getValue ());
-        if (StringHelper.isNotEmpty (aID.getSchemeID ()))
-          aSB.append (" (").append (aID.getSchemeID ()).append (')');
-      }
-    return aSB.length () == 0 ? null : aSB.toString ();
-  }
-
-  private static <T> void _add (@NonNull final Class <T> aClass,
-                                @NonNull final String sName,
-                                @NonNull final Function <? super T, Object> aGetter)
-  {
-    final Map <String, Function <Object, Object>> aMap = REG.computeIfAbsent (aClass, k -> new HashMap <> ());
-    @SuppressWarnings ("unchecked")
-    final Function <Object, Object> aBoxed = o -> aGetter.apply ((T) o);
-    aMap.put (sName, aBoxed);
   }
 
   /**

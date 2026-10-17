@@ -44,27 +44,613 @@ final class Ubl21InvoiceReader extends AbstractUblInvoiceReader
   Ubl21InvoiceReader ()
   {}
 
+  private static void _addBuyerReference (@NonNull final PhloxInvoice aModel, @Nullable final String sBuyerReference)
+  {
+    // BT-10 — EN 16931:2017 has no scheme identifier (BT-10-1)
+    if (sBuyerReference != null)
+      aModel.buyerReferences ().add (new PhloxIdentifier (sBuyerReference, null));
+  }
+
+  @NonNull
+  private static PhloxPostalAddress _readAddress (@NonNull final AddressType aAddr)
+  {
+    final PhloxPostalAddress aOut = new PhloxPostalAddress ();
+    aOut.setLine1 (str (aAddr.getStreetNameValue ()));
+    aOut.setLine2 (str (aAddr.getAdditionalStreetNameValue ()));
+    if (!aAddr.getAddressLine ().isEmpty ())
+    {
+      final AddressLineType aAL = aAddr.getAddressLine ().get (0);
+      aOut.setLine3 (str (aAL.getLineValue ()));
+    }
+    aOut.setCity (str (aAddr.getCityNameValue ()));
+    aOut.setPostCode (str (aAddr.getPostalZoneValue ()));
+    aOut.setCountrySubdivision (str (aAddr.getCountrySubentityValue ()));
+    final CountryType aCountry = aAddr.getCountry ();
+    if (aCountry != null)
+      aOut.setCountryCode (str (aCountry.getIdentificationCodeValue ()));
+    return aOut;
+  }
+
+  @NonNull
+  private static PhloxContact _readContact (@NonNull final ContactType aContact)
+  {
+    final PhloxContact aOut = new PhloxContact ();
+    aOut.setName (str (aContact.getNameValue ()));
+    aOut.setTelephone (str (aContact.getTelephoneValue ()));
+    aOut.setEmail (str (aContact.getElectronicMailValue ()));
+    return aOut;
+  }
+
+  private static void _readBuyer (@NonNull final CustomerPartyType aCP, @NonNull final PhloxBuyer aBuyer)
+  {
+    if (aCP.getParty () == null)
+      return;
+    final PartyType aParty = aCP.getParty ();
+    // BT-44
+    if (!aParty.getPartyLegalEntity ().isEmpty ())
+    {
+      final PartyLegalEntityType aLE = aParty.getPartyLegalEntity ().get (0);
+      aBuyer.setName (str (aLE.getRegistrationNameValue ()));
+      if (aLE.getCompanyID () != null)
+        aBuyer.setLegalRegistration (identifier (aLE.getCompanyID ()));
+    }
+    // BT-45 — trading name
+    if (!aParty.getPartyName ().isEmpty ())
+    {
+      final PartyNameType aPN = aParty.getPartyName ().get (0);
+      aBuyer.setTradingName (str (aPN.getNameValue ()));
+    }
+    // BT-46 — identifiers
+    for (final PartyIdentificationType aPI : aParty.getPartyIdentification ())
+      if (aPI.getID () != null)
+        aBuyer.identifiers ().add (identifier (aPI.getID ()));
+    // BT-48 — VAT
+    for (final PartyTaxSchemeType aPTS : aParty.getPartyTaxScheme ())
+      if (aPTS.getTaxScheme () != null && "VAT".equals (aPTS.getTaxScheme ().getIDValue ()))
+        aBuyer.setVatIdentifier (str (aPTS.getCompanyIDValue ()));
+    // BT-49
+    if (aParty.getEndpointID () != null)
+      aBuyer.setElectronicAddress (identifier (aParty.getEndpointID ()));
+    // BG-8
+    if (aParty.getPostalAddress () != null)
+      aBuyer.setPostalAddress (_readAddress (aParty.getPostalAddress ()));
+    // BG-9
+    if (aParty.getContact () != null)
+      aBuyer.setContact (_readContact (aParty.getContact ()));
+  }
+
+  private static void _readPartyCommon (@NonNull final PartyType aParty, @NonNull final PhloxSeller aSeller)
+  {
+    // BT-27
+    if (!aParty.getPartyLegalEntity ().isEmpty ())
+    {
+      final PartyLegalEntityType aLE = aParty.getPartyLegalEntity ().get (0);
+      aSeller.setName (str (aLE.getRegistrationNameValue ()));
+      if (aLE.getCompanyID () != null)
+        aSeller.setLegalRegistration (identifier (aLE.getCompanyID ()));
+      // BT-33
+      aSeller.setAdditionalLegalInfo (str (aLE.getCompanyLegalFormValue ()));
+    }
+    // BT-28
+    if (!aParty.getPartyName ().isEmpty ())
+      aSeller.setTradingName (str (aParty.getPartyName ().get (0).getNameValue ()));
+    // BT-29
+    for (final PartyIdentificationType aPI : aParty.getPartyIdentification ())
+      if (aPI.getID () != null)
+        aSeller.identifiers ().add (identifier (aPI.getID ()));
+    // BT-31 / BT-32
+    for (final PartyTaxSchemeType aPTS : aParty.getPartyTaxScheme ())
+      if (aPTS.getTaxScheme () != null)
+      {
+        if ("VAT".equals (aPTS.getTaxScheme ().getIDValue ()))
+          aSeller.setVatIdentifier (str (aPTS.getCompanyIDValue ()));
+        else
+          aSeller.setTaxRegistration (str (aPTS.getCompanyIDValue ()));
+      }
+    // BT-34
+    if (aParty.getEndpointID () != null)
+      aSeller.setElectronicAddress (identifier (aParty.getEndpointID ()));
+    // BG-5
+    if (aParty.getPostalAddress () != null)
+      aSeller.setPostalAddress (_readAddress (aParty.getPostalAddress ()));
+    // BG-6
+    if (aParty.getContact () != null)
+      aSeller.setContact (_readContact (aParty.getContact ()));
+  }
+
+  private static void _readSeller (@NonNull final SupplierPartyType aSP, @NonNull final PhloxSeller aSeller)
+  {
+    if (aSP.getParty () == null)
+      return;
+    final PartyType aParty = aSP.getParty ();
+    _readPartyCommon (aParty, aSeller);
+  }
+
+  @Nullable
+  private static PhloxPayee _readPayee (@NonNull final PartyType aParty)
+  {
+    final PhloxPayee aOut = new PhloxPayee ();
+    if (!aParty.getPartyName ().isEmpty ())
+      aOut.setName (str (aParty.getPartyName ().get (0).getNameValue ()));
+    if (!aParty.getPartyIdentification ().isEmpty () && aParty.getPartyIdentification ().get (0).getID () != null)
+    {
+      final PartyIdentificationType aPI = aParty.getPartyIdentification ().get (0);
+      aOut.setIdentifier (identifier (aPI.getID ()));
+    }
+    if (!aParty.getPartyLegalEntity ().isEmpty ())
+    {
+      final PartyLegalEntityType aLE = aParty.getPartyLegalEntity ().get (0);
+      if (aLE.getCompanyID () != null)
+        aOut.setLegalRegistration (identifier (aLE.getCompanyID ()));
+    }
+    return aOut;
+  }
+
+  @NonNull
+  private static PhloxSellerTaxRepresentative _readSellerTaxRepresentative (@NonNull final PartyType aParty)
+  {
+    final PhloxSellerTaxRepresentative aOut = new PhloxSellerTaxRepresentative ();
+    if (!aParty.getPartyName ().isEmpty ())
+      aOut.setName (str (aParty.getPartyName ().get (0).getNameValue ()));
+    for (final PartyTaxSchemeType aPTS : aParty.getPartyTaxScheme ())
+      if (aPTS.getTaxScheme () != null && "VAT".equals (aPTS.getTaxScheme ().getIDValue ()))
+        aOut.setVatIdentifier (str (aPTS.getCompanyIDValue ()));
+    if (aParty.getPostalAddress () != null)
+      aOut.setPostalAddress (_readAddress (aParty.getPostalAddress ()));
+    return aOut;
+  }
+
+  @NonNull
+  private static PhloxDeliveryInformation _readDelivery (@NonNull final DeliveryType aDelivery)
+  {
+    final PhloxDeliveryInformation aOut = new PhloxDeliveryInformation ();
+    if (aDelivery.getDeliveryParty () != null && !aDelivery.getDeliveryParty ().getPartyName ().isEmpty ())
+      aOut.setPartyName (str (aDelivery.getDeliveryParty ().getPartyName ().get (0).getNameValue ()));
+    if (aDelivery.getDeliveryLocation () != null)
+    {
+      if (aDelivery.getDeliveryLocation ().getID () != null)
+        aOut.setLocationIdentifier (identifier (aDelivery.getDeliveryLocation ().getID ()));
+      if (aDelivery.getDeliveryLocation ().getAddress () != null)
+        aOut.setPostalAddress (_readAddress (aDelivery.getDeliveryLocation ().getAddress ()));
+    }
+    aOut.setActualDeliveryDate (d (aDelivery.getActualDeliveryDateValue ()));
+    return aOut;
+  }
+
+  @Nullable
+  private static String _findSepaCreditorID (@Nullable final SupplierPartyType aSupplier,
+                                             @Nullable final PartyType aPayee)
+  {
+    if (aPayee != null)
+      for (final PartyIdentificationType aPI : aPayee.getPartyIdentification ())
+        if (aPI.getID () != null && "SEPA".equals (aPI.getID ().getSchemeID ()))
+          return aPI.getIDValue ();
+    if (aSupplier != null && aSupplier.getParty () != null)
+      for (final PartyIdentificationType aPI : aSupplier.getParty ().getPartyIdentification ())
+        if (aPI.getID () != null && "SEPA".equals (aPI.getID ().getSchemeID ()))
+          return aPI.getIDValue ();
+    return null;
+  }
+
+  @NonNull
+  private static PhloxCreditTransfer _readCreditTransfer (@NonNull final FinancialAccountType aAcc)
+  {
+    final PhloxCreditTransfer aOut = new PhloxCreditTransfer ();
+    aOut.setAccountIdentifier (str (aAcc.getIDValue ()));
+    aOut.setAccountName (str (aAcc.getNameValue ()));
+    final BranchType aBranch = aAcc.getFinancialInstitutionBranch ();
+    if (aBranch != null)
+      aOut.setServiceProviderID (str (aBranch.getIDValue ()));
+    return aOut;
+  }
+
+  @NonNull
+  private static PhloxPaymentInstructions _readPaymentInstructions (@NonNull final List <PaymentMeansType> aPaymentMeans,
+                                                                    @Nullable final SupplierPartyType aSupplier,
+                                                                    @Nullable final PartyType aPayee)
+  {
+    final PhloxPaymentInstructions aOut = new PhloxPaymentInstructions ();
+    final PaymentMeansType aPM = aPaymentMeans.get (0);
+    aOut.setPaymentMeansCode (str (aPM.getPaymentMeansCodeValue ()));
+    if (aPM.getPaymentMeansCode () != null)
+      aOut.setPaymentMeansText (aPM.getPaymentMeansCode ().getName ());
+    if (!aPM.getPaymentID ().isEmpty ())
+      aOut.setRemittanceInformation (str (aPM.getPaymentID ().get (0).getValue ()));
+
+    // BG-17 — credit transfers across ALL payment means
+    for (final PaymentMeansType aOnePM : aPaymentMeans)
+      if (aOnePM.getPayeeFinancialAccount () != null)
+        aOut.creditTransfers ().add (_readCreditTransfer (aOnePM.getPayeeFinancialAccount ()));
+
+    // BG-18 — payment card
+    if (aPM.getCardAccount () != null)
+    {
+      final PhloxPaymentCard aCard = new PhloxPaymentCard ();
+      aCard.setPan (str (aPM.getCardAccount ().getPrimaryAccountNumberIDValue ()));
+      aCard.setHolderName (str (aPM.getCardAccount ().getHolderNameValue ()));
+      aOut.setPaymentCard (aCard);
+    }
+
+    // BG-19 — direct debit
+    if (aPM.getPaymentMandate () != null)
+    {
+      final PaymentMandateType aMandate = aPM.getPaymentMandate ();
+      final PhloxDirectDebit aDD = new PhloxDirectDebit ();
+      aDD.setMandateReferenceID (str (aMandate.getIDValue ()));
+      if (aMandate.getPayerFinancialAccount () != null)
+        aDD.setDebitedAccountID (str (aMandate.getPayerFinancialAccount ().getIDValue ()));
+      // BT-90 — bank assigned creditor id (UBL: from supplier/payee PartyIdentification with SEPA
+      // scheme)
+      aDD.setBankAssignedCreditorID (_findSepaCreditorID (aSupplier, aPayee));
+      aOut.setDirectDebit (aDD);
+    }
+    return aOut;
+  }
+
+  @NonNull
+  private static PhloxDocumentAllowance _readDocumentAllowance (@NonNull final AllowanceChargeType aAC)
+  {
+    final PhloxDocumentAllowance aOut = new PhloxDocumentAllowance ();
+    if (aAC.getAmount () != null)
+      aOut.setAmount (aAC.getAmount ().getValue ());
+    if (aAC.getBaseAmount () != null)
+      aOut.setBaseAmount (aAC.getBaseAmount ().getValue ());
+    if (aAC.getMultiplierFactorNumeric () != null)
+      aOut.setPercentage (aAC.getMultiplierFactorNumeric ().getValue ());
+    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null
+                                                               : str (aAC.getAllowanceChargeReason ()
+                                                                          .get (0)
+                                                                          .getValue ()));
+    aOut.setReasonCode (str (aAC.getAllowanceChargeReasonCodeValue ()));
+    if (aAC.getTaxCategory () != null && !aAC.getTaxCategory ().isEmpty ())
+    {
+      final TaxCategoryType aTC = aAC.getTaxCategory ().get (0);
+      aOut.setVatCategoryCode (str (aTC.getIDValue ()));
+      if (aTC.getPercent () != null)
+        aOut.setVatRate (aTC.getPercent ().getValue ());
+    }
+    return aOut;
+  }
+
+  @NonNull
+  private static PhloxDocumentCharge _readDocumentCharge (@NonNull final AllowanceChargeType aAC)
+  {
+    final PhloxDocumentCharge aOut = new PhloxDocumentCharge ();
+    if (aAC.getAmount () != null)
+      aOut.setAmount (aAC.getAmount ().getValue ());
+    if (aAC.getBaseAmount () != null)
+      aOut.setBaseAmount (aAC.getBaseAmount ().getValue ());
+    if (aAC.getMultiplierFactorNumeric () != null)
+      aOut.setPercentage (aAC.getMultiplierFactorNumeric ().getValue ());
+    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null
+                                                               : str (aAC.getAllowanceChargeReason ()
+                                                                          .get (0)
+                                                                          .getValue ()));
+    aOut.setReasonCode (str (aAC.getAllowanceChargeReasonCodeValue ()));
+    if (aAC.getTaxCategory () != null && !aAC.getTaxCategory ().isEmpty ())
+    {
+      final TaxCategoryType aTC = aAC.getTaxCategory ().get (0);
+      aOut.setVatCategoryCode (str (aTC.getIDValue ()));
+      if (aTC.getPercent () != null)
+        aOut.setVatRate (aTC.getPercent ().getValue ());
+    }
+    return aOut;
+  }
+
+  private static void _readTotals (@NonNull final MonetaryTotalType aLMT, @NonNull final PhloxInvoice aModel)
+  {
+    if (aLMT.getLineExtensionAmount () != null)
+      aModel.getDocumentTotals ().setLineNetTotal (aLMT.getLineExtensionAmount ().getValue ());
+    if (aLMT.getAllowanceTotalAmount () != null)
+      aModel.getDocumentTotals ().setAllowanceTotal (aLMT.getAllowanceTotalAmount ().getValue ());
+    if (aLMT.getChargeTotalAmount () != null)
+      aModel.getDocumentTotals ().setChargeTotal (aLMT.getChargeTotalAmount ().getValue ());
+    if (aLMT.getTaxExclusiveAmount () != null)
+      aModel.getDocumentTotals ().setTaxExclusiveTotal (aLMT.getTaxExclusiveAmount ().getValue ());
+    if (aLMT.getTaxInclusiveAmount () != null)
+      aModel.getDocumentTotals ().setTaxInclusiveTotal (aLMT.getTaxInclusiveAmount ().getValue ());
+    if (aLMT.getPrepaidAmount () != null)
+      aModel.getDocumentTotals ().setPrepaidAmount (aLMT.getPrepaidAmount ().getValue ());
+    if (aLMT.getPayableRoundingAmount () != null)
+      aModel.getDocumentTotals ().setRoundingAmount (aLMT.getPayableRoundingAmount ().getValue ());
+    if (aLMT.getPayableAmount () != null)
+      aModel.getDocumentTotals ().setPayableAmount (aLMT.getPayableAmount ().getValue ());
+  }
+
+  @NonNull
+  private static PhloxVatBreakdown _readVatBreakdown (@NonNull final TaxSubtotalType aSub)
+  {
+    final PhloxVatBreakdown aOut = new PhloxVatBreakdown ();
+    if (aSub.getTaxableAmount () != null)
+      aOut.setTaxableAmount (aSub.getTaxableAmount ().getValue ());
+    if (aSub.getTaxAmount () != null)
+      aOut.setTaxAmount (aSub.getTaxAmount ().getValue ());
+    if (aSub.getTaxCategory () != null)
+    {
+      final TaxCategoryType aTC = aSub.getTaxCategory ();
+      aOut.setCategoryCode (str (aTC.getIDValue ()));
+      if (aTC.getPercent () != null)
+        aOut.setRate (aTC.getPercent ().getValue ());
+      aOut.setExemptionReason (aTC.getTaxExemptionReason ().isEmpty () ? null
+                                                                       : str (aTC.getTaxExemptionReason ()
+                                                                                  .get (0)
+                                                                                  .getValue ()));
+      aOut.setExemptionReasonCode (str (aTC.getTaxExemptionReasonCodeValue ()));
+    }
+    return aOut;
+  }
+
+  private static void _readTaxTotals (@NonNull final List <TaxTotalType> aTaxTotals, @NonNull final PhloxInvoice aModel)
+  {
+    final String sAccountingCurrency = aModel.getVatAccountingCurrency ();
+    boolean bMainTaxTotalSet = false;
+    for (final TaxTotalType aTT : aTaxTotals)
+    {
+      if (aTT.getTaxAmount () != null)
+      {
+        final BigDecimal aAmount = aTT.getTaxAmount ().getValue ();
+        final String sCurrencyID = aTT.getTaxAmount ().getCurrencyID ();
+        if (sAccountingCurrency != null && sAccountingCurrency.equals (sCurrencyID))
+          aModel.getDocumentTotals ().setTaxTotalAccountingCurrency (aAmount);
+        else
+          if (!bMainTaxTotalSet)
+          {
+            aModel.getDocumentTotals ().setTaxTotal (aAmount);
+            bMainTaxTotalSet = true;
+          }
+      }
+      for (final TaxSubtotalType aSub : aTT.getTaxSubtotal ())
+        aModel.vatBreakdowns ().add (_readVatBreakdown (aSub));
+    }
+  }
+
+  @NonNull
+  private static PhloxSupportingDocument _readSupportingDocument (@NonNull final DocumentReferenceType aRef)
+  {
+    final PhloxSupportingDocument aOut = new PhloxSupportingDocument ();
+    aOut.setReference (str (aRef.getIDValue ()));
+    aOut.setDescription (str (aRef.getDocumentDescriptionAtIndex (0) != null ? aRef.getDocumentDescriptionAtIndex (0)
+                                                                                    .getValue () : null));
+    if (aRef.getAttachment () != null)
+    {
+      final AttachmentType aAtt = aRef.getAttachment ();
+      if (aAtt.getExternalReference () != null)
+      {
+        final ExternalReferenceType aER = aAtt.getExternalReference ();
+        aOut.setExternalLocation (str (aER.getURIValue ()));
+      }
+      if (aAtt.getEmbeddedDocumentBinaryObject () != null)
+      {
+        final PhloxAttachment aBin = new PhloxAttachment ();
+        aBin.setBinary (aAtt.getEmbeddedDocumentBinaryObject ().getValue ());
+        aBin.setMimeCode (aAtt.getEmbeddedDocumentBinaryObject ().getMimeCode ());
+        aBin.setFilename (aAtt.getEmbeddedDocumentBinaryObject ().getFilename ());
+        aOut.setAttachment (aBin);
+      }
+    }
+    return aOut;
+  }
+
+  @NonNull
+  private static PhloxLineAllowance _readLineAllowance (@NonNull final AllowanceChargeType aAC)
+  {
+    final PhloxLineAllowance aOut = new PhloxLineAllowance ();
+    if (aAC.getAmount () != null)
+      aOut.setAmount (aAC.getAmount ().getValue ());
+    if (aAC.getBaseAmount () != null)
+      aOut.setBaseAmount (aAC.getBaseAmount ().getValue ());
+    if (aAC.getMultiplierFactorNumeric () != null)
+      aOut.setPercentage (aAC.getMultiplierFactorNumeric ().getValue ());
+    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null
+                                                               : str (aAC.getAllowanceChargeReason ()
+                                                                          .get (0)
+                                                                          .getValue ()));
+    aOut.setReasonCode (str (aAC.getAllowanceChargeReasonCodeValue ()));
+    return aOut;
+  }
+
+  @NonNull
+  private static PhloxLineCharge _readLineCharge (@NonNull final AllowanceChargeType aAC)
+  {
+    final PhloxLineCharge aOut = new PhloxLineCharge ();
+    if (aAC.getAmount () != null)
+      aOut.setAmount (aAC.getAmount ().getValue ());
+    if (aAC.getBaseAmount () != null)
+      aOut.setBaseAmount (aAC.getBaseAmount ().getValue ());
+    if (aAC.getMultiplierFactorNumeric () != null)
+      aOut.setPercentage (aAC.getMultiplierFactorNumeric ().getValue ());
+    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null
+                                                               : str (aAC.getAllowanceChargeReason ()
+                                                                          .get (0)
+                                                                          .getValue ()));
+    aOut.setReasonCode (str (aAC.getAllowanceChargeReasonCodeValue ()));
+    return aOut;
+  }
+
+  @NonNull
+  private static PhloxPriceDetails _readPriceDetails (@NonNull final PriceType aPrice)
+  {
+    final PhloxPriceDetails aOut = new PhloxPriceDetails ();
+    if (aPrice.getPriceAmount () != null)
+      aOut.setNetPrice (aPrice.getPriceAmount ().getValue ());
+    if (aPrice.getBaseQuantity () != null)
+    {
+      aOut.setBaseQuantity (aPrice.getBaseQuantity ().getValue ());
+      aOut.setBaseQuantityUnit (aPrice.getBaseQuantity ().getUnitCode ());
+    }
+    for (final AllowanceChargeType aAC : aPrice.getAllowanceCharge ())
+      if (aAC.getChargeIndicator () == null || !aAC.getChargeIndicator ().isValue ())
+      {
+        if (aAC.getAmount () != null)
+          aOut.setDiscount (aAC.getAmount ().getValue ());
+        if (aAC.getBaseAmount () != null)
+          aOut.setGrossPrice (aAC.getBaseAmount ().getValue ());
+      }
+    return aOut;
+  }
+
+  @NonNull
+  private static PhloxItem _readItem (@NonNull final ItemType aItem)
+  {
+    final PhloxItem aOut = new PhloxItem ();
+    aOut.setName (str (aItem.getNameValue ()));
+    aOut.setDescription (!aItem.getDescription ().isEmpty () ? aItem.getDescription ().get (0).getValue () : null);
+    if (aItem.getSellersItemIdentification () != null)
+      aOut.setSellerItemID (str (aItem.getSellersItemIdentification ().getIDValue ()));
+    if (aItem.getBuyersItemIdentification () != null)
+      aOut.setBuyerItemID (str (aItem.getBuyersItemIdentification ().getIDValue ()));
+    if (aItem.getStandardItemIdentification () != null)
+    {
+      final ItemIdentificationType aSII = aItem.getStandardItemIdentification ();
+      if (aSII.getID () != null)
+        aOut.setStandardItemID (identifier (aSII.getID ()));
+    }
+    if (aItem.getOriginCountry () != null)
+      aOut.setCountryOfOrigin (str (aItem.getOriginCountry ().getIdentificationCodeValue ()));
+    for (final CommodityClassificationType aCC : aItem.getCommodityClassification ())
+      if (aCC.getItemClassificationCode () != null)
+      {
+        final PhloxItemClassification aIC = new PhloxItemClassification ();
+        aIC.setCode (aCC.getItemClassificationCode ().getValue ());
+        aIC.setListID (aCC.getItemClassificationCode ().getListID ());
+        aIC.setListVersionID (aCC.getItemClassificationCode ().getListVersionID ());
+        aOut.classifications ().add (aIC);
+      }
+    for (final ItemPropertyType aIP : aItem.getAdditionalItemProperty ())
+      aOut.attributes ().add (new PhloxItemAttribute (str (aIP.getNameValue ()), str (aIP.getValueValue ())));
+    return aOut;
+  }
+
+  @NonNull
+  private static PhloxInvoiceLine _readInvoiceLine (@NonNull final InvoiceLineType aLine)
+  {
+    final PhloxInvoiceLine aOut = new PhloxInvoiceLine ();
+    aOut.setID (str (aLine.getIDValue ()));
+    if (!aLine.getNote ().isEmpty ())
+      aOut.setNote (str (aLine.getNote ().get (0).getValue ()));
+    if (aLine.getInvoicedQuantity () != null)
+    {
+      aOut.setQuantity (aLine.getInvoicedQuantity ().getValue ());
+      aOut.setQuantityUnit (aLine.getInvoicedQuantity ().getUnitCode ());
+    }
+    if (aLine.getLineExtensionAmount () != null)
+      aOut.setNetAmount (aLine.getLineExtensionAmount ().getValue ());
+    aOut.setAccountingCost (str (aLine.getAccountingCostValue ()));
+    if (!aLine.getOrderLineReference ().isEmpty ())
+    {
+      final OrderLineReferenceType aOLR = aLine.getOrderLineReference ().get (0);
+      aOut.setPurchaseOrderLineRef (str (aOLR.getLineIDValue ()));
+    }
+    if (!aLine.getDocumentReference ().isEmpty () && aLine.getDocumentReference ().get (0).getID () != null)
+    {
+      final DocumentReferenceType aDR = aLine.getDocumentReference ().get (0);
+      aOut.setObjectIdentifier (identifier (aDR.getID ()));
+    }
+    if (!aLine.getInvoicePeriod ().isEmpty ())
+    {
+      final PeriodType aPeriod = aLine.getInvoicePeriod ().get (0);
+      final PhloxInvoicingPeriod aIP = new PhloxInvoicingPeriod ();
+      aIP.setStartDate (d (aPeriod.getStartDateValue ()));
+      aIP.setEndDate (d (aPeriod.getEndDateValue ()));
+      if (!aIP.isEmpty ())
+        aOut.setPeriod (aIP);
+    }
+    for (final AllowanceChargeType aAC : aLine.getAllowanceCharge ())
+      if (aAC.getChargeIndicator () != null && aAC.getChargeIndicator ().isValue ())
+        aOut.charges ().add (_readLineCharge (aAC));
+      else
+        aOut.allowances ().add (_readLineAllowance (aAC));
+    if (aLine.getPrice () != null)
+      aOut.setPrice (_readPriceDetails (aLine.getPrice ()));
+    if (aLine.getItem () != null)
+    {
+      aOut.setItem (_readItem (aLine.getItem ()));
+      // BG-30 from ClassifiedTaxCategory of the item
+      if (!aLine.getItem ().getClassifiedTaxCategory ().isEmpty ())
+      {
+        final TaxCategoryType aTC = aLine.getItem ().getClassifiedTaxCategory ().get (0);
+        final PhloxLineVat aVat = new PhloxLineVat ();
+        aVat.setCategoryCode (str (aTC.getIDValue ()));
+        if (aTC.getPercent () != null)
+          aVat.setRate (aTC.getPercent ().getValue ());
+        aOut.setLineVat (aVat);
+      }
+    }
+    return aOut;
+  }
+
+  @NonNull
+  private static PhloxInvoiceLine _readCreditNoteLine (@NonNull final CreditNoteLineType aLine)
+  {
+    final PhloxInvoiceLine aOut = new PhloxInvoiceLine ();
+    aOut.setID (str (aLine.getIDValue ()));
+    if (!aLine.getNote ().isEmpty ())
+      aOut.setNote (str (aLine.getNote ().get (0).getValue ()));
+    if (aLine.getCreditedQuantity () != null)
+    {
+      aOut.setQuantity (aLine.getCreditedQuantity ().getValue ());
+      aOut.setQuantityUnit (aLine.getCreditedQuantity ().getUnitCode ());
+    }
+    if (aLine.getLineExtensionAmount () != null)
+      aOut.setNetAmount (aLine.getLineExtensionAmount ().getValue ());
+    aOut.setAccountingCost (str (aLine.getAccountingCostValue ()));
+    if (!aLine.getOrderLineReference ().isEmpty ())
+      aOut.setPurchaseOrderLineRef (str (aLine.getOrderLineReference ().get (0).getLineIDValue ()));
+    if (!aLine.getDocumentReference ().isEmpty () && aLine.getDocumentReference ().get (0).getID () != null)
+    {
+      final DocumentReferenceType aDR = aLine.getDocumentReference ().get (0);
+      aOut.setObjectIdentifier (identifier (aDR.getID ()));
+    }
+    if (!aLine.getInvoicePeriod ().isEmpty ())
+    {
+      final PeriodType aPeriod = aLine.getInvoicePeriod ().get (0);
+      final PhloxInvoicingPeriod aIP = new PhloxInvoicingPeriod ();
+      aIP.setStartDate (d (aPeriod.getStartDateValue ()));
+      aIP.setEndDate (d (aPeriod.getEndDateValue ()));
+      if (!aIP.isEmpty ())
+        aOut.setPeriod (aIP);
+    }
+    for (final AllowanceChargeType aAC : aLine.getAllowanceCharge ())
+      if (aAC.getChargeIndicator () != null && aAC.getChargeIndicator ().isValue ())
+        aOut.charges ().add (_readLineCharge (aAC));
+      else
+        aOut.allowances ().add (_readLineAllowance (aAC));
+    if (aLine.getPrice () != null)
+      aOut.setPrice (_readPriceDetails (aLine.getPrice ()));
+    if (aLine.getItem () != null)
+    {
+      aOut.setItem (_readItem (aLine.getItem ()));
+      if (!aLine.getItem ().getClassifiedTaxCategory ().isEmpty ())
+      {
+        final TaxCategoryType aTC = aLine.getItem ().getClassifiedTaxCategory ().get (0);
+        final PhloxLineVat aVat = new PhloxLineVat ();
+        aVat.setCategoryCode (str (aTC.getIDValue ()));
+        if (aTC.getPercent () != null)
+          aVat.setRate (aTC.getPercent ().getValue ());
+        aOut.setLineVat (aVat);
+      }
+    }
+    return aOut;
+  }
+
+  @NonNull
+  private static PhloxInvoiceNote _parseInvoiceNote (@NonNull final String sRaw)
+  {
+    // UBL convention: subject code embedded as "#code#" prefix; e.g. "#AAB#Some note"
+    if (sRaw.startsWith ("#"))
+    {
+      final int n = sRaw.indexOf ('#', 1);
+      if (n > 1)
+        return new PhloxInvoiceNote (sRaw.substring (1, n), sRaw.substring (n + 1));
+    }
+    return new PhloxInvoiceNote (null, sRaw);
+  }
+
   @Override
   @NonNull
   protected String _getUblVersion ()
   {
     return "2.1";
-  }
-
-  @Override
-  @Nullable
-  protected PhloxInvoice readInvoiceDocument (@NonNull final Document aDoc, @NonNull final ErrorList aErrors)
-  {
-    final InvoiceType aInvoice = UBL21Marshaller.invoice ().read (aDoc);
-    return aInvoice == null ? null : readInvoice (aInvoice);
-  }
-
-  @Override
-  @Nullable
-  protected PhloxInvoice readCreditNoteDocument (@NonNull final Document aDoc, @NonNull final ErrorList aErrors)
-  {
-    final CreditNoteType aCreditNote = UBL21Marshaller.creditNote ().read (aDoc);
-    return aCreditNote == null ? null : readCreditNote (aCreditNote);
   }
 
   /**
@@ -220,6 +806,14 @@ final class Ubl21InvoiceReader extends AbstractUblInvoiceReader
     return aModel;
   }
 
+  @Override
+  @Nullable
+  protected PhloxInvoice readInvoiceDocument (@NonNull final Document aDoc, @NonNull final ErrorList aErrors)
+  {
+    final InvoiceType aInvoice = UBL21Marshaller.invoice ().read (aDoc);
+    return aInvoice == null ? null : readInvoice (aInvoice);
+  }
+
   /**
    * Read an already-parsed UBL CreditNote into a {@link PhloxInvoice}.
    *
@@ -346,605 +940,11 @@ final class Ubl21InvoiceReader extends AbstractUblInvoiceReader
     return aModel;
   }
 
-  private static void _addBuyerReference (@NonNull final PhloxInvoice aModel, @Nullable final String sBuyerReference)
-  {
-    // BT-10 — EN 16931:2017 has no scheme identifier (BT-10-1)
-    if (sBuyerReference != null)
-      aModel.buyerReferences ().add (new PhloxIdentifier (sBuyerReference, null));
-  }
-
-  private static void _readSeller (@NonNull final SupplierPartyType aSP, @NonNull final PhloxSeller aSeller)
-  {
-    if (aSP.getParty () == null)
-      return;
-    final PartyType aParty = aSP.getParty ();
-    _readPartyCommon (aParty, aSeller);
-  }
-
-  private static void _readBuyer (@NonNull final CustomerPartyType aCP, @NonNull final PhloxBuyer aBuyer)
-  {
-    if (aCP.getParty () == null)
-      return;
-    final PartyType aParty = aCP.getParty ();
-    // BT-44
-    if (!aParty.getPartyLegalEntity ().isEmpty ())
-    {
-      final PartyLegalEntityType aLE = aParty.getPartyLegalEntity ().get (0);
-      aBuyer.setName (str (aLE.getRegistrationNameValue ()));
-      if (aLE.getCompanyID () != null)
-        aBuyer.setLegalRegistration (identifier (aLE.getCompanyID ()));
-    }
-    // BT-45 — trading name
-    if (!aParty.getPartyName ().isEmpty ())
-    {
-      final PartyNameType aPN = aParty.getPartyName ().get (0);
-      aBuyer.setTradingName (str (aPN.getNameValue ()));
-    }
-    // BT-46 — identifiers
-    for (final PartyIdentificationType aPI : aParty.getPartyIdentification ())
-      if (aPI.getID () != null)
-        aBuyer.identifiers ().add (identifier (aPI.getID ()));
-    // BT-48 — VAT
-    for (final PartyTaxSchemeType aPTS : aParty.getPartyTaxScheme ())
-      if (aPTS.getTaxScheme () != null && "VAT".equals (aPTS.getTaxScheme ().getIDValue ()))
-        aBuyer.setVatIdentifier (str (aPTS.getCompanyIDValue ()));
-    // BT-49
-    if (aParty.getEndpointID () != null)
-      aBuyer.setElectronicAddress (identifier (aParty.getEndpointID ()));
-    // BG-8
-    if (aParty.getPostalAddress () != null)
-      aBuyer.setPostalAddress (_readAddress (aParty.getPostalAddress ()));
-    // BG-9
-    if (aParty.getContact () != null)
-      aBuyer.setContact (_readContact (aParty.getContact ()));
-  }
-
-  private static void _readPartyCommon (@NonNull final PartyType aParty, @NonNull final PhloxSeller aSeller)
-  {
-    // BT-27
-    if (!aParty.getPartyLegalEntity ().isEmpty ())
-    {
-      final PartyLegalEntityType aLE = aParty.getPartyLegalEntity ().get (0);
-      aSeller.setName (str (aLE.getRegistrationNameValue ()));
-      if (aLE.getCompanyID () != null)
-        aSeller.setLegalRegistration (identifier (aLE.getCompanyID ()));
-      // BT-33
-      aSeller.setAdditionalLegalInfo (str (aLE.getCompanyLegalFormValue ()));
-    }
-    // BT-28
-    if (!aParty.getPartyName ().isEmpty ())
-      aSeller.setTradingName (str (aParty.getPartyName ().get (0).getNameValue ()));
-    // BT-29
-    for (final PartyIdentificationType aPI : aParty.getPartyIdentification ())
-      if (aPI.getID () != null)
-        aSeller.identifiers ().add (identifier (aPI.getID ()));
-    // BT-31 / BT-32
-    for (final PartyTaxSchemeType aPTS : aParty.getPartyTaxScheme ())
-      if (aPTS.getTaxScheme () != null)
-      {
-        if ("VAT".equals (aPTS.getTaxScheme ().getIDValue ()))
-          aSeller.setVatIdentifier (str (aPTS.getCompanyIDValue ()));
-        else
-          aSeller.setTaxRegistration (str (aPTS.getCompanyIDValue ()));
-      }
-    // BT-34
-    if (aParty.getEndpointID () != null)
-      aSeller.setElectronicAddress (identifier (aParty.getEndpointID ()));
-    // BG-5
-    if (aParty.getPostalAddress () != null)
-      aSeller.setPostalAddress (_readAddress (aParty.getPostalAddress ()));
-    // BG-6
-    if (aParty.getContact () != null)
-      aSeller.setContact (_readContact (aParty.getContact ()));
-  }
-
-  @NonNull
-  private static PhloxPostalAddress _readAddress (@NonNull final AddressType aAddr)
-  {
-    final PhloxPostalAddress aOut = new PhloxPostalAddress ();
-    aOut.setLine1 (str (aAddr.getStreetNameValue ()));
-    aOut.setLine2 (str (aAddr.getAdditionalStreetNameValue ()));
-    if (!aAddr.getAddressLine ().isEmpty ())
-    {
-      final AddressLineType aAL = aAddr.getAddressLine ().get (0);
-      aOut.setLine3 (str (aAL.getLineValue ()));
-    }
-    aOut.setCity (str (aAddr.getCityNameValue ()));
-    aOut.setPostCode (str (aAddr.getPostalZoneValue ()));
-    aOut.setCountrySubdivision (str (aAddr.getCountrySubentityValue ()));
-    final CountryType aCountry = aAddr.getCountry ();
-    if (aCountry != null)
-      aOut.setCountryCode (str (aCountry.getIdentificationCodeValue ()));
-    return aOut;
-  }
-
-  @NonNull
-  private static PhloxContact _readContact (@NonNull final ContactType aContact)
-  {
-    final PhloxContact aOut = new PhloxContact ();
-    aOut.setName (str (aContact.getNameValue ()));
-    aOut.setTelephone (str (aContact.getTelephoneValue ()));
-    aOut.setEmail (str (aContact.getElectronicMailValue ()));
-    return aOut;
-  }
-
+  @Override
   @Nullable
-  private static PhloxPayee _readPayee (@NonNull final PartyType aParty)
+  protected PhloxInvoice readCreditNoteDocument (@NonNull final Document aDoc, @NonNull final ErrorList aErrors)
   {
-    final PhloxPayee aOut = new PhloxPayee ();
-    if (!aParty.getPartyName ().isEmpty ())
-      aOut.setName (str (aParty.getPartyName ().get (0).getNameValue ()));
-    if (!aParty.getPartyIdentification ().isEmpty () && aParty.getPartyIdentification ().get (0).getID () != null)
-    {
-      final PartyIdentificationType aPI = aParty.getPartyIdentification ().get (0);
-      aOut.setIdentifier (identifier (aPI.getID ()));
-    }
-    if (!aParty.getPartyLegalEntity ().isEmpty ())
-    {
-      final PartyLegalEntityType aLE = aParty.getPartyLegalEntity ().get (0);
-      if (aLE.getCompanyID () != null)
-        aOut.setLegalRegistration (identifier (aLE.getCompanyID ()));
-    }
-    return aOut;
-  }
-
-  @NonNull
-  private static PhloxSellerTaxRepresentative _readSellerTaxRepresentative (@NonNull final PartyType aParty)
-  {
-    final PhloxSellerTaxRepresentative aOut = new PhloxSellerTaxRepresentative ();
-    if (!aParty.getPartyName ().isEmpty ())
-      aOut.setName (str (aParty.getPartyName ().get (0).getNameValue ()));
-    for (final PartyTaxSchemeType aPTS : aParty.getPartyTaxScheme ())
-      if (aPTS.getTaxScheme () != null && "VAT".equals (aPTS.getTaxScheme ().getIDValue ()))
-        aOut.setVatIdentifier (str (aPTS.getCompanyIDValue ()));
-    if (aParty.getPostalAddress () != null)
-      aOut.setPostalAddress (_readAddress (aParty.getPostalAddress ()));
-    return aOut;
-  }
-
-  @NonNull
-  private static PhloxDeliveryInformation _readDelivery (@NonNull final DeliveryType aDelivery)
-  {
-    final PhloxDeliveryInformation aOut = new PhloxDeliveryInformation ();
-    if (aDelivery.getDeliveryParty () != null && !aDelivery.getDeliveryParty ().getPartyName ().isEmpty ())
-      aOut.setPartyName (str (aDelivery.getDeliveryParty ().getPartyName ().get (0).getNameValue ()));
-    if (aDelivery.getDeliveryLocation () != null)
-    {
-      if (aDelivery.getDeliveryLocation ().getID () != null)
-        aOut.setLocationIdentifier (identifier (aDelivery.getDeliveryLocation ().getID ()));
-      if (aDelivery.getDeliveryLocation ().getAddress () != null)
-        aOut.setPostalAddress (_readAddress (aDelivery.getDeliveryLocation ().getAddress ()));
-    }
-    aOut.setActualDeliveryDate (d (aDelivery.getActualDeliveryDateValue ()));
-    return aOut;
-  }
-
-  @NonNull
-  private static PhloxPaymentInstructions _readPaymentInstructions (@NonNull final List <PaymentMeansType> aPaymentMeans,
-                                                                    @Nullable final SupplierPartyType aSupplier,
-                                                                    @Nullable final PartyType aPayee)
-  {
-    final PhloxPaymentInstructions aOut = new PhloxPaymentInstructions ();
-    final PaymentMeansType aPM = aPaymentMeans.get (0);
-    aOut.setPaymentMeansCode (str (aPM.getPaymentMeansCodeValue ()));
-    if (aPM.getPaymentMeansCode () != null)
-      aOut.setPaymentMeansText (aPM.getPaymentMeansCode ().getName ());
-    if (!aPM.getPaymentID ().isEmpty ())
-      aOut.setRemittanceInformation (str (aPM.getPaymentID ().get (0).getValue ()));
-
-    // BG-17 — credit transfers across ALL payment means
-    for (final PaymentMeansType aOnePM : aPaymentMeans)
-      if (aOnePM.getPayeeFinancialAccount () != null)
-        aOut.creditTransfers ().add (_readCreditTransfer (aOnePM.getPayeeFinancialAccount ()));
-
-    // BG-18 — payment card
-    if (aPM.getCardAccount () != null)
-    {
-      final PhloxPaymentCard aCard = new PhloxPaymentCard ();
-      aCard.setPan (str (aPM.getCardAccount ().getPrimaryAccountNumberIDValue ()));
-      aCard.setHolderName (str (aPM.getCardAccount ().getHolderNameValue ()));
-      aOut.setPaymentCard (aCard);
-    }
-
-    // BG-19 — direct debit
-    if (aPM.getPaymentMandate () != null)
-    {
-      final PaymentMandateType aMandate = aPM.getPaymentMandate ();
-      final PhloxDirectDebit aDD = new PhloxDirectDebit ();
-      aDD.setMandateReferenceID (str (aMandate.getIDValue ()));
-      if (aMandate.getPayerFinancialAccount () != null)
-        aDD.setDebitedAccountID (str (aMandate.getPayerFinancialAccount ().getIDValue ()));
-      // BT-90 — bank assigned creditor id (UBL: from supplier/payee PartyIdentification with SEPA
-      // scheme)
-      aDD.setBankAssignedCreditorID (_findSepaCreditorID (aSupplier, aPayee));
-      aOut.setDirectDebit (aDD);
-    }
-    return aOut;
-  }
-
-  @Nullable
-  private static String _findSepaCreditorID (@Nullable final SupplierPartyType aSupplier,
-                                             @Nullable final PartyType aPayee)
-  {
-    if (aPayee != null)
-      for (final PartyIdentificationType aPI : aPayee.getPartyIdentification ())
-        if (aPI.getID () != null && "SEPA".equals (aPI.getID ().getSchemeID ()))
-          return aPI.getIDValue ();
-    if (aSupplier != null && aSupplier.getParty () != null)
-      for (final PartyIdentificationType aPI : aSupplier.getParty ().getPartyIdentification ())
-        if (aPI.getID () != null && "SEPA".equals (aPI.getID ().getSchemeID ()))
-          return aPI.getIDValue ();
-    return null;
-  }
-
-  @NonNull
-  private static PhloxCreditTransfer _readCreditTransfer (@NonNull final FinancialAccountType aAcc)
-  {
-    final PhloxCreditTransfer aOut = new PhloxCreditTransfer ();
-    aOut.setAccountIdentifier (str (aAcc.getIDValue ()));
-    aOut.setAccountName (str (aAcc.getNameValue ()));
-    final BranchType aBranch = aAcc.getFinancialInstitutionBranch ();
-    if (aBranch != null)
-      aOut.setServiceProviderID (str (aBranch.getIDValue ()));
-    return aOut;
-  }
-
-  @NonNull
-  private static PhloxDocumentAllowance _readDocumentAllowance (@NonNull final AllowanceChargeType aAC)
-  {
-    final PhloxDocumentAllowance aOut = new PhloxDocumentAllowance ();
-    if (aAC.getAmount () != null)
-      aOut.setAmount (aAC.getAmount ().getValue ());
-    if (aAC.getBaseAmount () != null)
-      aOut.setBaseAmount (aAC.getBaseAmount ().getValue ());
-    if (aAC.getMultiplierFactorNumeric () != null)
-      aOut.setPercentage (aAC.getMultiplierFactorNumeric ().getValue ());
-    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null
-                                                               : str (aAC.getAllowanceChargeReason ()
-                                                                          .get (0)
-                                                                          .getValue ()));
-    aOut.setReasonCode (str (aAC.getAllowanceChargeReasonCodeValue ()));
-    if (aAC.getTaxCategory () != null && !aAC.getTaxCategory ().isEmpty ())
-    {
-      final TaxCategoryType aTC = aAC.getTaxCategory ().get (0);
-      aOut.setVatCategoryCode (str (aTC.getIDValue ()));
-      if (aTC.getPercent () != null)
-        aOut.setVatRate (aTC.getPercent ().getValue ());
-    }
-    return aOut;
-  }
-
-  @NonNull
-  private static PhloxDocumentCharge _readDocumentCharge (@NonNull final AllowanceChargeType aAC)
-  {
-    final PhloxDocumentCharge aOut = new PhloxDocumentCharge ();
-    if (aAC.getAmount () != null)
-      aOut.setAmount (aAC.getAmount ().getValue ());
-    if (aAC.getBaseAmount () != null)
-      aOut.setBaseAmount (aAC.getBaseAmount ().getValue ());
-    if (aAC.getMultiplierFactorNumeric () != null)
-      aOut.setPercentage (aAC.getMultiplierFactorNumeric ().getValue ());
-    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null
-                                                               : str (aAC.getAllowanceChargeReason ()
-                                                                          .get (0)
-                                                                          .getValue ()));
-    aOut.setReasonCode (str (aAC.getAllowanceChargeReasonCodeValue ()));
-    if (aAC.getTaxCategory () != null && !aAC.getTaxCategory ().isEmpty ())
-    {
-      final TaxCategoryType aTC = aAC.getTaxCategory ().get (0);
-      aOut.setVatCategoryCode (str (aTC.getIDValue ()));
-      if (aTC.getPercent () != null)
-        aOut.setVatRate (aTC.getPercent ().getValue ());
-    }
-    return aOut;
-  }
-
-  private static void _readTotals (@NonNull final MonetaryTotalType aLMT, @NonNull final PhloxInvoice aModel)
-  {
-    if (aLMT.getLineExtensionAmount () != null)
-      aModel.getDocumentTotals ().setLineNetTotal (aLMT.getLineExtensionAmount ().getValue ());
-    if (aLMT.getAllowanceTotalAmount () != null)
-      aModel.getDocumentTotals ().setAllowanceTotal (aLMT.getAllowanceTotalAmount ().getValue ());
-    if (aLMT.getChargeTotalAmount () != null)
-      aModel.getDocumentTotals ().setChargeTotal (aLMT.getChargeTotalAmount ().getValue ());
-    if (aLMT.getTaxExclusiveAmount () != null)
-      aModel.getDocumentTotals ().setTaxExclusiveTotal (aLMT.getTaxExclusiveAmount ().getValue ());
-    if (aLMT.getTaxInclusiveAmount () != null)
-      aModel.getDocumentTotals ().setTaxInclusiveTotal (aLMT.getTaxInclusiveAmount ().getValue ());
-    if (aLMT.getPrepaidAmount () != null)
-      aModel.getDocumentTotals ().setPrepaidAmount (aLMT.getPrepaidAmount ().getValue ());
-    if (aLMT.getPayableRoundingAmount () != null)
-      aModel.getDocumentTotals ().setRoundingAmount (aLMT.getPayableRoundingAmount ().getValue ());
-    if (aLMT.getPayableAmount () != null)
-      aModel.getDocumentTotals ().setPayableAmount (aLMT.getPayableAmount ().getValue ());
-  }
-
-  private static void _readTaxTotals (@NonNull final List <TaxTotalType> aTaxTotals, @NonNull final PhloxInvoice aModel)
-  {
-    final String sAccountingCurrency = aModel.getVatAccountingCurrency ();
-    boolean bMainTaxTotalSet = false;
-    for (final TaxTotalType aTT : aTaxTotals)
-    {
-      if (aTT.getTaxAmount () != null)
-      {
-        final BigDecimal aAmount = aTT.getTaxAmount ().getValue ();
-        final String sCurrencyID = aTT.getTaxAmount ().getCurrencyID ();
-        if (sAccountingCurrency != null && sAccountingCurrency.equals (sCurrencyID))
-          aModel.getDocumentTotals ().setTaxTotalAccountingCurrency (aAmount);
-        else
-          if (!bMainTaxTotalSet)
-          {
-            aModel.getDocumentTotals ().setTaxTotal (aAmount);
-            bMainTaxTotalSet = true;
-          }
-      }
-      for (final TaxSubtotalType aSub : aTT.getTaxSubtotal ())
-        aModel.vatBreakdowns ().add (_readVatBreakdown (aSub));
-    }
-  }
-
-  @NonNull
-  private static PhloxVatBreakdown _readVatBreakdown (@NonNull final TaxSubtotalType aSub)
-  {
-    final PhloxVatBreakdown aOut = new PhloxVatBreakdown ();
-    if (aSub.getTaxableAmount () != null)
-      aOut.setTaxableAmount (aSub.getTaxableAmount ().getValue ());
-    if (aSub.getTaxAmount () != null)
-      aOut.setTaxAmount (aSub.getTaxAmount ().getValue ());
-    if (aSub.getTaxCategory () != null)
-    {
-      final TaxCategoryType aTC = aSub.getTaxCategory ();
-      aOut.setCategoryCode (str (aTC.getIDValue ()));
-      if (aTC.getPercent () != null)
-        aOut.setRate (aTC.getPercent ().getValue ());
-      aOut.setExemptionReason (aTC.getTaxExemptionReason ().isEmpty () ? null
-                                                                       : str (aTC.getTaxExemptionReason ()
-                                                                                  .get (0)
-                                                                                  .getValue ()));
-      aOut.setExemptionReasonCode (str (aTC.getTaxExemptionReasonCodeValue ()));
-    }
-    return aOut;
-  }
-
-  @NonNull
-  private static PhloxSupportingDocument _readSupportingDocument (@NonNull final DocumentReferenceType aRef)
-  {
-    final PhloxSupportingDocument aOut = new PhloxSupportingDocument ();
-    aOut.setReference (str (aRef.getIDValue ()));
-    aOut.setDescription (str (aRef.getDocumentDescriptionAtIndex (0) != null ? aRef.getDocumentDescriptionAtIndex (0)
-                                                                                    .getValue () : null));
-    if (aRef.getAttachment () != null)
-    {
-      final AttachmentType aAtt = aRef.getAttachment ();
-      if (aAtt.getExternalReference () != null)
-      {
-        final ExternalReferenceType aER = aAtt.getExternalReference ();
-        aOut.setExternalLocation (str (aER.getURIValue ()));
-      }
-      if (aAtt.getEmbeddedDocumentBinaryObject () != null)
-      {
-        final PhloxAttachment aBin = new PhloxAttachment ();
-        aBin.setBinary (aAtt.getEmbeddedDocumentBinaryObject ().getValue ());
-        aBin.setMimeCode (aAtt.getEmbeddedDocumentBinaryObject ().getMimeCode ());
-        aBin.setFilename (aAtt.getEmbeddedDocumentBinaryObject ().getFilename ());
-        aOut.setAttachment (aBin);
-      }
-    }
-    return aOut;
-  }
-
-  @NonNull
-  private static PhloxInvoiceLine _readInvoiceLine (@NonNull final InvoiceLineType aLine)
-  {
-    final PhloxInvoiceLine aOut = new PhloxInvoiceLine ();
-    aOut.setID (str (aLine.getIDValue ()));
-    if (!aLine.getNote ().isEmpty ())
-      aOut.setNote (str (aLine.getNote ().get (0).getValue ()));
-    if (aLine.getInvoicedQuantity () != null)
-    {
-      aOut.setQuantity (aLine.getInvoicedQuantity ().getValue ());
-      aOut.setQuantityUnit (aLine.getInvoicedQuantity ().getUnitCode ());
-    }
-    if (aLine.getLineExtensionAmount () != null)
-      aOut.setNetAmount (aLine.getLineExtensionAmount ().getValue ());
-    aOut.setAccountingCost (str (aLine.getAccountingCostValue ()));
-    if (!aLine.getOrderLineReference ().isEmpty ())
-    {
-      final OrderLineReferenceType aOLR = aLine.getOrderLineReference ().get (0);
-      aOut.setPurchaseOrderLineRef (str (aOLR.getLineIDValue ()));
-    }
-    if (!aLine.getDocumentReference ().isEmpty () && aLine.getDocumentReference ().get (0).getID () != null)
-    {
-      final DocumentReferenceType aDR = aLine.getDocumentReference ().get (0);
-      aOut.setObjectIdentifier (identifier (aDR.getID ()));
-    }
-    if (!aLine.getInvoicePeriod ().isEmpty ())
-    {
-      final PeriodType aPeriod = aLine.getInvoicePeriod ().get (0);
-      final PhloxInvoicingPeriod aIP = new PhloxInvoicingPeriod ();
-      aIP.setStartDate (d (aPeriod.getStartDateValue ()));
-      aIP.setEndDate (d (aPeriod.getEndDateValue ()));
-      if (!aIP.isEmpty ())
-        aOut.setPeriod (aIP);
-    }
-    for (final AllowanceChargeType aAC : aLine.getAllowanceCharge ())
-      if (aAC.getChargeIndicator () != null && aAC.getChargeIndicator ().isValue ())
-        aOut.charges ().add (_readLineCharge (aAC));
-      else
-        aOut.allowances ().add (_readLineAllowance (aAC));
-    if (aLine.getPrice () != null)
-      aOut.setPrice (_readPriceDetails (aLine.getPrice ()));
-    if (aLine.getItem () != null)
-    {
-      aOut.setItem (_readItem (aLine.getItem ()));
-      // BG-30 from ClassifiedTaxCategory of the item
-      if (!aLine.getItem ().getClassifiedTaxCategory ().isEmpty ())
-      {
-        final TaxCategoryType aTC = aLine.getItem ().getClassifiedTaxCategory ().get (0);
-        final PhloxLineVat aVat = new PhloxLineVat ();
-        aVat.setCategoryCode (str (aTC.getIDValue ()));
-        if (aTC.getPercent () != null)
-          aVat.setRate (aTC.getPercent ().getValue ());
-        aOut.setLineVat (aVat);
-      }
-    }
-    return aOut;
-  }
-
-  @NonNull
-  private static PhloxInvoiceLine _readCreditNoteLine (@NonNull final CreditNoteLineType aLine)
-  {
-    final PhloxInvoiceLine aOut = new PhloxInvoiceLine ();
-    aOut.setID (str (aLine.getIDValue ()));
-    if (!aLine.getNote ().isEmpty ())
-      aOut.setNote (str (aLine.getNote ().get (0).getValue ()));
-    if (aLine.getCreditedQuantity () != null)
-    {
-      aOut.setQuantity (aLine.getCreditedQuantity ().getValue ());
-      aOut.setQuantityUnit (aLine.getCreditedQuantity ().getUnitCode ());
-    }
-    if (aLine.getLineExtensionAmount () != null)
-      aOut.setNetAmount (aLine.getLineExtensionAmount ().getValue ());
-    aOut.setAccountingCost (str (aLine.getAccountingCostValue ()));
-    if (!aLine.getOrderLineReference ().isEmpty ())
-      aOut.setPurchaseOrderLineRef (str (aLine.getOrderLineReference ().get (0).getLineIDValue ()));
-    if (!aLine.getDocumentReference ().isEmpty () && aLine.getDocumentReference ().get (0).getID () != null)
-    {
-      final DocumentReferenceType aDR = aLine.getDocumentReference ().get (0);
-      aOut.setObjectIdentifier (identifier (aDR.getID ()));
-    }
-    if (!aLine.getInvoicePeriod ().isEmpty ())
-    {
-      final PeriodType aPeriod = aLine.getInvoicePeriod ().get (0);
-      final PhloxInvoicingPeriod aIP = new PhloxInvoicingPeriod ();
-      aIP.setStartDate (d (aPeriod.getStartDateValue ()));
-      aIP.setEndDate (d (aPeriod.getEndDateValue ()));
-      if (!aIP.isEmpty ())
-        aOut.setPeriod (aIP);
-    }
-    for (final AllowanceChargeType aAC : aLine.getAllowanceCharge ())
-      if (aAC.getChargeIndicator () != null && aAC.getChargeIndicator ().isValue ())
-        aOut.charges ().add (_readLineCharge (aAC));
-      else
-        aOut.allowances ().add (_readLineAllowance (aAC));
-    if (aLine.getPrice () != null)
-      aOut.setPrice (_readPriceDetails (aLine.getPrice ()));
-    if (aLine.getItem () != null)
-    {
-      aOut.setItem (_readItem (aLine.getItem ()));
-      if (!aLine.getItem ().getClassifiedTaxCategory ().isEmpty ())
-      {
-        final TaxCategoryType aTC = aLine.getItem ().getClassifiedTaxCategory ().get (0);
-        final PhloxLineVat aVat = new PhloxLineVat ();
-        aVat.setCategoryCode (str (aTC.getIDValue ()));
-        if (aTC.getPercent () != null)
-          aVat.setRate (aTC.getPercent ().getValue ());
-        aOut.setLineVat (aVat);
-      }
-    }
-    return aOut;
-  }
-
-  @NonNull
-  private static PhloxLineAllowance _readLineAllowance (@NonNull final AllowanceChargeType aAC)
-  {
-    final PhloxLineAllowance aOut = new PhloxLineAllowance ();
-    if (aAC.getAmount () != null)
-      aOut.setAmount (aAC.getAmount ().getValue ());
-    if (aAC.getBaseAmount () != null)
-      aOut.setBaseAmount (aAC.getBaseAmount ().getValue ());
-    if (aAC.getMultiplierFactorNumeric () != null)
-      aOut.setPercentage (aAC.getMultiplierFactorNumeric ().getValue ());
-    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null
-                                                               : str (aAC.getAllowanceChargeReason ()
-                                                                          .get (0)
-                                                                          .getValue ()));
-    aOut.setReasonCode (str (aAC.getAllowanceChargeReasonCodeValue ()));
-    return aOut;
-  }
-
-  @NonNull
-  private static PhloxLineCharge _readLineCharge (@NonNull final AllowanceChargeType aAC)
-  {
-    final PhloxLineCharge aOut = new PhloxLineCharge ();
-    if (aAC.getAmount () != null)
-      aOut.setAmount (aAC.getAmount ().getValue ());
-    if (aAC.getBaseAmount () != null)
-      aOut.setBaseAmount (aAC.getBaseAmount ().getValue ());
-    if (aAC.getMultiplierFactorNumeric () != null)
-      aOut.setPercentage (aAC.getMultiplierFactorNumeric ().getValue ());
-    aOut.setReason (aAC.getAllowanceChargeReason ().isEmpty () ? null
-                                                               : str (aAC.getAllowanceChargeReason ()
-                                                                          .get (0)
-                                                                          .getValue ()));
-    aOut.setReasonCode (str (aAC.getAllowanceChargeReasonCodeValue ()));
-    return aOut;
-  }
-
-  @NonNull
-  private static PhloxPriceDetails _readPriceDetails (@NonNull final PriceType aPrice)
-  {
-    final PhloxPriceDetails aOut = new PhloxPriceDetails ();
-    if (aPrice.getPriceAmount () != null)
-      aOut.setNetPrice (aPrice.getPriceAmount ().getValue ());
-    if (aPrice.getBaseQuantity () != null)
-    {
-      aOut.setBaseQuantity (aPrice.getBaseQuantity ().getValue ());
-      aOut.setBaseQuantityUnit (aPrice.getBaseQuantity ().getUnitCode ());
-    }
-    for (final AllowanceChargeType aAC : aPrice.getAllowanceCharge ())
-      if (aAC.getChargeIndicator () == null || !aAC.getChargeIndicator ().isValue ())
-      {
-        if (aAC.getAmount () != null)
-          aOut.setDiscount (aAC.getAmount ().getValue ());
-        if (aAC.getBaseAmount () != null)
-          aOut.setGrossPrice (aAC.getBaseAmount ().getValue ());
-      }
-    return aOut;
-  }
-
-  @NonNull
-  private static PhloxItem _readItem (@NonNull final ItemType aItem)
-  {
-    final PhloxItem aOut = new PhloxItem ();
-    aOut.setName (str (aItem.getNameValue ()));
-    aOut.setDescription (!aItem.getDescription ().isEmpty () ? aItem.getDescription ().get (0).getValue () : null);
-    if (aItem.getSellersItemIdentification () != null)
-      aOut.setSellerItemID (str (aItem.getSellersItemIdentification ().getIDValue ()));
-    if (aItem.getBuyersItemIdentification () != null)
-      aOut.setBuyerItemID (str (aItem.getBuyersItemIdentification ().getIDValue ()));
-    if (aItem.getStandardItemIdentification () != null)
-    {
-      final ItemIdentificationType aSII = aItem.getStandardItemIdentification ();
-      if (aSII.getID () != null)
-        aOut.setStandardItemID (identifier (aSII.getID ()));
-    }
-    if (aItem.getOriginCountry () != null)
-      aOut.setCountryOfOrigin (str (aItem.getOriginCountry ().getIdentificationCodeValue ()));
-    for (final CommodityClassificationType aCC : aItem.getCommodityClassification ())
-      if (aCC.getItemClassificationCode () != null)
-      {
-        final PhloxItemClassification aIC = new PhloxItemClassification ();
-        aIC.setCode (aCC.getItemClassificationCode ().getValue ());
-        aIC.setListID (aCC.getItemClassificationCode ().getListID ());
-        aIC.setListVersionID (aCC.getItemClassificationCode ().getListVersionID ());
-        aOut.classifications ().add (aIC);
-      }
-    for (final ItemPropertyType aIP : aItem.getAdditionalItemProperty ())
-      aOut.attributes ().add (new PhloxItemAttribute (str (aIP.getNameValue ()), str (aIP.getValueValue ())));
-    return aOut;
-  }
-
-  @NonNull
-  private static PhloxInvoiceNote _parseInvoiceNote (@NonNull final String sRaw)
-  {
-    // UBL convention: subject code embedded as "#code#" prefix; e.g. "#AAB#Some note"
-    if (sRaw.startsWith ("#"))
-    {
-      final int n = sRaw.indexOf ('#', 1);
-      if (n > 1)
-        return new PhloxInvoiceNote (sRaw.substring (1, n), sRaw.substring (n + 1));
-    }
-    return new PhloxInvoiceNote (null, sRaw);
+    final CreditNoteType aCreditNote = UBL21Marshaller.creditNote ().read (aDoc);
+    return aCreditNote == null ? null : readCreditNote (aCreditNote);
   }
 }

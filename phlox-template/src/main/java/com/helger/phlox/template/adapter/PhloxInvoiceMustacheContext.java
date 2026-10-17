@@ -91,88 +91,6 @@ public final class PhloxInvoiceMustacheContext
 
   private static final Mustache.Collector COLLECTOR = new PhloxCollector ();
 
-  private PhloxInvoiceMustacheContext ()
-  {}
-
-  /**
-   * Get the singleton {@link com.samskivert.mustache.Mustache.Collector} used by every compiled.
-   *
-   * @return The singleton {@link com.samskivert.mustache.Mustache.Collector} used by every compiled
-   *         template. Backed by a thread-local execution environment set by
-   *         {@link #withEnv(PhloxInvoice, AbstractRenderContext, Runnable)}.
-   */
-  public static Mustache.@NonNull Collector getCollector ()
-  {
-    return COLLECTOR;
-  }
-
-  /**
-   * Run {@code aJob} with a per-render {@link PhloxRenderEnv} bound to the current thread. The env
-   * is cleared after the job finishes (including on exception) so leftover state cannot contaminate
-   * the next render on the same thread.
-   *
-   * @param aInvoice
-   *        Source invoice the runtime fetcher resolves against.
-   * @param aCtx
-   *        Render context the fetcher reads locale / format options / synthesized booleans from.
-   * @param aJob
-   *        Render closure — typically a call to {@code Template.execute(...)}.
-   */
-  public static void withEnv (@NonNull final PhloxInvoice aInvoice,
-                              @NonNull final AbstractRenderContext <?> aCtx,
-                              @NonNull final Runnable aJob)
-  {
-    final PhloxRenderEnv aPrev = ENV.get ();
-    ENV.set (new PhloxRenderEnv (aInvoice, aCtx));
-    try
-    {
-      aJob.run ();
-    }
-    finally
-    {
-      if (aPrev == null)
-        ENV.remove ();
-      else
-        ENV.set (aPrev);
-    }
-  }
-
-  /**
-   * Stage 0 of the pipeline — locale-bake the raw {@code .ptpl} source. Pure string transformation:
-   * <ul>
-   * <li>Strips every {@code {{! comment }}} block (inline and multi-line). Done up front because
-   * standard Mustache comment parsing closes at the first inner {@code }}}, and our default
-   * template's documentation comments contain literal {@code {{…}}} examples that would otherwise
-   * leak into the runtime stream.</li>
-   * <li>Substitutes every {@code {{label:KEY}}} via {@code aResolver.getLabel(KEY, aLocale)}. After
-   * this stage no {@code {{label:…}}} placeholder remains; stage 1 (Mustache execute) sees only
-   * invoice-dependent constructs.</li>
-   * <li>Rewrites {@code {{?NAME}}…{{/NAME}}} as {@code {{#?ENCODED}}…{{/?ENCODED}}} — encoding dots
-   * inside the path so JMustache does not split them into separate segments. The encoding is undone
-   * by the runtime fetcher when it evaluates the presence check.</li>
-   * </ul>
-   * Output: a {@link String} that is itself a {@code .ptpl}-shaped document with placeholders,
-   * loops and conditionals intact but no labels or comments. This string is the input to stage 0a
-   * (JMustache compile).
-   *
-   * @param sSource
-   *        Raw template source.
-   * @param aLocale
-   *        Locale to use for label lookups.
-   * @param aResolver
-   *        Label resolver to use for label lookups.
-   * @return Locale-baked source ready to hand to JMustache.
-   */
-  @NonNull
-  public static String preprocess (@NonNull final String sSource,
-                                   @NonNull final Locale aLocale,
-                                   @NonNull final IPhloxLabelResolver aResolver)
-  {
-    final String sNoComments = _stripComments (sSource);
-    final String sLabelBaked = _bakeLabels (sNoComments, aLocale, aResolver);
-    return _encodePresenceChecks (sLabelBaked);
-  }
-
   // Required because the default template's multi-line comments contain literal Mustache
   // tags ({{label:...}}, {{?BT-X}}) as documentation, and standard Mustache comment parsing
   // ends at the FIRST {{!…}} inner `}}` — which would leave the rest of the comment text
@@ -182,17 +100,56 @@ public final class PhloxInvoiceMustacheContext
   private static final Pattern BLOCK_COMMENT = Pattern.compile ("\\{\\{!.*?\\n[ \\t]*\\}\\}", Pattern.DOTALL);
   private static final Pattern INLINE_COMMENT = Pattern.compile ("\\{\\{!.*?\\}\\}");
 
+  // The KEY may itself contain dots ({{label:section.header.title.invoice}}) — we don't care,
+  // because the substitution happens before Mustache compile so JMustache never sees a
+  // multi-segment label path.
+  private static final Pattern LABEL_PATTERN = Pattern.compile ("\\{\\{\\s*label:([^}\\s|]+)\\s*\\}\\}");
+
+  private static final class PhloxCollector implements Mustache.Collector
+  {
+    private final Mustache.VariableFetcher m_aVarFetcher = (ctx, name) -> {
+      final Object aResolved = resolveName (ctx, name);
+      // JMustache requires NO_FETCHER_FOUND when the variable is not known so it can fall
+      // through to defaultValue("") rather than treating null as a section iteration value.
+      // We return the raw resolved value (which may itself be null) and let JMustache's
+      // configured nullValue handle interpolation; for sections, null is treated as falsy.
+      return aResolved;
+    };
+
+    @Override
+    public Iterator <?> toIterator (final Object value)
+    {
+      if (value instanceof final Iterable aIterable)
+        return aIterable.iterator ();
+      if (value instanceof final Iterator aIter)
+        return aIter;
+      if (value != null && value.getClass ().isArray ())
+        return new ArrayIterator <> ((Object []) value);
+      return null;
+    }
+
+    @Override
+    public Mustache.VariableFetcher createFetcher (final Object ctx, final String name)
+    {
+      return m_aVarFetcher;
+    }
+
+    @Override
+    public <K, V> java.util.Map <K, V> createFetcherCache ()
+    {
+      return new ConcurrentHashMap <> ();
+    }
+  }
+
+  private PhloxInvoiceMustacheContext ()
+  {}
+
   @NonNull
   private static String _stripComments (@NonNull final String sSource)
   {
     final String sNoBlock = BLOCK_COMMENT.matcher (sSource).replaceAll ("");
     return INLINE_COMMENT.matcher (sNoBlock).replaceAll ("");
   }
-
-  // The KEY may itself contain dots ({{label:section.header.title.invoice}}) — we don't care,
-  // because the substitution happens before Mustache compile so JMustache never sees a
-  // multi-segment label path.
-  private static final Pattern LABEL_PATTERN = Pattern.compile ("\\{\\{\\s*label:([^}\\s|]+)\\s*\\}\\}");
 
   @NonNull
   private static String _bakeLabels (@NonNull final String sSource,
@@ -290,6 +247,346 @@ public final class PhloxInvoiceMustacheContext
     return out.toString ();
   }
 
+  @Nullable
+  private static Object _walkDottedPath (@NonNull final Object aCtx, @NonNull final String sHead)
+  {
+    if (sHead.indexOf ('.') < 0)
+      return PhloxModelRegistry.resolve (aCtx, sHead);
+    Object aCurrent = aCtx;
+    for (final String sSegment : StringHelper.getExploded ('.', sHead))
+    {
+      if (aCurrent == null)
+        return null;
+      aCurrent = PhloxModelRegistry.resolve (aCurrent, sSegment);
+    }
+    return aCurrent;
+  }
+
+  private static boolean _isTruthy (@Nullable final Object aValue)
+  {
+    if (aValue == null)
+      return false;
+    if (aValue instanceof final Boolean bValue)
+      return bValue.booleanValue ();
+    if (aValue instanceof final String sValue)
+      return !sValue.isEmpty ();
+    if (aValue instanceof final Collection <?> aCollection)
+      return !aCollection.isEmpty ();
+    return true;
+  }
+
+  @NonNull
+  private static String _renderLeaf (@NonNull final Object aValue, @NonNull final PhloxRenderEnv aEnv)
+  {
+    if (aValue instanceof final String sValue)
+      return sValue;
+    if (aValue instanceof final PhloxIdentifier aID)
+    {
+      final String sScheme = aID.getSchemeID ();
+      final String sVal = aID.getValue ();
+      if (sVal == null || sVal.isEmpty ())
+        return "";
+      return sScheme == null || sScheme.isEmpty () ? sVal : sScheme + ":" + sVal;
+    }
+    if (aValue instanceof final LocalDate aDate)
+      return PhloxFormat.date (aDate, aEnv.getLocale (), aEnv.getFormatOptions ());
+    return aValue.toString ();
+  }
+
+  @NonNull
+  private static FormatStyle _parseDateStyle (@Nullable final String sArg)
+  {
+    if (sArg == null)
+      return FormatStyle.MEDIUM;
+    return switch (sArg)
+    {
+      case "short" -> FormatStyle.SHORT;
+      case "medium" -> FormatStyle.MEDIUM;
+      case "long" -> FormatStyle.LONG;
+      case "full" -> FormatStyle.FULL;
+      default -> FormatStyle.MEDIUM;
+    };
+  }
+
+  @NonNull
+  private static String _titleCase (@NonNull final String sIn, @NonNull final PhloxRenderEnv aEnv)
+  {
+    // Lightweight ASCII title case — first char of each whitespace-separated word.
+    final StringBuilder out = new StringBuilder (sIn.length ());
+    boolean bAtStart = true;
+    for (int i = 0; i < sIn.length (); i++)
+    {
+      final char c = sIn.charAt (i);
+      if (Character.isWhitespace (c))
+      {
+        out.append (c);
+        bAtStart = true;
+      }
+      else
+      {
+        out.append (bAtStart ? Character.toString (c).toUpperCase (aEnv.getLocale ()).charAt (0) : Character.toString (
+                                                                                                                       c)
+                                                                                                            .toLowerCase (aEnv.getLocale ())
+                                                                                                            .charAt (0));
+        bAtStart = false;
+      }
+    }
+    return out.toString ();
+  }
+
+  @Nullable
+  private static String _resolveCurrency (@NonNull final String sBt, @NonNull final PhloxRenderEnv aEnv)
+  {
+    return switch (sBt)
+    {
+      case "BT-5" -> aEnv.getInvoice ().getCurrency ();
+      case "BT-6" -> aEnv.getInvoice ().getVatAccountingCurrency ();
+      default -> null;
+    };
+  }
+
+  @Nullable
+  private static Object _applyOneModifier (@Nullable final Object aValue,
+                                           @NonNull final String sName,
+                                           @Nullable final String sArg,
+                                           @NonNull final PhloxRenderEnv aEnv)
+  {
+    if (aValue == null)
+      return "";
+    switch (sName)
+    {
+      case "raw":
+        return aValue.toString ();
+      case "amount":
+      {
+        if (!(aValue instanceof final BigDecimal aAmount))
+          return aValue.toString ();
+        final String sCurrencyBt = sArg != null && !sArg.isEmpty () ? sArg : "BT-5";
+        final String sCurrency = _resolveCurrency (sCurrencyBt, aEnv);
+        return PhloxFormat.amount (aAmount, sCurrency, aEnv.getLocale (), aEnv.getFormatOptions ());
+      }
+      case "percent":
+        if (!(aValue instanceof final BigDecimal aPercentage))
+          return aValue.toString ();
+        return PhloxFormat.percent (aPercentage, aEnv.getLocale (), aEnv.getFormatOptions ());
+      case "date":
+      {
+        if (!(aValue instanceof final LocalDate aDate))
+          return aValue.toString ();
+        final FormatStyle eStyle = _parseDateStyle (sArg);
+        return PDTFormatter.getFormatterDate (eStyle, aEnv.getLocale (), EDTFormatterMode.PRINT)
+                           .format (aDate);
+      }
+      case "code":
+      {
+        if (sArg == null)
+          return aValue.toString ();
+        return aEnv.getRenderContext ().codeLabel (sArg, aValue.toString ());
+      }
+      case "upper":
+        return aValue.toString ().toUpperCase (aEnv.getLocale ());
+      case "lower":
+        return aValue.toString ().toLowerCase (aEnv.getLocale ());
+      case "title":
+        return _titleCase (aValue.toString (), aEnv);
+      default:
+        throw new PhloxTemplateException (EStage.SUBSTITUTE, sName, "Unknown format modifier '" + sName + "'");
+    }
+  }
+
+  @NonNull
+  private static String _applyModifiers (@NonNull final Object aValueIn,
+                                         @NonNull final List <String> aModifiers,
+                                         @NonNull final PhloxRenderEnv aEnv)
+  {
+    Object aValue = aValueIn;
+    for (final String sModifier : aModifiers)
+    {
+      final int nColon = sModifier.indexOf (':');
+      final String sName = nColon < 0 ? sModifier : sModifier.substring (0, nColon);
+      final String sArg = nColon < 0 ? null : sModifier.substring (nColon + 1);
+      aValue = _applyOneModifier (aValue, sName, sArg, aEnv);
+    }
+    return aValue == null ? "" : aValue.toString ();
+  }
+
+  private static boolean _referencesPresent (@NonNull final PhloxInvoice aInv)
+  {
+    if (StringHelper.isNotEmpty (aInv.getProjectReference ()) ||
+        StringHelper.isNotEmpty (aInv.getContractReference ()) ||
+        StringHelper.isNotEmpty (aInv.getPurchaseOrderReference ()) ||
+        StringHelper.isNotEmpty (aInv.getSalesOrderReference ()) ||
+        StringHelper.isNotEmpty (aInv.getReceivingAdviceReference ()) ||
+        StringHelper.isNotEmpty (aInv.getDespatchAdviceReference ()) ||
+        StringHelper.isNotEmpty (aInv.getTenderOrLotReference ()) ||
+        StringHelper.isNotEmpty (aInv.getDeliveryNoteReference ()) ||
+        StringHelper.isNotEmpty (aInv.getBuyerAccountingReference ()))
+      return true;
+    final PhloxIdentifier aObj = aInv.getInvoicedObjectIdentifier ();
+    if (aObj != null && StringHelper.isNotEmpty (aObj.getValue ()))
+      return true;
+    return !aInv.precedingInvoiceRefs ().isEmpty ();
+  }
+
+  private static boolean _lineExtrasPresent (@NonNull final PhloxInvoice aInv)
+  {
+    for (final PhloxInvoiceLine aLine : aInv.lines ())
+    {
+      if (StringHelper.isNotEmpty (aLine.getNote ()))
+        return true;
+      final ICommonsList <PhloxLineAllowance> aAllow = aLine.allowances ();
+      if (aAllow != null && !aAllow.isEmpty ())
+        return true;
+      final ICommonsList <PhloxLineCharge> aCharge = aLine.charges ();
+      if (aCharge != null && !aCharge.isEmpty ())
+        return true;
+      if (StringHelper.isNotEmpty (aLine.getPurchaseOrderReference ()) ||
+          StringHelper.isNotEmpty (aLine.getSalesOrderReference ()) ||
+          StringHelper.isNotEmpty (aLine.getSalesOrderLineReference ()) ||
+          StringHelper.isNotEmpty (aLine.getDespatchAdviceReference ()) ||
+          StringHelper.isNotEmpty (aLine.getDespatchAdviceLineReference ()) ||
+          StringHelper.isNotEmpty (aLine.getReceivingAdviceReference ()) ||
+          StringHelper.isNotEmpty (aLine.getReceivingAdviceLineReference ()) ||
+          StringHelper.isNotEmpty (aLine.getDeliveryNoteReference ()) ||
+          StringHelper.isNotEmpty (aLine.getDeliveryNoteLineReference ()) ||
+          aLine.getDelivery () != null ||
+          !aLine.precedingInvoiceRefs ().isEmpty ())
+        return true;
+      if (aLine.getItem () != null && StringHelper.isNotEmpty (aLine.getItem ().getGoodsServicesCode ()))
+        return true;
+      if (aLine.getLineVat () != null &&
+          (StringHelper.isNotEmpty (aLine.getLineVat ().getExemptionReasonText ()) ||
+           StringHelper.isNotEmpty (aLine.getLineVat ().getExemptionReasonCode ())))
+        return true;
+    }
+    return false;
+  }
+
+  @Nullable
+  private static Object _walkPath (@NonNull final Object aCtx,
+                                   @NonNull final PhloxRenderEnv aEnv,
+                                   @NonNull final String sPath)
+  {
+    Object aCurrent = aCtx;
+    for (final String sSegment : StringHelper.getExploded ('.', sPath))
+    {
+      if (aCurrent == null)
+        return null;
+      // Allow the synthesized booleans at any level so {{?logo}} still works.
+      if ("logo".equals (sSegment))
+        return Boolean.valueOf (aEnv.getRenderContext ().getLogo () != null);
+      if ("references_present".equals (sSegment))
+        return Boolean.valueOf (_referencesPresent (aEnv.getInvoice ()));
+      if ("line_extras_present".equals (sSegment))
+        return Boolean.valueOf (_lineExtrasPresent (aEnv.getInvoice ()));
+      aCurrent = PhloxModelRegistry.resolve (aCurrent, sSegment);
+    }
+    return aCurrent;
+  }
+
+  @NonNull
+  private static ICommonsList <String> _splitOnPipe (@NonNull final String sIn)
+  {
+    final ICommonsList <String> aOut = new CommonsArrayList <> ();
+    final StringBuilder aCurrent = new StringBuilder ();
+    for (int i = 0; i < sIn.length (); i++)
+    {
+      final char c = sIn.charAt (i);
+      // Inside GFM table cells the pipe has to be written as "\\|", so both forms separate modifiers
+      final boolean bEscaped = c == '\\' && i + 1 < sIn.length () && sIn.charAt (i + 1) == '|';
+      if (bEscaped || c == '|')
+      {
+        aOut.add (aCurrent.toString ().trim ());
+        aCurrent.setLength (0);
+        if (bEscaped)
+          i++;
+      }
+      else
+        aCurrent.append (c);
+    }
+    aOut.add (aCurrent.toString ().trim ());
+    return aOut;
+  }
+
+  /**
+   * Get the singleton {@link com.samskivert.mustache.Mustache.Collector} used by every compiled.
+   *
+   * @return The singleton {@link com.samskivert.mustache.Mustache.Collector} used by every compiled
+   *         template. Backed by a thread-local execution environment set by
+   *         {@link #withEnv(PhloxInvoice, AbstractRenderContext, Runnable)}.
+   */
+  public static Mustache.@NonNull Collector getCollector ()
+  {
+    return COLLECTOR;
+  }
+
+  /**
+   * Run {@code aJob} with a per-render {@link PhloxRenderEnv} bound to the current thread. The env
+   * is cleared after the job finishes (including on exception) so leftover state cannot contaminate
+   * the next render on the same thread.
+   *
+   * @param aInvoice
+   *        Source invoice the runtime fetcher resolves against.
+   * @param aCtx
+   *        Render context the fetcher reads locale / format options / synthesized booleans from.
+   * @param aJob
+   *        Render closure — typically a call to {@code Template.execute(...)}.
+   */
+  public static void withEnv (@NonNull final PhloxInvoice aInvoice,
+                              @NonNull final AbstractRenderContext <?> aCtx,
+                              @NonNull final Runnable aJob)
+  {
+    final PhloxRenderEnv aPrev = ENV.get ();
+    ENV.set (new PhloxRenderEnv (aInvoice, aCtx));
+    try
+    {
+      aJob.run ();
+    }
+    finally
+    {
+      if (aPrev == null)
+        ENV.remove ();
+      else
+        ENV.set (aPrev);
+    }
+  }
+
+  /**
+   * Stage 0 of the pipeline — locale-bake the raw {@code .ptpl} source. Pure string transformation:
+   * <ul>
+   * <li>Strips every {@code {{! comment }}} block (inline and multi-line). Done up front because
+   * standard Mustache comment parsing closes at the first inner {@code }}}, and our default
+   * template's documentation comments contain literal {@code {{…}}} examples that would otherwise
+   * leak into the runtime stream.</li>
+   * <li>Substitutes every {@code {{label:KEY}}} via {@code aResolver.getLabel(KEY, aLocale)}. After
+   * this stage no {@code {{label:…}}} placeholder remains; stage 1 (Mustache execute) sees only
+   * invoice-dependent constructs.</li>
+   * <li>Rewrites {@code {{?NAME}}…{{/NAME}}} as {@code {{#?ENCODED}}…{{/?ENCODED}}} — encoding dots
+   * inside the path so JMustache does not split them into separate segments. The encoding is undone
+   * by the runtime fetcher when it evaluates the presence check.</li>
+   * </ul>
+   * Output: a {@link String} that is itself a {@code .ptpl}-shaped document with placeholders,
+   * loops and conditionals intact but no labels or comments. This string is the input to stage 0a
+   * (JMustache compile).
+   *
+   * @param sSource
+   *        Raw template source.
+   * @param aLocale
+   *        Locale to use for label lookups.
+   * @param aResolver
+   *        Label resolver to use for label lookups.
+   * @return Locale-baked source ready to hand to JMustache.
+   */
+  @NonNull
+  public static String preprocess (@NonNull final String sSource,
+                                   @NonNull final Locale aLocale,
+                                   @NonNull final IPhloxLabelResolver aResolver)
+  {
+    final String sNoComments = _stripComments (sSource);
+    final String sLabelBaked = _bakeLabels (sNoComments, aLocale, aResolver);
+    return _encodePresenceChecks (sLabelBaked);
+  }
+
   /**
    * Master name-resolution entry point. Receives the current Mustache context and the raw variable
    * name from the substituted source (post-preprocessing).
@@ -351,303 +648,6 @@ public final class PhloxInvoiceMustacheContext
     if (aModifiers.isEmpty ())
       return _renderLeaf (aValue, aEnv);
     return _applyModifiers (aValue, aModifiers, aEnv);
-  }
-
-  @Nullable
-  private static Object _walkDottedPath (@NonNull final Object aCtx, @NonNull final String sHead)
-  {
-    if (sHead.indexOf ('.') < 0)
-      return PhloxModelRegistry.resolve (aCtx, sHead);
-    Object aCurrent = aCtx;
-    for (final String sSegment : StringHelper.getExploded ('.', sHead))
-    {
-      if (aCurrent == null)
-        return null;
-      aCurrent = PhloxModelRegistry.resolve (aCurrent, sSegment);
-    }
-    return aCurrent;
-  }
-
-  @Nullable
-  private static Object _walkPath (@NonNull final Object aCtx,
-                                   @NonNull final PhloxRenderEnv aEnv,
-                                   @NonNull final String sPath)
-  {
-    Object aCurrent = aCtx;
-    for (final String sSegment : StringHelper.getExploded ('.', sPath))
-    {
-      if (aCurrent == null)
-        return null;
-      // Allow the synthesized booleans at any level so {{?logo}} still works.
-      if ("logo".equals (sSegment))
-        return Boolean.valueOf (aEnv.getRenderContext ().getLogo () != null);
-      if ("references_present".equals (sSegment))
-        return Boolean.valueOf (_referencesPresent (aEnv.getInvoice ()));
-      if ("line_extras_present".equals (sSegment))
-        return Boolean.valueOf (_lineExtrasPresent (aEnv.getInvoice ()));
-      aCurrent = PhloxModelRegistry.resolve (aCurrent, sSegment);
-    }
-    return aCurrent;
-  }
-
-  private static boolean _isTruthy (@Nullable final Object aValue)
-  {
-    if (aValue == null)
-      return false;
-    if (aValue instanceof final Boolean bValue)
-      return bValue.booleanValue ();
-    if (aValue instanceof final String sValue)
-      return !sValue.isEmpty ();
-    if (aValue instanceof final Collection <?> aCollection)
-      return !aCollection.isEmpty ();
-    return true;
-  }
-
-  @NonNull
-  private static String _renderLeaf (@NonNull final Object aValue, @NonNull final PhloxRenderEnv aEnv)
-  {
-    if (aValue instanceof final String sValue)
-      return sValue;
-    if (aValue instanceof final PhloxIdentifier aID)
-    {
-      final String sScheme = aID.getSchemeID ();
-      final String sVal = aID.getValue ();
-      if (sVal == null || sVal.isEmpty ())
-        return "";
-      return sScheme == null || sScheme.isEmpty () ? sVal : sScheme + ":" + sVal;
-    }
-    if (aValue instanceof final LocalDate aDate)
-      return PhloxFormat.date (aDate, aEnv.getLocale (), aEnv.getFormatOptions ());
-    return aValue.toString ();
-  }
-
-  @NonNull
-  private static String _applyModifiers (@NonNull final Object aValueIn,
-                                         @NonNull final List <String> aModifiers,
-                                         @NonNull final PhloxRenderEnv aEnv)
-  {
-    Object aValue = aValueIn;
-    for (final String sModifier : aModifiers)
-    {
-      final int nColon = sModifier.indexOf (':');
-      final String sName = nColon < 0 ? sModifier : sModifier.substring (0, nColon);
-      final String sArg = nColon < 0 ? null : sModifier.substring (nColon + 1);
-      aValue = _applyOneModifier (aValue, sName, sArg, aEnv);
-    }
-    return aValue == null ? "" : aValue.toString ();
-  }
-
-  @Nullable
-  private static Object _applyOneModifier (@Nullable final Object aValue,
-                                           @NonNull final String sName,
-                                           @Nullable final String sArg,
-                                           @NonNull final PhloxRenderEnv aEnv)
-  {
-    if (aValue == null)
-      return "";
-    switch (sName)
-    {
-      case "raw":
-        return aValue.toString ();
-      case "amount":
-      {
-        if (!(aValue instanceof final BigDecimal aAmount))
-          return aValue.toString ();
-        final String sCurrencyBt = sArg != null && !sArg.isEmpty () ? sArg : "BT-5";
-        final String sCurrency = _resolveCurrency (sCurrencyBt, aEnv);
-        return PhloxFormat.amount (aAmount, sCurrency, aEnv.getLocale (), aEnv.getFormatOptions ());
-      }
-      case "percent":
-        if (!(aValue instanceof final BigDecimal aPercentage))
-          return aValue.toString ();
-        return PhloxFormat.percent (aPercentage, aEnv.getLocale (), aEnv.getFormatOptions ());
-      case "date":
-      {
-        if (!(aValue instanceof final LocalDate aDate))
-          return aValue.toString ();
-        final FormatStyle eStyle = _parseDateStyle (sArg);
-        return PDTFormatter.getFormatterDate (eStyle, aEnv.getLocale (), EDTFormatterMode.PRINT)
-                           .format (aDate);
-      }
-      case "code":
-      {
-        if (sArg == null)
-          return aValue.toString ();
-        return aEnv.getRenderContext ().codeLabel (sArg, aValue.toString ());
-      }
-      case "upper":
-        return aValue.toString ().toUpperCase (aEnv.getLocale ());
-      case "lower":
-        return aValue.toString ().toLowerCase (aEnv.getLocale ());
-      case "title":
-        return _titleCase (aValue.toString (), aEnv);
-      default:
-        throw new PhloxTemplateException (EStage.SUBSTITUTE, sName, "Unknown format modifier '" + sName + "'");
-    }
-  }
-
-  @NonNull
-  private static FormatStyle _parseDateStyle (@Nullable final String sArg)
-  {
-    if (sArg == null)
-      return FormatStyle.MEDIUM;
-    return switch (sArg)
-    {
-      case "short" -> FormatStyle.SHORT;
-      case "medium" -> FormatStyle.MEDIUM;
-      case "long" -> FormatStyle.LONG;
-      case "full" -> FormatStyle.FULL;
-      default -> FormatStyle.MEDIUM;
-    };
-  }
-
-  @NonNull
-  private static String _titleCase (@NonNull final String sIn, @NonNull final PhloxRenderEnv aEnv)
-  {
-    // Lightweight ASCII title case — first char of each whitespace-separated word.
-    final StringBuilder out = new StringBuilder (sIn.length ());
-    boolean bAtStart = true;
-    for (int i = 0; i < sIn.length (); i++)
-    {
-      final char c = sIn.charAt (i);
-      if (Character.isWhitespace (c))
-      {
-        out.append (c);
-        bAtStart = true;
-      }
-      else
-      {
-        out.append (bAtStart ? Character.toString (c).toUpperCase (aEnv.getLocale ()).charAt (0) : Character.toString (
-                                                                                                                       c)
-                                                                                                            .toLowerCase (aEnv.getLocale ())
-                                                                                                            .charAt (0));
-        bAtStart = false;
-      }
-    }
-    return out.toString ();
-  }
-
-  @Nullable
-  private static String _resolveCurrency (@NonNull final String sBt, @NonNull final PhloxRenderEnv aEnv)
-  {
-    return switch (sBt)
-    {
-      case "BT-5" -> aEnv.getInvoice ().getCurrency ();
-      case "BT-6" -> aEnv.getInvoice ().getVatAccountingCurrency ();
-      default -> null;
-    };
-  }
-
-  private static boolean _referencesPresent (@NonNull final PhloxInvoice aInv)
-  {
-    if (StringHelper.isNotEmpty (aInv.getProjectReference ()) ||
-        StringHelper.isNotEmpty (aInv.getContractReference ()) ||
-        StringHelper.isNotEmpty (aInv.getPurchaseOrderReference ()) ||
-        StringHelper.isNotEmpty (aInv.getSalesOrderReference ()) ||
-        StringHelper.isNotEmpty (aInv.getReceivingAdviceReference ()) ||
-        StringHelper.isNotEmpty (aInv.getDespatchAdviceReference ()) ||
-        StringHelper.isNotEmpty (aInv.getTenderOrLotReference ()) ||
-        StringHelper.isNotEmpty (aInv.getDeliveryNoteReference ()) ||
-        StringHelper.isNotEmpty (aInv.getBuyerAccountingReference ()))
-      return true;
-    final PhloxIdentifier aObj = aInv.getInvoicedObjectIdentifier ();
-    if (aObj != null && StringHelper.isNotEmpty (aObj.getValue ()))
-      return true;
-    return !aInv.precedingInvoiceRefs ().isEmpty ();
-  }
-
-  private static boolean _lineExtrasPresent (@NonNull final PhloxInvoice aInv)
-  {
-    for (final PhloxInvoiceLine aLine : aInv.lines ())
-    {
-      if (StringHelper.isNotEmpty (aLine.getNote ()))
-        return true;
-      final ICommonsList <PhloxLineAllowance> aAllow = aLine.allowances ();
-      if (aAllow != null && !aAllow.isEmpty ())
-        return true;
-      final ICommonsList <PhloxLineCharge> aCharge = aLine.charges ();
-      if (aCharge != null && !aCharge.isEmpty ())
-        return true;
-      if (StringHelper.isNotEmpty (aLine.getPurchaseOrderReference ()) ||
-          StringHelper.isNotEmpty (aLine.getSalesOrderReference ()) ||
-          StringHelper.isNotEmpty (aLine.getSalesOrderLineReference ()) ||
-          StringHelper.isNotEmpty (aLine.getDespatchAdviceReference ()) ||
-          StringHelper.isNotEmpty (aLine.getDespatchAdviceLineReference ()) ||
-          StringHelper.isNotEmpty (aLine.getReceivingAdviceReference ()) ||
-          StringHelper.isNotEmpty (aLine.getReceivingAdviceLineReference ()) ||
-          StringHelper.isNotEmpty (aLine.getDeliveryNoteReference ()) ||
-          StringHelper.isNotEmpty (aLine.getDeliveryNoteLineReference ()) ||
-          aLine.getDelivery () != null ||
-          !aLine.precedingInvoiceRefs ().isEmpty ())
-        return true;
-      if (aLine.getItem () != null && StringHelper.isNotEmpty (aLine.getItem ().getGoodsServicesCode ()))
-        return true;
-      if (aLine.getLineVat () != null &&
-          (StringHelper.isNotEmpty (aLine.getLineVat ().getExemptionReasonText ()) ||
-           StringHelper.isNotEmpty (aLine.getLineVat ().getExemptionReasonCode ())))
-        return true;
-    }
-    return false;
-  }
-
-  @NonNull
-  private static ICommonsList <String> _splitOnPipe (@NonNull final String sIn)
-  {
-    final ICommonsList <String> aOut = new CommonsArrayList <> ();
-    final StringBuilder aCurrent = new StringBuilder ();
-    for (int i = 0; i < sIn.length (); i++)
-    {
-      final char c = sIn.charAt (i);
-      // Inside GFM table cells the pipe has to be written as "\\|", so both forms separate modifiers
-      final boolean bEscaped = c == '\\' && i + 1 < sIn.length () && sIn.charAt (i + 1) == '|';
-      if (bEscaped || c == '|')
-      {
-        aOut.add (aCurrent.toString ().trim ());
-        aCurrent.setLength (0);
-        if (bEscaped)
-          i++;
-      }
-      else
-        aCurrent.append (c);
-    }
-    aOut.add (aCurrent.toString ().trim ());
-    return aOut;
-  }
-
-  private static final class PhloxCollector implements Mustache.Collector
-  {
-    private final Mustache.VariableFetcher m_aVarFetcher = (ctx, name) -> {
-      final Object aResolved = resolveName (ctx, name);
-      // JMustache requires NO_FETCHER_FOUND when the variable is not known so it can fall
-      // through to defaultValue("") rather than treating null as a section iteration value.
-      // We return the raw resolved value (which may itself be null) and let JMustache's
-      // configured nullValue handle interpolation; for sections, null is treated as falsy.
-      return aResolved;
-    };
-
-    @Override
-    public Iterator <?> toIterator (final Object value)
-    {
-      if (value instanceof final Iterable aIterable)
-        return aIterable.iterator ();
-      if (value instanceof final Iterator aIter)
-        return aIter;
-      if (value != null && value.getClass ().isArray ())
-        return new ArrayIterator <> ((Object []) value);
-      return null;
-    }
-
-    @Override
-    public Mustache.VariableFetcher createFetcher (final Object ctx, final String name)
-    {
-      return m_aVarFetcher;
-    }
-
-    @Override
-    public <K, V> java.util.Map <K, V> createFetcherCache ()
-    {
-      return new ConcurrentHashMap <> ();
-    }
   }
 
   /** Visible for tests — exposes the in-effect env on the current thread. */

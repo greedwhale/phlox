@@ -70,38 +70,6 @@ public final class PhloxLocalizedTemplate
   }
 
   /**
-   * Run stages 1 + 2 + 2a — substitute the invoice into the compiled template, parse the result as
-   * CommonMark, then run the sentinel + image post-pass.
-   *
-   * @param aInvoice
-   *        Source invoice.
-   * @param aCtx
-   *        Render context.
-   * @return Populated {@link PhloxTemplateAst} ready for an emitter.
-   */
-  @NonNull
-  public PhloxTemplateAst renderAst (@NonNull final PhloxInvoice aInvoice,
-                                     @NonNull final AbstractRenderContext <?> aCtx)
-  {
-    final String sSubstituted = renderSubstituted (aInvoice, aCtx);
-
-    final Node aRoot;
-    try
-    {
-      aRoot = m_aParser.parse (sSubstituted);
-    }
-    catch (final RuntimeException ex)
-    {
-      throw new PhloxTemplateException (EStage.PARSE, null, "commonmark parse failed: " + ex.getMessage (), ex);
-    }
-
-    final PhloxTemplatePostParser aPostParser = new PhloxTemplatePostParser (aInvoice, aCtx);
-    aPostParser.process (aRoot);
-
-    return new PhloxTemplateAst (aRoot, aPostParser.getBlockClassMap (), aPostParser.getImageMap (), aInvoice, aCtx);
-  }
-
-  /**
    * Run stage 1 in isolation — substitute the invoice into the compiled template and return the
    * CommonMark string without parsing it. Mainly useful for snapshot testing.
    *
@@ -133,5 +101,37 @@ public final class PhloxLocalizedTemplate
       }
     });
     return aOut.get ();
+  }
+
+  /**
+   * Run stages 1 + 2 + 2a — substitute the invoice into the compiled template, parse the result as
+   * CommonMark, then run the sentinel + image post-pass.
+   *
+   * @param aInvoice
+   *        Source invoice.
+   * @param aCtx
+   *        Render context.
+   * @return Populated {@link PhloxTemplateAst} ready for an emitter.
+   */
+  @NonNull
+  public PhloxTemplateAst renderAst (@NonNull final PhloxInvoice aInvoice,
+                                     @NonNull final AbstractRenderContext <?> aCtx)
+  {
+    final String sSubstituted = renderSubstituted (aInvoice, aCtx);
+
+    final Node aRoot;
+    try
+    {
+      aRoot = m_aParser.parse (sSubstituted);
+    }
+    catch (final RuntimeException ex)
+    {
+      throw new PhloxTemplateException (EStage.PARSE, null, "commonmark parse failed: " + ex.getMessage (), ex);
+    }
+
+    final PhloxTemplatePostParser aPostParser = new PhloxTemplatePostParser (aInvoice, aCtx);
+    aPostParser.process (aRoot);
+
+    return new PhloxTemplateAst (aRoot, aPostParser.getBlockClassMap (), aPostParser.getImageMap (), aInvoice, aCtx);
   }
 }

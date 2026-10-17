@@ -140,17 +140,6 @@ public final class PhloxTemplate implements IPhloxTemplate
   private final Parser m_aCMParser;
   private final ProviderCache <CacheKey, PhloxLocalizedTemplate> m_aLocalizeCache;
 
-  private PhloxTemplate (@NonNull final String sSource)
-  {
-    m_sSource = sSource;
-    m_aCMParser = Parser.builder ().extensions (COMMONMARK_EXTENSIONS).build ();
-    m_aLocalizeCache = ProviderCache.<CacheKey, PhloxLocalizedTemplate> builder ()
-                                    .valueProvider (this::_buildLocalized)
-                                    .name ("phlox-template-" + m_nID)
-                                    .maxSize (1_000)
-                                    .build ();
-  }
-
   @NonNull
   private PhloxLocalizedTemplate _buildLocalized (@NonNull final CacheKey aKey)
   {
@@ -172,6 +161,17 @@ public final class PhloxTemplate implements IPhloxTemplate
       throw new PhloxTemplateException (EStage.SUBSTITUTE, null, "JMustache compile failed: " + ex.getMessage (), ex);
     }
     return new PhloxLocalizedTemplate (sBaked, aTemplate, m_aCMParser);
+  }
+
+  private PhloxTemplate (@NonNull final String sSource)
+  {
+    m_sSource = sSource;
+    m_aCMParser = Parser.builder ().extensions (COMMONMARK_EXTENSIONS).build ();
+    m_aLocalizeCache = ProviderCache.<CacheKey, PhloxLocalizedTemplate> builder ()
+                                    .valueProvider (this::_buildLocalized)
+                                    .name ("phlox-template-" + m_nID)
+                                    .maxSize (1_000)
+                                    .build ();
   }
 
   /**
