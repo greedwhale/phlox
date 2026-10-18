@@ -18,8 +18,10 @@ package com.helger.phlox.template;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -33,6 +35,7 @@ import org.commonmark.node.AbstractVisitor;
 import org.commonmark.node.Image;
 import org.commonmark.node.Node;
 import org.commonmark.node.Paragraph;
+import org.commonmark.node.SoftLineBreak;
 import org.commonmark.node.Text;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -48,6 +51,7 @@ import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.api.model.PhloxSupportingDocument;
 import com.helger.phlox.template.PhloxTemplateException.EStage;
 import com.helger.phlox.template.adapter.PhloxInvoiceMustacheContext;
+import com.helger.phlox.template.ast.PhloxGroupNode;
 import com.helger.phlox.template.ast.PhloxPageBreakNode;
 import com.helger.phlox.template.ast.PhloxResolvedImage;
 
@@ -71,6 +75,8 @@ public final class PhloxTemplatePostParser
   private static final Logger LOGGER = LoggerFactory.getLogger (PhloxTemplatePostParser.class);
 
   private static final Pattern CLASS_SENTINEL = Pattern.compile ("\\[\\[PHLOX:CLASS=([^\\]]+)\\]\\]");
+  private static final Pattern GROUP_SENTINEL = Pattern.compile ("\\[\\[PHLOX:(GROUP|ROW)=([^\\]]+)\\]\\]");
+  private static final String END_SENTINEL = PhloxInvoiceMustacheContext.SENTINEL_END;
   private static final String PAGEBREAK_SENTINEL = PhloxInvoiceMustacheContext.SENTINEL_PAGEBREAK;
   private static final Pattern ATTACHMENT_BG24_PATTERN = Pattern.compile ("attachment:BG-24\\[(\\d+)\\]");
 
@@ -243,6 +249,79 @@ public final class PhloxTemplatePostParser
     return true;
   }
 
+  /**
+   * @return The text of a paragraph that only consists of text, or <code>null</code>.
+   */
+  @Nullable
+  private static String _getPlainText (@NonNull final Node aNode)
+  {
+    if (!(aNode instanceof Paragraph))
+      return null;
+    final StringBuilder aSB = new StringBuilder ();
+    for (Node aChild = aNode.getFirstChild (); aChild != null; aChild = aChild.getNext ())
+    {
+      if (aChild instanceof final Text aText)
+        aSB.append (aText.getLiteral ());
+      else
+        if (!(aChild instanceof SoftLineBreak))
+          return null;
+    }
+    return aSB.toString ().strip ();
+  }
+
+  /**
+   * Turn the paragraphs holding a group, row or end sentinel into {@link PhloxGroupNode}s that
+   * contain the blocks up to the matching end. Only the top level of the document is handled.
+   *
+   * @param aRoot
+   *        The document root. Never <code>null</code>.
+   */
+  private void _buildGroups (@NonNull final Node aRoot)
+  {
+    final List <Node> aChildren = new ArrayList <> ();
+    boolean bAnyMarker = false;
+    for (Node aChild = aRoot.getFirstChild (); aChild != null; aChild = aChild.getNext ())
+    {
+      aChildren.add (aChild);
+      final String sText = _getPlainText (aChild);
+      if (sText != null && (sText.equals (END_SENTINEL) || GROUP_SENTINEL.matcher (sText).matches ()))
+        bAnyMarker = true;
+    }
+    if (!bAnyMarker)
+      return;
+
+    for (final Node aChild : aChildren)
+      aChild.unlink ();
+
+    final Deque <Node> aStack = new ArrayDeque <> ();
+    Node aCurrent = aRoot;
+    for (final Node aChild : aChildren)
+    {
+      final String sText = _getPlainText (aChild);
+      final Matcher aMatcher = sText == null ? null : GROUP_SENTINEL.matcher (sText);
+      if (aMatcher != null && aMatcher.matches ())
+      {
+        final PhloxGroupNode aGroup = new PhloxGroupNode ("ROW".equals (aMatcher.group (1)));
+        m_aBlockClassMap.put (aGroup, aMatcher.group (2).strip ());
+        aCurrent.appendChild (aGroup);
+        aStack.push (aCurrent);
+        aCurrent = aGroup;
+      }
+      else
+        if (END_SENTINEL.equals (sText))
+        {
+          if (aStack.isEmpty ())
+            LOGGER.warn ("Template tag '{{end}}' has no matching '{{group:...}}' or '{{row:...}}'");
+          else
+            aCurrent = aStack.pop ();
+        }
+        else
+          aCurrent.appendChild (aChild);
+    }
+    if (!aStack.isEmpty ())
+      LOGGER.warn ("Template has " + aStack.size () + " '{{group:...}}' or '{{row:...}}' without '{{end}}'");
+  }
+
   private void _processSentinels (@NonNull final Node aRoot)
   {
     // Two-pass scan: collect candidate paragraphs first to avoid mutating during iteration.
@@ -365,6 +444,7 @@ public final class PhloxTemplatePostParser
    */
   public void process (@NonNull final Node aRoot)
   {
+    _buildGroups (aRoot);
     _processSentinels (aRoot);
     aRoot.accept (new ImageResolver ());
   }

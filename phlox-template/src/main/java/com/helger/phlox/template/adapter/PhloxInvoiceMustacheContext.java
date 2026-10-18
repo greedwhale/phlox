@@ -84,6 +84,15 @@ public final class PhloxInvoiceMustacheContext
    */
   public static final String SENTINEL_PAGEBREAK = "[[PHLOX:PAGEBREAK]]";
 
+  /** The sentinel prefix of <code>{{group:name}}</code>. */
+  public static final String SENTINEL_GROUP_PREFIX = "[[PHLOX:GROUP=";
+
+  /** The sentinel prefix of <code>{{row:name}}</code>. */
+  public static final String SENTINEL_ROW_PREFIX = "[[PHLOX:ROW=";
+
+  /** The sentinel of <code>{{end}}</code>, which closes the innermost group or row. */
+  public static final String SENTINEL_END = "[[PHLOX:END]]";
+
   private static final Logger LOGGER = LoggerFactory.getLogger (PhloxInvoiceMustacheContext.class);
 
   // Replace dots in presence-check paths so JMustache does not split them.
@@ -708,6 +717,12 @@ public final class PhloxInvoiceMustacheContext
                                         "raw {{label:…}} reached the runtime fetcher — the template was not run through stage 0 (localize). Use PhloxTemplate.localize(...) / renderAst(...)");
     if (sHead.startsWith ("class:"))
       return SENTINEL_CLASS_PREFIX + sHead.substring ("class:".length ()) + SENTINEL_CLASS_SUFFIX;
+    if (sHead.startsWith ("group:"))
+      return SENTINEL_GROUP_PREFIX + sHead.substring ("group:".length ()) + SENTINEL_CLASS_SUFFIX;
+    if (sHead.startsWith ("row:"))
+      return SENTINEL_ROW_PREFIX + sHead.substring ("row:".length ()) + SENTINEL_CLASS_SUFFIX;
+    if ("end".equals (sHead))
+      return SENTINEL_END;
     if ("pagebreak".equals (sHead))
       return SENTINEL_PAGEBREAK;
 
