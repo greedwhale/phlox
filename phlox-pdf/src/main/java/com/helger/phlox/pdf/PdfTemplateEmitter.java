@@ -185,31 +185,6 @@ public final class PdfTemplateEmitter
                                  .contains (sDestination.substring (0, nColon).toLowerCase (Locale.ROOT));
   }
 
-  private static String _escape (@NonNull final String sText)
-  {
-    final StringBuilder aSb = new StringBuilder (sText.length () + 8);
-    final char [] aChars = sText.toCharArray ();
-    for (int i = 0; i < aChars.length; ++i)
-    {
-      final char c = aChars[i];
-      // Two tildes in a row are the strike-through marker
-      // The markup parser does not honour a backslash in front of "{", so invoice data could
-      // inject {link}, {color} or {bg} directives. Curly braces are shown as round ones instead.
-      if (c == '{')
-        aSb.append ('(');
-      else
-        if (c == '}')
-          aSb.append (')');
-        else
-        {
-          if (c == '\\' || c == '*' || c == '_' || c == '`' || (c == '~' && i + 1 < aChars.length && aChars[i + 1] == '~'))
-            aSb.append ('\\');
-          aSb.append (c);
-        }
-    }
-    return aSb.toString ();
-  }
-
   @NonNull
   private static String _encodeLinkDestination (@NonNull final String sDestination)
   {
@@ -226,13 +201,13 @@ public final class PdfTemplateEmitter
     {
       final StringBuilder aLine = aLines.get (aLines.size () - 1);
       if (aChild instanceof final Text aText)
-        aLine.append (_escape (PdfTextSupport.separateCurrencySymbol (m_bUppercase ? aText.getLiteral ().toUpperCase (m_aCtx.getLocale ()) : aText.getLiteral ())));
+        aLine.append (PdfTextSupport.escapeMarkup (PdfTextSupport.separateCurrencySymbol (m_bUppercase ? aText.getLiteral ().toUpperCase (m_aCtx.getLocale ()) : aText.getLiteral ())));
       else
         if (aChild instanceof SoftLineBreak || aChild instanceof HardLineBreak)
           aLines.add (new StringBuilder ());
         else
           if (aChild instanceof final Code aCode)
-            aLine.append ('`').append (_escape (aCode.getLiteral ())).append ('`');
+            aLine.append ('`').append (PdfTextSupport.escapeMarkup (aCode.getLiteral ())).append ('`');
           else
             if (aChild instanceof StrongEmphasis)
             {
@@ -257,7 +232,7 @@ public final class PdfTemplateEmitter
                 else
                   if (aChild instanceof final Link aLink && _isSupportedLink (aLink.getDestination ()))
                   {
-                    aLine.append ("{link[").append (_escape (_encodeLinkDestination (aLink.getDestination ()))).append ("]}");
+                    aLine.append ("{link[").append (PdfTextSupport.escapeMarkup (_encodeLinkDestination (aLink.getDestination ()))).append ("]}");
                     _appendMarkupRecursive (aChild, aLines);
                     aLines.get (aLines.size () - 1).append ("{link}");
                   }

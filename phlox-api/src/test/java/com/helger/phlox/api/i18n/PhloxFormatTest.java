@@ -89,4 +89,32 @@ public final class PhloxFormatTest
     assertEquals ("19.00%", sEn);
     assertEquals ("19,00\u00a0%", PhloxFormat.percent (aRate, Locale.GERMANY, aOpts));
   }
+
+  private static void _assertNoBreakingSpace (final String sText)
+  {
+    for (final char c : sText.toCharArray ())
+      if (Character.getType (c) == Character.SPACE_SEPARATOR)
+        assertEquals ("Only the non-breaking space is allowed in '" + sText + "'", '\u00A0', c);
+  }
+
+  @Test
+  public void testAmountAndPercentNeverBreak ()
+  {
+    final BigDecimal aValue = new BigDecimal ("1273.5");
+    final PhloxFormatOptions aOpts = PhloxFormatOptions.defaults ();
+    for (final Locale aLocale : new Locale [] { Locale.US, Locale.GERMANY, Locale.FRANCE, Locale.forLanguageTag ("sv-SE"), Locale.forLanguageTag ("de-CH") })
+      for (final String sCurrency : new String [] { "EUR", "NOK", "USD", "CHF" })
+      {
+        final String sAmount = PhloxFormat.amount (aValue, sCurrency, aLocale, aOpts);
+        _assertNoBreakingSpace (sAmount);
+        _assertNoBreakingSpace (PhloxFormat.percent (new BigDecimal ("19"), aLocale, aOpts));
+      }
+
+    // The currency does not touch the number, also if it is in front of it
+    assertTrue (PhloxFormat.amount (aValue, "EUR", Locale.US, aOpts).startsWith ("\u20AC\u00A0"));
+    assertTrue (PhloxFormat.amount (aValue, "NOK", Locale.US, aOpts).startsWith ("NOK\u00A0"));
+    // The currency behind the number
+    assertTrue (PhloxFormat.amount (aValue, "EUR", Locale.GERMANY, aOpts).endsWith ("\u00A0\u20AC"));
+    assertTrue (PhloxFormat.percent (new BigDecimal ("19"), Locale.GERMANY, aOpts).endsWith ("\u00A0%"));
+  }
 }

@@ -29,7 +29,7 @@ hr.{p}rule{border-top:2px solid var(--phlox-accent);margin:5mm 0 6mm}
 .{p}table th{font-size:7.5pt;letter-spacing:.08em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;text-align:left;padding:2mm;border-bottom:1.5px solid var(--phlox-ink)}
 .{p}table td{padding:2.4mm 2mm;border-bottom:1px solid var(--phlox-rule);vertical-align:top}
 .{p}meta{width:auto;margin-top:4mm;font-size:9.5pt}
-.{p}meta thead,.{p}totals thead,.{p}due thead{display:none}
+.{p}meta thead,.{p}totals thead,.{p}due thead,.{p}terms thead{display:none}
 .{p}meta td{border:0;padding:.6mm 6mm .6mm 0}
 .{p}totals td,.{p}due td{border:0;padding:1mm 0;font-size:9.5pt}
 .{p}meta td:first-child{color:var(--phlox-muted)}

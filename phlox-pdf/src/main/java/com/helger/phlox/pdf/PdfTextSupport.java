@@ -50,4 +50,38 @@ final class PdfTextSupport
   {
     return CURRENCY_SYMBOL_BEFORE_DIGIT.matcher (sText).replaceAll ("$1\u00A0");
   }
+
+  /**
+   * Escape the characters that the markup of ph-pdf-layout-richtext treats as a style or link
+   * directive. A curly brace cannot be escaped, so it is replaced by a round one.
+   *
+   * @param sText
+   *        The text to escape. Never {@code null}.
+   * @return The escaped text. Never {@code null}.
+   */
+  @NonNull
+  static String escapeMarkup (@NonNull final String sText)
+  {
+    final StringBuilder aSb = new StringBuilder (sText.length () + 8);
+    final char [] aChars = sText.toCharArray ();
+    for (int i = 0; i < aChars.length; ++i)
+    {
+      final char c = aChars[i];
+      // Two tildes in a row are the strike-through marker
+      // The markup parser does not honour a backslash in front of "{", so invoice data could
+      // inject {link}, {color} or {bg} directives. Curly braces are shown as round ones instead.
+      if (c == '{')
+        aSb.append ('(');
+      else
+        if (c == '}')
+          aSb.append (')');
+        else
+        {
+          if (c == '\\' || c == '*' || c == '_' || c == '`' || (c == '~' && i + 1 < aChars.length && aChars[i + 1] == '~'))
+            aSb.append ('\\');
+          aSb.append (c);
+        }
+    }
+    return aSb.toString ();
+  }
 }

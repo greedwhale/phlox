@@ -275,6 +275,27 @@
 {{#BG-25}}| {{BT-126}} | **{{BG-31.BT-153}}**{{?BG-31.BT-154}}<br>{{BG-31.BT-154}}{{/BG-31.BT-154}}{{?BG-31.BT-155}}<br>*{{label:BT-155}}: {{BG-31.BT-155}}*{{/BG-31.BT-155}}{{?BG-31.BT-156}}<br>*{{label:BT-156}}: {{BG-31.BT-156}}*{{/BG-31.BT-156}}{{?BG-31.BT-157}}<br>*{{label:BT-157}}: {{BG-31.BT-157}}*{{/BG-31.BT-157}}{{?BG-31.BT-158}}<br>*{{label:BT-158}}: {{BG-31.BT-158}}*{{/BG-31.BT-158}}{{?BG-31.BT-159}}<br>*{{label:BT-159}}: {{BG-31.BT-159 | code:country}}*{{/BG-31.BT-159}}{{#BG-31.BG-32}}<br>*{{BT-160}}{{?BT-211}} ({{BT-211}}){{/BT-211}}: {{BT-161}}{{?BT-212}} {{BT-212}}{{/BT-212}}*{{/BG-31.BG-32}} | {{BT-129}} {{BT-130 | code:unit}} | {{BG-29.BT-146 | amount}}{{?BG-29.BT-148}}<br>*{{label:BT-148}}: {{BG-29.BT-148 | amount}}*{{/BG-29.BT-148}}{{?BG-29.BT-147}}<br>*{{label:BT-147}}: {{BG-29.BT-147 | amount}}*{{/BG-29.BT-147}}{{?BG-29.BT-149}}<br>*{{label:BT-149}}: {{BG-29.BT-149}} {{BG-29.BT-150 | code:unit}}*{{/BG-29.BT-149}} | {{BG-30.BT-151 | code:vatcategory}} {{BG-30.BT-152 | percent}} | {{BT-131 | amount}} |
 {{/BG-25}}
 
+{{?line_allowances_present}}
+## {{label:BG-27}}
+
+{{class:line-ac}}
+
+| {{label:section.lines.column.number}} | {{label:section.table.column.reason}} | {{label:section.table.column.base}} | {{label:section.table.column.percentage}} | {{label:section.table.column.amount}} |
+|---:|---|---:|---:|---:|
+{{#BG-25}}{{#BG-27}}| {{..BT-126}} | {{?BT-140}}*({{BT-140 | code:allowancereason}})* {{/BT-140}}{{BT-139}} | {{BT-137 | amount}} | {{BT-138 | percent}} | -{{BT-136 | amount}} |
+{{/BG-27}}{{/BG-25}}
+{{/line_allowances_present}}
+{{?line_charges_present}}
+## {{label:BG-28}}
+
+{{class:line-ac}}
+
+| {{label:section.lines.column.number}} | {{label:section.table.column.reason}} | {{label:section.table.column.base}} | {{label:section.table.column.percentage}} | {{label:section.table.column.amount}} |
+|---:|---|---:|---:|---:|
+{{#BG-25}}{{#BG-28}}| {{..BT-126}} | {{?BT-145}}*({{BT-145 | code:chargereason}})* {{/BT-145}}{{BT-144}}{{?BT-193}} ({{label:BT-193}}: {{BT-193}}){{/BT-193}} | {{BT-142 | amount}} | {{BT-143 | percent}} | +{{BT-141 | amount}} |
+{{/BG-28}}{{/BG-25}}
+{{/line_charges_present}}
+
 {{!
   Line-level extras — only emitted when at least one line has them
   BT-127  Invoice line note                   (0..1, per line)
@@ -306,16 +327,6 @@
 {{?BT-127}}
 > **{{label:BT-126}} {{BT-126}} — {{label:BT-127}}:** {{BT-127}}
 {{/BT-127}}
-{{?BG-27}}
-{{#BG-27}}
-> {{label:BG-27}} ({{label:BT-126}} {{..BT-126}}): -{{BT-136 | amount}}{{?BT-137}} ({{label:BT-137}} {{BT-137 | amount}}){{/BT-137}}{{?BT-138}} {{BT-138 | percent}}{{/BT-138}}{{?BT-140}} [{{BT-140 | code:allowancereason}}]{{/BT-140}}{{?BT-139}} — {{BT-139}}{{/BT-139}}
-{{/BG-27}}
-{{/BG-27}}
-{{?BG-28}}
-{{#BG-28}}
-> {{label:BG-28}} ({{label:BT-126}} {{..BT-126}}): +{{BT-141 | amount}}{{?BT-142}} ({{label:BT-142}} {{BT-142 | amount}}){{/BT-142}}{{?BT-143}} {{BT-143 | percent}}{{/BT-143}}{{?BT-145}} [{{BT-145 | code:chargereason}}]{{/BT-145}}{{?BT-193}} ({{label:BT-193}}: {{BT-193}}){{/BT-193}}{{?BT-144}} — {{BT-144}}{{/BT-144}}
-{{/BG-28}}
-{{/BG-28}}
 {{?BT-188}}
 > **{{label:BT-126}} {{BT-126}} — {{label:BT-188}}:** {{BT-188}}
 {{/BT-188}}
@@ -381,9 +392,9 @@
 {{?BG-20}}
 ## {{label:section.allowancescharges.title}}
 
-| {{label:BT-97}} | {{label:BT-92}} | {{label:BT-95}} | {{label:BT-96}} |
-|---|---:|---|---:|
-{{#BG-20}}| {{?BT-97}}{{BT-97}}{{/BT-97}}{{?BT-93}} ({{label:BT-93}} {{BT-93 | amount}}){{/BT-93}}{{?BT-94}} {{BT-94 | percent}}{{/BT-94}}{{?BT-98}} *({{BT-98 | code:allowancereason}})*{{/BT-98}}{{?BT-173}} — {{BT-173}}{{/BT-173}}{{?BT-174}} ({{BT-174}}){{/BT-174}}{{?BT-213}} [{{BT-213}}]{{/BT-213}} | -{{BT-92 | amount}} | {{BT-95 | code:vatcategory}} | {{BT-96 | percent}} |
+| {{label:section.table.column.reason}} | {{label:section.table.column.base}} | {{label:section.table.column.percentage}} | {{label:section.table.column.amount}} | {{label:section.table.column.vatcategory}} | {{label:section.table.column.vatrate}} |
+|---|---:|---:|---:|---|---:|
+{{#BG-20}}| {{?BT-97}}{{BT-97}}{{/BT-97}}{{?BT-98}} *({{BT-98 | code:allowancereason}})*{{/BT-98}}{{?BT-173}} — {{BT-173}}{{/BT-173}}{{?BT-174}} ({{BT-174}}){{/BT-174}}{{?BT-213}} [{{BT-213}}]{{/BT-213}} | {{BT-93 | amount}} | {{BT-94 | percent}} | -{{BT-92 | amount}} | {{BT-95 | code:vatcategory}} | {{BT-96 | percent}} |
 {{/BG-20}}
 {{/BG-20}}
 
@@ -407,9 +418,9 @@
 ## {{label:section.allowancescharges.title}}
 
 {{/BG-20}}
-| {{label:BT-104}} | {{label:BT-99}} | {{label:BT-102}} | {{label:BT-103}} |
-|---|---:|---|---:|
-{{#BG-21}}| {{?BT-104}}{{BT-104}}{{/BT-104}}{{?BT-100}} ({{label:BT-100}} {{BT-100 | amount}}){{/BT-100}}{{?BT-101}} {{BT-101 | percent}}{{/BT-101}}{{?BT-105}} *({{BT-105 | code:chargereason}})*{{/BT-105}}{{?BT-175}} — {{BT-175}}{{/BT-175}}{{?BT-176}} ({{BT-176}}){{/BT-176}}{{?BT-177}} ({{label:BT-177}}: {{BT-177}}{{?BT-177-1}}, {{BT-177-1}}{{/BT-177-1}}){{/BT-177}}{{?BT-214}} [{{BT-214}}]{{/BT-214}} | +{{BT-99 | amount}} | {{BT-102 | code:vatcategory}} | {{BT-103 | percent}} |
+| {{label:section.table.column.reason}} | {{label:section.table.column.base}} | {{label:section.table.column.percentage}} | {{label:section.table.column.amount}} | {{label:section.table.column.vatcategory}} | {{label:section.table.column.vatrate}} |
+|---|---:|---:|---:|---|---:|
+{{#BG-21}}| {{?BT-104}}{{BT-104}}{{/BT-104}}{{?BT-105}} *({{BT-105 | code:chargereason}})*{{/BT-105}}{{?BT-175}} — {{BT-175}}{{/BT-175}}{{?BT-176}} ({{BT-176}}){{/BT-176}}{{?BT-177}} ({{label:BT-177}}: {{BT-177}}{{?BT-177-1}}, {{BT-177-1}}{{/BT-177-1}}){{/BT-177}}{{?BT-214}} [{{BT-214}}]{{/BT-214}} | {{BT-100 | amount}} | {{BT-101 | percent}} | +{{BT-99 | amount}} | {{BT-102 | code:vatcategory}} | {{BT-103 | percent}} |
 {{/BG-21}}
 {{/BG-21}}
 
@@ -419,7 +430,7 @@
 {{?BG-23}}
 ## {{label:section.vatbreakdown.title}}
 
-| {{label:BT-118}} | {{label:BT-116}} | {{label:BT-119}} | {{label:BT-117}} |
+| {{label:section.table.column.vatcategory}} | {{label:section.table.column.vattaxable}} | {{label:section.table.column.vatrate}} | {{label:section.table.column.vatamount}} |
 |---|---:|---:|---:|
 {{#BG-23}}| {{BT-118 | code:vatcategory}}{{?BT-121}} *({{BT-121 | code:vatexemption}})*{{/BT-121}}{{?BT-184}} ({{BT-184}}){{/BT-184}}{{?BT-210}} [{{BT-210}}]{{/BT-210}} | {{BT-116 | amount}} | {{BT-119 | percent}} | {{BT-117 | amount}} |
 {{/BG-23}}
@@ -533,11 +544,21 @@
 {{BT-20}}
 
 {{/BT-20}}
-{{#BG-35}}
-- **{{label:BG-35}}:** {{BT-170 | date:long}}{{?BT-171}}, {{BT-171 | percent}}{{/BT-171}}{{?BT-172}}, {{BT-172 | amount}}{{/BT-172}}
+{{?BG-35}}
+{{class:terms}}
+
+| | | |
+|---|---:|---:|
+{{#BG-35}}| {{label:BG-35}} {{BT-170 | date:long}} | {{BT-171 | percent}} | {{BT-172 | amount}} |
 {{/BG-35}}
-{{#BG-36}}
-- **{{label:BG-36}}:** {{BT-181 | date:long}}{{?BT-182}}, {{BT-182 | percent}}{{/BT-182}}{{?BT-183}}, {{BT-183 | amount}}{{/BT-183}}
+{{/BG-35}}
+{{?BG-36}}
+{{class:terms}}
+
+| | | |
+|---|---:|---:|
+{{#BG-36}}| {{label:BG-36}} {{BT-181 | date:long}} | {{BT-182 | percent}} | {{BT-183 | amount}} |
+{{/BG-36}}
 {{/BG-36}}
 {{/BG-33}}
 {{/BG-33}}

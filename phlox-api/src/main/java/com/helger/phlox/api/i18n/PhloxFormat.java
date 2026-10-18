@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.format.FormatStyle;
 import java.util.Currency;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -66,6 +67,36 @@ public final class PhloxFormat
     return PDTFormatter.getFormatterDate (eStyle, aLocale, EDTFormatterMode.PRINT).format (aDate);
   }
 
+  /** The non-breaking space. */
+  private static final char NBSP = '\u00A0';
+
+  /**
+   * A currency symbol or a currency code that is directly followed by a digit, as in
+   * <code>&euro;10.00</code> or <code>NOK1,273.00</code>.
+   */
+  private static final Pattern CURRENCY_BEFORE_DIGIT = Pattern.compile ("(\\p{Sc}+|\\p{Lu}{3})(?=\\p{Nd})");
+
+  /**
+   * Make sure that the number and its currency or percent sign are never separated at the end of a
+   * line. Every space that the locale puts into the text becomes a non-breaking space, and a space
+   * is inserted between a currency in front of the number and the number, so that they do not touch.
+   *
+   * @param sText
+   *        The formatted amount or percentage. Never <code>null</code>.
+   * @return The text with non-breaking spaces. Never <code>null</code>.
+   */
+  @NonNull
+  private static String _keepTogether (@NonNull final String sText)
+  {
+    final StringBuilder aSB = new StringBuilder (sText.length () + 2);
+    for (final char c : sText.toCharArray ())
+    {
+      // Includes the narrow no-break space of some locales, which many fonts do not have
+      aSB.append (Character.getType (c) == Character.SPACE_SEPARATOR ? NBSP : c);
+    }
+    return CURRENCY_BEFORE_DIGIT.matcher (aSB).replaceAll ("$1" + NBSP);
+  }
+
   /**
    * Format an amount with the given currency in the locale's number style.
    *
@@ -106,7 +137,7 @@ public final class PhloxFormat
       aFmt.setMinimumFractionDigits (aOptions.getAmountFractionDigits ().intValue ());
       aFmt.setMaximumFractionDigits (aOptions.getAmountFractionDigits ().intValue ());
     }
-    return aFmt.format (aAmount);
+    return _keepTogether (aFmt.format (aAmount));
   }
 
   /**
@@ -134,6 +165,6 @@ public final class PhloxFormat
     aFmt.setMinimumFractionDigits (nDigits);
     aFmt.setMaximumFractionDigits (nDigits);
     // From 19 to 0,19
-    return aFmt.format (aRate.divide (CGlobal.BIGDEC_100));
+    return _keepTogether (aFmt.format (aRate.divide (CGlobal.BIGDEC_100)));
   }
 }

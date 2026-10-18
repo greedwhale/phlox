@@ -534,17 +534,27 @@ public final class PhloxInvoiceMustacheContext
     return !aInv.precedingInvoiceRefs ().isEmpty ();
   }
 
+  private static boolean _lineAllowancesPresent (@NonNull final PhloxInvoice aInv)
+  {
+    for (final PhloxInvoiceLine aLine : aInv.lines ())
+      if (!aLine.allowances ().isEmpty ())
+        return true;
+    return false;
+  }
+
+  private static boolean _lineChargesPresent (@NonNull final PhloxInvoice aInv)
+  {
+    for (final PhloxInvoiceLine aLine : aInv.lines ())
+      if (!aLine.charges ().isEmpty ())
+        return true;
+    return false;
+  }
+
   private static boolean _lineExtrasPresent (@NonNull final PhloxInvoice aInv)
   {
     for (final PhloxInvoiceLine aLine : aInv.lines ())
     {
       if (StringHelper.isNotEmpty (aLine.getNote ()))
-        return true;
-      final ICommonsList <PhloxLineAllowance> aAllow = aLine.allowances ();
-      if (aAllow != null && !aAllow.isEmpty ())
-        return true;
-      final ICommonsList <PhloxLineCharge> aCharge = aLine.charges ();
-      if (aCharge != null && !aCharge.isEmpty ())
         return true;
       if (StringHelper.isNotEmpty (aLine.getPurchaseOrderReference ()) ||
           StringHelper.isNotEmpty (aLine.getSalesOrderReference ()) ||
@@ -589,6 +599,10 @@ public final class PhloxInvoiceMustacheContext
         return Boolean.valueOf (_referencesPresent (aEnv.getInvoice ()));
       if ("line_extras_present".equals (sSegment))
         return Boolean.valueOf (_lineExtrasPresent (aEnv.getInvoice ()));
+      if ("line_allowances_present".equals (sSegment))
+        return Boolean.valueOf (_lineAllowancesPresent (aEnv.getInvoice ()));
+      if ("line_charges_present".equals (sSegment))
+        return Boolean.valueOf (_lineChargesPresent (aEnv.getInvoice ()));
       aCurrent = PhloxModelRegistry.resolve (aCurrent, sSegment);
     }
     return aCurrent;
@@ -739,6 +753,10 @@ public final class PhloxInvoiceMustacheContext
       return Boolean.valueOf (_referencesPresent (aEnv.getInvoice ()));
     if ("line_extras_present".equals (sHead))
       return Boolean.valueOf (_lineExtrasPresent (aEnv.getInvoice ()));
+    if ("line_allowances_present".equals (sHead))
+      return Boolean.valueOf (_lineAllowancesPresent (aEnv.getInvoice ()));
+    if ("line_charges_present".equals (sHead))
+      return Boolean.valueOf (_lineChargesPresent (aEnv.getInvoice ()));
 
     // 5. Plain BT/BG resolution. The head may be dotted (e.g. `BG-22.BT-115`) when JMustache
     // skipped its own dot-split — that happens whenever the placeholder also carries a pipe

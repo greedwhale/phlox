@@ -16,6 +16,7 @@
  */
 package com.helger.phlox.pdf;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -48,8 +49,10 @@ import com.helger.phlox.template.PhloxTemplate;
 import com.helger.pdflayout.IPDDocumentCustomizer;
 import com.helger.pdflayout.PDFCreationException;
 import com.helger.pdflayout.PageLayoutPDF;
+import com.helger.pdflayout.base.IPLRenderableObject;
 import com.helger.pdflayout.base.PLColor;
 import com.helger.pdflayout.base.PLPageSet;
+import com.helger.pdflayout.element.box.PLBox;
 import com.helger.pdflayout.element.hbox.PLHBox;
 import com.helger.pdflayout.element.special.PLSpacerX;
 import com.helger.pdflayout.element.special.PLSpacerY;
@@ -58,6 +61,8 @@ import com.helger.pdflayout.element.table.PLTableCell;
 import com.helger.pdflayout.element.text.PLText;
 import com.helger.pdflayout.element.vbox.PLVBox;
 import com.helger.pdflayout.pdfbox.PDPageContentStreamExt;
+import com.helger.pdflayout.richtext.element.PLRichText;
+import com.helger.pdflayout.richtext.run.PLFontFamily;
 import com.helger.pdflayout.spec.BorderStyleSpec;
 import com.helger.pdflayout.spec.EHorzAlignment;
 import com.helger.pdflayout.spec.FontSpec;
@@ -72,6 +77,8 @@ import com.helger.pdflayout.spec.WidthSpec;
  */
 public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
 {
+  private static final String PROJECT_URL = "https://github.com/phax/phlox";
+
   /** Create a new PDF invoice writer. */
   public PdfInvoiceWriter ()
   {}
@@ -141,6 +148,30 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     aCS.showText (sText);
     aCS.endText ();
     aCS.restoreGraphicsState ();
+  }
+
+  /**
+   * Create the footer with the attribution of the program. The text links to the phlox project.
+   */
+  @NonNull
+  private static IPLRenderableObject <?> _createProgramFooter (@NonNull final WatermarkSpec aSpec)
+  {
+    // PLColor is RGB-only - approximate the opacity by lightening the colour towards white
+    final Color aRGB = aSpec.getColor ();
+    final float fO = Math.max (0f, Math.min (1f, aSpec.getOpacity ()));
+    final PLColor aColor = new PLColor (Math.round (255 - (255 - aRGB.getRed ()) * fO),
+                                        Math.round (255 - (255 - aRGB.getGreen ()) * fO),
+                                        Math.round (255 - (255 - aRGB.getBlue ()) * fO));
+    final PLRichText aText = PLRichText.createFromMarkup ("{link[" +
+                                                          PROJECT_URL +
+                                                          "]}" +
+                                                          PdfTextSupport.escapeMarkup (aSpec.getText ()) +
+                                                          "{link}",
+                                                          PLFontFamily.regular (),
+                                                          aSpec.getFontSizePt (),
+                                                          aColor);
+    aText.setHorzAlign (EHorzAlignment.RIGHT);
+    return new PLBox (aText).setMarginTop (4).setHorzAlign (EHorzAlignment.RIGHT);
   }
 
   @NonNull
@@ -1079,9 +1110,13 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     // prepends content (so the watermark appears behind the page text). Pattern lifted from
     // ph-pdf-layout's PLPageSetTest.testCreateWatermark.
     final WatermarkSpec aUW = aCtx.getUserWatermark ();
+    if (aUW != null)
+      aPdf.setDocumentCustomizer (_buildWatermarkCustomizer (aUW, null));
+
+    // The attribution of the program is a link to the project, so it is part of the layout
     final WatermarkSpec aPW = PhloxProgramWatermark.getInstance ();
-    if (aUW != null || aPW != null)
-      aPdf.setDocumentCustomizer (_buildWatermarkCustomizer (aUW, aPW));
+    if (aPW != null)
+      aPS.setPageFooter (_createProgramFooter (aPW));
 
     return aPdf;
   }
