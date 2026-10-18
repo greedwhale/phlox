@@ -16,15 +16,51 @@
  */
 package com.helger.phlox.template.adapter;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import com.helger.base.string.StringHelper;
-import com.helger.phlox.api.model.*;
+import com.helger.collection.commons.CommonsHashMap;
+import com.helger.collection.commons.ICommonsMap;
+import com.helger.phlox.api.model.PhloxAttachment;
+import com.helger.phlox.api.model.PhloxBuyer;
+import com.helger.phlox.api.model.PhloxContact;
+import com.helger.phlox.api.model.PhloxCreditTransfer;
+import com.helger.phlox.api.model.PhloxDeliveryInformation;
+import com.helger.phlox.api.model.PhloxDirectDebit;
+import com.helger.phlox.api.model.PhloxDocumentAllowance;
+import com.helger.phlox.api.model.PhloxDocumentCharge;
+import com.helger.phlox.api.model.PhloxDocumentTotals;
+import com.helger.phlox.api.model.PhloxEarlyPaymentDiscount;
+import com.helger.phlox.api.model.PhloxIdentifier;
+import com.helger.phlox.api.model.PhloxInvoice;
+import com.helger.phlox.api.model.PhloxInvoiceLine;
+import com.helger.phlox.api.model.PhloxInvoiceNote;
+import com.helger.phlox.api.model.PhloxInvoicingPeriod;
+import com.helger.phlox.api.model.PhloxItem;
+import com.helger.phlox.api.model.PhloxItemAttribute;
+import com.helger.phlox.api.model.PhloxItemClassification;
+import com.helger.phlox.api.model.PhloxLatePaymentPenalty;
+import com.helger.phlox.api.model.PhloxLineAllowance;
+import com.helger.phlox.api.model.PhloxLineCharge;
+import com.helger.phlox.api.model.PhloxLineDelivery;
+import com.helger.phlox.api.model.PhloxLinePrecedingInvoiceRef;
+import com.helger.phlox.api.model.PhloxLineVat;
+import com.helger.phlox.api.model.PhloxPayee;
+import com.helger.phlox.api.model.PhloxPaymentCard;
+import com.helger.phlox.api.model.PhloxPaymentInstructions;
+import com.helger.phlox.api.model.PhloxPaymentTerms;
+import com.helger.phlox.api.model.PhloxPostalAddress;
+import com.helger.phlox.api.model.PhloxPrecedingInvoiceRef;
+import com.helger.phlox.api.model.PhloxPriceDetails;
+import com.helger.phlox.api.model.PhloxProcessControl;
+import com.helger.phlox.api.model.PhloxSeller;
+import com.helger.phlox.api.model.PhloxSellerTaxRepresentative;
+import com.helger.phlox.api.model.PhloxSupportingDocument;
+import com.helger.phlox.api.model.PhloxThirdPartyCharge;
+import com.helger.phlox.api.model.PhloxVatBreakdown;
 
 /**
  * Static (Class, BT/BG name) → getter registry. Drives the Mustache adapter's name resolution.
@@ -39,7 +75,7 @@ import com.helger.phlox.api.model.*;
  */
 public final class PhloxModelRegistry
 {
-  private static final Map <Class <?>, Map <String, Function <Object, Object>>> REG = new HashMap <> ();
+  private static final ICommonsMap <Class <?>, ICommonsMap <String, Function <Object, Object>>> REG = new CommonsHashMap <> ();
 
   private PhloxModelRegistry ()
   {}
@@ -151,9 +187,9 @@ public final class PhloxModelRegistry
                                 @NonNull final String sName,
                                 @NonNull final Function <? super T, Object> aGetter)
   {
-    final Map <String, Function <Object, Object>> aMap = REG.computeIfAbsent (aClass, k -> new HashMap <> ());
+    final ICommonsMap <String, Function <Object, Object>> aMap = REG.computeIfAbsent (aClass, aKey -> new CommonsHashMap <> ());
     @SuppressWarnings ("unchecked")
-    final Function <Object, Object> aBoxed = o -> aGetter.apply ((T) o);
+    final Function <Object, Object> aBoxed = aObj -> aGetter.apply ((T) aObj);
     aMap.put (sName, aBoxed);
   }
 
@@ -216,7 +252,7 @@ public final class PhloxModelRegistry
 
     _add (PhloxSeller.class, "BT-27", PhloxSeller::getName);
     _add (PhloxSeller.class, "BT-28", PhloxSeller::getTradingName);
-    _add (PhloxSeller.class, "BT-29", s -> _joinIdentifiers (s.identifiers ()));
+    _add (PhloxSeller.class, "BT-29", aSeller -> _joinIdentifiers (aSeller.identifiers ()));
     _add (PhloxSeller.class, "BT-30", PhloxSeller::getLegalRegistration);
     _add (PhloxSeller.class, "BT-31", PhloxSeller::getVatIdentifier);
     _add (PhloxSeller.class, "BT-32", PhloxSeller::getTaxRegistration);
@@ -228,7 +264,7 @@ public final class PhloxModelRegistry
 
     _add (PhloxBuyer.class, "BT-44", PhloxBuyer::getName);
     _add (PhloxBuyer.class, "BT-45", PhloxBuyer::getTradingName);
-    _add (PhloxBuyer.class, "BT-46", b -> _joinIdentifiers (b.identifiers ()));
+    _add (PhloxBuyer.class, "BT-46", aBuyer -> _joinIdentifiers (aBuyer.identifiers ()));
     _add (PhloxBuyer.class, "BT-47", PhloxBuyer::getLegalRegistration);
     _add (PhloxBuyer.class, "BT-48", PhloxBuyer::getVatIdentifier);
     _add (PhloxBuyer.class, "BT-49", PhloxBuyer::getElectronicAddress);
@@ -478,7 +514,7 @@ public final class PhloxModelRegistry
   @Nullable
   public static Object resolve (@NonNull final Object aCtx, @NonNull final String sName)
   {
-    final Map <String, Function <Object, Object>> aMap = REG.get (aCtx.getClass ());
+    final ICommonsMap <String, Function <Object, Object>> aMap = REG.get (aCtx.getClass ());
     if (aMap == null)
       return null;
     final Function <Object, Object> aGetter = aMap.get (sName);

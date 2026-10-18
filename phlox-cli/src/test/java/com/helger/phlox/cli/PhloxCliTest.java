@@ -17,7 +17,6 @@
 package com.helger.phlox.cli;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -65,13 +64,12 @@ public final class PhloxCliTest
   }
 
   @Test
-  public void testBuiltInLayoutIsTheDefault () throws IOException
+  public void testDefaultTemplateIsTheDefault () throws IOException
   {
     final Path aOut = _tempFile (".html");
     assertEquals (0, _run ("-i", _copyInvoice ().toString (), "-o", aOut.toString ()));
     final String sHtml = Files.readString (aOut, StandardCharsets.UTF_8);
-    assertTrue (sHtml.contains ("class=\"phlox-lines-table\""));
-    assertFalse (sHtml.contains ("class=\"phlox-table\""));
+    assertTrue (sHtml.contains ("class=\"phlox-table\""));
   }
 
   @Test
@@ -81,7 +79,6 @@ public final class PhloxCliTest
     assertEquals (0, _run ("-i", _copyInvoice ().toString (), "-o", aOut.toString (), "--template", "default"));
     final String sHtml = Files.readString (aOut, StandardCharsets.UTF_8);
     assertTrue (sHtml.contains ("class=\"phlox-table\""));
-    assertFalse (sHtml.contains ("class=\"phlox-lines-table\""));
   }
 
   @Test

@@ -37,9 +37,8 @@ import com.helger.phlox.api.watermark.WatermarkSpec;
 import com.helger.url.SimpleURL;
 
 /**
- * Parts of the HTML document that are shared between the built-in section writer
- * ({@link HtmlInvoiceWriter}) and the template driven writer ({@link HtmlTemplateEmitter}): the
- * document head with the embedded stylesheet, the watermarks and the page wrapper.
+ * Parts of the HTML document that {@link HtmlTemplateEmitter} adds around the content of the
+ * template: the document head with the embedded stylesheet, the watermarks and the page wrapper.
  *
  * @author Philip Helger
  */
@@ -49,6 +48,9 @@ final class HtmlDocumentSupport
   private static final String PROJECT_URL = "https://github.com/phax/phlox";
   /** The name of the browser window the project page is opened in. */
   private static final String PROJECT_WINDOW_NAME = "phlox";
+
+  /** The classpath location of the default stylesheet; <code>{p}</code> stands for the class prefix. */
+  private static final String DEFAULT_CSS_PATH = "phlox-default.tcss";
 
   private HtmlDocumentSupport ()
   {}
@@ -96,18 +98,15 @@ final class HtmlDocumentSupport
     return aD;
   }
 
-  /** The classpath location of the default stylesheet; <code>{p}</code> stands for the class prefix. */
-  private static final String DEFAULT_CSS_PATH = "phlox-default.tcss";
-
   /** Embedded default stylesheet - prefix-aware. */
   @NonNull
-  static String defaultCss (@NonNull final String p)
+  static String defaultCss (@NonNull final String sPrefix)
   {
     final String sCss = StreamHelper.getAllBytesAsString (new ClassPathResource (DEFAULT_CSS_PATH),
                                                           StandardCharsets.UTF_8);
     if (sCss == null)
       throw new IllegalStateException ("Failed to read the classpath resource '" + DEFAULT_CSS_PATH + "'");
-    return StringReplace.replaceAll (sCss, "{p}", p);
+    return StringReplace.replaceAll (sCss, "{p}", sPrefix);
   }
 
   /**

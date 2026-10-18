@@ -35,6 +35,13 @@ import com.helger.phlox.api.PhloxFormatOptions;
  */
 public final class PhloxFormatTest
 {
+  private static void _assertNoBreakingSpace (final String sText)
+  {
+    for (final char c : sText.toCharArray ())
+      if (Character.getType (c) == Character.SPACE_SEPARATOR)
+        assertEquals ("Only the non-breaking space is allowed in '" + sText + "'", '\u00A0', c);
+  }
+
   @Test
   public void testDateUsesLocaleAndDefaultStyle ()
   {
@@ -88,13 +95,6 @@ public final class PhloxFormatTest
     assertTrue ("expected '19' in formatted percent, got: " + sEn, sEn.contains ("19"));
     assertEquals ("19.00%", sEn);
     assertEquals ("19,00\u00a0%", PhloxFormat.percent (aRate, Locale.GERMANY, aOpts));
-  }
-
-  private static void _assertNoBreakingSpace (final String sText)
-  {
-    for (final char c : sText.toCharArray ())
-      if (Character.getType (c) == Character.SPACE_SEPARATOR)
-        assertEquals ("Only the non-breaking space is allowed in '" + sText + "'", '\u00A0', c);
   }
 
   @Test

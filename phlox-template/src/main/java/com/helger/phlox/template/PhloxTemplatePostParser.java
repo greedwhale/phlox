@@ -19,10 +19,8 @@ package com.helger.phlox.template;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -43,7 +41,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.helger.base.string.StringReplace;
+import com.helger.collection.commons.CommonsArrayList;
+import com.helger.collection.commons.CommonsHashMap;
 import com.helger.collection.commons.ICommonsList;
+import com.helger.collection.commons.ICommonsMap;
 import com.helger.io.resource.ClassPathResource;
 import com.helger.phlox.api.AbstractRenderContext;
 import com.helger.phlox.api.model.PhloxAttachment;
@@ -82,8 +83,8 @@ public final class PhloxTemplatePostParser
 
   private final PhloxInvoice m_aInvoice;
   private final AbstractRenderContext <?> m_aContext;
-  private final Map <Node, String> m_aBlockClassMap = new HashMap <> ();
-  private final Map <Image, PhloxResolvedImage> m_aImageMap = new HashMap <> ();
+  private final ICommonsMap <Node, String> m_aBlockClassMap = new CommonsHashMap <> ();
+  private final ICommonsMap <Image, PhloxResolvedImage> m_aImageMap = new CommonsHashMap <> ();
 
   private final class ImageResolver extends AbstractVisitor
   {
@@ -131,7 +132,7 @@ public final class PhloxTemplatePostParser
 
   private void _processParagraph (@NonNull final Paragraph aParagraph)
   {
-    final List <String> aClassesFound = new ArrayList <> ();
+    final ICommonsList <String> aClassesFound = new CommonsArrayList <> ();
     boolean bHasPageBreak = false;
     boolean bHasNonSentinelContent = false;
 
@@ -143,13 +144,13 @@ public final class PhloxTemplatePostParser
       {
         final String sOriginal = aText.getLiteral ();
         final StringBuilder aRemaining = new StringBuilder ();
-        final Matcher mClass = CLASS_SENTINEL.matcher (sOriginal);
+        final Matcher aClassMatcher = CLASS_SENTINEL.matcher (sOriginal);
         int nLastEnd = 0;
-        while (mClass.find ())
+        while (aClassMatcher.find ())
         {
-          aRemaining.append (sOriginal, nLastEnd, mClass.start ());
-          aClassesFound.add (mClass.group (1));
-          nLastEnd = mClass.end ();
+          aRemaining.append (sOriginal, nLastEnd, aClassMatcher.start ());
+          aClassesFound.add (aClassMatcher.group (1));
+          nLastEnd = aClassMatcher.end ();
         }
         aRemaining.append (sOriginal, nLastEnd, sOriginal.length ());
 
@@ -211,7 +212,7 @@ public final class PhloxTemplatePostParser
    */
   private boolean _processClassRow (@NonNull final TableRow aRow)
   {
-    final List <String> aClassesFound = new ArrayList <> ();
+    final ICommonsList <String> aClassesFound = new CommonsArrayList <> ();
     boolean bFirstCell = true;
     for (Node aCell = aRow.getFirstChild (); aCell instanceof TableCell; aCell = aCell.getNext ())
     {
@@ -222,14 +223,14 @@ public final class PhloxTemplatePostParser
         {
           if (!(aInline instanceof final Text aText))
             return false;
-          final Matcher mClass = CLASS_SENTINEL.matcher (aText.getLiteral ());
+          final Matcher aClassMatcher = CLASS_SENTINEL.matcher (aText.getLiteral ());
           int nLastEnd = 0;
-          while (mClass.find ())
+          while (aClassMatcher.find ())
           {
-            if (!aText.getLiteral ().substring (nLastEnd, mClass.start ()).isBlank ())
+            if (!aText.getLiteral ().substring (nLastEnd, aClassMatcher.start ()).isBlank ())
               return false;
-            aClassesFound.add (mClass.group (1));
-            nLastEnd = mClass.end ();
+            aClassesFound.add (aClassMatcher.group (1));
+            nLastEnd = aClassMatcher.end ();
           }
           if (!aText.getLiteral ().substring (nLastEnd).isBlank ())
             return false;
@@ -258,7 +259,7 @@ public final class PhloxTemplatePostParser
   {
     if (!(aNode instanceof Paragraph))
       return null;
-    final List <String> ret = new ArrayList <> ();
+    final ICommonsList <String> ret = new CommonsArrayList <> ();
     StringBuilder aSB = new StringBuilder ();
     for (Node aChild = aNode.getFirstChild (); aChild != null; aChild = aChild.getNext ())
     {
@@ -307,7 +308,7 @@ public final class PhloxTemplatePostParser
    */
   private void _buildGroups (@NonNull final Node aRoot)
   {
-    final List <Node> aChildren = new ArrayList <> ();
+    final ICommonsList <Node> aChildren = new CommonsArrayList <> ();
     boolean bAnyMarker = false;
     for (Node aChild = aRoot.getFirstChild (); aChild != null; aChild = aChild.getNext ())
     {
@@ -421,10 +422,10 @@ public final class PhloxTemplatePostParser
       }
       return new PhloxResolvedImage (aLogo.getBinary (), aLogo.getMimeCode (), aLogo.getFilename (), sAlt);
     }
-    final Matcher mBg24 = ATTACHMENT_BG24_PATTERN.matcher (sDest);
-    if (mBg24.matches ())
+    final Matcher aBg24Matcher = ATTACHMENT_BG24_PATTERN.matcher (sDest);
+    if (aBg24Matcher.matches ())
     {
-      final int nIndex = Integer.parseInt (mBg24.group (1));
+      final int nIndex = Integer.parseInt (aBg24Matcher.group (1));
       final ICommonsList <PhloxSupportingDocument> aDocs = m_aInvoice.supportingDocuments ();
       if (nIndex < 0 || nIndex >= aDocs.size ())
         throw new PhloxTemplateException (EStage.PARSE,

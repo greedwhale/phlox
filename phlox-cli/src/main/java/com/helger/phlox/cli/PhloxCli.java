@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import com.helger.base.io.nonblocking.NonBlockingBufferedInputStream;
@@ -33,6 +34,7 @@ import com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream;
 import com.helger.base.io.nonblocking.NonBlockingByteArrayOutputStream;
 import com.helger.diagnostics.error.list.ErrorList;
 import com.helger.phlox.api.PhloxRuntimeException;
+import com.helger.phlox.api.model.PhloxAttachment;
 import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.api.watermark.WatermarkSpec;
 import com.helger.phlox.cii.CiiInvoiceReader;
@@ -43,9 +45,9 @@ import com.helger.phlox.pdf.PdfRenderContext;
 import com.helger.phlox.template.PhloxTemplate;
 import com.helger.phlox.ubl.UblInvoiceReader;
 
-import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine;
 
 /**
  * Command-line entry point for {@code phlox}. Reads an electronic invoice from XML and renders it
@@ -82,49 +84,53 @@ public class PhloxCli implements Callable <Integer>
   @Option (names = { "-i", "--in" },
            description = "Input invoice XML file. Read from stdin when omitted.",
            required = false)
-  Path inputFile;
+  Path m_aInputFile;
 
   @Option (names = { "-o", "--out" },
            description = "Output file. Written to stdout when omitted (HTML only).",
            required = false)
-  Path outputFile;
+  Path m_aOutputFile;
 
   @Option (names = { "-f", "--format" },
            description = "Output format: HTML or PDF. Default: HTML.",
            defaultValue = "HTML")
-  EOutputFormat format;
+  EOutputFormat m_eFormat;
 
   @Option (names = { "-s", "--syntax" },
            description = "Source syntax: AUTO, UBL, or CII. Default: AUTO (sniffs the root element).",
            defaultValue = "AUTO")
-  ESourceSyntax syntax;
+  ESourceSyntax m_eSyntax;
 
   @Option (names = "--en-version",
            description = "EN 16931 edition of the input: auto, 2017 or 2026. Default: auto (reads BT-24 Specification identifier).",
            defaultValue = "auto")
-  String enVersion;
+  String m_sEnVersion;
 
   @Option (names = { "-l", "--lang" },
            description = "Output language code (e.g. 'en', 'de'). Default: en.",
            defaultValue = "en")
-  String lang;
+  String m_sLang;
 
   @Option (names = { "-t", "--template" },
-           description = "Render through a template instead of the built-in layout: 'default' for the template shipped with phlox, 'classpath:<path>' for a template on the classpath, or the path of a .ptpl file. Default: the built-in layout.")
-  String template;
+           description = "The template to render through: 'default' for the template shipped with phlox, 'classpath:<path>' for a template on the classpath, or the path of a .ptpl file. Default: 'default'.")
+  String m_sTemplate;
+
+  @Option (names = "--logo",
+           description = "Optional logo image (PNG, JPEG or GIF) that the template shows in the header.")
+  Path m_aLogoFile;
 
   @Option (names = "--watermark", description = "Optional user watermark text (e.g. 'DRAFT').")
-  String watermark;
+  String m_sWatermark;
 
   @Option (names = "--watermark-opacity",
            description = "Watermark opacity 0.0-1.0. Default: 0.10.",
            defaultValue = "0.10")
-  float watermarkOpacity;
+  float m_fWatermarkOpacity;
 
   @Option (names = "--watermark-rotation",
            description = "Watermark rotation in degrees. Default: -45.",
            defaultValue = "-45")
-  float watermarkRotation;
+  float m_fWatermarkRotation;
 
   private static final String TEMPLATE_DEFAULT = "default";
   private static final String TEMPLATE_CLASSPATH_PREFIX = "classpath:";
@@ -133,12 +139,21 @@ public class PhloxCli implements Callable <Integer>
   public PhloxCli ()
   {}
 
-  @Nullable
+  @NonNull
+  private static String _getMimeCode (@NonNull final String sFilename)
+  {
+    final String sLower = sFilename.toLowerCase (Locale.ROOT);
+    if (sLower.endsWith (".jpg") || sLower.endsWith (".jpeg"))
+      return "image/jpeg";
+    if (sLower.endsWith (".gif"))
+      return "image/gif";
+    return "image/png";
+  }
+
+  @NonNull
   private static PhloxTemplate _loadTemplate (@Nullable final String sTemplate)
   {
-    if (sTemplate == null)
-      return null;
-    if (TEMPLATE_DEFAULT.equals (sTemplate))
+    if (sTemplate == null || TEMPLATE_DEFAULT.equals (sTemplate))
       return PhloxTemplate.getDefault ();
     if (sTemplate.startsWith (TEMPLATE_CLASSPATH_PREFIX))
       return PhloxTemplate.fromClasspath (sTemplate.substring (TEMPLATE_CLASSPATH_PREFIX.length ()));
@@ -176,20 +191,19 @@ public class PhloxCli implements Callable <Integer>
     return ESourceSyntax.UBL;
   }
 
-  @Override
   public Integer call () throws Exception
   {
-    if (inputFile != null && !Files.isRegularFile (inputFile))
+    if (m_aInputFile != null && !Files.isRegularFile (m_aInputFile))
     {
-      System.err.println ("Input file '" + inputFile + "' does not exist");
+      System.err.println ("Input file '" + m_aInputFile + "' does not exist");
       return Integer.valueOf (2);
     }
-    final byte [] aBytes = inputFile != null ? Files.readAllBytes (inputFile) : _readAllStdin ();
-    final ESourceSyntax eSyntax = syntax == ESourceSyntax.AUTO ? _sniffSyntax (aBytes) : syntax;
+    final byte [] aBytes = m_aInputFile != null ? Files.readAllBytes (m_aInputFile) : _readAllStdin ();
+    final ESourceSyntax eSyntax = m_eSyntax == ESourceSyntax.AUTO ? _sniffSyntax (aBytes) : m_eSyntax;
 
-    if (!"auto".equalsIgnoreCase (enVersion) && !"2017".equals (enVersion) && !"2026".equals (enVersion))
+    if (!"auto".equalsIgnoreCase (m_sEnVersion) && !"2017".equals (m_sEnVersion) && !"2026".equals (m_sEnVersion))
     {
-      System.err.println ("Unsupported --en-version '" + enVersion + "'. Use auto, 2017 or 2026.");
+      System.err.println ("Unsupported --en-version '" + m_sEnVersion + "'. Use auto, 2017 or 2026.");
       return Integer.valueOf (2);
     }
 
@@ -197,15 +211,15 @@ public class PhloxCli implements Callable <Integer>
     final PhloxInvoice aInvoice;
     if (eSyntax == ESourceSyntax.CII)
     {
-      final CiiInvoiceReader aReader = "2017".equals (enVersion) ? CiiInvoiceReader.fromD16B ()
-                                                                 : "2026".equals (enVersion) ? CiiInvoiceReader.fromD25A ()
+      final CiiInvoiceReader aReader = "2017".equals (m_sEnVersion) ? CiiInvoiceReader.fromD16B ()
+                                                                 : "2026".equals (m_sEnVersion) ? CiiInvoiceReader.fromD25A ()
                                                                                              : CiiInvoiceReader.autoDetect ();
       aInvoice = aReader.read (new NonBlockingByteArrayInputStream (aBytes), aErrors);
     }
     else
     {
-      final UblInvoiceReader aReader = "2017".equals (enVersion) ? UblInvoiceReader.fromUbl21 ()
-                                                                 : "2026".equals (enVersion) ? UblInvoiceReader.fromUbl25 ()
+      final UblInvoiceReader aReader = "2017".equals (m_sEnVersion) ? UblInvoiceReader.fromUbl21 ()
+                                                                 : "2026".equals (m_sEnVersion) ? UblInvoiceReader.fromUbl25 ()
                                                                                              : UblInvoiceReader.autoDetect ();
       aInvoice = aReader.read (new NonBlockingByteArrayInputStream (aBytes), aErrors);
     }
@@ -219,29 +233,43 @@ public class PhloxCli implements Callable <Integer>
     final PhloxTemplate aTemplate;
     try
     {
-      aTemplate = _loadTemplate (template);
+      aTemplate = _loadTemplate (m_sTemplate);
     }
     catch (final PhloxRuntimeException ex)
     {
-      System.err.println ("Failed to load the template '" + template + "': " + ex.getMessage ());
+      System.err.println ("Failed to load the template '" + m_sTemplate + "': " + ex.getMessage ());
       return Integer.valueOf (2);
     }
 
-    final Locale aLocale = Locale.forLanguageTag (lang.replace ('_', '-'));
-    final WatermarkSpec aWM = watermark == null ? null
-                                                : WatermarkSpec.text (watermark)
-                                                               .setOpacity (watermarkOpacity)
-                                                               .setRotation (watermarkRotation);
-
-    if (format == EOutputFormat.PDF)
+    PhloxAttachment aLogo = null;
+    if (m_aLogoFile != null)
     {
-      if (outputFile == null)
+      if (!Files.isRegularFile (m_aLogoFile))
+      {
+        System.err.println ("Logo file '" + m_aLogoFile + "' does not exist");
+        return Integer.valueOf (2);
+      }
+      aLogo = new PhloxAttachment ().setBinary (Files.readAllBytes (m_aLogoFile))
+                                    .setMimeCode (_getMimeCode (m_aLogoFile.getFileName ().toString ()))
+                                    .setFilename (m_aLogoFile.getFileName ().toString ());
+    }
+
+    final Locale aLocale = Locale.forLanguageTag (m_sLang.replace ('_', '-'));
+    final WatermarkSpec aWM = m_sWatermark == null ? null
+                                                : WatermarkSpec.text (m_sWatermark)
+                                                               .setOpacity (m_fWatermarkOpacity)
+                                                               .setRotation (m_fWatermarkRotation);
+
+    if (m_eFormat == EOutputFormat.PDF)
+    {
+      if (m_aOutputFile == null)
       {
         System.err.println ("PDF output requires --out");
         return Integer.valueOf (2);
       }
       final PdfRenderContext aCtx = new PdfRenderContext ().setLocale (aLocale)
                                                            .setUserWatermark (aWM)
+                                                           .setLogo (aLogo)
                                                            .setTemplate (aTemplate);
       // Render completely before touching the output file, so a failure leaves no empty file
       final NonBlockingByteArrayOutputStream aBuffer = new NonBlockingByteArrayOutputStream ();
@@ -254,7 +282,7 @@ public class PhloxCli implements Callable <Integer>
         System.err.println ("Failed to render the invoice: " + ex.getMessage ());
         return Integer.valueOf (2);
       }
-      try (final OutputStream aOut = new FileOutputStream (outputFile.toFile ()))
+      try (final OutputStream aOut = new FileOutputStream (m_aOutputFile.toFile ()))
       {
         aBuffer.writeTo (aOut);
       }
@@ -263,6 +291,7 @@ public class PhloxCli implements Callable <Integer>
     {
       final HtmlRenderContext aCtx = new HtmlRenderContext ().setLocale (aLocale)
                                                              .setUserWatermark (aWM)
+                                                             .setLogo (aLogo)
                                                              .setTemplate (aTemplate);
       final HtmlInvoiceWriter aHtmlWriter = new HtmlInvoiceWriter ();
       final String sHtml;
@@ -276,10 +305,10 @@ public class PhloxCli implements Callable <Integer>
         return Integer.valueOf (2);
       }
       final byte [] aHtmlBytes = sHtml.getBytes (StandardCharsets.UTF_8);
-      if (outputFile == null)
+      if (m_aOutputFile == null)
         System.out.write (aHtmlBytes);
       else
-        try (final OutputStream aOut = new FileOutputStream (outputFile.toFile ()))
+        try (final OutputStream aOut = new FileOutputStream (m_aOutputFile.toFile ()))
         {
           aOut.write (aHtmlBytes);
         }

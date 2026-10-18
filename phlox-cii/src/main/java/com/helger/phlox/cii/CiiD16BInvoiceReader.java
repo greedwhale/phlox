@@ -18,6 +18,7 @@ package com.helger.phlox.cii;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -30,7 +31,37 @@ import org.slf4j.LoggerFactory;
 import com.helger.diagnostics.error.SingleError;
 import com.helger.diagnostics.error.list.ErrorList;
 import com.helger.en16931.basics.EEN16931Edition;
-import com.helger.phlox.api.model.*;
+import com.helger.phlox.api.model.EPhloxDocumentKind;
+import com.helger.phlox.api.model.PhloxAttachment;
+import com.helger.phlox.api.model.PhloxBuyer;
+import com.helger.phlox.api.model.PhloxContact;
+import com.helger.phlox.api.model.PhloxCreditTransfer;
+import com.helger.phlox.api.model.PhloxDeliveryInformation;
+import com.helger.phlox.api.model.PhloxDirectDebit;
+import com.helger.phlox.api.model.PhloxDocumentAllowance;
+import com.helger.phlox.api.model.PhloxDocumentCharge;
+import com.helger.phlox.api.model.PhloxIdentifier;
+import com.helger.phlox.api.model.PhloxInvoice;
+import com.helger.phlox.api.model.PhloxInvoiceLine;
+import com.helger.phlox.api.model.PhloxInvoiceNote;
+import com.helger.phlox.api.model.PhloxInvoicingPeriod;
+import com.helger.phlox.api.model.PhloxItem;
+import com.helger.phlox.api.model.PhloxItemAttribute;
+import com.helger.phlox.api.model.PhloxItemClassification;
+import com.helger.phlox.api.model.PhloxLineAllowance;
+import com.helger.phlox.api.model.PhloxLineCharge;
+import com.helger.phlox.api.model.PhloxLineVat;
+import com.helger.phlox.api.model.PhloxPayee;
+import com.helger.phlox.api.model.PhloxPaymentCard;
+import com.helger.phlox.api.model.PhloxPaymentInstructions;
+import com.helger.phlox.api.model.PhloxPaymentTerms;
+import com.helger.phlox.api.model.PhloxPostalAddress;
+import com.helger.phlox.api.model.PhloxPrecedingInvoiceRef;
+import com.helger.phlox.api.model.PhloxPriceDetails;
+import com.helger.phlox.api.model.PhloxSeller;
+import com.helger.phlox.api.model.PhloxSellerTaxRepresentative;
+import com.helger.phlox.api.model.PhloxSupportingDocument;
+import com.helger.phlox.api.model.PhloxVatBreakdown;
 
 import un.unece.uncefact.data.standard.crossindustryinvoice._100.CrossIndustryInvoiceType;
 import un.unece.uncefact.data.standard.qualifieddatatype._100.AllowanceChargeReasonCodeType;
@@ -40,7 +71,39 @@ import un.unece.uncefact.data.standard.qualifieddatatype._100.PaymentMeansCodeTy
 import un.unece.uncefact.data.standard.qualifieddatatype._100.ReferenceCodeType;
 import un.unece.uncefact.data.standard.qualifieddatatype._100.TaxCategoryCodeType;
 import un.unece.uncefact.data.standard.qualifieddatatype._100.TimeReferenceCodeType;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.*;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.CreditorFinancialAccountType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.CreditorFinancialInstitutionType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.DebtorFinancialAccountType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.DocumentLineDocumentType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.ExchangedDocumentType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.HeaderTradeAgreementType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.HeaderTradeDeliveryType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.HeaderTradeSettlementType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.LegalOrganizationType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.LineTradeAgreementType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.LineTradeDeliveryType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.LineTradeSettlementType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.NoteType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.ProcuringProjectType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.ProductCharacteristicType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.ProductClassificationType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.ReferencedDocumentType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.SpecifiedPeriodType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.SupplyChainEventType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.SupplyChainTradeLineItemType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.SupplyChainTradeTransactionType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TaxRegistrationType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradeAddressType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradeAllowanceChargeType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradeContactType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradePartyType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradePaymentTermsType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradePriceType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradeProductType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradeSettlementHeaderMonetarySummationType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradeSettlementPaymentMeansType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.TradeTaxType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._100.UniversalCommunicationType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._100.AmountType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._100.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._100.DateTimeType;
@@ -525,7 +588,7 @@ final class CiiD16BInvoiceReader extends AbstractCiiInvoiceReader
     {
       return LocalDate.parse (sValue, DateTimeFormatter.ofPattern (sPattern, Locale.ROOT));
     }
-    catch (final java.time.format.DateTimeParseException ex)
+    catch (final DateTimeParseException ex)
     {
       LOGGER.warn ("Could not parse CII date '" + sValue + "' with pattern '" + sPattern + "'");
       return null;
@@ -983,7 +1046,8 @@ final class CiiD16BInvoiceReader extends AbstractCiiInvoiceReader
         final SupplyChainEventType aEvent = aHTD.getActualDeliverySupplyChainEvent ();
         if (aEvent != null)
           aDI.setActualDeliveryDate (_dateTime (aEvent.getOccurrenceDateTime ()));
-        aModel.setDeliveryInformation (aDI);
+        if (!aDI.isEmpty ())
+          aModel.setDeliveryInformation (aDI);
       }
     }
 

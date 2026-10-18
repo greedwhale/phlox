@@ -120,6 +120,12 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- Not managed by the ph-pdf-layout-parent-pom 8.3.5 -->
+      <dependency>
+        <groupId>com.helger</groupId>
+        <artifactId>ph-pdf-layout-richtext</artifactId>
+        <version>${ph-pdf-layout.version}</version>
+      </dependency>
       
       <dependency>
         <groupId>info.picocli</groupId>

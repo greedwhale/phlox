@@ -106,7 +106,6 @@ public class UblInvoiceReader implements IInvoiceReader <InputStream>
     return m_eEdition;
   }
 
-  @Override
   @Nullable
   public PhloxInvoice read (@NonNull final InputStream aSource, @NonNull final ErrorList aErrors)
   {

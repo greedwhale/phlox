@@ -18,12 +18,10 @@ package com.helger.phlox.pdf;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
-
 import javax.imageio.ImageIO;
 
 import org.commonmark.ext.gfm.strikethrough.Strikethrough;
@@ -32,7 +30,26 @@ import org.commonmark.ext.gfm.tables.TableBody;
 import org.commonmark.ext.gfm.tables.TableCell;
 import org.commonmark.ext.gfm.tables.TableHead;
 import org.commonmark.ext.gfm.tables.TableRow;
-import org.commonmark.node.*;
+import org.commonmark.node.BlockQuote;
+import org.commonmark.node.BulletList;
+import org.commonmark.node.Code;
+import org.commonmark.node.Emphasis;
+import org.commonmark.node.FencedCodeBlock;
+import org.commonmark.node.HardLineBreak;
+import org.commonmark.node.Heading;
+import org.commonmark.node.HtmlBlock;
+import org.commonmark.node.HtmlInline;
+import org.commonmark.node.Image;
+import org.commonmark.node.IndentedCodeBlock;
+import org.commonmark.node.Link;
+import org.commonmark.node.ListItem;
+import org.commonmark.node.Node;
+import org.commonmark.node.OrderedList;
+import org.commonmark.node.Paragraph;
+import org.commonmark.node.SoftLineBreak;
+import org.commonmark.node.StrongEmphasis;
+import org.commonmark.node.Text;
+import org.commonmark.node.ThematicBreak;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -41,6 +58,8 @@ import org.slf4j.LoggerFactory;
 import com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream;
 import com.helger.base.string.StringHelper;
 import com.helger.base.string.StringReplace;
+import com.helger.collection.commons.CommonsArrayList;
+import com.helger.collection.commons.ICommonsList;
 import com.helger.pdflayout.base.IPLRenderableObject;
 import com.helger.pdflayout.base.PLColor;
 import com.helger.pdflayout.base.PLPageSet;
@@ -273,11 +292,11 @@ public final class PdfTemplateEmitter
                                                              @NonNull final EHorzAlignment eAlign,
                                                              final boolean bVertSplittable)
   {
-    final List <StringBuilder> aLines = new ArrayList <> ();
+    final ICommonsList <StringBuilder> aLines = new CommonsArrayList <> ();
     aLines.add (new StringBuilder ());
     _appendMarkupRecursive (aParent, aLines);
 
-    final List <String> aNonBlank = new ArrayList <> ();
+    final ICommonsList <String> aNonBlank = new CommonsArrayList <> ();
     for (final StringBuilder aLine : aLines)
     {
       final String sLine = aLine.toString ().strip ();
@@ -525,7 +544,7 @@ public final class PdfTemplateEmitter
       {
         final PdfBlockStyle aStyle = _getStyle (aAst, aRowNode);
         final FontSpec aBaseFont = bHead ? m_aCtx.getTableHeaderFont () : m_aCtx.getBodyFont ();
-        final List <PLTableCell> aCells = new ArrayList <> ();
+        final ICommonsList <PLTableCell> aCells = new CommonsArrayList <> ();
         for (Node aCellNode = aRowNode.getFirstChild (); aCellNode instanceof final TableCell aCell; aCellNode = aCellNode.getNext ())
         {
           m_bUppercase = bHead;

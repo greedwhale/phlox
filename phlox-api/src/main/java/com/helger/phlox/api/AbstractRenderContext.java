@@ -50,15 +50,12 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
 {
   /** Default for appending the BT/BG identifier to each label. */
   public static final boolean DEFAULT_ANNOTATE_BT_IDS = false;
-  /** Default for rendering sections that have no content. */
-  public static final boolean DEFAULT_INCLUDE_EMPTY_SECTIONS = false;
 
   private Locale m_aLocale = Locale.ENGLISH;
   private PhloxFormatOptions m_aFormatOptions = PhloxFormatOptions.defaults ();
   private PhloxAttachment m_aLogo;
   private IPhloxLabelResolver m_aLabelResolver = DefaultPhloxLabelResolver.INSTANCE;
   private boolean m_bAnnotateBtIDs = DEFAULT_ANNOTATE_BT_IDS;
-  private boolean m_bIncludeEmptySections = DEFAULT_INCLUDE_EMPTY_SECTIONS;
   private WatermarkSpec m_aUserWatermark;
   private IPhloxTemplate m_aTemplate;
 
@@ -191,30 +188,6 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
   }
 
   /**
-   * Get the {@code true} when section headings should be rendered even when empty.
-   *
-   * @return {@code true} when section headings should be rendered even when empty.
-   */
-  public boolean isIncludeEmptySections ()
-  {
-    return m_bIncludeEmptySections;
-  }
-
-  /**
-   * Set whether section headings should be rendered even when empty.
-   *
-   * @param bIncludeEmptySections
-   *        {@code true} to include empty sections.
-   * @return this for chaining.
-   */
-  @NonNull
-  public IMPLTYPE setIncludeEmptySections (final boolean bIncludeEmptySections)
-  {
-    m_bIncludeEmptySections = bIncludeEmptySections;
-    return thisAsT ();
-  }
-
-  /**
    * Get the optional user watermark, e.g. "DRAFT".
    *
    * @return The optional user watermark (e.g. "DRAFT"). May be {@code null}.
@@ -253,7 +226,7 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
 
   /**
    * Set the optional {@link IPhloxTemplate} that drives layout. When {@code null}, the writers
-   * fall back to their built-in section grammar (preserving 0.1.0 byte-for-byte output).
+   * use the default template ({@code PhloxTemplate.getDefault ()}).
    *
    * @param aTemplate
    *        Compiled template; may be {@code null} to clear.
@@ -282,7 +255,6 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
     m_aLogo = aSource.m_aLogo;
     m_aLabelResolver = aSource.m_aLabelResolver;
     m_bAnnotateBtIDs = aSource.m_bAnnotateBtIDs;
-    m_bIncludeEmptySections = aSource.m_bIncludeEmptySections;
     m_aUserWatermark = aSource.m_aUserWatermark;
     m_aTemplate = aSource.m_aTemplate;
     return thisAsT ();

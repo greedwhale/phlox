@@ -33,7 +33,42 @@ import com.helger.en16931.basics.EEN16931DateFormatCode;
 import com.helger.en16931.basics.EEN16931Edition;
 import com.helger.en16931.basics.codelist.EEN16931InvoiceTypeCode;
 import com.helger.en16931.basics.codelist.EEN16931InvoiceTypeCodeRole;
-import com.helger.phlox.api.model.*;
+import com.helger.phlox.api.model.EPhloxDocumentKind;
+import com.helger.phlox.api.model.PhloxAttachment;
+import com.helger.phlox.api.model.PhloxBuyer;
+import com.helger.phlox.api.model.PhloxContact;
+import com.helger.phlox.api.model.PhloxCreditTransfer;
+import com.helger.phlox.api.model.PhloxDeliveryInformation;
+import com.helger.phlox.api.model.PhloxDirectDebit;
+import com.helger.phlox.api.model.PhloxDocumentAllowance;
+import com.helger.phlox.api.model.PhloxDocumentCharge;
+import com.helger.phlox.api.model.PhloxEarlyPaymentDiscount;
+import com.helger.phlox.api.model.PhloxIdentifier;
+import com.helger.phlox.api.model.PhloxInvoice;
+import com.helger.phlox.api.model.PhloxInvoiceLine;
+import com.helger.phlox.api.model.PhloxInvoiceNote;
+import com.helger.phlox.api.model.PhloxInvoicingPeriod;
+import com.helger.phlox.api.model.PhloxItem;
+import com.helger.phlox.api.model.PhloxItemAttribute;
+import com.helger.phlox.api.model.PhloxItemClassification;
+import com.helger.phlox.api.model.PhloxLatePaymentPenalty;
+import com.helger.phlox.api.model.PhloxLineAllowance;
+import com.helger.phlox.api.model.PhloxLineCharge;
+import com.helger.phlox.api.model.PhloxLineDelivery;
+import com.helger.phlox.api.model.PhloxLinePrecedingInvoiceRef;
+import com.helger.phlox.api.model.PhloxLineVat;
+import com.helger.phlox.api.model.PhloxPayee;
+import com.helger.phlox.api.model.PhloxPaymentCard;
+import com.helger.phlox.api.model.PhloxPaymentInstructions;
+import com.helger.phlox.api.model.PhloxPaymentTerms;
+import com.helger.phlox.api.model.PhloxPostalAddress;
+import com.helger.phlox.api.model.PhloxPrecedingInvoiceRef;
+import com.helger.phlox.api.model.PhloxPriceDetails;
+import com.helger.phlox.api.model.PhloxSeller;
+import com.helger.phlox.api.model.PhloxSellerTaxRepresentative;
+import com.helger.phlox.api.model.PhloxSupportingDocument;
+import com.helger.phlox.api.model.PhloxThirdPartyCharge;
+import com.helger.phlox.api.model.PhloxVatBreakdown;
 
 import un.unece.uncefact.data.standard.cii.d25a.CrossIndustryInvoiceType;
 import un.unece.uncefact.data.standard.cii.d25a.qdt.AllowanceChargeReasonCodeType;
@@ -44,7 +79,44 @@ import un.unece.uncefact.data.standard.cii.d25a.qdt.PaymentMeansCodeType;
 import un.unece.uncefact.data.standard.cii.d25a.qdt.ReferenceCodeType;
 import un.unece.uncefact.data.standard.cii.d25a.qdt.TaxCategoryCodeType;
 import un.unece.uncefact.data.standard.cii.d25a.qdt.TimeReferenceCodeType;
-import un.unece.uncefact.data.standard.cii.d25a.rabie.*;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.CreditorFinancialAccountType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.CreditorFinancialInstitutionType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.DebtorFinancialAccountType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.DebtorFinancialInstitutionType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.DocumentLineDocumentType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.ExchangedDocumentType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.FinancialAdjustmentType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.HeaderTradeAgreementType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.HeaderTradeDeliveryType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.HeaderTradeSettlementType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.LegalOrganizationType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.LineTradeAgreementType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.LineTradeDeliveryType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.LineTradeSettlementType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.NoteType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.ProcuringProjectType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.ProductCharacteristicType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.ProductClassificationType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.ReferencedDocumentType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.SpecifiedPeriodType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.SupplyChainEventType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.SupplyChainTradeLineItemType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.SupplyChainTradeTransactionType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.TaxRegistrationType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.TradeAddressType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.TradeAllowanceChargeType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.TradeContactType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.TradeCurrencyExchangeType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.TradePartyType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.TradePaymentDiscountTermsType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.TradePaymentPenaltyTermsType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.TradePaymentTermsType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.TradePriceType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.TradeProductType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.TradeSettlementHeaderMonetarySummationType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.TradeSettlementPaymentMeansType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.TradeTaxType;
+import un.unece.uncefact.data.standard.cii.d25a.rabie.UniversalCommunicationType;
 import un.unece.uncefact.data.standard.cii.d25a.udt.AmountType;
 import un.unece.uncefact.data.standard.cii.d25a.udt.CodeType;
 import un.unece.uncefact.data.standard.cii.d25a.udt.DateTimeType;
@@ -864,7 +936,11 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
       }
       // BG-37 / BG-38
       if (aLTD.getShipToTradeParty () != null || aLTD.getActualDeliverySupplyChainEvent () != null)
-        aOut.setDelivery (_readLineDelivery (aLTD));
+      {
+        final PhloxLineDelivery aLineDelivery = _readLineDelivery (aLTD);
+        if (!aLineDelivery.isEmpty ())
+          aOut.setDelivery (aLineDelivery);
+      }
     }
     final LineTradeSettlementType aLTS = aLine.getSpecifiedLineTradeSettlement ();
     if (aLTS != null)
@@ -1116,7 +1192,8 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
         final SupplyChainEventType aEvent = aHTD.getActualDeliverySupplyChainEvent ();
         if (aEvent != null)
           aDI.setActualDeliveryDate (_dateTime (aEvent.getOccurrenceDateTime ()));
-        aModel.setDeliveryInformation (aDI);
+        if (!aDI.isEmpty ())
+          aModel.setDeliveryInformation (aDI);
       }
     }
 

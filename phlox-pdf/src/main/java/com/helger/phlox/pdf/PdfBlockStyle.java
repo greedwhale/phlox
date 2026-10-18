@@ -58,127 +58,127 @@ public final class PdfBlockStyle
     /**
      * Set the background colour.
      *
-     * @param a
+     * @param aColor
      *        The colour. May be {@code null} for no background.
      * @return this for chaining
      */
     @NonNull
-    public Builder fillColor (@Nullable final PLColor a)
+    public Builder fillColor (@Nullable final PLColor aColor)
     {
-      m_aFillColor = a;
+      m_aFillColor = aColor;
       return this;
     }
 
     /**
      * Set the text colour.
      *
-     * @param a
+     * @param aColor
      *        The colour. May be {@code null} to keep the colour of the font.
      * @return this for chaining
      */
     @NonNull
-    public Builder textColor (@Nullable final PLColor a)
+    public Builder textColor (@Nullable final PLColor aColor)
     {
-      m_aTextColor = a;
+      m_aTextColor = aColor;
       return this;
     }
 
     /**
      * Set the space between the border of a block and its content.
      *
-     * @param f
+     * @param fPadding
      *        The padding in points. Must be &ge; 0.
      * @return this for chaining
      */
     @NonNull
-    public Builder padding (final float f)
+    public Builder padding (final float fPadding)
     {
-      m_fPadding = f;
+      m_fPadding = fPadding;
       return this;
     }
 
     /**
      * Set the line above the block.
      *
-     * @param a
+     * @param aColor
      *        The colour. May be {@code null} for no line.
      * @return this for chaining
      */
     @NonNull
-    public Builder borderTopColor (@Nullable final PLColor a)
+    public Builder borderTopColor (@Nullable final PLColor aColor)
     {
-      m_aBorderTopColor = a;
+      m_aBorderTopColor = aColor;
       return this;
     }
 
     /**
      * Set the line below the block.
      *
-     * @param a
+     * @param aColor
      *        The colour. May be {@code null} for no line.
      * @return this for chaining
      */
     @NonNull
-    public Builder borderBottomColor (@Nullable final PLColor a)
+    public Builder borderBottomColor (@Nullable final PLColor aColor)
     {
-      m_aBorderBottomColor = a;
+      m_aBorderBottomColor = aColor;
       return this;
     }
 
     /**
      * Set the width of the top and bottom line.
      *
-     * @param f
+     * @param fBorderWidth
      *        The line width in points.
      * @return this for chaining
      */
     @NonNull
-    public Builder borderWidth (final float f)
+    public Builder borderWidth (final float fBorderWidth)
     {
-      m_fBorderWidth = f;
+      m_fBorderWidth = fBorderWidth;
       return this;
     }
 
     /**
      * Set the font size that replaces the one of the block.
      *
-     * @param a
+     * @param aFontSize
      *        The font size in points. May be {@code null} to keep the size of the font.
      * @return this for chaining
      */
     @NonNull
-    public Builder fontSize (@Nullable final Float a)
+    public Builder fontSize (@Nullable final Float aFontSize)
     {
-      m_aFontSize = a;
+      m_aFontSize = aFontSize;
       return this;
     }
 
     /**
      * Set whether the text is bold.
      *
-     * @param b
+     * @param bBold
      *        {@code true} for bold text.
      * @return this for chaining
      */
     @NonNull
-    public Builder bold (final boolean b)
+    public Builder bold (final boolean bBold)
     {
-      m_bBold = b;
+      m_bBold = bBold;
       return this;
     }
 
     /**
      * Set the width of a cell in a row.
      *
-     * @param a
+     * @param aWidthPercent
      *        The width in percent of the row. May be {@code null} if the cell shares the remaining
      *        width with the other cells without a width.
      * @return this for chaining
      */
     @NonNull
-    public Builder widthPercent (@Nullable final Float a)
+    public Builder widthPercent (@Nullable final Float aWidthPercent)
     {
-      m_aWidthPercent = a;
+      m_aWidthPercent = aWidthPercent;
       return this;
     }
 
@@ -213,19 +213,6 @@ public final class PdfBlockStyle
     m_aFontSize = aBuilder.m_aFontSize;
     m_bBold = aBuilder.m_bBold;
     m_aWidthPercent = aBuilder.m_aWidthPercent;
-  }
-
-  /**
-   * Create a new style.
-   *
-   * @param aFillColor
-   *        The background colour. May be {@code null} for no background.
-   * @param aTextColor
-   *        The text colour. May be {@code null} to keep the colour of the font.
-   */
-  public PdfBlockStyle (@Nullable final PLColor aFillColor, @Nullable final PLColor aTextColor)
-  {
-    this (builder ().fillColor (aFillColor).textColor (aTextColor));
   }
 
   /**
@@ -326,17 +313,6 @@ public final class PdfBlockStyle
   }
 
   /**
-   * Create a builder that is initialized with the values of this style.
-   *
-   * @return A new builder. Never {@code null}.
-   */
-  @NonNull
-  public Builder toBuilder ()
-  {
-    return builder (this);
-  }
-
-  /**
    * Create an empty builder.
    *
    * @return A new builder. Never {@code null}.
@@ -366,6 +342,30 @@ public final class PdfBlockStyle
                          .fontSize (aSource.m_aFontSize)
                          .bold (aSource.m_bBold)
                          .widthPercent (aSource.m_aWidthPercent);
+  }
+
+  /**
+   * Create a new style.
+   *
+   * @param aFillColor
+   *        The background colour. May be {@code null} for no background.
+   * @param aTextColor
+   *        The text colour. May be {@code null} to keep the colour of the font.
+   */
+  public PdfBlockStyle (@Nullable final PLColor aFillColor, @Nullable final PLColor aTextColor)
+  {
+    this (builder ().fillColor (aFillColor).textColor (aTextColor));
+  }
+
+  /**
+   * Create a builder that is initialized with the values of this style.
+   *
+   * @return A new builder. Never {@code null}.
+   */
+  @NonNull
+  public Builder toBuilder ()
+  {
+    return builder (this);
   }
 
   /**

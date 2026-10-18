@@ -77,14 +77,12 @@ public final class PhloxTemplateTest
     private final AtomicInteger m_aLabelCount = new AtomicInteger ();
     private final AtomicInteger m_aCodeCount = new AtomicInteger ();
 
-    @Override
     public String getLabel (final String sKey, final Locale aLocale)
     {
       m_aLabelCount.incrementAndGet ();
       return "L(" + sKey + ")";
     }
 
-    @Override
     public String getCodeLabel (final String sListName, final String sCode, final Locale aLocale)
     {
       m_aCodeCount.incrementAndGet ();

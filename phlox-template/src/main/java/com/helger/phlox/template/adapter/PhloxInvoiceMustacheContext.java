@@ -25,6 +25,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,8 +50,8 @@ import com.helger.phlox.api.i18n.PhloxFormat;
 import com.helger.phlox.api.model.PhloxIdentifier;
 import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.api.model.PhloxInvoiceLine;
-import com.helger.phlox.template.PhloxTemplateException;
 import com.helger.phlox.template.PhloxTemplateException.EStage;
+import com.helger.phlox.template.PhloxTemplateException;
 import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
 
@@ -120,15 +121,15 @@ public final class PhloxInvoiceMustacheContext
 
   private static final class PhloxCollector implements Mustache.Collector
   {
-    private final Mustache.VariableFetcher m_aVarFetcher = (ctx, name) -> {
+    private final Mustache.VariableFetcher m_aVarFetcher = (aCtx, sName) -> {
       // "..X" addresses the enclosing context: if the current context cannot answer X, let
       // JMustache continue with the parent context, which is asked with the same name
-      if (name.startsWith (PARENT_PREFIX))
+      if (sName.startsWith (PARENT_PREFIX))
       {
-        final Object aParentResolved = resolveName (ctx, name.substring (PARENT_PREFIX.length ()));
+        final Object aParentResolved = resolveName (aCtx, sName.substring (PARENT_PREFIX.length ()));
         return aParentResolved == null ? Template.NO_FETCHER_FOUND : aParentResolved;
       }
-      final Object aResolved = resolveName (ctx, name);
+      final Object aResolved = resolveName (aCtx, sName);
       // JMustache requires NO_FETCHER_FOUND when the variable is not known so it can fall
       // through to defaultValue("") rather than treating null as a section iteration value.
       // We return the raw resolved value (which may itself be null) and let JMustache's
@@ -136,26 +137,23 @@ public final class PhloxInvoiceMustacheContext
       return aResolved;
     };
 
-    @Override
-    public Iterator <?> toIterator (final Object value)
+    public Iterator <?> toIterator (final Object aValue)
     {
-      if (value instanceof final Iterable aIterable)
+      if (aValue instanceof final Iterable aIterable)
         return aIterable.iterator ();
-      if (value instanceof final Iterator aIter)
+      if (aValue instanceof final Iterator aIter)
         return aIter;
-      if (value != null && value.getClass ().isArray ())
-        return new ArrayIterator <> ((Object []) value);
+      if (aValue != null && aValue.getClass ().isArray ())
+        return new ArrayIterator <> ((Object []) aValue);
       return null;
     }
 
-    @Override
-    public Mustache.VariableFetcher createFetcher (final Object ctx, final String name)
+    public Mustache.VariableFetcher createFetcher (final Object aCtx, final String sName)
     {
       return m_aVarFetcher;
     }
 
-    @Override
-    public <K, V> java.util.Map <K, V> createFetcherCache ()
+    public <K, V> Map <K, V> createFetcherCache ()
     {
       return new ConcurrentHashMap <> ();
     }
@@ -176,15 +174,15 @@ public final class PhloxInvoiceMustacheContext
                                      @NonNull final Locale aLocale,
                                      @NonNull final IPhloxLabelResolver aResolver)
   {
-    final Matcher m = LABEL_PATTERN.matcher (sSource);
-    final StringBuilder out = new StringBuilder (sSource.length ());
-    while (m.find ())
+    final Matcher aMatcher = LABEL_PATTERN.matcher (sSource);
+    final StringBuilder aSB = new StringBuilder (sSource.length ());
+    while (aMatcher.find ())
     {
-      final String sResolved = aResolver.getLabel (m.group (1), aLocale);
-      m.appendReplacement (out, Matcher.quoteReplacement (sResolved));
+      final String sResolved = aResolver.getLabel (aMatcher.group (1), aLocale);
+      aMatcher.appendReplacement (aSB, Matcher.quoteReplacement (sResolved));
     }
-    m.appendTail (out);
-    return out.toString ();
+    aMatcher.appendTail (aSB);
+    return aSB.toString ();
   }
 
   // Hand-rolled scanner — skips {{!comment}} regions entirely so the {{?BT-X}} examples
@@ -192,7 +190,7 @@ public final class PhloxInvoiceMustacheContext
   @NonNull
   private static String _encodePresenceChecks (@NonNull final String sSource)
   {
-    final StringBuilder out = new StringBuilder (sSource.length ());
+    final StringBuilder aSB = new StringBuilder (sSource.length ());
     final Deque <String> aStack = new ArrayDeque <> ();
     // The names as written in the template, to report unbalanced tags
     final Deque <String> aWrittenNames = new ArrayDeque <> ();
@@ -206,7 +204,7 @@ public final class PhloxInvoiceMustacheContext
         final int nEnd = sSource.indexOf ("}}", i + 2);
         if (nEnd < 0)
         {
-          out.append (sSource, i, nLen);
+          aSB.append (sSource, i, nLen);
           break;
         }
 
@@ -218,7 +216,7 @@ public final class PhloxInvoiceMustacheContext
         if (sInside.startsWith ("!"))
         {
           LOGGER.warn ("Found a comment even though it should have been stripped before!");
-          out.append (sSource, i, nEnd + 2);
+          aSB.append (sSource, i, nEnd + 2);
           i = nEnd + 2;
           continue;
         }
@@ -238,13 +236,13 @@ public final class PhloxInvoiceMustacheContext
                 final String sEncoded = PRESENCE_PREFIX + StringReplace.replaceAll (sName, '.', DOT_PLACEHOLDER);
                 aStack.push (sEncoded);
                 aWrittenNames.push ("?" + sName);
-                out.append ("{{#").append (sEncoded).append ("}}");
+                aSB.append ("{{#").append (sEncoded).append ("}}");
               }
               case '#', '^' ->
               {
                 aStack.push (sName);
                 aWrittenNames.push (cOp + sName);
-                out.append ("{{").append (cOp).append (sName).append ("}}");
+                aSB.append ("{{").append (cOp).append (sName).append ("}}");
               }
               case '/' ->
               {
@@ -257,9 +255,9 @@ public final class PhloxInvoiceMustacheContext
                     LOGGER.warn ("Template tag '{{" + sWritten + "}}' is closed by '{{/" + sName + "}}'");
                 }
                 final String sOpenName = aStack.isEmpty () ? sName : aStack.pop ();
-                out.append ("{{/").append (sOpenName).append ("}}");
+                aSB.append ("{{/").append (sOpenName).append ("}}");
               }
-              default -> out.append (sSource, i, nEnd + 2);
+              default -> aSB.append (sSource, i, nEnd + 2);
             }
             i = nEnd + 2;
             continue;
@@ -267,18 +265,18 @@ public final class PhloxInvoiceMustacheContext
         }
 
         // Plain interpolation or unknown directive — copy verbatim.
-        out.append (sSource, i, nEnd + 2);
+        aSB.append (sSource, i, nEnd + 2);
         i = nEnd + 2;
       }
       else
       {
-        out.append (sSource.charAt (i));
+        aSB.append (sSource.charAt (i));
         i++;
       }
     }
     for (final String sOpen : aWrittenNames)
       LOGGER.warn ("Template tag '{{" + sOpen + "}}' is never closed");
-    return out.toString ();
+    return aSB.toString ();
   }
 
   @Nullable
@@ -415,24 +413,24 @@ public final class PhloxInvoiceMustacheContext
   private static String _titleCase (@NonNull final String sIn, @NonNull final PhloxRenderEnv aEnv)
   {
     // Lightweight ASCII title case — first char of each whitespace-separated word.
-    final StringBuilder out = new StringBuilder (sIn.length ());
+    final StringBuilder aSB = new StringBuilder (sIn.length ());
     boolean bAtStart = true;
     for (int i = 0; i < sIn.length (); i++)
     {
       final char c = sIn.charAt (i);
       if (Character.isWhitespace (c))
       {
-        out.append (c);
+        aSB.append (c);
         bAtStart = true;
       }
       else
       {
-        out.append (bAtStart ? Character.toString (c).toUpperCase (aEnv.getLocale ()).charAt (0)
+        aSB.append (bAtStart ? Character.toString (c).toUpperCase (aEnv.getLocale ()).charAt (0)
                              : Character.toString (c).toLowerCase (aEnv.getLocale ()).charAt (0));
         bAtStart = false;
       }
     }
-    return out.toString ();
+    return aSB.toString ();
   }
 
   @Nullable

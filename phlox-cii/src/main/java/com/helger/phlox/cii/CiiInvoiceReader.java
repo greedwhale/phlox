@@ -177,7 +177,6 @@ public class CiiInvoiceReader implements IInvoiceReader <InputStream>
     return new CiiD25AInvoiceReader ().readCrossIndustryInvoice (aCii, aErrors);
   }
 
-  @Override
   @Nullable
   public PhloxInvoice read (@NonNull final InputStream aSource, @NonNull final ErrorList aErrors)
   {

@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
@@ -30,9 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.helger.base.string.StringHelper;
+import com.helger.collection.commons.ICommonsList;
 import com.helger.diagnostics.error.list.ErrorList;
 import com.helger.io.file.SimpleFileIO;
-import com.helger.collection.commons.ICommonsList;
 import com.helger.io.resource.ClassPathResource;
 import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.api.read.IInvoiceReader;
@@ -77,7 +78,7 @@ public final class HtmlInvoiceWriterTest
         }
         nCount++;
       }
-      catch (final java.io.IOException ex)
+      catch (final IOException ex)
       {
         throw new RuntimeException ("Failed to open " + aRes.getPath (), ex);
       }
@@ -94,7 +95,7 @@ public final class HtmlInvoiceWriterTest
       assertNotNull ("Failed to parse " + sPath, aModel);
       return new HtmlInvoiceWriter ().writeAsString (aModel, new HtmlRenderContext ().setLocale (Locale.ENGLISH));
     }
-    catch (final java.io.IOException ex)
+    catch (final IOException ex)
     {
       throw new RuntimeException ("Failed to open " + sPath, ex);
     }

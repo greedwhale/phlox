@@ -104,19 +104,19 @@ abstract class AbstractUblInvoiceReader
   }
 
   @Nullable
-  protected static String str (@Nullable final String s)
+  protected static String str (@Nullable final String sValue)
   {
-    if (s == null)
+    if (sValue == null)
       return null;
 
-    final String sTrim = s.trim ();
+    final String sTrim = sValue.trim ();
     return sTrim.isEmpty () ? null : sTrim;
   }
 
   @Nullable
-  protected static String strFromCode (@Nullable final String s)
+  protected static String strFromCode (@Nullable final String sValue)
   {
-    return str (s);
+    return str (sValue);
   }
 
   @Nullable

@@ -28,11 +28,87 @@ import com.helger.datetime.xml.XMLOffsetTime;
 import com.helger.diagnostics.error.SingleError;
 import com.helger.diagnostics.error.list.ErrorList;
 import com.helger.en16931.basics.EEN16931Edition;
-import com.helger.phlox.api.model.*;
+import com.helger.phlox.api.model.EPhloxDocumentKind;
+import com.helger.phlox.api.model.PhloxAttachment;
+import com.helger.phlox.api.model.PhloxBuyer;
+import com.helger.phlox.api.model.PhloxContact;
+import com.helger.phlox.api.model.PhloxCreditTransfer;
+import com.helger.phlox.api.model.PhloxDeliveryInformation;
+import com.helger.phlox.api.model.PhloxDirectDebit;
+import com.helger.phlox.api.model.PhloxDocumentAllowance;
+import com.helger.phlox.api.model.PhloxDocumentCharge;
+import com.helger.phlox.api.model.PhloxEarlyPaymentDiscount;
+import com.helger.phlox.api.model.PhloxIdentifier;
+import com.helger.phlox.api.model.PhloxInvoice;
+import com.helger.phlox.api.model.PhloxInvoiceLine;
+import com.helger.phlox.api.model.PhloxInvoiceNote;
+import com.helger.phlox.api.model.PhloxInvoicingPeriod;
+import com.helger.phlox.api.model.PhloxItem;
+import com.helger.phlox.api.model.PhloxItemAttribute;
+import com.helger.phlox.api.model.PhloxItemClassification;
+import com.helger.phlox.api.model.PhloxLatePaymentPenalty;
+import com.helger.phlox.api.model.PhloxLineAllowance;
+import com.helger.phlox.api.model.PhloxLineCharge;
+import com.helger.phlox.api.model.PhloxLineDelivery;
+import com.helger.phlox.api.model.PhloxLinePrecedingInvoiceRef;
+import com.helger.phlox.api.model.PhloxLineVat;
+import com.helger.phlox.api.model.PhloxPayee;
+import com.helger.phlox.api.model.PhloxPaymentCard;
+import com.helger.phlox.api.model.PhloxPaymentInstructions;
+import com.helger.phlox.api.model.PhloxPaymentTerms;
+import com.helger.phlox.api.model.PhloxPostalAddress;
+import com.helger.phlox.api.model.PhloxPrecedingInvoiceRef;
+import com.helger.phlox.api.model.PhloxPriceDetails;
+import com.helger.phlox.api.model.PhloxSeller;
+import com.helger.phlox.api.model.PhloxSellerTaxRepresentative;
+import com.helger.phlox.api.model.PhloxSupportingDocument;
+import com.helger.phlox.api.model.PhloxThirdPartyCharge;
+import com.helger.phlox.api.model.PhloxVatBreakdown;
 import com.helger.ubl25.UBL25Marshaller;
 import com.helger.xsds.ccts.cct.schemamodule.AmountType;
 
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.*;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.AddressLineType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.AddressType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.AllowanceChargeType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.AnnotationType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.AttachmentType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.BillingReferenceType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.BranchType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.BuyerAssignedReferenceType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.CardAccountType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.CommodityClassificationType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.ContactType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.CountryType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.CreditNoteLineType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.CustomerPartyType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.DeliveryType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.DocumentReferenceType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.ExchangeRateType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.ExternalReferenceType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.FinancialAccountType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.InvoiceLineType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.ItemIdentificationType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.ItemPropertyType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.ItemType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.LineReferenceType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.MonetaryTotalType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.OrderLineReferenceType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.OrderReferenceType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.PartyIdentificationType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.PartyLegalEntityType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.PartyNameType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.PartyTaxSchemeType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.PartyType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.PaymentMandateType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.PaymentMeansType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.PaymentTermsType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.PeriodType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.PriceType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.ProjectReferenceType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.SupplierPartyType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.TaxCategoryType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.TaxSubtotalType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_25.TaxTotalType;
 import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_25.BuyerReferenceType;
 import oasis.names.specification.ubl.schema.xsd.creditnote_25.CreditNoteType;
 import oasis.names.specification.ubl.schema.xsd.invoice_25.InvoiceType;
@@ -426,7 +502,11 @@ final class Ubl25InvoiceReader extends AbstractUblInvoiceReader
   {
     // BG-13 + BG-15
     if (!aDeliveries.isEmpty ())
-      aModel.setDeliveryInformation (_readDelivery (aDeliveries.get (0)));
+    {
+      final PhloxDeliveryInformation aDI = _readDelivery (aDeliveries.get (0));
+      if (!aDI.isEmpty ())
+        aModel.setDeliveryInformation (aDI);
+    }
   }
 
   @Nullable

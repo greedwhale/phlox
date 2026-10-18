@@ -21,8 +21,8 @@ import java.util.regex.Pattern;
 import org.jspecify.annotations.NonNull;
 
 /**
- * Text adjustments that are shared by the built-in section writer ({@link PdfInvoiceWriter}) and
- * the template driven writer ({@link PdfTemplateEmitter}).
+ * Text adjustments for the template driven PDF output ({@link PdfTemplateEmitter} and the footer of
+ * {@link PdfInvoiceWriter}).
  *
  * @author Philip Helger
  */

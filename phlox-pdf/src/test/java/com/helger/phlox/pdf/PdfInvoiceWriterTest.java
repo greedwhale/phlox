@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 
 import com.helger.base.io.nonblocking.NonBlockingByteArrayOutputStream;
 import com.helger.base.string.StringHelper;
+import com.helger.collection.commons.ICommonsList;
 import com.helger.diagnostics.error.list.ErrorList;
 import com.helger.io.file.SimpleFileIO;
-import com.helger.collection.commons.ICommonsList;
 import com.helger.io.resource.ClassPathResource;
 import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.api.read.IInvoiceReader;

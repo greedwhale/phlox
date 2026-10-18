@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -38,6 +37,7 @@ import org.junit.Test;
 
 import com.helger.base.io.nonblocking.NonBlockingByteArrayOutputStream;
 import com.helger.base.string.StringHelper;
+import com.helger.collection.commons.CommonsArrayList;
 import com.helger.collection.commons.ICommonsList;
 import com.helger.diagnostics.error.list.ErrorList;
 import com.helger.io.file.SimpleFileIO;
@@ -135,6 +135,37 @@ public final class PdfTemplateEmitterTest
       }
     }
     assertTrue ("Expected at least " + nMinCount + " documents rendered", nCount >= nMinCount);
+  }
+
+  private static int _strokeOperators (final byte [] aPdf)
+  {
+    try (final PDDocument aDoc = Loader.loadPDF (aPdf))
+    {
+      int nCount = 0;
+      for (final Object aToken : new PDFStreamParser (aDoc.getPage (0)).parse ())
+        if (aToken instanceof final Operator aOperator && "S".equals (aOperator.getName ()))
+          nCount++;
+      return nCount;
+    }
+    catch (final IOException ex)
+    {
+      throw new IllegalStateException ("Failed to read the PDF", ex);
+    }
+  }
+
+  private static List <String> _fontNames (final byte [] aPdf)
+  {
+    try (final PDDocument aDoc = Loader.loadPDF (aPdf))
+    {
+      final ICommonsList <String> ret = new CommonsArrayList <> ();
+      for (final COSName aName : aDoc.getPage (0).getResources ().getFontNames ())
+        ret.add (aDoc.getPage (0).getResources ().getFont (aName).getName ());
+      return ret;
+    }
+    catch (final IOException ex)
+    {
+      throw new IllegalStateException ("Failed to read the PDF", ex);
+    }
   }
 
   @Test
@@ -235,22 +266,6 @@ public final class PdfTemplateEmitterTest
     assertFalse (sText.contains ("\u20AC250.33"));
   }
 
-  private static int _strokeOperators (final byte [] aPdf)
-  {
-    try (final PDDocument aDoc = Loader.loadPDF (aPdf))
-    {
-      int nCount = 0;
-      for (final Object aToken : new PDFStreamParser (aDoc.getPage (0)).parse ())
-        if (aToken instanceof final Operator aOperator && "S".equals (aOperator.getName ()))
-          nCount++;
-      return nCount;
-    }
-    catch (final IOException ex)
-    {
-      throw new IllegalStateException ("Failed to read the PDF", ex);
-    }
-  }
-
   @Test
   public void testStrikethroughIsDrawn ()
   {
@@ -260,21 +275,6 @@ public final class PdfTemplateEmitterTest
     assertTrue (_text (aStruck).contains ("Text deleted end"));
     // The only difference is the line through the struck word
     assertEquals (_strokeOperators (aPlain) + 1, _strokeOperators (aStruck));
-  }
-
-  private static List <String> _fontNames (final byte [] aPdf)
-  {
-    try (final PDDocument aDoc = Loader.loadPDF (aPdf))
-    {
-      final List <String> ret = new ArrayList <> ();
-      for (final COSName aName : aDoc.getPage (0).getResources ().getFontNames ())
-        ret.add (aDoc.getPage (0).getResources ().getFont (aName).getName ());
-      return ret;
-    }
-    catch (final IOException ex)
-    {
-      throw new IllegalStateException ("Failed to read the PDF", ex);
-    }
   }
 
   @Test

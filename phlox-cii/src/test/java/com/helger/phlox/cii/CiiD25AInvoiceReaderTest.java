@@ -38,6 +38,7 @@ import com.helger.collection.commons.ICommonsList;
 import com.helger.diagnostics.error.list.ErrorList;
 import com.helger.en16931.basics.EEN16931Edition;
 import com.helger.io.resource.ClassPathResource;
+import com.helger.phlox.api.model.PhloxDirectDebit;
 import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.api.model.PhloxInvoiceLine;
 import com.helger.phlox.api.model.PhloxPaymentTerms;
@@ -243,5 +244,26 @@ public final class CiiD25AInvoiceReaderTest
     assertEquals (LocalDate.of (2025, 12, 10), aLine.precedingInvoiceRefs ().get (0).getIssueDate ());
     assertEquals ("380", aLine.precedingInvoiceRefs ().get (0).getTypeCode ());
     assertEquals ("PREV-LINE-7", aLine.precedingInvoiceRefs ().get (0).getLineReference ());
+  }
+
+  @Test
+  public void testVatAccountingAmountIsBt111 ()
+  {
+    final PhloxInvoice aModel = _read (CiiInvoiceReader.fromD25A (), "d25a-edge-payment-invoice.xml");
+    assertEquals ("USD", aModel.getVatAccountingCurrency ());
+    assertNotNull (aModel.getDocumentTotals ().getTaxTotal ());
+    assertNotNull (aModel.getDocumentTotals ().getTaxTotalAccountingCurrency ());
+  }
+
+  @Test
+  public void testDirectDebitWithoutMandateReference ()
+  {
+    final PhloxInvoice aModel = _read (CiiInvoiceReader.fromD25A (), "d25a-edge-directdebit-invoice.xml");
+    final PhloxDirectDebit aDD = aModel.getPaymentInstructions ().getDirectDebit ();
+    assertNotNull (aDD);
+    assertNull (aDD.getMandateReferenceID ());
+    assertEquals ("SEPA-CRED-1", aDD.getBankAssignedCreditorID ());
+    assertEquals ("DEBTOR-12345", aDD.getDebitedAccountID ());
+    assertEquals ("Buyer Account", aDD.getDebitedAccountName ());
   }
 }

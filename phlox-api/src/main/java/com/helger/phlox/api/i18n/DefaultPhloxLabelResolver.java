@@ -74,24 +74,6 @@ public final class DefaultPhloxLabelResolver implements IPhloxLabelResolver
    */
   private static final ICommonsMap <String, Function <String, IHasDisplayText>> CODE_LISTS = new CommonsHashMap <> ();
 
-  static
-  {
-    CODE_LISTS.put ("allowancereason", EEN16931AllowanceReasonCode::getFromIDOrNull);
-    CODE_LISTS.put ("chargereason", EEN16931ChargeReasonCode::getFromIDOrNull);
-    CODE_LISTS.put ("country", EEN16931CountryCode::getFromIDOrNull);
-    CODE_LISTS.put ("currency", EEN16931CurrencyCode::getFromIDOrNull);
-    CODE_LISTS.put ("doctype", EEN16931InvoiceTypeCode::getFromIDOrNull);
-    CODE_LISTS.put ("eas", EEN16931EASCode::getFromIDOrNull);
-    CODE_LISTS.put ("icd", EEN16931ICDCode::getFromIDOrNull);
-    CODE_LISTS.put ("itemtype", EEN16931ItemTypeCode::getFromIDOrNull);
-    CODE_LISTS.put ("notesubject", EEN16931TextSubjectCode::getFromIDOrNull);
-    CODE_LISTS.put ("paymentmeans", EEN16931PaymentMeansCode::getFromIDOrNull);
-    CODE_LISTS.put ("referencequalifier", EEN16931ReferenceQualifierCode::getFromIDOrNull);
-    CODE_LISTS.put ("unit", UnitCodes::getFromIDOrNull);
-    CODE_LISTS.put ("vatcategory", EEN16931TaxCategoryCode::getFromIDOrNull);
-    CODE_LISTS.put ("vatexemption", EEN16931VATEXCode::getFromIDOrNull);
-  }
-
   private DefaultPhloxLabelResolver ()
   {}
 
@@ -113,7 +95,25 @@ public final class DefaultPhloxLabelResolver implements IPhloxLabelResolver
     }
   }
 
-  @Override
+  static
+  {
+    CODE_LISTS.put ("allowancereason", EEN16931AllowanceReasonCode::getFromIDOrNull);
+    CODE_LISTS.put ("chargereason", EEN16931ChargeReasonCode::getFromIDOrNull);
+    CODE_LISTS.put ("country", EEN16931CountryCode::getFromIDOrNull);
+    CODE_LISTS.put ("currency", EEN16931CurrencyCode::getFromIDOrNull);
+    CODE_LISTS.put ("doctype", EEN16931InvoiceTypeCode::getFromIDOrNull);
+    CODE_LISTS.put ("eas", EEN16931EASCode::getFromIDOrNull);
+    CODE_LISTS.put ("icd", EEN16931ICDCode::getFromIDOrNull);
+    CODE_LISTS.put ("itemtype", EEN16931ItemTypeCode::getFromIDOrNull);
+    CODE_LISTS.put ("notesubject", EEN16931TextSubjectCode::getFromIDOrNull);
+    CODE_LISTS.put ("paymentmeans", EEN16931PaymentMeansCode::getFromIDOrNull);
+    CODE_LISTS.put ("referencequalifier", EEN16931ReferenceQualifierCode::getFromIDOrNull);
+    CODE_LISTS.put ("unit", UnitCodes::getFromIDOrNull);
+    CODE_LISTS.put ("vatcategory", EEN16931TaxCategoryCode::getFromIDOrNull);
+    // The lookup of the VATEX codes ignores the case, like the EN 16931 Schematron rule BR-CL-22
+    CODE_LISTS.put ("vatexemption", EEN16931VATEXCode::getFromIDOrNull);
+  }
+
   @NonNull
   public String getLabel (@NonNull final String sKey, @NonNull final Locale aLocale)
   {
@@ -128,7 +128,6 @@ public final class DefaultPhloxLabelResolver implements IPhloxLabelResolver
     }
   }
 
-  @Override
   @NonNull
   public String getCodeLabel (@NonNull final String sListName,
                               @NonNull final String sCode,

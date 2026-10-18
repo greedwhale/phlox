@@ -119,4 +119,14 @@ public final class DefaultPhloxLabelResolverTest
     final String sCode = "ZZ_UNKNOWN";
     assertEquals (sCode, DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("vatcategory", sCode, Locale.ENGLISH));
   }
+
+  @Test
+  public void testVatexCodeIsCaseInsensitive ()
+  {
+    // The lookup of en16931-basics ignores the case, like the EN 16931 Schematron rule BR-CL-22
+    final String sName = DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("vatexemption", "VATEX-EU-132-1A", Locale.ENGLISH);
+    assertNotEquals ("VATEX-EU-132-1A", sName);
+    assertEquals (sName, DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("vatexemption", "vatex-eu-132-1a", Locale.ENGLISH));
+    assertEquals (sName, DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("vatexemption", "Vatex-EU-132-1A", Locale.ENGLISH));
+  }
 }

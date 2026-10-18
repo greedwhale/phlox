@@ -50,12 +50,12 @@ abstract class AbstractCiiInvoiceReader
   }
 
   @Nullable
-  protected static String str (@Nullable final String s)
+  protected static String str (@Nullable final String sValue)
   {
-    if (s == null)
+    if (sValue == null)
       return null;
 
-    final String sTrimmed = s.trim ();
+    final String sTrimmed = sValue.trim ();
     return sTrimmed.isEmpty () ? null : sTrimmed;
   }
 }

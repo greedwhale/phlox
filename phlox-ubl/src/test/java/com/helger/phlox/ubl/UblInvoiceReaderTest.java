@@ -41,7 +41,9 @@ import com.helger.collection.commons.ICommonsList;
 import com.helger.diagnostics.error.list.ErrorList;
 import com.helger.en16931.basics.EEN16931Edition;
 import com.helger.io.resource.ClassPathResource;
+import com.helger.phlox.api.model.PhloxDirectDebit;
 import com.helger.phlox.api.model.PhloxDocumentCharge;
+import com.helger.phlox.api.model.PhloxIdentifier;
 import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.api.model.PhloxInvoiceLine;
 import com.helger.phlox.api.model.PhloxItemAttribute;
@@ -375,5 +377,38 @@ public final class UblInvoiceReaderTest
     assertEquals ("PREV-LINE-7", aLine.precedingInvoiceRefs ().get (0).getLineReference ());
     // no BG-37 without delivery terms
     assertNull (aLine.getDelivery ());
+  }
+
+  @Test
+  public void testVatAccountingAmountOnlyIfCurrencyDiffers ()
+  {
+    // BT-6 equals BT-5: the VAT amount is BT-110 only, there is no BT-111
+    final PhloxInvoice aSame = _read (UblInvoiceReader.fromUbl25 (),
+                                      BASE + "d25a-edge-tax-currency-same-as-document-currency-invoice-ubl.xml");
+    assertEquals ("EUR", aSame.getVatAccountingCurrency ());
+    assertNotNull (aSame.getDocumentTotals ().getTaxTotal ());
+    assertNull (aSame.getDocumentTotals ().getTaxTotalAccountingCurrency ());
+
+    // BT-6 differs from BT-5: both amounts are set
+    final PhloxInvoice aDiffers = _read (UblInvoiceReader.fromUbl25 (), BASE + "d25a-edge-payment-invoice-ubl.xml");
+    assertEquals ("USD", aDiffers.getVatAccountingCurrency ());
+    assertNotNull (aDiffers.getDocumentTotals ().getTaxTotal ());
+    assertNotNull (aDiffers.getDocumentTotals ().getTaxTotalAccountingCurrency ());
+  }
+
+  @Test
+  public void testDirectDebitWithoutMandateReference ()
+  {
+    final PhloxInvoice aModel = _read (UblInvoiceReader.fromUbl25 (), BASE + "d25a-edge-directdebit-invoice-ubl.xml");
+    final PhloxDirectDebit aDD = aModel.getPaymentInstructions ().getDirectDebit ();
+    assertNotNull (aDD);
+    assertNull (aDD.getMandateReferenceID ());
+    assertEquals ("SEPA-CRED-1", aDD.getBankAssignedCreditorID ());
+    assertEquals ("DEBTOR-12345", aDD.getDebitedAccountID ());
+    assertEquals ("Buyer Account", aDD.getDebitedAccountName ());
+
+    // The SEPA creditor identifier is BT-90 and not one of the seller identifiers BT-29
+    for (final PhloxIdentifier aID : aModel.getSeller ().identifiers ())
+      assertFalse ("SEPA".equals (aID.getSchemeID ()));
   }
 }

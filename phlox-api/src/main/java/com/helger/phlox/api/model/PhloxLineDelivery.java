@@ -141,4 +141,18 @@ public class PhloxLineDelivery
     m_aPostalAddress = aPostalAddress;
     return this;
   }
+
+  /**
+   * Check if no part of the line delivery information is set.
+   *
+   * @return {@code true} if there is no party name, no location identifier, no delivery date and no
+   *         address (or an empty address).
+   */
+  public boolean isEmpty ()
+  {
+    return m_sPartyName == null &&
+           m_aLocationIdentifier == null &&
+           m_aActualDeliveryDate == null &&
+           (m_aPostalAddress == null || m_aPostalAddress.isEmpty ());
+  }
 }
