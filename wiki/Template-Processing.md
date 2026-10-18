@@ -3,7 +3,7 @@
 This page is the **implementation companion** to [[Template Language]]. That page defines the `.ptpl` grammar;
 this one describes the engine that turns a `.ptpl` source file plus a `PhloxInvoice` into rendered output.
 
-> **Status:** Stage 1 (substitute), 2 (parse + post-pass) and the rendering AST are implemented in 0.4.0; emitters (stage 3) are pending. Stage 0 (localize) is a design refinement intended to land alongside the emitters.
+> **Status:** All stages are implemented in 0.4.0: localize, substitute, parse + post-pass, and the HTML and PDF emitters. There are no golden-file or visual-regression baselines yet; the tests are corpus smoke tests with content assertions.
 
 ## Pipeline overview
 
@@ -407,7 +407,7 @@ new HtmlInvoiceWriter ().writeAsString (aInvoice,
 
 `getDefault()` returns a singleton `PhloxTemplate` built from `classpath:/templates/default.ptpl`. The same instance is shared across all callers (immutable after construction).
 
-For 0.4.0 the writers do **not** fall through to the default template when `getTemplate() == null` — they fall through to the hard-coded section renderers, preserving 0.1.0 byte-for-byte output. A future release may flip the default; that would be a deliberate behaviour change called out in [[News and noteworthy]].
+For 0.4.0 the writers do **not** fall through to the default template when `getTemplate() == null` — they fall through to the hard-coded section renderers, preserving 0.1.0 byte-for-byte output. The CLI selects a template with `--template default|classpath:<path>|<file>`. A future release may flip the default; that would be a deliberate behaviour change called out in [[News and noteworthy]].
 
 ## Performance
 

@@ -17,6 +17,7 @@
 package com.helger.phlox.api.i18n;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
@@ -70,6 +71,34 @@ public final class DefaultPhloxLabelResolverTest
     // VAT category "S" is in the standard EN 16931 code list.
     final String sValue = DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("vatcategory", "S", Locale.ENGLISH);
     assertNotNull (sValue);
+  }
+
+  @Test
+  public void testBundleWinsOverTheEnglishCodeLists ()
+  {
+    // doctype.380 is translated in the phlox bundles
+    assertEquals ("Commercial invoice", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("doctype", "380", Locale.ENGLISH));
+    assertEquals ("Handelsrechnung", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("doctype", "380", Locale.GERMAN));
+  }
+
+  @Test
+  public void testCountryAndCurrencyAreLocalizedByTheJdk ()
+  {
+    assertEquals ("Austria", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("country", "AT", Locale.ENGLISH));
+    assertEquals ("\u00D6sterreich", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("country", "AT", Locale.GERMAN));
+    assertEquals ("Euro", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("currency", "EUR", Locale.GERMAN));
+  }
+
+  @Test
+  public void testEnglishNamesOfTheEn16931CodeListsAreTheFallback ()
+  {
+    // Neither of them is in the phlox bundles, in no language
+    for (final Locale aLocale : new Locale [] { Locale.ENGLISH, Locale.GERMAN })
+    {
+      assertEquals ("Reverse charge", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("vatexemption", "VATEX-EU-AE", aLocale));
+      assertNotEquals ("AAI", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("notesubject", "AAI", aLocale));
+      assertNotEquals ("95", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("allowancereason", "95", aLocale));
+    }
   }
 
   @Test

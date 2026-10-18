@@ -50,6 +50,10 @@
     </dependency>
     <dependency>
       <groupId>com.helger.phlox</groupId>
+      <artifactId>phlox-template</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.helger.phlox</groupId>
       <artifactId>phlox-html</artifactId>
     </dependency>
     <dependency>
@@ -67,6 +71,12 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.helger.phlox</groupId>
+      <artifactId>phlox-testfiles</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

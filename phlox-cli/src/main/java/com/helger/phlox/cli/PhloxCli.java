@@ -17,6 +17,7 @@
 package com.helger.phlox.cli;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,8 +27,11 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
+import org.jspecify.annotations.Nullable;
+
 import com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream;
 import com.helger.diagnostics.error.list.ErrorList;
+import com.helger.phlox.api.PhloxRuntimeException;
 import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.api.watermark.WatermarkSpec;
 import com.helger.phlox.cii.CiiInvoiceReader;
@@ -35,6 +39,7 @@ import com.helger.phlox.html.HtmlInvoiceWriter;
 import com.helger.phlox.html.HtmlRenderContext;
 import com.helger.phlox.pdf.PdfInvoiceWriter;
 import com.helger.phlox.pdf.PdfRenderContext;
+import com.helger.phlox.template.PhloxTemplate;
 import com.helger.phlox.ubl.UblInvoiceReader;
 
 import picocli.CommandLine;
@@ -103,6 +108,10 @@ public class PhloxCli implements Callable <Integer>
            defaultValue = "en")
   String lang;
 
+  @Option (names = { "-t", "--template" },
+           description = "Render through a template instead of the built-in layout: 'default' for the template shipped with phlox, 'classpath:<path>' for a template on the classpath, or the path of a .ptpl file. Default: the built-in layout.")
+  String template;
+
   @Option (names = "--watermark", description = "Optional user watermark text (e.g. 'DRAFT').")
   String watermark;
 
@@ -116,9 +125,24 @@ public class PhloxCli implements Callable <Integer>
            defaultValue = "-45")
   float watermarkRotation;
 
+  private static final String TEMPLATE_DEFAULT = "default";
+  private static final String TEMPLATE_CLASSPATH_PREFIX = "classpath:";
+
   /** Create a new CLI instance. */
   public PhloxCli ()
   {}
+
+  @Nullable
+  private static PhloxTemplate _loadTemplate (@Nullable final String sTemplate)
+  {
+    if (sTemplate == null)
+      return null;
+    if (TEMPLATE_DEFAULT.equals (sTemplate))
+      return PhloxTemplate.getDefault ();
+    if (sTemplate.startsWith (TEMPLATE_CLASSPATH_PREFIX))
+      return PhloxTemplate.fromClasspath (sTemplate.substring (TEMPLATE_CLASSPATH_PREFIX.length ()));
+    return PhloxTemplate.fromFile (new File (sTemplate));
+  }
 
   private static byte [] _readAllStdin () throws IOException
   {
@@ -184,6 +208,17 @@ public class PhloxCli implements Callable <Integer>
       return Integer.valueOf (1);
     }
 
+    final PhloxTemplate aTemplate;
+    try
+    {
+      aTemplate = _loadTemplate (template);
+    }
+    catch (final PhloxRuntimeException ex)
+    {
+      System.err.println ("Failed to load the template '" + template + "': " + ex.getMessage ());
+      return Integer.valueOf (2);
+    }
+
     final Locale aLocale = new Locale.Builder ().setLanguage (lang).build ();
     final WatermarkSpec aWM = watermark == null ? null : WatermarkSpec.text (watermark)
                                                                       .setOpacity (watermarkOpacity)
@@ -196,7 +231,7 @@ public class PhloxCli implements Callable <Integer>
         System.err.println ("PDF output requires --out");
         return Integer.valueOf (2);
       }
-      final PdfRenderContext aCtx = new PdfRenderContext ().setLocale (aLocale).setUserWatermark (aWM);
+      final PdfRenderContext aCtx = new PdfRenderContext ().setLocale (aLocale).setUserWatermark (aWM).setTemplate (aTemplate);
       try (final OutputStream aOut = new FileOutputStream (outputFile.toFile ()))
       {
         new PdfInvoiceWriter ().writeTo (aInvoice, aCtx, aOut);
@@ -204,7 +239,7 @@ public class PhloxCli implements Callable <Integer>
     }
     else
     {
-      final HtmlRenderContext aCtx = new HtmlRenderContext ().setLocale (aLocale).setUserWatermark (aWM);
+      final HtmlRenderContext aCtx = new HtmlRenderContext ().setLocale (aLocale).setUserWatermark (aWM).setTemplate (aTemplate);
       final HtmlInvoiceWriter aHtmlWriter = new HtmlInvoiceWriter ();
       if (outputFile == null)
       {

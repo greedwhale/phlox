@@ -27,7 +27,7 @@ Shared by every writer.
 | `setAnnotateBtIDs(boolean)` | `boolean` | `false` | When true, every label is suffixed with its EN 16931 ID (`Invoice number [BT-1]`). Debug aid. |
 | `setIncludeEmptySections(boolean)` | `boolean` | `false` | When true, render section headings even if their content is empty. Off by default — clean output. |
 | `setUserWatermark(WatermarkSpec)` | `WatermarkSpec` | `null` | A caller-defined watermark drawn on every page ("DRAFT", "PRELIMINARY", ...). Separate from the library's program watermark. See [[Watermarking]]. |
-| `setTemplate(IPhloxTemplate)` | `IPhloxTemplate` | `null` | Optional custom `.ptpl` template. When set, both writers walk it instead of their hard-coded section grammar; when `null`, fall through to the built-in layout. The `IPhloxTemplate` marker interface lives in `phlox-api`; the parser implementation lives in the `phlox-template` module. See [[Template Language]]. |
+| `setTemplate(IPhloxTemplate)` | `IPhloxTemplate` | `null` | Optional custom `.ptpl` template. When set, `HtmlInvoiceWriter` and `PdfInvoiceWriter` render through the template (`HtmlTemplateEmitter` / `PdfTemplateEmitter`) instead of their hard-coded section grammar; when `null`, they use the built-in layout. The `IPhloxTemplate` marker interface lives in `phlox-api`; the parser implementation lives in the `phlox-template` module. See [[Template Language]]. |
 
 All setters return the **concrete** context type (Helger `IMPLTYPE` pattern), so fluent chains stay typed across the hierarchy:
 
@@ -59,6 +59,7 @@ Inherits all `RenderContext` knobs and adds:
 | `setBodyFont(FontSpec)` | `com.helger.pdflayout.spec.FontSpec` | Helvetica 10pt black | Default font for body text. |
 | `setHeaderFont(FontSpec)` | `FontSpec` | Helvetica-Bold 12pt black | Default font for section headings. |
 | `setTableHeaderFont(FontSpec)` | `FontSpec` | Helvetica-Bold 10pt black | Font for table column headers (line table, VAT breakdown). |
+| `putBlockStyle(String, PdfBlockStyle)` | `PdfBlockStyle` (fill and text `PLColor`, both optional) | `totals-due` → light grey fill | Look of the template blocks and table rows marked with `{{class:name}}`. A class without a style is logged at WARN and rendered unstyled. Only used in template mode. |
 
 These setters expose `ph-pdf-layout` types directly — fine because `PdfRenderContext` lives in `phlox-pdf`, which already depends on that library.
 

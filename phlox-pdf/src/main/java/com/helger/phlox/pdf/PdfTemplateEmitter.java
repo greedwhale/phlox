@@ -361,7 +361,7 @@ public final class PdfTemplateEmitter
                                                       @NonNull final FontSpec aFont,
                                                       @NonNull final EHorzAlignment eAlign)
   {
-    final IPLRenderableObject <?> aContent = _createInlineBlock (aCell, aFont, eAlign, false);
+    final IPLRenderableObject <?> aContent = _createInlineBlock (aCell, aFont, eAlign, true);
     if (aContent == null)
       return new PLSpacerX (1f);
     return new PLBox (aContent).setPadding (new PaddingSpec (3));
@@ -426,6 +426,8 @@ public final class PdfTemplateEmitter
       return;
 
     final PLTable aTbl = PLTable.createWithPercentage (_columnWidths (aTable, nColumns));
+    // The header row is repeated on every page
+    aTbl.setHeaderRowCount (1);
     for (Node aPart = aTable.getFirstChild (); aPart != null; aPart = aPart.getNext ())
     {
       final boolean bHead = aPart instanceof TableHead;

@@ -47,7 +47,7 @@ The intermediate model is the heart of the design: every reader populates the sa
 | Languages | English (`en`), German (`de`) |
 | EN 16931 coverage | All BGs (BG-1..BG-39) and BTs (BT-1..BT-220) of EN 16931:2017 and EN 16931:2026 |
 | Watermarking | User watermark + program/edition watermark (HTML + PDF) — see [[Watermarking]] |
-| Customization | Optional `.ptpl` templates (JMustache + CommonMark) — see [[Template Language]]; lands in 0.4.0 |
+| Customization | Optional `.ptpl` templates (JMustache + CommonMark) — see [[Template Language]]; for HTML and PDF, also from the CLI with `--template` |
 
 **Out of scope (initial release):**
 

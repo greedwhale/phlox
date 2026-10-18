@@ -43,20 +43,16 @@ A box is checked when the headline deliverable is in the repo (code shipped, or 
 
 ## 0.4.0 — Customizable templates
 
-- [x] **New Maven module `phlox-template`** (see [[Maven Module Structure]]) — registered in the parent pom; child `pom.xml` declares JMustache + commonmark-java + GFM extensions. Compile-scope dependency on `phlox-html` and `phlox-pdf` is documented in the wiki; concrete `<dependency>` entries in those modules' poms still pending.
-- [x] [[Template Language]] design ratified. A single `.ptpl` template renders both HTML and PDF and is composed of three off-the-shelf grammars: **JMustache** for placeholders/loops/conditionals, **commonmark-java** (+ GFM tables and strikethrough extensions) for block structure, and **ph-pdf-layout's CommonMark-compatible inline parser** so the PDF writer renders the same paragraph markup natively.
-- [x] [[Template Processing]] design ratified — pipeline stages, threading, error handling, integration points all written up.
-- [ ] `IPhloxTemplate` marker interface in `phlox-api`; `AbstractRenderContext.setTemplate(IPhloxTemplate)` falls through to the existing hard-coded section grammar when unset, so 0.1.0 call sites keep working.
-  - design documented; Java code pending.
-- [ ] phlox's Mustache adapter (`PhloxInvoiceMustacheContext` in `phlox-template`): BT/BG path resolution, format modifiers (`amount`, `date:long`, `code:doctype`, `percent`, …), `{{label:...}}` lookup routed through `IPhloxLabelResolver`, and the synthesized booleans (`logo`, `references_present`, `line_extras_present`).
-  - design documented in [[Template Processing]]; Java code pending.
-- [x] A single language-independent default template `default.ptpl` packaged as a classpath resource in `phlox-template`. It reproduces the layout currently produced by the built-in writers; every literal string routes through `{{label:...}}`, so new languages need only a new `phlox-labels_<lang>.properties` file in `phlox-api`. Every BG section is annotated with a `{{! }}` comment block enumerating the BTs it covers.
-- [ ] CommonMark post-pass for `{{class:…}}` / `{{pagebreak}}` sentinels and image-URL resolution (`data:`, `attachment:logo`, `attachment:BG-24[i]`, `classpath:`) — see [[Template Processing]] § Stage 2.
-  - design documented; Java code pending.
-- [ ] `HtmlTemplateEmitter` and `PdfTemplateEmitter` (both shipped, with corpus smoke tests in EN and DE; no golden files or visual-regression baseline yet) visitors over the commonmark-java AST in their respective writer modules; golden HTML + visual-regression PDF coverage for the default template under both `en` and `de` locales.
-  - design documented (node-to-output mapping tables in [[Template Processing]] § Stage 3); Java code + golden corpus pending.
-- [ ] `phlox-cli` accepts `--template <path>` and resolves classpath URIs (`classpath:templates/foo.ptpl`) in addition to filesystem paths.
-- [ ] Round-trip fuzz tests: read example → render HTML → render PDF through the default template → assert no exceptions for every file in the corpus. Lands here (rather than 0.2.0) because the canonical render path is template-driven; running it against the hard-coded writers would test code that is on its way out.
+- [x] **New Maven module `phlox-template`** (see [[Maven Module Structure]]) — JMustache + commonmark-java + GFM extensions. `phlox-html` and `phlox-pdf` depend on it at compile scope.
+- [x] [[Template Language]] and [[Template Processing]] written; a single `.ptpl` template renders both HTML and PDF. Grammar: **JMustache** for placeholders/loops/conditionals, **commonmark-java** (+ GFM tables and strikethrough) for block structure.
+- [x] `IPhloxTemplate` marker interface in `phlox-api`; `AbstractRenderContext.setTemplate(IPhloxTemplate)`. Without a template the writers use the built-in section layout, so existing call sites keep working.
+- [x] Mustache adapter (`PhloxInvoiceMustacheContext`, `PhloxModelRegistry` in `phlox-template`): BT/BG path resolution, format modifiers (`amount`, `date`, `percent`, `code:<list>`, …), `{{label:…}}` lookup through `IPhloxLabelResolver`, synthesized booleans (`logo`, `references_present`, `line_extras_present`). Modifiers are separated by a plain `|`.
+- [x] A language-independent default template `default.ptpl`; every literal string goes through `{{label:…}}`, so a new language only needs new `.properties` files.
+- [x] CommonMark post-pass for `{{class:…}}` (before a block or a table row) / `{{pagebreak}}` sentinels and image URL resolution (`data:`, `attachment:logo`, `attachment:BG-24[i]`, `classpath:`).
+- [x] `HtmlTemplateEmitter` and `PdfTemplateEmitter`. PDF inline styling uses `ph-pdf-layout-richtext`; `PdfRenderContext.putBlockStyle (name, PdfBlockStyle)` sets fill and text colour of `{{class:name}}` blocks and rows.
+- [x] `phlox-cli --template default|classpath:<path>|<file>`.
+- [ ] Golden HTML files and a visual-regression baseline for PDF. Today the tests are corpus smoke tests with content assertions (default template over the UBL 2.1, UBL 2.5 and CII D25A corpora in EN and DE for HTML and PDF; not yet over the CII D16B corpus).
+- [ ] PDF template limits: images inside running text are skipped, SVG logos are not supported, a heading can end up alone at the bottom of a page.
 
 ## 0.5.0 — Lightweight text-based output formats
 

@@ -93,7 +93,7 @@ paymentmeans.97   = Clearing between partners
 # ... continued
 ```
 
-The full list of values is sourced from the **UNTDID 4461** (payment means), **UNTDID 5305** (VAT category), and **UNTDID 1153** (reference type) code lists used by EN 16931.
+This bundle only holds the code lists that are translated into German here: **UNTDID 1001** (document type, `doctype`), **UNTDID 4461** (payment means, `paymentmeans`) and **UNTDID 5305** (VAT category, `vatcategory`). Every other code list is resolved through the chain below.
 
 ## API
 
@@ -119,6 +119,23 @@ public final class DefaultPhloxLabelResolver implements IPhloxLabelResolver
 
 A caller who needs labels for branded terminology (e.g. "Invoice #" instead of "Invoice number") can supply a custom `IPhloxLabelResolver` through `RenderContext.setLabelResolver (...)` without rewriting any rendering code.
 
+## Code-list lookup chain
+
+`DefaultPhloxLabelResolver.getCodeLabel (list, code, locale)` tries, in this order:
+
+| Step | Source | Covers |
+|------|--------|--------|
+| 1 | `phlox-codelists_<lang>.properties` (key `<list>.<code>`; a dotted list name such as `vat.category` is the same as `vatcategory`) | the translated lists above |
+| 2 | The JDK, in the language of the locale | `country` (e.g. `AT` → "Österreich" / "Austria") and `currency` |
+| 3 | The English names of the EN 16931 code lists in [`en16931-basics`](https://github.com/phax/en16931-basics) (`EEN16931*Code`) | `allowancereason`, `chargereason`, `doctype`, `eas`, `icd`, `itemtype`, `notesubject`, `paymentmeans`, `referencequalifier`, `vatcategory`, `vatexemption` (VATEX) and the country and currency lists |
+| 4 | The code itself, with a WARN in the log | everything else, e.g. the UN/ECE Recommendation 20 units (`unit`) |
+
+`en16931-basics` only carries English names, so in German output those code lists show the English text until a German translation is added to the German bundle (step 1 wins).
+
+## Label policy for the German bundle
+
+The German BG/BT labels follow the German draft of EN 16931-1. Terms that the draft does not contain (BG-39, BT-215 to BT-220, the scheme and list identifier sub-terms BT-167-1/-2, BT-177-1, BT-193-1) are proposals that follow the wording of related terms (for example *Vorhergehende Rechnungsreferenz* for BG-3, *Zahlungsdienstleister* and *Belastetes Konto* for BG-19, *Auftragsreferenz* for sales orders). Replace them when the official German text is published.
+
 ## Fallback rules
 
 | Situation | Behaviour |
@@ -126,6 +143,7 @@ A caller who needs labels for branded terminology (e.g. "Invoice #" instead of "
 | Locale not present in bundle | `ResourceBundle.getBundle` falls back through the standard parent chain (`de_AT` → `de` → `en`). |
 | Key missing in selected language but present in `en` | Use the `en` value. |
 | Key missing everywhere | Return the key (`"BT-99"`) so the gap is visible in output. Log once at WARN. |
+| Code missing in the code-list bundle | Continue with the chain above; only a code that no step knows is returned as is. |
 
 ## Date and number formatting
 

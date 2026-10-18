@@ -108,8 +108,8 @@ Both readers fill the same superset model. EN 16931:2026 terms stay empty for 20
 Each reader has a parallel JUnit test class that:
 
 1. Loads every example file from the shared `phlox-testfiles` module (see [[Maven Module Structure]]). The module organises files as `external/en16931/<edition>/<syntax>/...` for `<edition>` ∈ {`2017`, `2026`} and `<syntax>` ∈ {`ubl`, `cii`}.
-2. Parses it.
-3. Snapshots the resulting `PhloxInvoice` to JSON.
-4. Diffs against the checked-in snapshot.
+2. Parses it with the explicit factory of its edition and with `autoDetect ()` where the file carries a BT-24, and asserts that there are no errors and that the edition and the document kind are right.
+3. Spot-checks the new EN 16931:2026 terms on the `d25a-new-*` files (payment terms, third-party charges, line delivery, line references, ...).
+4. Checks the failure paths: `autoDetect ()` on a document without BT-24 and on input that is not XML.
 
-This catches regressions in the field-by-field mapping without needing a full PDF/HTML render cycle.
+JSON snapshots of the whole `PhloxInvoice` are not implemented yet; the assertions above catch mapping regressions for the terms they name.

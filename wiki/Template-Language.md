@@ -2,7 +2,7 @@
 
 `phlox` ships with a small **template language** that lets a caller customize the rendered invoice without writing Java. One template produces both HTML and PDF — the template is the **single source of truth** for layout and styling, and each writer maps it to its medium.
 
-> **Status:** Design proposal. Not yet implemented. Targeted at the 0.4.0 milestone (see [[Roadmap]]).
+> **Status:** Implemented in 0.4.0 for HTML and PDF. Use it with `HtmlRenderContext.setTemplate (…)` / `PdfRenderContext.setTemplate (…)` or the CLI option `--template` (see [[Roadmap]]).
 
 ## Why
 
@@ -70,7 +70,7 @@ The same file renders to HTML (semantic `<h1>`, `<h2>`, `<table>`, `<strong>`, `
 
 | Constraint | Consequence |
 |---|---|
-| Inline styling is **CommonMark + GFM**, parsed natively by ph-pdf-layout | `**bold**`, `*italic*`, `` `code` ``, `~~strike~~`, `[text](url)`, hard line break (`\`) — same byte sequence renders in both media. |
+| Inline styling is **CommonMark + GFM** | `**bold**`, `*italic*`, `` `code` ``, `~~strike~~`, `[text](url)` and line breaks work in both media. HTML maps them to elements; the PDF emitter folds them into the markup of `ph-pdf-layout-richtext` (`**`, `*`, `` ` ``, `~~`, `{link[uri]}`), which `PLRichText` wraps and draws. |
 | `commonmark-java` parses block structure (headings, lists, blockquote, fenced code, tables) | Block-level AST is shared; emitters diverge only on the output API call. |
 | CommonMark does **not** define inline color, underline, font size, or background | These are intentionally absent from the template grammar. Block-level color comes from a per-block attribute syntax (see "Block attributes"); document-wide colors come from `HtmlRenderContext.setCustomStylesheet(...)` / `PdfRenderContext` font setters. |
 | Tables can't nest paragraphs of arbitrary block content | GFM tables are single-line cells with inline-only content — matches what `PLTable` supports natively. |
@@ -91,7 +91,7 @@ The same file renders to HTML (semantic `<h1>`, `<h2>`, `<table>`, `<strong>`, `
 | Page heading | CommonMark ATX heading | `# title` |
 | Section heading | CommonMark ATX heading | `## title` |
 | Sub-section heading | CommonMark ATX heading | `### title` |
-| Paragraph | CommonMark | (blank-line-separated text) |
+| Paragraph | `<p>…</p>` | one `PLRichText`; a line break in the template is a line break in the output |
 | Unordered list | CommonMark | `- item` |
 | Ordered list | CommonMark | `1. item` |
 | Blockquote | CommonMark | `> note` |
@@ -320,25 +320,25 @@ How each CommonMark / GFM / Mustache construct lands in the two output formats:
 
 | Template construct | HTML | PDF (via `ph-pdf-layout`) |
 |---|---|---|
-| `# title` | `<h1 class="phlox-title">title</h1>` | `PLText` with `headerFont`, largest size |
-| `## title` | `<h2 class="phlox-section-title">title</h2>` | `PLText` with `headerFont` |
-| `### title` | `<h3 class="phlox-subsection-title">title</h3>` | `PLText` with `headerFont`, smaller size |
+| `# title` | `<h1 class="phlox-title">title</h1>` | `PLRichText`, bold 18 pt |
+| `## title` | `<h2 class="phlox-section-title">title</h2>` | `PLRichText` with `headerFont` and a grey rule below |
+| `### title` | `<h3 class="phlox-subsection-title">title</h3>` | `PLRichText`, bold body font |
 | Paragraph | `<p>…</p>` | `PLRichText` populated from ph-pdf-layout's CommonMark inline parser |
 | `**bold**` | `<strong>` | bold run inside `PLRichText` |
 | `*italic*` | `<em>` | italic run inside `PLRichText` |
 | `~~strike~~` (GFM) | `<s>` | strikethrough run inside `PLRichText` |
-| `` `code` `` | `<code>` | monospace run inside `PLRichText` |
-| `[text](uri)` | `<a href="uri">text</a>` | hyperlink annotation inside `PLRichText` |
-| `<https://…>` (autolink) | `<a href="…">…</a>` | hyperlink annotation |
-| `- item` (unordered list) | `<ul><li>…</li></ul>` | `ph-pdf-layout` bullet list block |
-| `1. item` (ordered list) | `<ol><li>…</li></ol>` | `ph-pdf-layout` numbered list block |
-| `> quote` | `<blockquote>…</blockquote>` | indented block with left rule |
+| `` `code` `` | `<code>` | Courier (standard 14 font) run inside `PLRichText` |
+| `[text](uri)` | `<a href="uri">text</a>` | link inside `PLRichText` for `http`, `https`, `mailto`, `tel`, `ftp`, `ftps`; other targets (e.g. `attachment:…`) stay plain text |
+| `<https://…>` (autolink) | `<a href="…">…</a>` | link, as above |
+| `- item` (unordered list) | `<ul><li>…</li></ul>` | `PLBulletPointList` with filled dots |
+| `1. item` (ordered list) | `<ol><li>…</li></ol>` | `PLBulletPointList`, numbered from the list's start number |
+| `> quote` | `<blockquote>…</blockquote>` | `PLBox` with a grey left rule |
 | ` ``` …  ``` ` | `<pre><code>…</code></pre>` | indented block in monospace font |
-| `---` (thematic break) | `<hr>` | thin horizontal rule |
-| GFM table | `<table>…</table>` | `PLTable` |
-| Inline image `![alt](url)` | `<img src="…" alt="…">` (inline inside `<p>`) | `PLImage` as a standalone block; the surrounding paragraph is split into pre-image `PLRichText` + `PLImage` + post-image `PLRichText` (see "Images" below) |
+| `---` (thematic break) | `<hr>` | thin grey line |
+| GFM table | `<table class="phlox-table">…</table>` | `PLTable`; the header row repeats on every page; columns share the width in proportion to their longest content |
+| Image `![alt](url)` | `<img src="…" alt="…">` | `PLImage` as a standalone block when it is alone in its paragraph (PNG, JPEG, GIF); an image inside running text is skipped in PDF |
 | `{{pagebreak}}` | `<div style="page-break-after:always"></div>` | `PLPageBreak` |
-| `{{class:name}}` before block (or before a table row) | class attribute on the next block / table row | `PLTableCell` fill / `PLBox` fill from `PdfRenderContext` style map |
+| `{{class:name}}` before a block (or before a table row) | class `phlox-name` on the next block / table row | fill and text colour from `PdfRenderContext.putBlockStyle (name, new PdfBlockStyle (fill, text))` |
 
 ## Limitations
 
@@ -347,7 +347,7 @@ A direct consequence of "CommonMark is the grammar":
 - **No inline color**, **no inline underline**, **no inline font size**, **no inline background color** — CommonMark doesn't define them, and we explicitly choose not to add custom inline extensions. Use `{{class:...}}` on the enclosing block, a `setCustomStylesheet(...)` (HTML only), or the body/header font setters (PDF only).
 - **No nested block content inside table cells** — GFM tables permit inline-only cell content. A multi-paragraph cell isn't expressible. This matches `PLTable`'s capabilities and the EU "Common View" stylesheet conventions for invoices.
 - **No subscript / superscript** — CommonMark has neither. Use Unicode (`m²`, `H₂O`) when needed.
-- **No raw HTML pass-through** — the HTML emitter rejects CommonMark's raw-HTML blocks at parse time, because the PDF emitter can't honor them. This keeps the two outputs symmetric and avoids HTML injection through templates.
+- **No raw HTML pass-through** — raw HTML in a template is emitted as escaped text in both media, so templates cannot inject markup. The one exception is `<br>`, which is a line break; it is the only way to break a line inside a table cell.
 - **No template includes / partials** — JMustache supports partials (`{{> name}}`); we leave them disabled in 0.4.0 to keep templates single-file. May relax in a later milestone.
 
 When a template uses an unsupported construct the engine fails fast at parse time with a precise location, not at render time.
@@ -376,7 +376,7 @@ Each stage is independently testable:
 | `phlox-template` | `org.commonmark:commonmark-ext-gfm-tables` | 0.22.0 | ~25 KB | BSD-2-Clause |
 | `phlox-template` | `org.commonmark:commonmark-ext-gfm-strikethrough` | 0.22.0 | ~10 KB | BSD-2-Clause |
 | `phlox-html` | `phlox-template` (compile) | (this project) | — | Apache 2.0 |
-| `phlox-pdf` | `phlox-template` (compile) + (existing) `ph-pdf-layout` with its CommonMark inline support | (TBD) | (unchanged) | Apache 2.0 |
+| `phlox-pdf` | `phlox-template` (compile) + (existing) `ph-pdf-layout` + `ph-pdf-layout-richtext` | 8.3.5 | ~70 KB | (unchanged) | Apache 2.0 |
 
 No JRuby, no servlet container, no template-engine framework. All four new third-party deps are pure Java and version-stable.
 

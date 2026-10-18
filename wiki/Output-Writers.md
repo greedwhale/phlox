@@ -147,10 +147,15 @@ Both writers honour `RenderContext.setUserWatermark(...)` and the static `PhloxP
 - They don't recompute totals. They render BT-106 through BT-115 verbatim. Discrepancies between displayed numbers reflect discrepancies in the source.
 - They don't honor `xml:lang` from the source. The output language is dictated by `RenderContext.m_aLocale`, not by the invoice payload.
 
+## Template mode
+
+Both writers have a second, template-driven path. When `RenderContext.getTemplate ()` is set, `HtmlInvoiceWriter` hands the rendered template (`PhloxTemplate.renderAst`) to `HtmlTemplateEmitter`, and `PdfInvoiceWriter` hands it to `PdfTemplateEmitter`; the section methods above are not used. The head, stylesheet and watermarks of the HTML page and the page size, margins, fonts and watermark of the PDF are the same in both modes. See [[Template Language]] and [[Template Processing]]. The CLI switches to this mode with `--template`.
+
 ## Testing strategy
 
-For each writer:
+What exists today: for both writers a corpus smoke test (parse every example file, render it in EN and DE, assert a non-empty result with the right invoice number, and write the output to `generated/`), content assertions for the 2026 terms, and the same for the template path. The PDF template tests also read the PDF back with PDFBox (text, page count, fonts, stroke operators).
+
+What is still planned:
 
 1. Golden-file tests for HTML — diff against a checked-in fixture.
 2. Visual-regression tests for PDF — render to PNG (via PDFBox), compare pixel-perfect to a checked-in PNG, and only re-baseline on intentional layout changes.
-3. Round-trip smoke test — read an example file, render it in both EN and DE for both formats, assert no exceptions and non-empty output.

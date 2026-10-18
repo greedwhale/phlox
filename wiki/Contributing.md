@@ -29,7 +29,7 @@ See the project root coding rules for the complete list.
 
 | You want to … | … do this |
 |---------------|-----------|
-| Add a new BT/BG to the model | Edit `phlox-api`, update [[Domain Model]] and the relevant resource bundles. |
+| Add a new BT/BG to the model | Edit `phlox-api`, update [[Domain Model]] and the relevant resource bundles (EN and DE). Then show it in `HtmlInvoiceWriter`, `PdfInvoiceWriter` **and** the template path (`PhloxModelRegistry`, `default.ptpl`), and fill it in the readers of both editions. |
 | Add a new source syntax | New `phlox-<syntax>` module that depends on `phlox-api`. Don't touch existing readers. |
 | Add a new output format | New `phlox-<format>` module that depends on `phlox-api`. Don't touch existing writers. |
 | Add a new language | Drop two `*_<lang>.properties` files into `phlox-api/src/main/resources`. See [[Localization]]. |
@@ -40,9 +40,11 @@ See the project root coding rules for the complete list.
 ## Tests
 
 - **Unit tests:** JUnit 4 (matches the rest of the Helger stack).
-- **Reader tests:** Golden-file JSON snapshots of `PhloxInvoice` for every source corpus file. Diff failures usually mean an XML-mapping bug.
-- **Writer tests:** Golden-file HTML strings for `phlox-html`; PDFBox-rendered PNG visual diffs for `phlox-pdf`. Re-baseline only on intentional layout changes — review the new image before committing.
-- **End-to-end smoke:** Read corpus file → render in EN and DE for both formats → assert no exceptions and non-empty output. Wired into CI.
+- **Reader tests:** every example file of the corpus must parse without errors; the 2026 terms are spot-checked on the `d25a-new-*` files.
+- **Writer tests:** corpus smoke tests for HTML and PDF, with and without a template (EN and DE), plus content assertions. The PDF tests read the PDF back with PDFBox.
+- **Label tests:** every BG/BT key exists in the English and the German bundle.
+- **CLI tests:** `PhloxCliTest` runs the command line through picocli.
+- Golden-file HTML and PDF visual-regression baselines do not exist yet (see [[Roadmap]]).
 
 ## PRs
 
