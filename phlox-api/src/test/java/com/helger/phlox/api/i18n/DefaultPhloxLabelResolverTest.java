@@ -74,11 +74,22 @@ public final class DefaultPhloxLabelResolverTest
   }
 
   @Test
-  public void testBundleWinsOverTheEnglishCodeLists ()
+  public void testNamesComeFromTheCodeLists ()
   {
-    // doctype.380 is translated in the phlox bundles
+    assertEquals ("Standard rate", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("vatcategory", "S", Locale.ENGLISH));
+    assertEquals ("Regelsteuersatz", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("vatcategory", "S", Locale.GERMAN));
+    // The document types exist in English only
     assertEquals ("Commercial invoice", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("doctype", "380", Locale.ENGLISH));
-    assertEquals ("Handelsrechnung", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("doctype", "380", Locale.GERMAN));
+    assertEquals ("Commercial invoice", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("doctype", "380", Locale.GERMAN));
+    // Any other locale gets the English names
+    assertEquals ("Standard rate", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("vatcategory", "S", Locale.FRENCH));
+  }
+
+  @Test
+  public void testUnitCodes ()
+  {
+    assertEquals ("kilogram", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("unit", "KGM", Locale.ENGLISH));
+    assertEquals ("kilogram", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("unit", "KGM", Locale.GERMAN));
   }
 
   @Test
@@ -92,7 +103,7 @@ public final class DefaultPhloxLabelResolverTest
   @Test
   public void testEnglishNamesOfTheEn16931CodeListsAreTheFallback ()
   {
-    // Neither of them is in the phlox bundles, in no language
+    // These lists have no translation
     for (final Locale aLocale : new Locale [] { Locale.ENGLISH, Locale.GERMAN })
     {
       assertEquals ("Reverse charge", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("vatexemption", "VATEX-EU-AE", aLocale));

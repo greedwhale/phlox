@@ -172,8 +172,14 @@ public final class HtmlTemplateEmitterTest
   {
     final PhloxInvoice aModel = _read (UblInvoiceReader.fromUbl21 (), "2017/ubl/invoice/ubl-tc434-example1.xml");
     final String sHtml = _render (aModel, PhloxTemplate.getDefault (), Locale.ENGLISH);
-    // {{class:totals-due}} in front of the last row of the totals table
-    assertTrue (sHtml.contains ("<tr class=\"phlox-totals-due\">"));
+    // {{group:due}} wraps the amount due, {{row:parties}} lays out the parties side by side
+    assertTrue (sHtml.contains ("<div class=\"phlox-due\">"));
+    assertTrue (sHtml.contains ("<div class=\"phlox-row phlox-parties\">"));
+    // {{class:name}} in front of a table row
+    final String sRowHtml = _render (aModel,
+                                     PhloxTemplate.fromString ("| A | B |\n|---|---|\n{{class:totals-due}}\n| 1 | 2 |\n"),
+                                     Locale.ENGLISH);
+    assertTrue (sRowHtml, sRowHtml.contains ("<tr class=\"phlox-totals-due\">"));
     // Item name and seller item identifier are separated by a <br> in the lines table
     assertTrue (Pattern.compile ("</strong>\\s*<br />").matcher (sHtml).find ());
     assertFalse (sHtml.contains ("</strong>\\"));

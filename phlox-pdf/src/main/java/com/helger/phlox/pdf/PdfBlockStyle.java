@@ -22,15 +22,198 @@ import org.jspecify.annotations.Nullable;
 import com.helger.pdflayout.base.PLColor;
 
 /**
- * The look of a template block or table row that was marked with {@code {{class:name}}}. Register
- * it under that name with {@link PdfRenderContext#putBlockStyle(String, PdfBlockStyle)}.
+ * The look of a template block, group or table row that was marked with {@code {{class:name}}},
+ * {@code {{group:name}}} or {@code {{row:name}}}. Register it under that name with
+ * {@link PdfRenderContext#putBlockStyle(String, PdfBlockStyle)}. The style is immutable; create it
+ * with a {@link Builder}, either from scratch ({@link #builder()}) or from an existing style
+ * ({@link #builder(PdfBlockStyle)}, {@link #toBuilder()}).
  *
  * @author Philip Helger
  */
 public final class PdfBlockStyle
 {
+  /** The default width of the top and bottom line in points. */
+  public static final float DEFAULT_BORDER_WIDTH = 0.75f;
+
+  /**
+   * Builder for {@link PdfBlockStyle}.
+   *
+   * @author Philip Helger
+   */
+  public static final class Builder
+  {
+    private PLColor m_aFillColor;
+    private PLColor m_aTextColor;
+    private float m_fPadding;
+    private PLColor m_aBorderTopColor;
+    private PLColor m_aBorderBottomColor;
+    private float m_fBorderWidth = DEFAULT_BORDER_WIDTH;
+    private Float m_aFontSize;
+    private boolean m_bBold;
+    private Float m_aWidthPercent;
+
+    private Builder ()
+    {}
+
+    /**
+     * Set the background colour.
+     *
+     * @param a
+     *        The colour. May be {@code null} for no background.
+     * @return this for chaining
+     */
+    @NonNull
+    public Builder fillColor (@Nullable final PLColor a)
+    {
+      m_aFillColor = a;
+      return this;
+    }
+
+    /**
+     * Set the text colour.
+     *
+     * @param a
+     *        The colour. May be {@code null} to keep the colour of the font.
+     * @return this for chaining
+     */
+    @NonNull
+    public Builder textColor (@Nullable final PLColor a)
+    {
+      m_aTextColor = a;
+      return this;
+    }
+
+    /**
+     * Set the space between the border of a block and its content.
+     *
+     * @param f
+     *        The padding in points. Must be &ge; 0.
+     * @return this for chaining
+     */
+    @NonNull
+    public Builder padding (final float f)
+    {
+      m_fPadding = f;
+      return this;
+    }
+
+    /**
+     * Set the line above the block.
+     *
+     * @param a
+     *        The colour. May be {@code null} for no line.
+     * @return this for chaining
+     */
+    @NonNull
+    public Builder borderTopColor (@Nullable final PLColor a)
+    {
+      m_aBorderTopColor = a;
+      return this;
+    }
+
+    /**
+     * Set the line below the block.
+     *
+     * @param a
+     *        The colour. May be {@code null} for no line.
+     * @return this for chaining
+     */
+    @NonNull
+    public Builder borderBottomColor (@Nullable final PLColor a)
+    {
+      m_aBorderBottomColor = a;
+      return this;
+    }
+
+    /**
+     * Set the width of the top and bottom line.
+     *
+     * @param f
+     *        The line width in points.
+     * @return this for chaining
+     */
+    @NonNull
+    public Builder borderWidth (final float f)
+    {
+      m_fBorderWidth = f;
+      return this;
+    }
+
+    /**
+     * Set the font size that replaces the one of the block.
+     *
+     * @param a
+     *        The font size in points. May be {@code null} to keep the size of the font.
+     * @return this for chaining
+     */
+    @NonNull
+    public Builder fontSize (@Nullable final Float a)
+    {
+      m_aFontSize = a;
+      return this;
+    }
+
+    /**
+     * Set whether the text is bold.
+     *
+     * @param b
+     *        {@code true} for bold text.
+     * @return this for chaining
+     */
+    @NonNull
+    public Builder bold (final boolean b)
+    {
+      m_bBold = b;
+      return this;
+    }
+
+    /**
+     * Set the width of a cell in a row.
+     *
+     * @param a
+     *        The width in percent of the row. May be {@code null} if the cell shares the remaining
+     *        width with the other cells without a width.
+     * @return this for chaining
+     */
+    @NonNull
+    public Builder widthPercent (@Nullable final Float a)
+    {
+      m_aWidthPercent = a;
+      return this;
+    }
+
+    /**
+     * @return The new style. Never {@code null}.
+     */
+    @NonNull
+    public PdfBlockStyle build ()
+    {
+      return new PdfBlockStyle (this);
+    }
+  }
+
   private final PLColor m_aFillColor;
   private final PLColor m_aTextColor;
+  private final float m_fPadding;
+  private final PLColor m_aBorderTopColor;
+  private final PLColor m_aBorderBottomColor;
+  private final float m_fBorderWidth;
+  private final Float m_aFontSize;
+  private final boolean m_bBold;
+  private final Float m_aWidthPercent;
+
+  private PdfBlockStyle (@NonNull final Builder aBuilder)
+  {
+    m_aFillColor = aBuilder.m_aFillColor;
+    m_aTextColor = aBuilder.m_aTextColor;
+    m_fPadding = aBuilder.m_fPadding;
+    m_aBorderTopColor = aBuilder.m_aBorderTopColor;
+    m_aBorderBottomColor = aBuilder.m_aBorderBottomColor;
+    m_fBorderWidth = aBuilder.m_fBorderWidth;
+    m_aFontSize = aBuilder.m_aFontSize;
+    m_bBold = aBuilder.m_bBold;
+    m_aWidthPercent = aBuilder.m_aWidthPercent;
+  }
 
   /**
    * Create a new style.
@@ -42,8 +225,7 @@ public final class PdfBlockStyle
    */
   public PdfBlockStyle (@Nullable final PLColor aFillColor, @Nullable final PLColor aTextColor)
   {
-    m_aFillColor = aFillColor;
-    m_aTextColor = aTextColor;
+    this (builder ().fillColor (aFillColor).textColor (aTextColor));
   }
 
   /**
@@ -60,7 +242,7 @@ public final class PdfBlockStyle
   /**
    * Get the text colour.
    *
-   * @return The text colour or {@code null} if the colour of the font is kept.
+   * @return The text colour or {@code null} to keep the colour of the font.
    */
   @Nullable
   public PLColor getTextColor ()
@@ -69,28 +251,146 @@ public final class PdfBlockStyle
   }
 
   /**
-   * Create a style that only has a background colour.
+   * Get the space between the border of a block and its content.
+   *
+   * @return The padding in points. Always &ge; 0.
+   */
+  public float getPadding ()
+  {
+    return m_fPadding;
+  }
+
+  /**
+   * Get the colour of the line above a block.
+   *
+   * @return The colour or {@code null} if there is no line.
+   */
+  @Nullable
+  public PLColor getBorderTopColor ()
+  {
+    return m_aBorderTopColor;
+  }
+
+  /**
+   * Get the colour of the line below a block.
+   *
+   * @return The colour or {@code null} if there is no line.
+   */
+  @Nullable
+  public PLColor getBorderBottomColor ()
+  {
+    return m_aBorderBottomColor;
+  }
+
+  /**
+   * Get the width of the top and bottom line.
+   *
+   * @return The line width in points.
+   */
+  public float getBorderWidth ()
+  {
+    return m_fBorderWidth;
+  }
+
+  /**
+   * Get the font size that replaces the one of the block.
+   *
+   * @return The font size in points or {@code null} to keep the size of the font.
+   */
+  @Nullable
+  public Float getFontSize ()
+  {
+    return m_aFontSize;
+  }
+
+  /**
+   * Check if the text is set in bold.
+   *
+   * @return {@code true} if the text of the block is bold.
+   */
+  public boolean isBold ()
+  {
+    return m_bBold;
+  }
+
+  /**
+   * Get the width of a cell in a row.
+   *
+   * @return The width in percent of the row or {@code null} if the cell shares the remaining width
+   *         with the other cells without a width.
+   */
+  @Nullable
+  public Float getWidthPercent ()
+  {
+    return m_aWidthPercent;
+  }
+
+  /**
+   * Create a builder that is initialized with the values of this style.
+   *
+   * @return A new builder. Never {@code null}.
+   */
+  @NonNull
+  public Builder toBuilder ()
+  {
+    return builder (this);
+  }
+
+  /**
+   * Create an empty builder.
+   *
+   * @return A new builder. Never {@code null}.
+   */
+  @NonNull
+  public static Builder builder ()
+  {
+    return new Builder ();
+  }
+
+  /**
+   * Create a builder that is initialized with the values of an existing style.
+   *
+   * @param aSource
+   *        The style to start from. Never {@code null}.
+   * @return A new builder. Never {@code null}.
+   */
+  @NonNull
+  public static Builder builder (@NonNull final PdfBlockStyle aSource)
+  {
+    return new Builder ().fillColor (aSource.m_aFillColor)
+                         .textColor (aSource.m_aTextColor)
+                         .padding (aSource.m_fPadding)
+                         .borderTopColor (aSource.m_aBorderTopColor)
+                         .borderBottomColor (aSource.m_aBorderBottomColor)
+                         .borderWidth (aSource.m_fBorderWidth)
+                         .fontSize (aSource.m_aFontSize)
+                         .bold (aSource.m_bBold)
+                         .widthPercent (aSource.m_aWidthPercent);
+  }
+
+  /**
+   * Create a style with a background colour only.
    *
    * @param aFillColor
    *        The background colour. Never {@code null}.
-   * @return A new style. Never {@code null}.
+   * @return The new style. Never {@code null}.
    */
   @NonNull
   public static PdfBlockStyle fill (@NonNull final PLColor aFillColor)
   {
-    return new PdfBlockStyle (aFillColor, null);
+    return builder ().fillColor (aFillColor).build ();
   }
 
   /**
-   * Create a style that only has a text colour.
+   * Create a style with a text colour only.
    *
    * @param aTextColor
    *        The text colour. Never {@code null}.
-   * @return A new style. Never {@code null}.
+   * @return The new style. Never {@code null}.
    */
   @NonNull
   public static PdfBlockStyle text (@NonNull final PLColor aTextColor)
   {
-    return new PdfBlockStyle (null, aTextColor);
+    return builder ().textColor (aTextColor).build ();
   }
 }

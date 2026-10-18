@@ -16,8 +16,12 @@
  */
 package com.helger.phlox.html;
 
+import java.nio.charset.StandardCharsets;
+
 import org.jspecify.annotations.NonNull;
 
+import com.helger.base.io.stream.StreamHelper;
+import com.helger.base.string.StringReplace;
 import com.helger.html.css.DefaultCSSClassProvider;
 import com.helger.html.css.ICSSClassProvider;
 import com.helger.html.hc.html.HC_Target;
@@ -25,6 +29,7 @@ import com.helger.html.hc.html.grouping.HCDiv;
 import com.helger.html.hc.html.metadata.HCStyle;
 import com.helger.html.hc.html.root.HCHtml;
 import com.helger.html.hc.html.textlevel.HCA;
+import com.helger.io.resource.ClassPathResource;
 import com.helger.phlox.api.model.EPhloxDocumentKind;
 import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.api.watermark.PhloxProgramWatermark;
@@ -91,50 +96,18 @@ final class HtmlDocumentSupport
     return aD;
   }
 
-  /** Embedded default stylesheet — minimal, prefix-aware. */
+  /** The classpath location of the default stylesheet; <code>{p}</code> stands for the class prefix. */
+  private static final String DEFAULT_CSS_PATH = "phlox-default.css";
+
+  /** Embedded default stylesheet - prefix-aware. */
   @NonNull
   static String defaultCss (@NonNull final String p)
   {
-    return "body{font-family:sans-serif;margin:2rem;color:#222;}"
-           + "." + p + "page{max-width:840px;margin:0 auto;}"
-           + "." + p + "section-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;}"
-           + "." + p + "title{margin:0 0 .5rem 0;font-size:1.6rem;}"
-           + "." + p + "logo{max-height:80px;}"
-           + "." + p + "header-meta{display:grid;grid-template-columns:auto auto;gap:.25rem 1rem;}"
-           + "." + p + "section-title{font-size:1rem;margin:1.5rem 0 .5rem 0;border-bottom:1px solid #ccc;padding-bottom:.2rem;}"
-           + "." + p + "parties-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}"
-           + "." + p + "party-title{font-size:.9rem;color:#555;margin:0 0 .25rem 0;text-transform:uppercase;}"
-           + "." + p + "party-name{font-weight:bold;}"
-           + "." + p + "address div{line-height:1.4;}"
-           + "." + p + "contact{margin-top:.5rem;font-size:.9rem;color:#444;}"
-           + "." + p + "kv-label{color:#666;margin-right:.5rem;}"
-           + "." + p + "kvgrid{display:grid;grid-template-columns:auto 1fr;column-gap:1rem;row-gap:.2rem;}"
-           + "." + p + "lines-table,." + p + "vat-table,." + p + "ac-table{width:100%;border-collapse:collapse;margin-top:.5rem;}"
-           + "." + p + "lines-table th,." + p + "vat-table th,." + p + "ac-table th{background:#f5f5f5;text-align:left;padding:.4rem .5rem;border-bottom:1px solid #ccc;}"
-           + "." + p + "lines-table td,." + p + "vat-table td,." + p + "ac-table td{padding:.4rem .5rem;border-bottom:1px solid #eee;vertical-align:top;}"
-           // Right-align numeric columns in each table, applies to both <th> and <td>:
-           //   lines-table cols 3..6 = quantity, unit price, VAT, line total
-           //   ac-table cols 3..4 = VAT, amount
-           //   vat-table cols 2..4 = rate, taxable amount, tax amount
-           + "." + p + "lines-table th:nth-child(n+3),." + p + "lines-table td:nth-child(n+3){text-align:right;font-variant-numeric:tabular-nums;}"
-           + "." + p + "ac-table th:nth-child(n+3),." + p + "ac-table td:nth-child(n+3){text-align:right;font-variant-numeric:tabular-nums;}"
-           + "." + p + "vat-table th:nth-child(n+2),." + p + "vat-table td:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums;}"
-           + "." + p + "item-name{font-weight:bold;}"
-           + "." + p + "item-desc,." + p + "item-attr,." + p + "line-note{color:#555;font-size:.9rem;}"
-           + "." + p + "totals-ladder{display:grid;grid-template-columns:1fr auto;row-gap:.25rem;max-width:480px;margin-left:auto;}"
-           + "." + p + "total-row{display:contents;}"
-           + "." + p + "total-label{padding-right:1rem;}"
-           + "." + p + "total-amount{text-align:right;font-variant-numeric:tabular-nums;}"
-           + "." + p + "totals-due ." + p + "total-row:last-child ." + p + "total-amount{font-weight:bold;border-top:2px solid #000;padding-top:.25rem;}"
-           + "." + p + "watermark-user{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-45deg);font-size:6em;color:rgba(128,128,128,0.12);pointer-events:none;z-index:9999;user-select:none;}"
-           + "." + p + "watermark-program{position:fixed;bottom:4mm;right:4mm;font-size:0.5em;color:rgba(128,128,128,0.35);z-index:9999;}"
-           + "." + p + "watermark-program a{color:inherit;}"
-           + "." + p + "subsection-title{font-size:.9rem;margin:1rem 0 .4rem 0;}"
-           + "." + p + "table{width:100%;border-collapse:collapse;margin-top:.5rem;}"
-           + "." + p + "table th{background:#f5f5f5;text-align:left;padding:.4rem .5rem;border-bottom:1px solid #ccc;}"
-           + "." + p + "table td{padding:.4rem .5rem;border-bottom:1px solid #eee;vertical-align:top;}"
-           + "." + p + "totals-due td{font-weight:bold;border-top:2px solid #000;}"
-           + "@media print{." + p + "watermark-user{position:fixed;}}";
+    final String sCss = StreamHelper.getAllBytesAsString (new ClassPathResource (DEFAULT_CSS_PATH),
+                                                          StandardCharsets.UTF_8);
+    if (sCss == null)
+      throw new IllegalStateException ("Failed to read the classpath resource '" + DEFAULT_CSS_PATH + "'");
+    return StringReplace.replaceAll (sCss, "{p}", p);
   }
 
   /**

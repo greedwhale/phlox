@@ -54,7 +54,7 @@ Standard Maven (Java 17+, Maven 3.x). The effective compiler release is 17: the 
 ## Localization
 
 - Labels in `phlox-api/src/main/resources/phlox-labels_{en,de}.properties`.
-- Codelists in `phlox-api/src/main/resources/phlox-codelists_{en,de}.properties`.
+- Names of code list values (VAT categories, payment means, countries, units, ...) are not kept here: `DefaultPhloxLabelResolver` asks the `en16931-basics` enums (`getDisplayText (Locale)`) and `UnitCodes` of `ph-codelists-unit`, which fall back to English. Add translations there, not in phlox.
 - Default resolver: `DefaultPhloxLabelResolver`. Callers override via `RenderContext.setLabelResolver(...)`.
 - Adding a language = adding the `.properties` files plus a resource-bundle provider.
 

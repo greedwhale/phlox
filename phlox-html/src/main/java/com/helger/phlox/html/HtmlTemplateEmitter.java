@@ -61,6 +61,7 @@ import com.helger.html.hc.html.textlevel.HCEM;
 import com.helger.html.hc.html.textlevel.HCS;
 import com.helger.html.hc.html.textlevel.HCStrong;
 import com.helger.html.hc.impl.HCTextNode;
+import com.helger.phlox.template.ast.PhloxGroupNode;
 import com.helger.phlox.template.ast.PhloxPageBreakNode;
 import com.helger.phlox.template.ast.PhloxResolvedImage;
 import com.helger.phlox.template.ast.PhloxTemplateAst;
@@ -350,7 +351,9 @@ public final class HtmlTemplateEmitter
     }
     if (aNode instanceof ThematicBreak)
     {
-      aTarget.addChild (new HCHR ());
+      final HCHR aHR = new HCHR ();
+      _addClass (aAst, aNode, aHR);
+      aTarget.addChild (aHR);
       return;
     }
     if (aNode instanceof final TableBlock aTable)
@@ -363,6 +366,16 @@ public final class HtmlTemplateEmitter
       final HCImg aImg = _createImage (aAst, aImage);
       if (aImg != null)
         aTarget.addChild (aImg);
+      return;
+    }
+    if (aNode instanceof final PhloxGroupNode aGroup)
+    {
+      final HCDiv aDiv = new HCDiv ();
+      if (aGroup.isRow ())
+        aDiv.addClass (HtmlDocumentSupport.cls (m_aCtx.getCssClassPrefix () + "row"));
+      _addClass (aAst, aGroup, aDiv);
+      _addChildrenRecursive (aAst, aGroup, aDiv);
+      aTarget.addChild (aDiv);
       return;
     }
     if (aNode instanceof PhloxPageBreakNode)

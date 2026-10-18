@@ -1,268 +1,199 @@
 {{!
-  ─────────────────────────────────────────────────────────────────────────
-  phlox default template — language-independent
-  ─────────────────────────────────────────────────────────────────────────
+  phlox default template - language independent. Every literal string routes through
+  {{label:...}}, so one template serves all languages.
 
-  Reproduces the section grammar described in [[Output Writers]] (wiki).
-  Loaded automatically when AbstractRenderContext.getTemplate() is null.
-
-  All literal strings route through {{label:...}}, so this single template
-  serves every language phlox supports — adding a new locale means dropping
-  in a new phlox-labels_<lang>.properties in phlox-api, never a new template.
-
-  Conventions used here:
-  - Sections wrapped in {{?BG-X}} or {{?BT-X}} vanish when their data is
-    empty; no manual whitespace cleanup needed.
-  - GFM tables are used wherever the source has a list shape: invoice lines,
-    allowances, charges, VAT breakdowns, document totals, supporting docs.
-  - {{class:...}} hints flag rows or blocks where the HTML side wants a CSS
-    class and the PDF side wants a fill colour from the style map.
-  - Inside each section, the comment block above lists every BG/BT used.
-    Format: "BT-N  BT name (cardinality)" — see [[Domain Model]] for the
-    full inventory.
+  Layout tags: {{row:name}} lays the groups up to its {{end}} side by side, {{group:name}} stacks
+  the blocks up to its {{end}}. The name is the CSS class (HTML) and the key of the block style
+  (PDF). {{class:name}} on a line of its own styles the next block.
 }}
+{{row:head}}
 
-{{!
-  ─── Logo ───────────────────────────────────────────────────────────────
-  Optional; supplied via RenderContext.setLogo(PhloxAttachment).
-  Resolved via the "attachment:logo" image URL scheme — see
-  [[Template Language]] § Images.
-}}
-{{?logo}}![Logo](attachment:logo)
+{{group:head-main}}
 
-{{/logo}}
-{{!
-  ─── Header — document-level BTs ────────────────────────────────────────
-  BT-1   Invoice number                       (1..1)
-  BT-2   Invoice issue date                   (1..1)
-  BT-166 Invoice issue time                   (0..1, EN 16931:2026)
-  BT-3   Invoice type code                    (1..1, UNTDID 1001)
-  BT-5   Invoice currency code                (1..1, ISO 4217)
-  BT-9   Payment due date                     (0..1)
-  BT-10  Buyer reference                      (0..n since EN 16931:2026; comma-joined, scheme in parentheses)
-  BT-167 VAT accounting currency exchange rate (0..1, EN 16931:2026; BT-167-2 source, BT-167-1 target currency)
-}}
-{{?is_invoice}}# {{label:section.header.title.invoice}}: {{BT-1}}{{/is_invoice}}{{?is_credit_note}}# {{label:section.header.title.creditnote}}: {{BT-1}}{{/is_credit_note}}
+{{class:kind}}
 
-**{{label:BT-2}}:** {{BT-2 | date:long}}
-{{?BT-166}}
-**{{label:BT-166}}:** {{BT-166}}
-{{/BT-166}}
-{{?BT-3}}
-**{{label:BT-3}}:** {{BT-3 | code:doctype}}
+{{?is_invoice}}{{label:section.header.title.invoice}}{{/is_invoice}}{{?is_credit_note}}{{label:section.header.title.creditnote}}{{/is_credit_note}}
+
+# {{BT-1}}
+
+{{class:meta}}
+
+| | |
+|---|---|
+| {{label:BT-2}} | {{BT-2 | date:long}} |
+{{?BT-166}}| {{label:BT-166}} | {{BT-166}} |
+{{/BT-166}}{{?BT-9}}| {{label:BT-9}} | {{BT-9 | date:long}} |
+{{/BT-9}}{{?BT-7}}| {{label:BT-7}} | {{BT-7 | date:long}} |
+{{/BT-7}}{{?BT-8}}| {{label:BT-8}} | {{BT-8}} |
+{{/BT-8}}{{?BT-5}}| {{label:BT-5}} | {{BT-5}} |
+{{/BT-5}}{{?BT-167}}| {{label:BT-167}} | {{BT-167}}{{?BT-167-2}} ({{BT-167-2}} -> {{BT-167-1}}){{/BT-167-2}} |
+{{/BT-167}}{{?BT-10}}| {{label:BT-10}} | {{BT-10}} |
+{{/BT-10}}{{?BT-3}}| {{label:BT-3}} | {{BT-3 | code:doctype}} |
 {{/BT-3}}
-{{?BT-9}}
-**{{label:BT-9}}:** {{BT-9 | date:long}}
-{{/BT-9}}
-{{?BT-7}}
-**{{label:BT-7}}:** {{BT-7 | date:long}}
-{{/BT-7}}
-{{?BT-8}}
-**{{label:BT-8}}:** {{BT-8}}
-{{/BT-8}}
-{{?BT-5}}
-**{{label:BT-5}}:** {{BT-5}}
-{{/BT-5}}
-{{?BT-167}}
-**{{label:BT-167}}:** {{BT-167}}{{?BT-167-2}} ({{BT-167-2}} -> {{BT-167-1}}){{/BT-167-2}}
-{{/BT-167}}
-{{?BT-10}}
-**{{label:BT-10}}:** {{BT-10}}
-{{/BT-10}}
 
-{{!
-  ─── BG-2 — Process control ─────────────────────────────────────────────
-  BG-2   Process control                      (1..1)
-    BT-23  Business process type              (0..1)
-    BT-24  Specification identifier           (1..1)
-}}
-{{?BG-2.BT-24}}
-*{{label:BT-24}}: {{BG-2.BT-24}}*
-{{/BG-2.BT-24}}
-{{?BG-2.BT-23}}
-*{{label:BT-23}}: {{BG-2.BT-23}}*
-{{/BG-2.BT-23}}
+{{end}}
+{{?logo}}
 
-{{!
-  ─── BG-4 — Seller (+ BG-5 Postal address, + BG-6 Contact) ──────────────
-  BG-4   Seller                               (1..1)
-    BT-27  Seller name                        (1..1)
-    BT-28  Seller trading name                (0..1)
-    BT-30  Seller legal registration ID       (0..1)
-    BT-31  Seller VAT identifier              (0..1)
-    BT-32  Seller tax registration identifier (0..1)
-    BT-33  Seller additional legal info       (0..1)
-    BT-34  Seller electronic address          (0..1)
-  BG-5   Seller postal address                (1..1)
-    BT-35  Address line 1                     (0..1)
-    BT-36  Address line 2                     (0..1)
-    BT-37  City                               (1..1)
-    BT-38  Post code                          (0..1)
-    BT-39  Country subdivision                (0..1)
-    BT-40  Country code                       (1..1, ISO 3166-1 alpha-2)
-  BG-6   Seller contact                       (0..1)
-    BT-41  Contact point                      (0..1)
-    BT-42  Telephone                          (0..1)
-    BT-43  Email                              (0..1)
-}}
-## {{label:section.parties.title}}
+{{group:head-logo}}
 
-### {{label:BG-4}}
+![Logo](attachment:logo)
 
-**{{BG-4.BT-27}}**
+{{end}}
+{{/logo}}
+{{end}}
+
+{{class:rule}}
+
+---
+
+{{row:parties}}
+
+{{group:party}}
+
+{{class:label}}
+
+{{label:BG-4}}
+
+{{class:party-name}}
+
+{{BG-4.BT-27}}
+
 {{?BG-4.BT-28}}
-*{{BG-4.BT-28}}*
+{{class:muted}}
+
+{{BG-4.BT-28}}
+
 {{/BG-4.BT-28}}
+{{BG-4.BG-5.address}}
+{{BG-4.BG-5.BT-40 | code:country}}
 
-{{?BG-4.BG-5.address}}{{BG-4.BG-5.address}}
-{{/BG-4.BG-5.address}}{{BG-4.BG-5.BT-40 | code:country}}
+{{class:muted}}
 
-{{?BG-4.BT-29}}**{{label:BT-29}}:** {{BG-4.BT-29}}
-{{/BG-4.BT-29}}
-{{?BG-4.BT-31}}**{{label:BT-31}}:** {{BG-4.BT-31}}
-{{/BG-4.BT-31}}
-{{?BG-4.BT-32}}**{{label:BT-32}}:** {{BG-4.BT-32}}
-{{/BG-4.BT-32}}
-{{?BG-4.BT-30}}**{{label:BT-30}}:** {{BG-4.BT-30}}
-{{/BG-4.BT-30}}
-{{?BG-4.BT-34}}**{{label:BT-34}}:** {{BG-4.BT-34}}
-{{/BG-4.BT-34}}
-
-{{?BG-4.BG-6.BT-41}}{{BG-4.BG-6.BT-41}}{{?BG-4.BG-6.BT-42}} · {{BG-4.BG-6.BT-42}}{{/BG-4.BG-6.BT-42}}{{?BG-4.BG-6.BT-43}} · [{{BG-4.BG-6.BT-43}}](mailto:{{BG-4.BG-6.BT-43}}){{/BG-4.BG-6.BT-43}}
+{{?BG-4.BT-29}}{{label:BT-29}}: {{BG-4.BT-29}}
+{{/BG-4.BT-29}}{{?BG-4.BT-31}}{{label:BT-31}}: {{BG-4.BT-31}}
+{{/BG-4.BT-31}}{{?BG-4.BT-32}}{{label:BT-32}}: {{BG-4.BT-32}}
+{{/BG-4.BT-32}}{{?BG-4.BT-30}}{{label:BT-30}}: {{BG-4.BT-30}}
+{{/BG-4.BT-30}}{{?BG-4.BT-34}}{{label:BT-34}}: {{BG-4.BT-34}}
+{{/BG-4.BT-34}}{{?BG-4.BG-6.BT-41}}{{BG-4.BG-6.BT-41}}{{?BG-4.BG-6.BT-42}} · {{BG-4.BG-6.BT-42}}{{/BG-4.BG-6.BT-42}}{{?BG-4.BG-6.BT-43}} · [{{BG-4.BG-6.BT-43}}](mailto:{{BG-4.BG-6.BT-43}}){{/BG-4.BG-6.BT-43}}
 {{/BG-4.BG-6.BT-41}}
-
 {{?BG-4.BT-33}}
+
 > {{BG-4.BT-33}}
 {{/BG-4.BT-33}}
 
-{{!
-  ─── BG-7 — Buyer (+ BG-8 Postal address, + BG-9 Contact) ───────────────
-  BG-7   Buyer                                (1..1)
-    BT-44  Buyer name                         (1..1)
-    BT-45  Buyer trading name                 (0..1)
-    BT-47  Buyer legal registration ID        (0..1)
-    BT-48  Buyer VAT identifier               (0..1)
-    BT-49  Buyer electronic address           (0..1)
-  BG-8   Buyer postal address                 (1..1)
-    BT-50  Address line 1                     (0..1)
-    BT-51  Address line 2                     (0..1)
-    BT-52  City                               (1..1)
-    BT-53  Post code                          (0..1)
-    BT-54  Country subdivision                (0..1)
-    BT-55  Country code                       (1..1, ISO 3166-1 alpha-2)
-  BG-9   Buyer contact                        (0..1)
-    BT-56  Contact point                      (0..1)
-    BT-57  Telephone                          (0..1)
-    BT-58  Email                              (0..1)
-}}
-### {{label:BG-7}}
+{{end}}
 
-**{{BG-7.BT-44}}**
+{{group:party}}
+
+{{class:label}}
+
+{{label:BG-7}}
+
+{{class:party-name}}
+
+{{BG-7.BT-44}}
+
 {{?BG-7.BT-45}}
-*{{BG-7.BT-45}}*
+{{class:muted}}
+
+{{BG-7.BT-45}}
+
 {{/BG-7.BT-45}}
+{{BG-7.BG-8.address}}
+{{BG-7.BG-8.BT-55 | code:country}}
 
-{{?BG-7.BG-8.address}}{{BG-7.BG-8.address}}
-{{/BG-7.BG-8.address}}{{BG-7.BG-8.BT-55 | code:country}}
+{{class:muted}}
 
-{{?BG-7.BT-46}}**{{label:BT-46}}:** {{BG-7.BT-46}}
-{{/BG-7.BT-46}}
-{{?BG-7.BT-48}}**{{label:BT-48}}:** {{BG-7.BT-48}}
-{{/BG-7.BT-48}}
-{{?BG-7.BT-47}}**{{label:BT-47}}:** {{BG-7.BT-47}}
-{{/BG-7.BT-47}}
-{{?BG-7.BT-49}}**{{label:BT-49}}:** {{BG-7.BT-49}}
-{{/BG-7.BT-49}}
-
-{{?BG-7.BG-9.BT-56}}{{BG-7.BG-9.BT-56}}{{?BG-7.BG-9.BT-57}} · {{BG-7.BG-9.BT-57}}{{/BG-7.BG-9.BT-57}}{{?BG-7.BG-9.BT-58}} · [{{BG-7.BG-9.BT-58}}](mailto:{{BG-7.BG-9.BT-58}}){{/BG-7.BG-9.BT-58}}
+{{?BG-7.BT-46}}{{label:BT-46}}: {{BG-7.BT-46}}
+{{/BG-7.BT-46}}{{?BG-7.BT-48}}{{label:BT-48}}: {{BG-7.BT-48}}
+{{/BG-7.BT-48}}{{?BG-7.BT-47}}{{label:BT-47}}: {{BG-7.BT-47}}
+{{/BG-7.BT-47}}{{?BG-7.BT-49}}{{label:BT-49}}: {{BG-7.BT-49}}
+{{/BG-7.BT-49}}{{?BG-7.BG-9.BT-56}}{{BG-7.BG-9.BT-56}}{{?BG-7.BG-9.BT-57}} · {{BG-7.BG-9.BT-57}}{{/BG-7.BG-9.BT-57}}{{?BG-7.BG-9.BT-58}} · [{{BG-7.BG-9.BT-58}}](mailto:{{BG-7.BG-9.BT-58}}){{/BG-7.BG-9.BT-58}}
 {{/BG-7.BG-9.BT-56}}
 
-{{!
-  ─── BG-10 — Payee ──────────────────────────────────────────────────────
-  BG-10  Payee                                (0..1)
-    BT-59  Payee name                         (1..1, when BG-10 present)
-    BT-60  Payee identifier                   (0..1)
-    BT-61  Payee legal registration ID        (0..1)
-}}
-{{?BG-10}}
-### {{label:BG-10}}
+{{end}}
+{{end}}
 
-**{{BG-10.BT-59}}**
-{{?BG-10.BT-60}}
-{{label:BT-60}}: {{BG-10.BT-60}}
-{{/BG-10.BT-60}}
-{{?BG-10.BT-61}}
-{{label:BT-61}}: {{BG-10.BT-61}}
-{{/BG-10.BT-61}}
-{{/BG-10}}
+---
 
-{{!
-  ─── BG-11 — Seller tax representative (+ BG-12 Postal address) ─────────
-  BG-11  Seller tax representative            (0..1)
-    BT-62  Tax representative name            (1..1, when BG-11 present)
-    BT-63  Tax representative VAT identifier  (1..1, when BG-11 present)
-  BG-12  Tax representative postal address    (1..1, when BG-11 present)
-    BT-64  Address line 1                     (0..1)
-    BT-66  City                               (1..1)
-    BT-67  Post code                          (0..1)
-    BT-69  Country code                       (1..1, ISO 3166-1 alpha-2)
-}}
-{{?BG-11}}
-### {{label:BG-11}}
-
-**{{BG-11.BT-62}}**
-{{?BG-11.BT-63}}
-{{label:BT-63}}: {{BG-11.BT-63}}
-{{/BG-11.BT-63}}
-{{?BG-11.BG-12}}
-
-{{?BG-11.BG-12.address}}{{BG-11.BG-12.address}}
-{{/BG-11.BG-12.address}}{{BG-11.BG-12.BT-69 | code:country}}
-{{/BG-11.BG-12}}
-{{/BG-11}}
-
-{{!
-  ─── BG-13 — Delivery information (+ BG-15 Deliver-to address) ──────────
-  BG-13  Delivery information                 (0..1)
-    BT-70  Deliver-to party name              (0..1)
-    BT-71  Deliver-to location identifier     (0..1)
-    BT-72  Actual delivery date               (0..1)
-  BG-15  Deliver-to address                   (0..1)
-    BT-75  Address line 1                     (0..1)
-    BT-77  City                               (0..1)
-    BT-78  Post code                          (0..1)
-    BT-80  Country code                       (0..1, ISO 3166-1 alpha-2)
-}}
+{{row:secondary}}
 {{?BG-13}}
-### {{label:section.delivery.title}}
 
-{{?BG-13.BT-70}}{{label:BT-70}}: **{{BG-13.BT-70}}**
+{{group:secondary-cell}}
+
+{{class:label}}
+
+{{label:section.delivery.title}}
+
+{{?BG-13.BT-70}}{{class:party-name}}
+
+{{BG-13.BT-70}}
+
 {{/BG-13.BT-70}}
-{{?BG-13.BT-71}}{{label:BT-71}}: {{BG-13.BT-71}}
-{{/BG-13.BT-71}}
-{{?BG-13.BT-72}}{{label:BT-72}}: {{BG-13.BT-72 | date:long}}
-{{/BG-13.BT-72}}
-{{?BG-13.BG-15}}
+{{?BG-13.BG-15}}{{BG-13.BG-15.address}}
+{{BG-13.BG-15.BT-80 | code:country}}
 
-{{?BG-13.BG-15.address}}{{BG-13.BG-15.address}}
-{{/BG-13.BG-15.address}}{{BG-13.BG-15.BT-80 | code:country}}
 {{/BG-13.BG-15}}
-{{/BG-13}}
+{{class:muted}}
 
-{{!
-  ─── BG-14 — Invoicing period ───────────────────────────────────────────
-  BG-14  Invoicing period                     (0..1)
-    BT-73  Invoicing period start date        (1..1, when BG-14 present)
-    BT-74  Invoicing period end date          (1..1, when BG-14 present)
-}}
+{{?BG-13.BT-71}}{{label:BT-71}}: {{BG-13.BT-71}}
+{{/BG-13.BT-71}}{{?BG-13.BT-72}}{{label:BT-72}}: {{BG-13.BT-72 | date:long}}
+{{/BG-13.BT-72}}
+
+{{end}}
+{{/BG-13}}
+{{?BG-10}}
+
+{{group:secondary-cell}}
+
+{{class:label}}
+
+{{label:BG-10}}
+
+{{class:party-name}}
+
+{{BG-10.BT-59}}
+
+{{class:muted}}
+
+{{?BG-10.BT-60}}{{label:BT-60}}: {{BG-10.BT-60}}
+{{/BG-10.BT-60}}{{?BG-10.BT-61}}{{label:BT-61}}: {{BG-10.BT-61}}
+{{/BG-10.BT-61}}
+
+{{end}}
+{{/BG-10}}
+{{?BG-11}}
+
+{{group:secondary-cell}}
+
+{{class:label}}
+
+{{label:BG-11}}
+
+{{class:party-name}}
+
+{{BG-11.BT-62}}
+
+{{?BG-11.BG-12}}{{BG-11.BG-12.address}}
+{{BG-11.BG-12.BT-69 | code:country}}
+
+{{/BG-11.BG-12}}
+{{class:muted}}
+
+{{label:BT-63}}: {{BG-11.BT-63}}
+
+{{end}}
+{{/BG-11}}
+{{end}}
+
 {{?BG-14}}
-### {{label:BG-14}}
+## {{label:BG-14}}
 
 {{BG-14.BT-73 | date:long}} — {{BG-14.BT-74 | date:long}}
 {{/BG-14}}
 
 {{!
-  ─── References — header-level reference BTs + BG-3 ─────────────────────
+  References — header-level reference BTs + BG-3
   BT-11  Project reference                    (0..1)
   BT-12  Contract reference                   (0..1)
   BT-13  Purchase order reference             (0..1)
@@ -300,7 +231,7 @@
 {{/references_present}}
 
 {{!
-  ─── BG-1 — Invoice notes ───────────────────────────────────────────────
+  BG-1 — Invoice notes
   BG-1   Invoice note                         (0..n)
     BT-21  Note subject code                  (0..1, UNTDID 4451)
     BT-22  Note content                       (1..1)
@@ -315,7 +246,7 @@
 {{/BG-1}}
 
 {{!
-  ─── BG-25 — Invoice lines (+ BG-29 Price, + BG-30 VAT, + BG-31 Item) ───
+  BG-25 — Invoice lines (+ BG-29 Price, + BG-30 VAT, + BG-31 Item)
   BG-25  Invoice line                         (1..n)
     BT-126 Invoice line identifier            (1..1)
     BT-127 Invoice line note                  (0..1)
@@ -337,13 +268,15 @@
 }}
 ## {{label:section.lines.title}}
 
+{{class:lines}}
+
 | {{label:section.lines.column.number}} | {{label:section.lines.column.description}} | {{label:section.lines.column.quantity}} | {{label:section.lines.column.unitprice}} | {{label:section.lines.column.vat}} | {{label:section.lines.column.linetotal}} |
 |---:|---|---:|---:|---:|---:|
 {{#BG-25}}| {{BT-126}} | **{{BG-31.BT-153}}**{{?BG-31.BT-154}}<br>{{BG-31.BT-154}}{{/BG-31.BT-154}}{{?BG-31.BT-155}}<br>*{{label:BT-155}}: {{BG-31.BT-155}}*{{/BG-31.BT-155}}{{?BG-31.BT-156}}<br>*{{label:BT-156}}: {{BG-31.BT-156}}*{{/BG-31.BT-156}}{{?BG-31.BT-157}}<br>*{{label:BT-157}}: {{BG-31.BT-157}}*{{/BG-31.BT-157}}{{?BG-31.BT-158}}<br>*{{label:BT-158}}: {{BG-31.BT-158}}*{{/BG-31.BT-158}}{{?BG-31.BT-159}}<br>*{{label:BT-159}}: {{BG-31.BT-159 | code:country}}*{{/BG-31.BT-159}}{{#BG-31.BG-32}}<br>*{{BT-160}}{{?BT-211}} ({{BT-211}}){{/BT-211}}: {{BT-161}}{{?BT-212}} {{BT-212}}{{/BT-212}}*{{/BG-31.BG-32}} | {{BT-129}} {{BT-130 | code:unit}} | {{BG-29.BT-146 | amount}}{{?BG-29.BT-148}}<br>*{{label:BT-148}}: {{BG-29.BT-148 | amount}}*{{/BG-29.BT-148}}{{?BG-29.BT-147}}<br>*{{label:BT-147}}: {{BG-29.BT-147 | amount}}*{{/BG-29.BT-147}}{{?BG-29.BT-149}}<br>*{{label:BT-149}}: {{BG-29.BT-149}} {{BG-29.BT-150 | code:unit}}*{{/BG-29.BT-149}} | {{BG-30.BT-151 | code:vatcategory}} {{BG-30.BT-152 | percent}} | {{BT-131 | amount}} |
 {{/BG-25}}
 
 {{!
-  ─── Line-level extras — only emitted when at least one line has them ───
+  Line-level extras — only emitted when at least one line has them
   BT-127  Invoice line note                   (0..1, per line)
   BG-27   Invoice line allowance              (0..n, per line)
     BT-136 Allowance amount                   (1..1)
@@ -434,7 +367,7 @@
 {{/line_extras_present}}
 
 {{!
-  ─── BG-20 — Document-level allowances ──────────────────────────────────
+  BG-20 — Document-level allowances
   BG-20  Document-level allowance             (0..n)
     BT-92  Allowance amount                   (1..1)
     BT-95  Allowance VAT category code        (1..1)
@@ -455,7 +388,7 @@
 {{/BG-20}}
 
 {{!
-  ─── BG-21 — Document-level charges ─────────────────────────────────────
+  BG-21 — Document-level charges
   BG-21  Document-level charge                (0..n)
     BT-99  Charge amount                      (1..1)
     BT-102 Charge VAT category code           (1..1)
@@ -480,18 +413,9 @@
 {{/BG-21}}
 {{/BG-21}}
 
-{{!
-  ─── BG-23 — VAT breakdown ──────────────────────────────────────────────
-  BG-23  VAT breakdown                        (1..n)
-    BT-116 VAT category taxable amount        (1..1)
-    BT-117 VAT category tax amount            (1..1)
-    BT-118 VAT category code                  (1..1)
-    BT-119 VAT category rate                  (0..1, percentage)
-    BT-120 VAT exemption reason text          (0..1)
-    BT-121 VAT exemption reason code          (0..1)
-    BT-184 VAT breakdown currency             (0..1, EN 16931:2026)
-    BT-210 VAT breakdown goods/services code  (0..1, EN 16931:2026)
-}}
+{{row:bottom}}
+
+{{group:vat}}
 {{?BG-23}}
 ## {{label:section.vatbreakdown.title}}
 
@@ -506,27 +430,11 @@
 {{/BG-23}}
 {{/BG-23}}
 
-{{!
-  ─── BG-22 — Document totals ────────────────────────────────────────────
-  BG-22  Document totals                      (1..1)
-    BT-106 Sum of invoice line net amounts    (1..1)
-    BT-107 Sum of document-level allowances   (0..1)
-    BT-108 Sum of document-level charges      (0..1)
-    BT-109 Invoice total without VAT          (1..1)
-    BT-110 Invoice total VAT amount           (0..1)
-    BT-111 Invoice total VAT in accounting cy (0..1, uses BT-6 currency)
-    BT-112 Invoice total with VAT             (1..1)
-    BT-113 Paid amount                        (0..1)
-    BT-114 Rounding amount                    (0..1)
-    BT-115 Amount due for payment             (1..1)
-  BG-34  Charges on behalf of a third party   (0..n, EN 16931:2026)
-    BT-179 Collected amount                   (1..1)
-    BT-180 Charges specification              (1..1)
+{{end}}
 
-  {{class:totals-due}} on the BT-115 row triggers the highlighted cell
-  fill — see [[Template Language]] § Block attributes.
-}}
-## {{label:section.totals.title}}
+{{group:totals-col}}
+
+{{group:totals}}
 
 | | |
 |---|---:|
@@ -534,37 +442,34 @@
 {{/BG-22.BT-106}}{{?BG-22.BT-107}}| {{label:BT-107}} | -{{BG-22.BT-107 | amount}} |
 {{/BG-22.BT-107}}{{?BG-22.BT-108}}| {{label:BT-108}} | +{{BG-22.BT-108 | amount}} |
 {{/BG-22.BT-108}}{{#BG-22.BG-34}}| {{label:BG-34}}{{?BT-180}}: {{BT-180}}{{/BT-180}} | +{{BT-179 | amount}} |
-{{/BG-22.BG-34}}| **{{label:BT-109}}** | **{{BG-22.BT-109 | amount}}** |
+{{/BG-22.BG-34}}| {{label:BT-109}} | {{BG-22.BT-109 | amount}} |
 | {{label:BT-110}} | {{BG-22.BT-110 | amount}} |
 {{?BG-22.BT-111}}| {{label:BT-111}} | {{BG-22.BT-111 | amount:BT-6}} |
 {{/BG-22.BT-111}}| **{{label:BT-112}}** | **{{BG-22.BT-112 | amount}}** |
 {{?BG-22.BT-113}}| {{label:BT-113}} | -{{BG-22.BT-113 | amount}} |
 {{/BG-22.BT-113}}{{?BG-22.BT-114}}| {{label:BT-114}} | {{BG-22.BT-114 | amount}} |
-{{/BG-22.BT-114}}{{class:totals-due}}
-| **{{label:section.totals.due}}** | **{{BG-22.BT-115 | amount}}** |
+{{/BG-22.BT-114}}
 
-{{!
-  ─── BG-16 — Payment instructions (+ BG-17, BG-18, BG-19) ───────────────
-  BG-16  Payment instructions                 (0..1)
-    BT-81  Payment means type code            (1..1, UNTDID 4461)
-    BT-82  Payment means text                 (0..1)
-    BT-83  Remittance information             (0..1)
-  BG-17  Credit transfer                      (0..n)
-    BT-84  Payment account identifier (IBAN)  (1..1)
-    BT-85  Payment account name               (0..1)
-    BT-86  Payment service provider ID (BIC)  (0..1)
-  BG-18  Payment card information             (0..1)
-    BT-87  Payment card primary account num.  (1..1)
-    BT-88  Payment card holder name           (0..1)
-  BG-19  Direct debit                         (0..1)
-    BT-89  Mandate reference identifier       (0..1)
-    BT-90  Bank-assigned creditor identifier  (0..1)
-    BT-91  Debited account identifier         (0..1)
-    BT-215 Debited account PSP identifier     (0..1, EN 16931:2026)
-    BT-216 Debited account name               (0..1, EN 16931:2026)
-}}
+{{end}}
+
+{{group:due}}
+
+| | |
+|---|---:|
+| {{label:section.totals.due}} | {{BG-22.BT-115 | amount}} |
+
+{{end}}
+
+{{end}}
+
+{{end}}
+
 {{?BG-16}}
-## {{label:section.payment.title}}
+{{group:pay}}
+
+{{class:label}}
+
+{{label:section.payment.title}}
 
 {{?BG-16.BT-81}}**{{label:BT-81}}:** {{BG-16.BT-81 | code:paymentmeans}}
 {{/BG-16.BT-81}}
@@ -574,7 +479,9 @@
 {{/BG-16.BT-83}}
 
 {{?BG-16.BG-17}}
-### {{label:BG-17}}
+{{class:label}}
+
+{{label:BG-17}}
 
 {{#BG-16.BG-17}}
 - {{?BT-85}}{{BT-85}} — {{/BT-85}}`{{BT-84}}`{{?BT-86}} (BIC {{BT-86}}){{/BT-86}}
@@ -582,13 +489,17 @@
 {{/BG-16.BG-17}}
 
 {{?BG-16.BG-18}}
-### {{label:BG-18}}
+{{class:label}}
+
+{{label:BG-18}}
 
 {{?BG-16.BG-18.BT-87}}**** **** **** {{BG-16.BG-18.BT-87}}{{/BG-16.BG-18.BT-87}}{{?BG-16.BG-18.BT-88}} — {{BG-16.BG-18.BT-88}}{{/BG-16.BG-18.BT-88}}
 {{/BG-16.BG-18}}
 
 {{?BG-16.BG-19}}
-### {{label:BG-19}}
+{{class:label}}
+
+{{label:BG-19}}
 
 {{?BG-16.BG-19.BT-89}}- {{label:BT-89}}: `{{BG-16.BG-19.BT-89}}`
 {{/BG-16.BG-19.BT-89}}{{?BG-16.BG-19.BT-90}}- {{label:BT-90}}: {{BG-16.BG-19.BT-90}}
@@ -597,10 +508,12 @@
 {{/BG-16.BG-19.BT-215}}{{?BG-16.BG-19.BT-216}}- {{label:BT-216}}: {{BG-16.BG-19.BT-216}}
 {{/BG-16.BG-19.BT-216}}
 {{/BG-16.BG-19}}
+
+{{end}}
 {{/BG-16}}
 
 {{!
-  ─── BG-33 — Payment terms (+ BG-35 Early discount, + BG-36 Late penalty) ─
+  BG-33 — Payment terms (+ BG-35 Early discount, + BG-36 Late penalty)
   BG-33  Payment terms                        (0..n)
     BT-20  Payment term text                  (0..1)
   BG-35  Early payment discount               (0..n, EN 16931:2026)
@@ -613,7 +526,7 @@
     BT-183 Penalty amount                     (0..1)
 }}
 {{?BG-33}}
-### {{label:BG-33}}
+## {{label:BG-33}}
 
 {{#BG-33}}
 {{?BT-20}}
@@ -630,7 +543,7 @@
 {{/BG-33}}
 
 {{!
-  ─── BG-24 — Supporting documents ───────────────────────────────────────
+  BG-24 — Supporting documents
   BG-24  Supporting document                  (0..n)
     BT-122 Reference                          (1..1)
     BT-123 Description                        (0..1)
@@ -647,3 +560,7 @@
 - **{{BT-122}}**{{?BT-123}} — {{BT-123}}{{/BT-123}}{{?BT-124}} ([{{BT-124}}]({{BT-124}})){{/BT-124}}{{?BT-125}} *({{BT-125.filename}})*{{/BT-125}}
 {{/BG-24}}
 {{/BG-24}}
+
+{{class:foot}}
+
+{{?BG-2.BT-24}}{{label:BT-24}}: {{BG-2.BT-24}}{{/BG-2.BT-24}}{{?BG-2.BT-23}} · {{label:BT-23}}: {{BG-2.BT-23}}{{/BG-2.BT-23}}

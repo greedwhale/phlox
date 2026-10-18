@@ -68,5 +68,9 @@
       <groupId>com.helger</groupId>
       <artifactId>en16931-basics</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.helger.codelists</groupId>
+      <artifactId>ph-codelists-unit</artifactId>
+    </dependency>
   </dependencies>
 </project>

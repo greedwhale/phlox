@@ -54,6 +54,7 @@ import com.helger.phlox.api.model.PhloxPriceDetails;
 import com.helger.phlox.api.model.PhloxVatBreakdown;
 import com.helger.phlox.api.read.IInvoiceReader;
 import com.helger.phlox.cii.CiiInvoiceReader;
+import com.helger.phlox.template.ast.PhloxGroupNode;
 import com.helger.phlox.template.ast.PhloxTemplateAst;
 import com.helger.phlox.testfiles.MockPhloxTestFiles;
 import com.helger.phlox.ubl.UblInvoiceReader;
@@ -168,6 +169,19 @@ public final class PhloxTemplateTest
     assertTrue ("Expected at least " + nMinCount + " documents rendered", nCount >= nMinCount);
   }
 
+  private static Heading _findHeading (final Node aParent)
+  {
+    for (Node aChild = aParent.getFirstChild (); aChild != null; aChild = aChild.getNext ())
+    {
+      if (aChild instanceof final Heading aHeading)
+        return aHeading;
+      final Heading aNested = _findHeading (aChild);
+      if (aNested != null)
+        return aNested;
+    }
+    return null;
+  }
+
   @Test
   public void testRenderAstAgainstDefaultTemplate ()
   {
@@ -181,17 +195,11 @@ public final class PhloxTemplateTest
     assertNotNull (aAst);
     assertNotNull (aAst.getRoot ());
 
-    // The default template opens with `# {{label:section.header.title.invoice}}: {{BT-1}}`,
-    // so the very first child block must be a level-1 Heading.
-    Heading aFirstHeading = null;
-    for (Node n = aAst.getRoot ().getFirstChild (); n != null; n = n.getNext ())
-    {
-      if (n instanceof final Heading aHeading)
-      {
-        aFirstHeading = aHeading;
-        break;
-      }
-    }
+    // The default template opens with a head row, so the first block is a row group
+    // that contains the level-1 Heading with the document number
+    assertTrue (aAst.getRoot ().getFirstChild () instanceof PhloxGroupNode);
+    assertTrue (((PhloxGroupNode) aAst.getRoot ().getFirstChild ()).isRow ());
+    final Heading aFirstHeading = _findHeading (aAst.getRoot ());
     assertNotNull ("expected at least one Heading in the rendered AST", aFirstHeading);
     assertEquals (1, aFirstHeading.getLevel ());
   }

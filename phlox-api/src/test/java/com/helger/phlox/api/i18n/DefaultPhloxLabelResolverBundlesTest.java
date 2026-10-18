@@ -151,9 +151,9 @@ public final class DefaultPhloxLabelResolverBundlesTest
   @Test
   public void testDottedCodeListNameIsAccepted ()
   {
-    // Writers ask for the logical list name "vat.category", the bundle keys are "vatcategory.<code>"
+    // Writers ask for the logical list name "vat.category", the registered name is "vatcategory"
     assertEquals (DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("vatcategory", "S", Locale.ENGLISH),
                   DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("vat.category", "S", Locale.ENGLISH));
-    assertEquals ("Standard rated", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("vat.category", "S", Locale.ENGLISH));
+    assertEquals ("Standard rate", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("vat.category", "S", Locale.ENGLISH));
   }
 }

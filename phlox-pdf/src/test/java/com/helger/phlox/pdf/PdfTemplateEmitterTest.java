@@ -211,7 +211,7 @@ public final class PdfTemplateEmitterTest
     }
     final String sText = _text (aPdf);
     for (final String sExpected : new String [] { aModel.getNumber (),
-                                                  "Section",
+                                                  "SECTION",
                                                   "Sub",
                                                   "Text bold em del code link",
                                                   "second line",

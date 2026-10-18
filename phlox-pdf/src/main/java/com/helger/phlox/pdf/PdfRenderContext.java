@@ -38,14 +38,19 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
 {
   /** Default page size (A4). */
   public static final PDRectangle DEFAULT_PAGE_SIZE = PDRectangle.A4;
+  private static final PLColor ACCENT = new PLColor (0x24, 0x5c, 0x64);
+  private static final PLColor ACCENT_WASH = new PLColor (0xe8, 0xf1, 0xf2);
+  private static final PLColor MUTED = new PLColor (0x66, 0x70, 0x85);
+  private static final PLColor WASH = new PLColor (0xf6, 0xf7, 0xf9);
+
   /** Default page margins (20 mm). */
   public static final MarginSpec DEFAULT_MARGINS = new MarginSpec (20 * 72 / 25.4f); // 20mm in points
   /** Default font of the body text. */
   public static final FontSpec DEFAULT_BODY_FONT = new FontSpec (PreloadFont.REGULAR, 10f);
   /** Default font of section headers. */
-  public static final FontSpec DEFAULT_HEADER_FONT = new FontSpec (PreloadFont.REGULAR_BOLD, 12f);
+  public static final FontSpec DEFAULT_HEADER_FONT = new FontSpec (PreloadFont.REGULAR_BOLD, 8f, MUTED);
   /** Default font of table headers. */
-  public static final FontSpec DEFAULT_TABLE_HEADER_FONT = new FontSpec (PreloadFont.REGULAR_BOLD, 10f);
+  public static final FontSpec DEFAULT_TABLE_HEADER_FONT = new FontSpec (PreloadFont.REGULAR_BOLD, 7.5f, MUTED);
 
   private PDRectangle m_aPageSize = DEFAULT_PAGE_SIZE;
   private MarginSpec m_aMargins = DEFAULT_MARGINS;
@@ -212,8 +217,22 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
   /** Create a new context with the default PDF settings. */
   public PdfRenderContext ()
   {
-    // The row with the amount due of the default template
+    // The row with the amount due of the template of an earlier version
     putBlockStyle ("totals-due", PdfBlockStyle.fill (PLColor.gray (0xe8)));
+
+    // The look of the default template
+    putBlockStyle ("kind", PdfBlockStyle.builder ().textColor (ACCENT).fontSize (Float.valueOf (8.5f)).bold (true).build ());
+    putBlockStyle ("label", PdfBlockStyle.builder ().textColor (MUTED).fontSize (Float.valueOf (7.5f)).bold (true).build ());
+    putBlockStyle ("muted", PdfBlockStyle.builder ().textColor (MUTED).fontSize (Float.valueOf (8.5f)).build ());
+    putBlockStyle ("party-name", PdfBlockStyle.builder ().fontSize (Float.valueOf (11f)).bold (true).build ());
+    putBlockStyle ("rule", PdfBlockStyle.builder ().borderTopColor (ACCENT).borderWidth (1.5f).build ());
+    putBlockStyle ("head-logo", PdfBlockStyle.builder ().widthPercent (Float.valueOf (25f)).build ());
+    putBlockStyle ("totals-col", PdfBlockStyle.builder ().widthPercent (Float.valueOf (42f)).build ());
+    putBlockStyle ("totals", PdfBlockStyle.builder ().fillColor (WASH).padding (8f).build ());
+    putBlockStyle ("due",
+                   PdfBlockStyle.builder ().fillColor (ACCENT).textColor (PLColor.WHITE).padding (8f).bold (true).build ());
+    putBlockStyle ("pay", PdfBlockStyle.builder ().fillColor (ACCENT_WASH).padding (10f).build ());
+    putBlockStyle ("foot", PdfBlockStyle.builder ().textColor (MUTED).fontSize (Float.valueOf (7.5f)).build ());
   }
 
   /**

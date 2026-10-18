@@ -250,27 +250,56 @@ public final class PhloxTemplatePostParser
   }
 
   /**
-   * @return The text of a paragraph that only consists of text, or <code>null</code>.
+   * @return The lines of a paragraph that only consists of text and line breaks, or
+   *         <code>null</code>.
    */
   @Nullable
-  private static String _getPlainText (@NonNull final Node aNode)
+  private static List <String> _getPlainLines (@NonNull final Node aNode)
   {
     if (!(aNode instanceof Paragraph))
       return null;
-    final StringBuilder aSB = new StringBuilder ();
+    final List <String> ret = new ArrayList <> ();
+    StringBuilder aSB = new StringBuilder ();
     for (Node aChild = aNode.getFirstChild (); aChild != null; aChild = aChild.getNext ())
     {
       if (aChild instanceof final Text aText)
         aSB.append (aText.getLiteral ());
       else
-        if (!(aChild instanceof SoftLineBreak))
+        if (aChild instanceof SoftLineBreak)
+        {
+          ret.add (aSB.toString ().strip ());
+          aSB = new StringBuilder ();
+        }
+        else
           return null;
     }
-    return aSB.toString ().strip ();
+    ret.add (aSB.toString ().strip ());
+    return ret;
+  }
+
+  private static boolean _isLayoutSentinel (@NonNull final String sLine)
+  {
+    return END_SENTINEL.equals (sLine) || GROUP_SENTINEL.matcher (sLine).matches ();
   }
 
   /**
-   * Turn the paragraphs holding a group, row or end sentinel into {@link PhloxGroupNode}s that
+   * @return The layout sentinels of a paragraph that only consists of group, row and end
+   *         sentinels, or <code>null</code> for any other node.
+   */
+  @Nullable
+  private static List <String> _getLayoutSentinels (@NonNull final Node aNode)
+  {
+    final List <String> aLines = _getPlainLines (aNode);
+    if (aLines == null)
+      return null;
+    for (final String sLine : aLines)
+      if (!_isLayoutSentinel (sLine))
+        return null;
+    return aLines;
+  }
+
+  /**
+   * Turn the paragraphs holding group, row or end sentinels into {@link PhloxGroupNode}s that
    * contain the blocks up to the matching end. Only the top level of the document is handled.
    *
    * @param aRoot
@@ -283,8 +312,7 @@ public final class PhloxTemplatePostParser
     for (Node aChild = aRoot.getFirstChild (); aChild != null; aChild = aChild.getNext ())
     {
       aChildren.add (aChild);
-      final String sText = _getPlainText (aChild);
-      if (sText != null && (sText.equals (END_SENTINEL) || GROUP_SENTINEL.matcher (sText).matches ()))
+      if (_getLayoutSentinels (aChild) != null)
         bAnyMarker = true;
     }
     if (!bAnyMarker)
@@ -297,26 +325,29 @@ public final class PhloxTemplatePostParser
     Node aCurrent = aRoot;
     for (final Node aChild : aChildren)
     {
-      final String sText = _getPlainText (aChild);
-      final Matcher aMatcher = sText == null ? null : GROUP_SENTINEL.matcher (sText);
-      if (aMatcher != null && aMatcher.matches ())
+      final List <String> aSentinels = _getLayoutSentinels (aChild);
+      if (aSentinels == null)
       {
-        final PhloxGroupNode aGroup = new PhloxGroupNode ("ROW".equals (aMatcher.group (1)));
-        m_aBlockClassMap.put (aGroup, aMatcher.group (2).strip ());
-        aCurrent.appendChild (aGroup);
-        aStack.push (aCurrent);
-        aCurrent = aGroup;
+        aCurrent.appendChild (aChild);
+        continue;
       }
-      else
-        if (END_SENTINEL.equals (sText))
+      for (final String sSentinel : aSentinels)
+      {
+        final Matcher aMatcher = GROUP_SENTINEL.matcher (sSentinel);
+        if (aMatcher.matches ())
         {
+          final PhloxGroupNode aGroup = new PhloxGroupNode ("ROW".equals (aMatcher.group (1)));
+          m_aBlockClassMap.put (aGroup, aMatcher.group (2).strip ());
+          aCurrent.appendChild (aGroup);
+          aStack.push (aCurrent);
+          aCurrent = aGroup;
+        }
+        else
           if (aStack.isEmpty ())
             LOGGER.warn ("Template tag '{{end}}' has no matching '{{group:...}}' or '{{row:...}}'");
           else
             aCurrent = aStack.pop ();
-        }
-        else
-          aCurrent.appendChild (aChild);
+      }
     }
     if (!aStack.isEmpty ())
       LOGGER.warn ("Template has " + aStack.size () + " '{{group:...}}' or '{{row:...}}' without '{{end}}'");
