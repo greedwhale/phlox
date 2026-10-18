@@ -304,8 +304,9 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
   {
     if (sText.isEmpty ())
       return new PLTableCell (new PLSpacerX (1f));
+    // The cell aligns its content inside the width of the column
     return new PLTableCell (new PLText (sText, aFont).setPadding (new PaddingSpec (3))
-                                                     .setHorzAlign (EHorzAlignment.RIGHT));
+                                                     .setHorzAlign (EHorzAlignment.RIGHT)).setHorzAlign (EHorzAlignment.RIGHT);
   }
 
   /** Right-aligned header cell — used for numeric column headers above amounts/quantities/rates. */
@@ -315,7 +316,8 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     if (sText.isEmpty ())
       return new PLTableCell (new PLSpacerX (1f)).setFillColor (PLColor.gray (0xf0));
     return new PLTableCell (new PLText (sText, aFont).setPadding (new PaddingSpec (3))
-                                                     .setHorzAlign (EHorzAlignment.RIGHT)).setFillColor (PLColor.gray (0xf0));
+                                                     .setHorzAlign (EHorzAlignment.RIGHT)).setHorzAlign (EHorzAlignment.RIGHT)
+                                                                                         .setFillColor (PLColor.gray (0xf0));
   }
 
   private static void _kvRow (@NonNull final PLVBox aVBox,
@@ -399,8 +401,7 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     if (aAmount == null)
       return;
     aTbl.addRow (_td (sLabel, aFont),
-                 new PLTableCell (new PLText (_amount (aAmount, sCurrency, aCtx), aFont).setHorzAlign (
-                                                                                                       EHorzAlignment.RIGHT)));
+                 _tdRight (_amount (aAmount, sCurrency, aCtx), aFont));
   }
 
   @NonNull
