@@ -13,7 +13,7 @@ Reads invoices in **UBL** or **CII** syntax, lifts them into a syntax-neutral in
    Source readers      Intermediate model         Writers
 ```
 
-See the [wiki](wiki/Home.md) for the full specification, including the [domain model](wiki/Domain-Model.md), [maven module structure](wiki/Maven-Module-Structure.md), and the [roadmap](wiki/Roadmap.md).
+See the [wiki](https://github.com/phax/phlox/wiki/Home) for the full specification, including the [domain model](https://github.com/phax/phlox/wiki/Domain-Model), [maven module structure](https://github.com/phax/phlox/wiki/Maven-Module-Structure), and the [roadmap](https://github.com/phax/phlox/wiki/Roadmap).
 
 ## Build
 
