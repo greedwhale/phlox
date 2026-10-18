@@ -584,7 +584,7 @@ public final class PdfTemplateEmitter
   {
     final FontSpec aFont = new FontSpec (PreloadFont.MONOSPACE, m_aCtx.getBodyFont ().getFontSize () - 1f);
     final PLVBox aLines = new PLVBox ();
-    // The line breaks of the CommonMark literal are normalized to LF
+    // The line breaks of the CommonMark literal are normalised to LF
     for (final String sLine : StringHelper.getExploded ('\n', sLiteral.stripTrailing ()))
       aLines.addRow (new PLText (sLine.isEmpty () ? " " : sLine, aFont));
     aSink.accept (new PLBox (aLines).setFillColor (PLColor.gray (0xf5)).setPadding (4).setMarginBottom (PARAGRAPH_GAP));

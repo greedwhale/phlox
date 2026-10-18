@@ -326,7 +326,7 @@ public final class PdfBlockStyle
   }
 
   /**
-   * Create a builder that is initialized with the values of this style.
+   * Create a builder that is initialised with the values of this style.
    *
    * @return A new builder. Never {@code null}.
    */
@@ -348,7 +348,7 @@ public final class PdfBlockStyle
   }
 
   /**
-   * Create a builder that is initialized with the values of an existing style.
+   * Create a builder that is initialised with the values of an existing style.
    *
    * @param aSource
    *        The style to start from. Never {@code null}.

@@ -89,7 +89,8 @@ public final class DefaultPhloxLabelResolverTest
   public void testUnitCodes ()
   {
     assertEquals ("kilogram", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("unit", "KGM", Locale.ENGLISH));
-    assertEquals ("kilogram", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("unit", "KGM", Locale.GERMAN));
+    assertEquals ("Kilogramm", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("unit", "KGM", Locale.GERMAN));
+    assertEquals ("kilogram", DefaultPhloxLabelResolver.INSTANCE.getCodeLabel ("unit", "KGM", Locale.FRENCH));
   }
 
   @Test
