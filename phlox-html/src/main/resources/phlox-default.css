@@ -51,7 +51,7 @@ ul,ol{margin:0 0 2mm;padding-left:5mm}
 li{margin:0 0 1mm}
 .{p}totals-due td{font-weight:650}
 .{p}watermark-user{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-45deg);font-size:6em;color:rgba(128,128,128,0.12);pointer-events:none;z-index:9999;user-select:none}
-.{p}watermark-program{position:fixed;bottom:4mm;right:4mm;font-size:0.5em;color:rgba(128,128,128,0.35);z-index:9999}
+.{p}watermark-program{position:fixed;bottom:4mm;right:4mm;font-size:.8em;color:rgba(100,100,100,0.6);z-index:9999}
 .{p}watermark-program a{color:inherit}
 .{p}section-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
 .{p}header-meta{display:grid;grid-template-columns:auto auto;gap:.25rem 1rem}
