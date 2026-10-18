@@ -150,6 +150,12 @@ public final class PdfTemplateEmitterTest
   }
 
   @Test
+  public void testDefaultTemplateCiiD16B ()
+  {
+    _renderAll (CiiInvoiceReader.fromD16B (), MockPhloxTestFiles.getCiiD16BFiles (), 100);
+  }
+
+  @Test
   public void testDefaultTemplateCiiD25A ()
   {
     _renderAll (CiiInvoiceReader.fromD25A (), MockPhloxTestFiles.getCiiD25AFiles (), 10);
@@ -165,6 +171,17 @@ public final class PdfTemplateEmitterTest
     // A line break in a table cell
     assertTrue (sText.contains ("PATAT FRITES 10MM 10KG"));
     assertTrue (sText.contains ("Item seller's identifier: 166022"));
+  }
+
+  @Test
+  public void testMarkupInInvoiceDataStaysText ()
+  {
+    final PhloxInvoice aModel = _read (UblInvoiceReader.fromUbl21 (), "2017/ubl/invoice/ubl-tc434-example1.xml");
+    aModel.setNumber ("{link[https://evil.example/pay]}CLICK{link} {bg:#ff0000}RED{bg}");
+    final String sText = _text (_render (aModel, PhloxTemplate.fromString ("{{BT-1}} [x](https://example.org/my_file_name.pdf)"), Locale.ENGLISH));
+    assertTrue (sText, sText.contains ("(link[https://evil.example/pay])CLICK(link)"));
+    assertTrue (sText, sText.contains ("(bg:#ff0000)RED(bg)"));
+    assertTrue (sText, sText.contains ("x"));
   }
 
   @Test

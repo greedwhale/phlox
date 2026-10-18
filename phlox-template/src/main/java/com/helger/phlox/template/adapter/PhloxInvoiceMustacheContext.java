@@ -52,6 +52,7 @@ import com.helger.phlox.api.model.PhloxLineCharge;
 import com.helger.phlox.template.PhloxTemplateException;
 import com.helger.phlox.template.PhloxTemplateException.EStage;
 import com.samskivert.mustache.Mustache;
+import com.samskivert.mustache.Template;
 
 /**
  * The JMustache adapter — preprocesses {@code .ptpl} source so JMustache understands the phlox
@@ -105,9 +106,18 @@ public final class PhloxInvoiceMustacheContext
   // multi-segment label path.
   private static final Pattern LABEL_PATTERN = Pattern.compile ("\\{\\{\\s*label:([^}\\s|]+)\\s*\\}\\}");
 
+  private static final String PARENT_PREFIX = "..";
+
   private static final class PhloxCollector implements Mustache.Collector
   {
     private final Mustache.VariableFetcher m_aVarFetcher = (ctx, name) -> {
+      // "..X" addresses the enclosing context: if the current context cannot answer X, let
+      // JMustache continue with the parent context, which is asked with the same name
+      if (name.startsWith (PARENT_PREFIX))
+      {
+        final Object aParentResolved = resolveName (ctx, name.substring (PARENT_PREFIX.length ()));
+        return aParentResolved == null ? Template.NO_FETCHER_FOUND : aParentResolved;
+      }
       final Object aResolved = resolveName (ctx, name);
       // JMustache requires NO_FETCHER_FOUND when the variable is not known so it can fall
       // through to defaultValue("") rather than treating null as a section iteration value.
@@ -275,22 +285,91 @@ public final class PhloxInvoiceMustacheContext
     return true;
   }
 
+  /**
+   * Neutralise Markdown in invoice data. The substituted template is parsed as CommonMark, so
+   * data like <code>1. Main Street</code> or <code>a | b</code> would otherwise change the
+   * document structure. Line breaks become the template's explicit break tag.
+   */
+  @NonNull
+  private static String _escapeMarkdown (@NonNull final String sValue)
+  {
+    final StringBuilder aSB = new StringBuilder (sValue.length () + 8);
+    final int nLen = sValue.length ();
+    boolean bLineStart = true;
+    boolean bDigitsFromLineStart = false;
+    for (int i = 0; i < nLen; ++i)
+    {
+      final char c = sValue.charAt (i);
+      final boolean bAtLineStart = bLineStart;
+      final boolean bDigitsBefore = bDigitsFromLineStart;
+      bLineStart = false;
+      bDigitsFromLineStart = Character.isDigit (c) && (bAtLineStart || bDigitsBefore);
+      switch (c)
+      {
+        case '\r':
+          if (i + 1 < nLen && sValue.charAt (i + 1) == '\n')
+            ++i;
+          aSB.append ("<br>");
+          bLineStart = true;
+          break;
+        case '\n':
+          aSB.append ("<br>");
+          bLineStart = true;
+          break;
+        case '\\':
+        case '`':
+        case '*':
+        case '_':
+        case '[':
+        case ']':
+        case '<':
+        case '>':
+        case '|':
+        case '~':
+        case '&':
+          aSB.append ('\\').append (c);
+          break;
+        case '#':
+        case '+':
+        case '-':
+          // Block markers only matter at the start of a line
+          if (bAtLineStart)
+            aSB.append ('\\');
+          aSB.append (c);
+          break;
+        case '.':
+        case ')':
+          // "1." and "1)" at a line start open an ordered list
+          if (bDigitsBefore && (i + 1 == nLen || sValue.charAt (i + 1) == ' '))
+            aSB.append ('\\');
+          aSB.append (c);
+          break;
+        default:
+          aSB.append (c);
+          break;
+      }
+    }
+    return aSB.toString ();
+  }
+
   @NonNull
   private static String _renderLeaf (@NonNull final Object aValue, @NonNull final PhloxRenderEnv aEnv)
   {
     if (aValue instanceof final String sValue)
-      return sValue;
+      return _escapeMarkdown (sValue);
     if (aValue instanceof final PhloxIdentifier aID)
     {
       final String sScheme = aID.getSchemeID ();
       final String sVal = aID.getValue ();
       if (sVal == null || sVal.isEmpty ())
         return "";
-      return sScheme == null || sScheme.isEmpty () ? sVal : sScheme + ":" + sVal;
+      return _escapeMarkdown (sScheme == null || sScheme.isEmpty () ? sVal : sScheme + ":" + sVal);
     }
     if (aValue instanceof final LocalDate aDate)
       return PhloxFormat.date (aDate, aEnv.getLocale (), aEnv.getFormatOptions ());
-    return aValue.toString ();
+    if (aValue instanceof final BigDecimal aDecimal)
+      return aDecimal.toPlainString ();
+    return _escapeMarkdown (aValue.toString ());
   }
 
   @NonNull
@@ -398,14 +477,18 @@ public final class PhloxInvoiceMustacheContext
                                          @NonNull final PhloxRenderEnv aEnv)
   {
     Object aValue = aValueIn;
+    boolean bRaw = false;
     for (final String sModifier : aModifiers)
     {
       final int nColon = sModifier.indexOf (':');
       final String sName = nColon < 0 ? sModifier : sModifier.substring (0, nColon);
       final String sArg = nColon < 0 ? null : sModifier.substring (nColon + 1);
+      bRaw |= "raw".equals (sName);
       aValue = _applyOneModifier (aValue, sName, sArg, aEnv);
     }
-    return aValue == null ? "" : aValue.toString ();
+    if (aValue == null)
+      return "";
+    return bRaw ? aValue.toString () : _escapeMarkdown (aValue.toString ());
   }
 
   private static boolean _referencesPresent (@NonNull final PhloxInvoice aInv)
@@ -473,6 +556,10 @@ public final class PhloxInvoiceMustacheContext
       // Allow the synthesized booleans at any level so {{?logo}} still works.
       if ("logo".equals (sSegment))
         return Boolean.valueOf (aEnv.getRenderContext ().getLogo () != null);
+      if ("is_credit_note".equals (sSegment))
+        return Boolean.valueOf (aEnv.getInvoice ().getKind ().isCreditNote ());
+      if ("is_invoice".equals (sSegment))
+        return Boolean.valueOf (!aEnv.getInvoice ().getKind ().isCreditNote ());
       if ("references_present".equals (sSegment))
         return Boolean.valueOf (_referencesPresent (aEnv.getInvoice ()));
       if ("line_extras_present".equals (sSegment))
@@ -613,6 +700,10 @@ public final class PhloxInvoiceMustacheContext
     // here is harmless).
     if ("logo".equals (sHead))
       return Boolean.valueOf (aEnv.getRenderContext ().getLogo () != null);
+    if ("is_credit_note".equals (sHead))
+      return Boolean.valueOf (aEnv.getInvoice ().getKind ().isCreditNote ());
+    if ("is_invoice".equals (sHead))
+      return Boolean.valueOf (!aEnv.getInvoice ().getKind ().isCreditNote ());
     if ("references_present".equals (sHead))
       return Boolean.valueOf (_referencesPresent (aEnv.getInvoice ()));
     if ("line_extras_present".equals (sHead))

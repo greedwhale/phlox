@@ -136,7 +136,7 @@ final class Ubl21InvoiceReader extends AbstractUblInvoiceReader
       aSeller.setTradingName (str (aParty.getPartyName ().get (0).getNameValue ()));
     // BT-29
     for (final PartyIdentificationType aPI : aParty.getPartyIdentification ())
-      if (aPI.getID () != null)
+      if (aPI.getID () != null && !SEPA_SCHEME_ID.equals (aPI.getID ().getSchemeID ()))
         aSeller.identifiers ().add (identifier (aPI.getID ()));
     // BT-31 / BT-32
     for (final PartyTaxSchemeType aPTS : aParty.getPartyTaxScheme ())
@@ -172,11 +172,12 @@ final class Ubl21InvoiceReader extends AbstractUblInvoiceReader
     final PhloxPayee aOut = new PhloxPayee ();
     if (!aParty.getPartyName ().isEmpty ())
       aOut.setName (str (aParty.getPartyName ().get (0).getNameValue ()));
-    if (!aParty.getPartyIdentification ().isEmpty () && aParty.getPartyIdentification ().get (0).getID () != null)
-    {
-      final PartyIdentificationType aPI = aParty.getPartyIdentification ().get (0);
-      aOut.setIdentifier (identifier (aPI.getID ()));
-    }
+    for (final PartyIdentificationType aPI : aParty.getPartyIdentification ())
+      if (aPI.getID () != null && !SEPA_SCHEME_ID.equals (aPI.getID ().getSchemeID ()))
+      {
+        aOut.setIdentifier (identifier (aPI.getID ()));
+        break;
+      }
     if (!aParty.getPartyLegalEntity ().isEmpty ())
     {
       final PartyLegalEntityType aLE = aParty.getPartyLegalEntity ().get (0);
@@ -223,11 +224,11 @@ final class Ubl21InvoiceReader extends AbstractUblInvoiceReader
   {
     if (aPayee != null)
       for (final PartyIdentificationType aPI : aPayee.getPartyIdentification ())
-        if (aPI.getID () != null && "SEPA".equals (aPI.getID ().getSchemeID ()))
+        if (aPI.getID () != null && SEPA_SCHEME_ID.equals (aPI.getID ().getSchemeID ()))
           return aPI.getIDValue ();
     if (aSupplier != null && aSupplier.getParty () != null)
       for (final PartyIdentificationType aPI : aSupplier.getParty ().getPartyIdentification ())
-        if (aPI.getID () != null && "SEPA".equals (aPI.getID ().getSchemeID ()))
+        if (aPI.getID () != null && SEPA_SCHEME_ID.equals (aPI.getID ().getSchemeID ()))
           return aPI.getIDValue ();
     return null;
   }
@@ -262,19 +263,30 @@ final class Ubl21InvoiceReader extends AbstractUblInvoiceReader
       if (aOnePM.getPayeeFinancialAccount () != null)
         aOut.creditTransfers ().add (_readCreditTransfer (aOnePM.getPayeeFinancialAccount ()));
 
+    // BG-18 / BG-19 may sit in any of the payment means, not only in the first one
+    PaymentMeansType aCardMeans = null;
+    PaymentMeansType aMandateMeans = null;
+    for (final PaymentMeansType aOnePM : aPaymentMeans)
+    {
+      if (aCardMeans == null && aOnePM.getCardAccount () != null)
+        aCardMeans = aOnePM;
+      if (aMandateMeans == null && aOnePM.getPaymentMandate () != null)
+        aMandateMeans = aOnePM;
+    }
+
     // BG-18 — payment card
-    if (aPM.getCardAccount () != null)
+    if (aCardMeans != null)
     {
       final PhloxPaymentCard aCard = new PhloxPaymentCard ();
-      aCard.setPan (str (aPM.getCardAccount ().getPrimaryAccountNumberIDValue ()));
-      aCard.setHolderName (str (aPM.getCardAccount ().getHolderNameValue ()));
+      aCard.setPan (str (aCardMeans.getCardAccount ().getPrimaryAccountNumberIDValue ()));
+      aCard.setHolderName (str (aCardMeans.getCardAccount ().getHolderNameValue ()));
       aOut.setPaymentCard (aCard);
     }
 
     // BG-19 — direct debit
-    if (aPM.getPaymentMandate () != null)
+    if (aMandateMeans != null)
     {
-      final PaymentMandateType aMandate = aPM.getPaymentMandate ();
+      final PaymentMandateType aMandate = aMandateMeans.getPaymentMandate ();
       final PhloxDirectDebit aDD = new PhloxDirectDebit ();
       aDD.setMandateReferenceID (str (aMandate.getIDValue ()));
       if (aMandate.getPayerFinancialAccount () != null)
@@ -390,7 +402,7 @@ final class Ubl21InvoiceReader extends AbstractUblInvoiceReader
       {
         final BigDecimal aAmount = aTT.getTaxAmount ().getValue ();
         final String sCurrencyID = aTT.getTaxAmount ().getCurrencyID ();
-        if (sAccountingCurrency != null && sAccountingCurrency.equals (sCurrencyID))
+        if (isVatAccountingAmount (aModel.getCurrency (), sAccountingCurrency, sCurrencyID))
           aModel.getDocumentTotals ().setTaxTotalAccountingCurrency (aAmount);
         else
           if (!bMainTaxTotalSet)

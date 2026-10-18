@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream;
 import com.helger.base.string.StringHelper;
+import com.helger.base.string.StringReplace;
 import com.helger.pdflayout.base.IPLRenderableObject;
 import com.helger.pdflayout.base.PLColor;
 import com.helger.pdflayout.base.PLPageSet;
@@ -146,11 +147,30 @@ public final class PdfTemplateEmitter
     {
       final char c = aChars[i];
       // Two tildes in a row are the strike-through marker
-      if (c == '\\' || c == '*' || c == '_' || c == '{' || c == '`' || (c == '~' && i + 1 < aChars.length && aChars[i + 1] == '~'))
-        aSb.append ('\\');
-      aSb.append (c);
+      // The markup parser does not honour a backslash in front of "{", so invoice data could
+      // inject {link}, {color} or {bg} directives. Curly braces are shown as round ones instead.
+      if (c == '{')
+        aSb.append ('(');
+      else
+        if (c == '}')
+          aSb.append (')');
+        else
+        {
+          if (c == '\\' || c == '*' || c == '_' || c == '`' || (c == '~' && i + 1 < aChars.length && aChars[i + 1] == '~'))
+            aSb.append ('\\');
+          aSb.append (c);
+        }
     }
     return aSb.toString ();
+  }
+
+  @NonNull
+  private static String _encodeLinkDestination (@NonNull final String sDestination)
+  {
+    String ret = StringReplace.replaceAll (sDestination, "[", "%5B");
+    ret = StringReplace.replaceAll (ret, "]", "%5D");
+    ret = StringReplace.replaceAll (ret, "{", "%7B");
+    return StringReplace.replaceAll (ret, "}", "%7D");
   }
 
   /** Append the inline nodes as ph-pdf-layout markup; a line break starts a new line. */
@@ -191,7 +211,7 @@ public final class PdfTemplateEmitter
                 else
                   if (aChild instanceof final Link aLink && _isSupportedLink (aLink.getDestination ()))
                   {
-                    aLine.append ("{link[").append (aLink.getDestination ()).append ("]}");
+                    aLine.append ("{link[").append (_escape (_encodeLinkDestination (aLink.getDestination ()))).append ("]}");
                     _appendMarkupRecursive (aChild, aLines);
                     aLines.get (aLines.size () - 1).append ("{link}");
                   }

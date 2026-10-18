@@ -134,6 +134,17 @@ public final class HtmlTemplateEmitter
     return aImg;
   }
 
+  private static boolean _isSafeLink (@Nullable final String sDestination)
+  {
+    if (sDestination == null)
+      return false;
+    final int nColon = sDestination.indexOf (':');
+    if (nColon < 0)
+      return true;
+    final String sScheme = sDestination.substring (0, nColon).toLowerCase (Locale.ROOT);
+    return sScheme.equals ("http") || sScheme.equals ("https") || sScheme.equals ("mailto");
+  }
+
   private void _addChildrenRecursive (@NonNull final PhloxTemplateAst aAst,
                                       @NonNull final Node aParent,
                                       @NonNull final IHCNodeWithChildren <?> aTarget)
@@ -296,9 +307,14 @@ public final class HtmlTemplateEmitter
     }
     if (aNode instanceof final Link aLink)
     {
-      final HCA aA = new HCA (new SimpleURL (aLink.getDestination ()));
-      _addChildrenRecursive (aAst, aLink, aA);
-      aTarget.addChild (aA);
+      if (_isSafeLink (aLink.getDestination ()))
+      {
+        final HCA aA = new HCA (new SimpleURL (aLink.getDestination ()));
+        _addChildrenRecursive (aAst, aLink, aA);
+        aTarget.addChild (aA);
+      }
+      else
+        _addChildrenRecursive (aAst, aLink, aTarget);
       return;
     }
     if (aNode instanceof BulletList)

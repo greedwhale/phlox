@@ -42,7 +42,7 @@
   BT-10  Buyer reference                      (0..n since EN 16931:2026; comma-joined, scheme in parentheses)
   BT-167 VAT accounting currency exchange rate (0..1, EN 16931:2026; BT-167-2 source, BT-167-1 target currency)
 }}
-# {{label:section.header.title.invoice}}: {{BT-1}}
+{{?is_invoice}}# {{label:section.header.title.invoice}}: {{BT-1}}{{/is_invoice}}{{?is_credit_note}}# {{label:section.header.title.creditnote}}: {{BT-1}}{{/is_credit_note}}
 
 **{{label:BT-2}}:** {{BT-2 | date:long}}
 {{?BT-166}}
@@ -58,7 +58,7 @@
 **{{label:BT-5}}:** {{BT-5}}
 {{/BT-5}}
 {{?BT-167}}
-**{{label:BT-167}}:** {{BT-167}}{{?BT-167-2}} ({{BT-167-2}} → {{BT-167-1}}){{/BT-167-2}}
+**{{label:BT-167}}:** {{BT-167}}{{?BT-167-2}} ({{BT-167-2}} -> {{BT-167-1}}){{/BT-167-2}}
 {{/BT-167}}
 {{?BT-10}}
 **{{label:BT-10}}:** {{BT-10}}
@@ -371,7 +371,7 @@
 {{/BT-127}}
 {{?BG-27}}
 {{#BG-27}}
-> {{label:BG-27}} ({{label:BT-126}} {{..BT-126}}): −{{BT-136 | amount}}{{?BT-139}} — {{BT-139}}{{/BT-139}}
+> {{label:BG-27}} ({{label:BT-126}} {{..BT-126}}): -{{BT-136 | amount}}{{?BT-139}} — {{BT-139}}{{/BT-139}}
 {{/BG-27}}
 {{/BG-27}}
 {{?BG-28}}
@@ -446,7 +446,7 @@
 
 | {{label:BT-97}} | {{label:BT-92}} | {{label:BT-95}} | {{label:BT-96}} |
 |---|---:|---|---:|
-{{#BG-20}}| {{?BT-97}}{{BT-97}}{{/BT-97}}{{?BT-98}} *({{BT-98 | code:allowancereason}})*{{/BT-98}}{{?BT-173}} — {{BT-173}}{{/BT-173}}{{?BT-174}} ({{BT-174}}){{/BT-174}}{{?BT-213}} [{{BT-213}}]{{/BT-213}} | −{{BT-92 | amount}} | {{BT-95 | code:vatcategory}} | {{BT-96 | percent}} |
+{{#BG-20}}| {{?BT-97}}{{BT-97}}{{/BT-97}}{{?BT-98}} *({{BT-98 | code:allowancereason}})*{{/BT-98}}{{?BT-173}} — {{BT-173}}{{/BT-173}}{{?BT-174}} ({{BT-174}}){{/BT-174}}{{?BT-213}} [{{BT-213}}]{{/BT-213}} | -{{BT-92 | amount}} | {{BT-95 | code:vatcategory}} | {{BT-96 | percent}} |
 {{/BG-20}}
 {{/BG-20}}
 
@@ -527,14 +527,14 @@
 | | |
 |---|---:|
 {{?BG-22.BT-106}}| {{label:BT-106}} | {{BG-22.BT-106 | amount}} |
-{{/BG-22.BT-106}}{{?BG-22.BT-107}}| {{label:BT-107}} | −{{BG-22.BT-107 | amount}} |
+{{/BG-22.BT-106}}{{?BG-22.BT-107}}| {{label:BT-107}} | -{{BG-22.BT-107 | amount}} |
 {{/BG-22.BT-107}}{{?BG-22.BT-108}}| {{label:BT-108}} | +{{BG-22.BT-108 | amount}} |
 {{/BG-22.BT-108}}{{#BG-22.BG-34}}| {{label:BG-34}}{{?BT-180}}: {{BT-180}}{{/BT-180}} | +{{BT-179 | amount}} |
 {{/BG-22.BG-34}}| **{{label:BT-109}}** | **{{BG-22.BT-109 | amount}}** |
 | {{label:BT-110}} | {{BG-22.BT-110 | amount}} |
 {{?BG-22.BT-111}}| {{label:BT-111}} | {{BG-22.BT-111 | amount:BT-6}} |
 {{/BG-22.BT-111}}| **{{label:BT-112}}** | **{{BG-22.BT-112 | amount}}** |
-{{?BG-22.BT-113}}| {{label:BT-113}} | −{{BG-22.BT-113 | amount}} |
+{{?BG-22.BT-113}}| {{label:BT-113}} | -{{BG-22.BT-113 | amount}} |
 {{/BG-22.BT-113}}{{?BG-22.BT-114}}| {{label:BT-114}} | {{BG-22.BT-114 | amount}} |
 {{/BG-22.BT-114}}{{class:totals-due}}
 | **{{label:section.totals.due}}** | **{{BG-22.BT-115 | amount}}** |
@@ -640,6 +640,6 @@
 ## {{label:section.supportingdocs.title}}
 
 {{#BG-24}}
-- **{{BT-122}}**{{?BT-123}} — {{BT-123}}{{/BT-123}}{{?BT-124}} ([{{BT-124}}]({{BT-124}})){{/BT-124}}{{?BT-125}} *([{{BT-125.filename}}](attachment:BG-24[{{.index}}]))*{{/BT-125}}
+- **{{BT-122}}**{{?BT-123}} — {{BT-123}}{{/BT-123}}{{?BT-124}} ([{{BT-124}}]({{BT-124}})){{/BT-124}}{{?BT-125}} *({{BT-125.filename}})*{{/BT-125}}
 {{/BG-24}}
 {{/BG-24}}

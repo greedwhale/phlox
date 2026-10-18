@@ -130,13 +130,31 @@ public final class DefaultPhloxLabelResolver implements IPhloxLabelResolver
     ENGLISH_NAMES.put ("vatexemption", x -> _nameOrNull (EEN16931VATEXCode.getFromIDOrNull (x)));
   }
 
+  /**
+   * Resolve a bundle without falling back to the JVM default locale. An unsupported locale resolves
+   * to English.
+   */
+  @NonNull
+  private static ResourceBundle _getBundle (@NonNull final String sBaseName, @NonNull final Locale aLocale)
+  {
+    final ResourceBundle.Control aControl = ResourceBundle.Control.getNoFallbackControl (ResourceBundle.Control.FORMAT_PROPERTIES);
+    try
+    {
+      return ResourceBundle.getBundle (sBaseName, aLocale, aControl);
+    }
+    catch (final MissingResourceException ex)
+    {
+      return ResourceBundle.getBundle (sBaseName, Locale.ENGLISH, aControl);
+    }
+  }
+
   @Override
   @NonNull
   public String getLabel (@NonNull final String sKey, @NonNull final Locale aLocale)
   {
     try
     {
-      return ResourceBundle.getBundle (BUNDLE_LABELS, aLocale).getString (sKey);
+      return _getBundle (BUNDLE_LABELS, aLocale).getString (sKey);
     }
     catch (final MissingResourceException ex)
     {
@@ -154,7 +172,7 @@ public final class DefaultPhloxLabelResolver implements IPhloxLabelResolver
     // The logical list name may be dotted ("vat.category"), the bundle keys are not ("vatcategory")
     final String sListKey = StringReplace.replaceAll (sListName, ".", "");
     final String sFullKey = sListKey + "." + sCode;
-    final ResourceBundle aBundle = ResourceBundle.getBundle (BUNDLE_CODELISTS, aLocale);
+    final ResourceBundle aBundle = _getBundle (BUNDLE_CODELISTS, aLocale);
     if (aBundle.containsKey (sFullKey))
       return aBundle.getString (sFullKey);
 

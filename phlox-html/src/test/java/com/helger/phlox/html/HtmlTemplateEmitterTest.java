@@ -119,6 +119,12 @@ public final class HtmlTemplateEmitterTest
   }
 
   @Test
+  public void testDefaultTemplateCiiD16B ()
+  {
+    _renderAll (CiiInvoiceReader.fromD16B (), MockPhloxTestFiles.getCiiD16BFiles (), 100);
+  }
+
+  @Test
   public void testDefaultTemplateCiiD25A ()
   {
     _renderAll (CiiInvoiceReader.fromD25A (), MockPhloxTestFiles.getCiiD25AFiles (), 10);

@@ -16,7 +16,6 @@
  */
 package com.helger.phlox.cli;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,7 +28,9 @@ import java.util.concurrent.Callable;
 
 import org.jspecify.annotations.Nullable;
 
+import com.helger.base.io.nonblocking.NonBlockingBufferedInputStream;
 import com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream;
+import com.helger.base.io.nonblocking.NonBlockingByteArrayOutputStream;
 import com.helger.diagnostics.error.list.ErrorList;
 import com.helger.phlox.api.PhloxRuntimeException;
 import com.helger.phlox.api.model.PhloxInvoice;
@@ -146,7 +147,7 @@ public class PhloxCli implements Callable <Integer>
 
   private static byte [] _readAllStdin () throws IOException
   {
-    try (final BufferedInputStream aIn = new BufferedInputStream (System.in))
+    try (final NonBlockingBufferedInputStream aIn = new NonBlockingBufferedInputStream (System.in))
     {
       return aIn.readAllBytes ();
     }
@@ -167,8 +168,10 @@ public class PhloxCli implements Callable <Integer>
   /** Decide source syntax by sniffing the root element / namespace. */
   static ESourceSyntax _sniffSyntax (final byte [] aBytes)
   {
-    final String sHead = new String (aBytes, 0, Math.min (aBytes.length, 2048), StandardCharsets.UTF_8);
-    if (sHead.contains ("CrossIndustryInvoice") || sHead.contains ("uncefact:data:standard"))
+    final String sHead = new String (aBytes, StandardCharsets.UTF_8);
+    if (sHead.contains ("<CrossIndustryInvoice") ||
+        sHead.contains (":CrossIndustryInvoice") ||
+        sHead.contains ("uncefact:data:standard"))
       return ESourceSyntax.CII;
     return ESourceSyntax.UBL;
   }
@@ -176,6 +179,11 @@ public class PhloxCli implements Callable <Integer>
   @Override
   public Integer call () throws Exception
   {
+    if (inputFile != null && !Files.isRegularFile (inputFile))
+    {
+      System.err.println ("Input file '" + inputFile + "' does not exist");
+      return Integer.valueOf (2);
+    }
     final byte [] aBytes = inputFile != null ? Files.readAllBytes (inputFile) : _readAllStdin ();
     final ESourceSyntax eSyntax = syntax == ESourceSyntax.AUTO ? _sniffSyntax (aBytes) : syntax;
 
@@ -190,15 +198,15 @@ public class PhloxCli implements Callable <Integer>
     if (eSyntax == ESourceSyntax.CII)
     {
       final CiiInvoiceReader aReader = "2017".equals (enVersion) ? CiiInvoiceReader.fromD16B ()
-                                                                  : "2026".equals (enVersion) ? CiiInvoiceReader.fromD25A ()
-                                                                                              : CiiInvoiceReader.autoDetect ();
+                                                                 : "2026".equals (enVersion) ? CiiInvoiceReader.fromD25A ()
+                                                                                             : CiiInvoiceReader.autoDetect ();
       aInvoice = aReader.read (new NonBlockingByteArrayInputStream (aBytes), aErrors);
     }
     else
     {
       final UblInvoiceReader aReader = "2017".equals (enVersion) ? UblInvoiceReader.fromUbl21 ()
-                                                                  : "2026".equals (enVersion) ? UblInvoiceReader.fromUbl25 ()
-                                                                                              : UblInvoiceReader.autoDetect ();
+                                                                 : "2026".equals (enVersion) ? UblInvoiceReader.fromUbl25 ()
+                                                                                             : UblInvoiceReader.autoDetect ();
       aInvoice = aReader.read (new NonBlockingByteArrayInputStream (aBytes), aErrors);
     }
 
@@ -219,10 +227,11 @@ public class PhloxCli implements Callable <Integer>
       return Integer.valueOf (2);
     }
 
-    final Locale aLocale = new Locale.Builder ().setLanguage (lang).build ();
-    final WatermarkSpec aWM = watermark == null ? null : WatermarkSpec.text (watermark)
-                                                                      .setOpacity (watermarkOpacity)
-                                                                      .setRotation (watermarkRotation);
+    final Locale aLocale = Locale.forLanguageTag (lang.replace ('_', '-'));
+    final WatermarkSpec aWM = watermark == null ? null
+                                                : WatermarkSpec.text (watermark)
+                                                               .setOpacity (watermarkOpacity)
+                                                               .setRotation (watermarkRotation);
 
     if (format == EOutputFormat.PDF)
     {
@@ -231,25 +240,48 @@ public class PhloxCli implements Callable <Integer>
         System.err.println ("PDF output requires --out");
         return Integer.valueOf (2);
       }
-      final PdfRenderContext aCtx = new PdfRenderContext ().setLocale (aLocale).setUserWatermark (aWM).setTemplate (aTemplate);
+      final PdfRenderContext aCtx = new PdfRenderContext ().setLocale (aLocale)
+                                                           .setUserWatermark (aWM)
+                                                           .setTemplate (aTemplate);
+      // Render completely before touching the output file, so a failure leaves no empty file
+      final NonBlockingByteArrayOutputStream aBuffer = new NonBlockingByteArrayOutputStream ();
+      try
+      {
+        new PdfInvoiceWriter ().writeTo (aInvoice, aCtx, aBuffer);
+      }
+      catch (final PhloxRuntimeException ex)
+      {
+        System.err.println ("Failed to render the invoice: " + ex.getMessage ());
+        return Integer.valueOf (2);
+      }
       try (final OutputStream aOut = new FileOutputStream (outputFile.toFile ()))
       {
-        new PdfInvoiceWriter ().writeTo (aInvoice, aCtx, aOut);
+        aBuffer.writeTo (aOut);
       }
     }
     else
     {
-      final HtmlRenderContext aCtx = new HtmlRenderContext ().setLocale (aLocale).setUserWatermark (aWM).setTemplate (aTemplate);
+      final HtmlRenderContext aCtx = new HtmlRenderContext ().setLocale (aLocale)
+                                                             .setUserWatermark (aWM)
+                                                             .setTemplate (aTemplate);
       final HtmlInvoiceWriter aHtmlWriter = new HtmlInvoiceWriter ();
-      if (outputFile == null)
+      final String sHtml;
+      try
       {
-        final String sHtml = aHtmlWriter.writeAsString (aInvoice, aCtx);
-        System.out.write (sHtml.getBytes (StandardCharsets.UTF_8));
+        sHtml = aHtmlWriter.writeAsString (aInvoice, aCtx);
       }
+      catch (final PhloxRuntimeException ex)
+      {
+        System.err.println ("Failed to render the invoice: " + ex.getMessage ());
+        return Integer.valueOf (2);
+      }
+      final byte [] aHtmlBytes = sHtml.getBytes (StandardCharsets.UTF_8);
+      if (outputFile == null)
+        System.out.write (aHtmlBytes);
       else
         try (final OutputStream aOut = new FileOutputStream (outputFile.toFile ()))
         {
-          aHtmlWriter.writeTo (aInvoice, aCtx, aOut);
+          aOut.write (aHtmlBytes);
         }
     }
     return Integer.valueOf (0);

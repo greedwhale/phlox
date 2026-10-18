@@ -43,6 +43,9 @@ import com.helger.xsds.ccts.cct.schemamodule.TextType;
  */
 abstract class AbstractUblInvoiceReader
 {
+  /** The scheme identifier of the SEPA creditor identifier (BT-90) in a party identification. */
+  protected static final String SEPA_SCHEME_ID = "SEPA";
+
   private static final String ROOT_INVOICE = "Invoice";
   private static final String ROOT_CREDIT_NOTE = "CreditNote";
 
@@ -79,6 +82,27 @@ abstract class AbstractUblInvoiceReader
   @Nullable
   protected abstract PhloxInvoice readCreditNoteDocument (@NonNull Document aDoc, @NonNull ErrorList aErrors);
 
+  /**
+   * Check if a tax amount is the invoice total VAT amount in the VAT accounting currency (BT-111).
+   * An amount in the invoice currency is always BT-110, also if BT-6 names the same currency.
+   *
+   * @param sInvoiceCurrency
+   *        BT-5. May be {@code null}.
+   * @param sAccountingCurrency
+   *        BT-6. May be {@code null}.
+   * @param sAmountCurrency
+   *        The currency of the tax amount. May be {@code null}.
+   * @return {@code true} for BT-111, {@code false} for BT-110.
+   */
+  protected static boolean isVatAccountingAmount (@Nullable final String sInvoiceCurrency,
+                                                  @Nullable final String sAccountingCurrency,
+                                                  @Nullable final String sAmountCurrency)
+  {
+    return sAccountingCurrency != null &&
+           sAccountingCurrency.equals (sAmountCurrency) &&
+           !sAccountingCurrency.equals (sInvoiceCurrency);
+  }
+
   @Nullable
   protected static String str (@Nullable final String s)
   {
@@ -113,11 +137,12 @@ abstract class AbstractUblInvoiceReader
     final StringBuilder aSb = new StringBuilder ();
     for (final TextType aN : aNotes)
     {
-      if (aN.getValue () == null)
+      final String sNote = str (aN.getValue ());
+      if (sNote == null)
         continue;
       if (aSb.length () > 0)
         aSb.append ('\n');
-      aSb.append (aN.getValue ());
+      aSb.append (sNote);
     }
     return aSb.toString ();
   }
@@ -134,7 +159,7 @@ abstract class AbstractUblInvoiceReader
   @Nullable
   protected static PhloxIdentifier identifier (@Nullable final IdentifierType aID)
   {
-    return aID == null ? null : new PhloxIdentifier (aID.getValue (), aID.getSchemeID ());
+    return aID == null ? null : new PhloxIdentifier (str (aID.getValue ()), str (aID.getSchemeID ()));
   }
 
   /**

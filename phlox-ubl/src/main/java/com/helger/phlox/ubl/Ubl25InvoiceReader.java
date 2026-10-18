@@ -74,10 +74,8 @@ final class Ubl25InvoiceReader extends AbstractUblInvoiceReader
     for (final AnnotationType aAnnotation : aAnnotations)
     {
       final String sSubjectCode = str (aAnnotation.getSubjectCodeValue ());
-      final String sContent = aAnnotation.getAnnotationContent ().isEmpty () ? null
-                                                                             : str (aAnnotation.getAnnotationContent ()
-                                                                                                .get (0)
-                                                                                                .getValue ());
+      // Repeated content is joined with newlines, like in CII
+      final String sContent = str (joinNotes (aAnnotation.getAnnotationContent ()));
       if (sSubjectCode != null || sContent != null)
         aModel.invoiceNotes ().add (new PhloxInvoiceNote (sSubjectCode, sContent));
     }
@@ -317,7 +315,7 @@ final class Ubl25InvoiceReader extends AbstractUblInvoiceReader
       aSeller.setTradingName (str (aParty.getPartyName ().get (0).getNameValue ()));
     // BT-29
     for (final PartyIdentificationType aPI : aParty.getPartyIdentification ())
-      if (aPI.getID () != null)
+      if (aPI.getID () != null && !SEPA_SCHEME_ID.equals (aPI.getID ().getSchemeID ()))
         aSeller.identifiers ().add (identifier (aPI.getID ()));
     // BT-31 (tax scheme "VAT") / BT-32 + BT-32-1 (tax scheme "LOC")
     for (final PartyTaxSchemeType aPTS : aParty.getPartyTaxScheme ())
@@ -357,11 +355,12 @@ final class Ubl25InvoiceReader extends AbstractUblInvoiceReader
     final PhloxPayee aOut = new PhloxPayee ();
     if (!aParty.getPartyName ().isEmpty ())
       aOut.setName (str (aParty.getPartyName ().get (0).getNameValue ()));
-    if (!aParty.getPartyIdentification ().isEmpty () && aParty.getPartyIdentification ().get (0).getID () != null)
-    {
-      final PartyIdentificationType aPI = aParty.getPartyIdentification ().get (0);
-      aOut.setIdentifier (identifier (aPI.getID ()));
-    }
+    for (final PartyIdentificationType aPI : aParty.getPartyIdentification ())
+      if (aPI.getID () != null && !SEPA_SCHEME_ID.equals (aPI.getID ().getSchemeID ()))
+      {
+        aOut.setIdentifier (identifier (aPI.getID ()));
+        break;
+      }
     if (!aParty.getPartyLegalEntity ().isEmpty ())
     {
       final PartyLegalEntityType aLE = aParty.getPartyLegalEntity ().get (0);
@@ -436,11 +435,11 @@ final class Ubl25InvoiceReader extends AbstractUblInvoiceReader
   {
     if (aPayee != null)
       for (final PartyIdentificationType aPI : aPayee.getPartyIdentification ())
-        if (aPI.getID () != null && "SEPA".equals (aPI.getID ().getSchemeID ()))
+        if (aPI.getID () != null && SEPA_SCHEME_ID.equals (aPI.getID ().getSchemeID ()))
           return aPI.getIDValue ();
     if (aSupplier != null && aSupplier.getParty () != null)
       for (final PartyIdentificationType aPI : aSupplier.getParty ().getPartyIdentification ())
-        if (aPI.getID () != null && "SEPA".equals (aPI.getID ().getSchemeID ()))
+        if (aPI.getID () != null && SEPA_SCHEME_ID.equals (aPI.getID ().getSchemeID ()))
           return aPI.getIDValue ();
     return null;
   }
@@ -475,10 +474,21 @@ final class Ubl25InvoiceReader extends AbstractUblInvoiceReader
       if (aOnePM.getPayeeFinancialAccount () != null)
         aOut.creditTransfers ().add (_readCreditTransfer (aOnePM.getPayeeFinancialAccount ()));
 
-    // BG-18 — payment card
-    if (!aPM.getCardAccount ().isEmpty ())
+    // BG-18 / BG-19 may sit in any of the payment means, not only in the first one
+    PaymentMeansType aCardMeans = null;
+    PaymentMeansType aMandateMeans = null;
+    for (final PaymentMeansType aOnePM : aPaymentMeans)
     {
-      final CardAccountType aCardAccount = aPM.getCardAccount ().get (0);
+      if (aCardMeans == null && !aOnePM.getCardAccount ().isEmpty ())
+        aCardMeans = aOnePM;
+      if (aMandateMeans == null && aOnePM.getPaymentMandate () != null)
+        aMandateMeans = aOnePM;
+    }
+
+    // BG-18 — payment card
+    if (aCardMeans != null)
+    {
+      final CardAccountType aCardAccount = aCardMeans.getCardAccount ().get (0);
       final PhloxPaymentCard aCard = new PhloxPaymentCard ();
       aCard.setPan (str (aCardAccount.getPrimaryAccountNumberIDValue ()));
       aCard.setHolderName (str (aCardAccount.getHolderNameValue ()));
@@ -486,9 +496,9 @@ final class Ubl25InvoiceReader extends AbstractUblInvoiceReader
     }
 
     // BG-19 — direct debit
-    if (aPM.getPaymentMandate () != null)
+    if (aMandateMeans != null)
     {
-      final PaymentMandateType aMandate = aPM.getPaymentMandate ();
+      final PaymentMandateType aMandate = aMandateMeans.getPaymentMandate ();
       final PhloxDirectDebit aDD = new PhloxDirectDebit ();
       aDD.setMandateReferenceID (str (aMandate.getIDValue ()));
       if (aMandate.getPayerFinancialAccount () != null)
@@ -676,7 +686,7 @@ final class Ubl25InvoiceReader extends AbstractUblInvoiceReader
       {
         final BigDecimal aAmount = aTT.getTaxAmount ().getValue ();
         final String sCurrencyID = aTT.getTaxAmount ().getCurrencyID ();
-        if (sAccountingCurrency != null && sAccountingCurrency.equals (sCurrencyID))
+        if (isVatAccountingAmount (aModel.getCurrency (), sAccountingCurrency, sCurrencyID))
           aModel.getDocumentTotals ().setTaxTotalAccountingCurrency (aAmount);
         else
           if (!bMainTaxTotalSet)

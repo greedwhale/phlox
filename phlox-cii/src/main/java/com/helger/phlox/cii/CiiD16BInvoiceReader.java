@@ -158,7 +158,7 @@ final class CiiD16BInvoiceReader extends AbstractCiiInvoiceReader
     final String sAcct = aModel.getVatAccountingCurrency ();
     for (final AmountType aA : aS.getTaxTotalAmount ())
     {
-      if (sAcct != null && sAcct.equals (aA.getCurrencyID ()))
+      if (isVatAccountingAmount (aModel.getCurrency (), sAcct, aA.getCurrencyID ()))
         aModel.getDocumentTotals ().setTaxTotalAccountingCurrency (aA.getValue ());
       else
         if (aModel.getDocumentTotals ().getTaxTotal () == null)

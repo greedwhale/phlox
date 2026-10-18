@@ -108,7 +108,7 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
     final String sAcct = aModel.getVatAccountingCurrency ();
     for (final AmountType aA : aS.getTaxTotalAmount ())
     {
-      if (sAcct != null && sAcct.equals (aA.getCurrencyID ()))
+      if (isVatAccountingAmount (aModel.getCurrency (), sAcct, aA.getCurrencyID ()))
         aModel.getDocumentTotals ().setTaxTotalAccountingCurrency (aA.getValue ());
       else
         if (aModel.getDocumentTotals ().getTaxTotal () == null)
@@ -675,19 +675,19 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
         break;
       }
 
-    if (aMeans.isEmpty () && aTerms.isEmpty ())
+    if (aMeans.isEmpty () && aTerms.isEmpty () && aHTS.getPaymentReference ().isEmpty ())
       return;
 
     final PhloxPaymentInstructions aPI = new PhloxPaymentInstructions ();
+    // BT-83 — remittance information lives on the parent. Multiple references are joined
+    // with newlines so multi-part instructions (e.g. invoice number + PO reference) survive.
+    aPI.setRemittanceInformation (_joinTexts (aHTS.getPaymentReference ()));
     if (!aMeans.isEmpty ())
     {
       final TradeSettlementPaymentMeansType aM = aMeans.get (0);
       aPI.setPaymentMeansCode (_codeValue (aM.getTypeCode ()));
       if (!aM.getInformation ().isEmpty ())
         aPI.setPaymentMeansText (_text (aM.getInformation ().get (0)));
-      // BT-83 — remittance information lives on the parent. Multiple references are joined
-      // with newlines so multi-part instructions (e.g. invoice number + PO reference) survive.
-      aPI.setRemittanceInformation (_joinTexts (aHTS.getPaymentReference ()));
 
       // BG-17 credit transfers across all payment means
       for (final TradeSettlementPaymentMeansType aOne : aMeans)
@@ -714,36 +714,49 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
       }
     }
 
-    // BG-19 + BT-89 .. BT-91 + BT-215 + BT-216
+    // BG-19 + BT-89 .. BT-91 + BT-215 + BT-216. BT-89 is optional, so the direct debit is also
+    // recognised by the payer account or, for the creditor reference, by payment means code 59
+    final PhloxDirectDebit aDD = new PhloxDirectDebit ();
+    boolean bDirectDebit = false;
     for (final TradePaymentTermsType aPT : aTerms)
       if (!aPT.getDirectDebitMandateID ().isEmpty ())
       {
-        final PhloxDirectDebit aDD = new PhloxDirectDebit ();
         aDD.setMandateReferenceID (_idValue (aPT.getDirectDebitMandateID ().get (0)));
-        // BT-91 / BT-216 from the payer financial account, BT-215 from the payer institution
-        for (final TradeSettlementPaymentMeansType aM : aMeans)
-        {
-          final DebtorFinancialAccountType aFA = aM.getPayerPartyDebtorFinancialAccount ();
-          if (aFA != null)
-          {
-            aDD.setDebitedAccountID (aFA.getIBANID () != null ? _idValue (aFA.getIBANID ())
-                                                              : _idValue (aFA.getProprietaryID ()));
-            aDD.setDebitedAccountName (_text (aFA.getAccountName ()));
-          }
-          final DebtorFinancialInstitutionType aFI = aM.getPayerSpecifiedDebtorFinancialInstitution ();
-          if (aFI != null)
-            aDD.setDebitedAccountProviderID (_idValue (aFI.getBICID ()));
-          if (aFA != null || aFI != null)
-            break;
-        }
-        // BT-90 — creditor reference id
-        if (aHTS.getCreditorReferenceID () != null)
-          aDD.setBankAssignedCreditorID (_idValue (aHTS.getCreditorReferenceID ()));
-        aPI.setDirectDebit (aDD);
+        bDirectDebit = true;
         break;
       }
+    // BT-91 / BT-216 from the payer financial account, BT-215 from the payer institution
+    for (final TradeSettlementPaymentMeansType aM : aMeans)
+    {
+      final DebtorFinancialAccountType aFA = aM.getPayerPartyDebtorFinancialAccount ();
+      if (aFA != null)
+      {
+        aDD.setDebitedAccountID (aFA.getIBANID () != null ? _idValue (aFA.getIBANID ())
+                                                          : _idValue (aFA.getProprietaryID ()));
+        aDD.setDebitedAccountName (_text (aFA.getAccountName ()));
+      }
+      final DebtorFinancialInstitutionType aFI = aM.getPayerSpecifiedDebtorFinancialInstitution ();
+      if (aFI != null)
+        aDD.setDebitedAccountProviderID (_idValue (aFI.getBICID ()));
+      if (aFA != null || aFI != null)
+      {
+        bDirectDebit = true;
+        break;
+      }
+    }
+    // BT-90 — creditor reference id
+    if (aHTS.getCreditorReferenceID () != null && (bDirectDebit || "59".equals (aPI.getPaymentMeansCode ())))
+    {
+      aDD.setBankAssignedCreditorID (_idValue (aHTS.getCreditorReferenceID ()));
+      bDirectDebit = true;
+    }
+    if (bDirectDebit)
+      aPI.setDirectDebit (aDD);
 
-    if (aPI.getPaymentMeansCode () != null || !aPI.creditTransfers ().isEmpty () || aPI.getDirectDebit () != null)
+    if (aPI.getPaymentMeansCode () != null ||
+        aPI.getRemittanceInformation () != null ||
+        !aPI.creditTransfers ().isEmpty () ||
+        aPI.getDirectDebit () != null)
       aModel.setPaymentInstructions (aPI);
   }
 
@@ -1115,14 +1128,6 @@ final class CiiD25AInvoiceReader extends AbstractCiiInvoiceReader
         aModel.setCurrency (aHTS.getInvoiceCurrencyCode ().getValue ());
       if (aHTS.getTaxCurrencyCode () != null)
         aModel.setVatAccountingCurrency (aHTS.getTaxCurrencyCode ().getValue ());
-
-      // BT-83 — remittance information
-      if (!aHTS.getPaymentReference ().isEmpty ())
-        aModel.setBuyerAccountingReference (null); // BT-19 handled below
-      if (!aHTS.getPaymentReference ().isEmpty () && aModel.getPaymentInstructions () == null)
-      {
-        // Will set after PaymentInstructions populated
-      }
 
       // BT-19 — buyer accounting reference
       final var aAcctList = aHTS.getReceivableSpecifiedTradeAccountingAccount ();

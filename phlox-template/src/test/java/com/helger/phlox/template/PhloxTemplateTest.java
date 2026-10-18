@@ -276,6 +276,19 @@ public final class PhloxTemplateTest
   }
 
   @Test
+  public void testInvoiceDataIsMarkdownEscaped ()
+  {
+    final PhloxInvoice aInvoice = _buildMinimalInvoice ();
+    aInvoice.setNumber ("1. a | *b*\n- ![x](http://evil/x.png)");
+    final TestCtx aCtx = new TestCtx ();
+    aCtx.setLocale (Locale.ENGLISH);
+
+    final PhloxTemplate aTpl = PhloxTemplate.fromString ("{{BT-1}}");
+    assertEquals ("1\\. a \\| \\*b\\*<br>\\- !\\[x\\](http://evil/x.png)",
+                  aTpl.renderSubstituted (aInvoice, aCtx));
+  }
+
+  @Test
   public void testPresenceCheckSkipsEmptyOptional ()
   {
     // BT-10 (buyer reference) is NOT set on the minimal invoice.
