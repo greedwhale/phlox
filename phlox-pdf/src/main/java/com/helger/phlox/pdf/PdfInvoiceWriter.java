@@ -37,15 +37,6 @@ import org.jspecify.annotations.Nullable;
 
 import com.helger.annotation.WillClose;
 import com.helger.base.string.StringHelper;
-import com.helger.phlox.api.PhloxRuntimeException;
-import com.helger.phlox.api.i18n.PhloxFormat;
-import com.helger.phlox.api.model.*;
-import com.helger.phlox.api.template.IPhloxTemplate;
-import com.helger.phlox.api.watermark.EWatermarkPosition;
-import com.helger.phlox.api.watermark.PhloxProgramWatermark;
-import com.helger.phlox.api.watermark.WatermarkSpec;
-import com.helger.phlox.api.write.IInvoiceWriter;
-import com.helger.phlox.template.PhloxTemplate;
 import com.helger.pdflayout.IPDDocumentCustomizer;
 import com.helger.pdflayout.PDFCreationException;
 import com.helger.pdflayout.PageLayoutPDF;
@@ -69,6 +60,15 @@ import com.helger.pdflayout.spec.FontSpec;
 import com.helger.pdflayout.spec.PaddingSpec;
 import com.helger.pdflayout.spec.PreloadFont;
 import com.helger.pdflayout.spec.WidthSpec;
+import com.helger.phlox.api.PhloxRuntimeException;
+import com.helger.phlox.api.i18n.PhloxFormat;
+import com.helger.phlox.api.model.*;
+import com.helger.phlox.api.template.IPhloxTemplate;
+import com.helger.phlox.api.watermark.EWatermarkPosition;
+import com.helger.phlox.api.watermark.PhloxProgramWatermark;
+import com.helger.phlox.api.watermark.WatermarkSpec;
+import com.helger.phlox.api.write.IInvoiceWriter;
+import com.helger.phlox.template.PhloxTemplate;
 
 /**
  * Renders a {@link PhloxInvoice} as a PDF using {@code ph-pdf-layout}.
@@ -94,8 +94,7 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     // Font: bold for centered/large watermarks, regular for the small program attribution.
     final PreloadFont eFontKind = aSpec.getPosition () == EWatermarkPosition.CENTER ? PreloadFont.REGULAR_BOLD
                                                                                     : PreloadFont.REGULAR;
-    final PDFont aFont = new PDType1Font (eFontKind == PreloadFont.REGULAR_BOLD
-                                                                                ? Standard14Fonts.FontName.HELVETICA_BOLD
+    final PDFont aFont = new PDType1Font (eFontKind == PreloadFont.REGULAR_BOLD ? Standard14Fonts.FontName.HELVETICA_BOLD
                                                                                 : Standard14Fonts.FontName.HELVETICA);
     final float fFontSize = aSpec.getFontSizePt ();
     final String sText = aSpec.getText ();
@@ -247,7 +246,8 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
   }
 
   @NonNull
-  private static String _allowanceExtras (@NonNull final PhloxDocumentAllowance aA, @NonNull final PdfRenderContext aCtx)
+  private static String _allowanceExtras (@NonNull final PhloxDocumentAllowance aA,
+                                          @NonNull final PdfRenderContext aCtx)
   {
     final StringBuilder sb = new StringBuilder ();
     _appendExtra (sb, aCtx.label ("BT-173"), aA.getExemptionReasonText ());
@@ -317,7 +317,7 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
       return new PLTableCell (new PLSpacerX (1f)).setFillColor (PLColor.gray (0xf0));
     return new PLTableCell (new PLText (sText, aFont).setPadding (new PaddingSpec (3))
                                                      .setHorzAlign (EHorzAlignment.RIGHT)).setHorzAlign (EHorzAlignment.RIGHT)
-                                                                                         .setFillColor (PLColor.gray (0xf0));
+                                                                                          .setFillColor (PLColor.gray (0xf0));
   }
 
   private static void _kvRow (@NonNull final PLVBox aVBox,
@@ -377,13 +377,17 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     for (final PhloxVatBreakdown aV : aInvoice.vatBreakdowns ())
     {
       final String sCat = aV.getCategoryCode ();
-      final StringBuilder aCatText = new StringBuilder (sCat == null ? "" : sCat + " — " + aCtx.codeLabel ("vat.category", sCat));
+      final StringBuilder aCatText = new StringBuilder (sCat == null ? ""
+                                                                     : sCat +
+                                                                       " — " +
+                                                                       aCtx.codeLabel ("vat.category", sCat));
       _appendExtra (aCatText, aCtx.label ("BT-184"), aV.getCurrency ());
       _appendExtra (aCatText, aCtx.label ("BT-210"), aV.getGoodsServicesCode ());
       aTbl.addRow (_td (aCatText.toString (), aBF),
-                   _tdRight (aV.getRate () == null ? "" : PhloxFormat.percent (aV.getRate (),
-                                                                               aCtx.getLocale (),
-                                                                               aCtx.getFormatOptions ()), aBF),
+                   _tdRight (aV.getRate () == null ? ""
+                                                   : PhloxFormat.percent (aV.getRate (),
+                                                                          aCtx.getLocale (),
+                                                                          aCtx.getFormatOptions ()), aBF),
                    _tdRight (_amount (aV.getTaxableAmount (), sCurrency, aCtx), aBF),
                    _tdRight (_amount (aV.getTaxAmount (), sCurrency, aCtx), aBF));
     }
@@ -400,8 +404,7 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
   {
     if (aAmount == null)
       return;
-    aTbl.addRow (_td (sLabel, aFont),
-                 _tdRight (_amount (aAmount, sCurrency, aCtx), aFont));
+    aTbl.addRow (_td (sLabel, aFont), _tdRight (_amount (aAmount, sCurrency, aCtx), aFont));
   }
 
   @NonNull
@@ -428,8 +431,8 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
                                      @NonNull final PhloxInvoice aInvoice,
                                      @NonNull final PdfRenderContext aCtx)
   {
-    final String sTitle = aInvoice.getKind ().isCreditNote () ? aCtx.label ("section.header.title.creditnote") : aCtx
-                                                                                                                     .label ("section.header.title.invoice");
+    final String sTitle = aInvoice.getKind ().isCreditNote () ? aCtx.label ("section.header.title.creditnote")
+                                                              : aCtx.label ("section.header.title.invoice");
     aPS.addElement (new PLText (sTitle, new FontSpec (PreloadFont.REGULAR_BOLD, 18f)).setMarginBottom (6));
 
     final PLVBox aMeta = new PLVBox ();
@@ -454,7 +457,10 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     if (aID == null || aID.getValue () == null || aID.getValue ().isEmpty ())
       return null;
     return aID.getSchemeID () == null || aID.getSchemeID ().isEmpty () ? aID.getValue ()
-                                                                       : aID.getValue () + " (" + aID.getSchemeID () + ")";
+                                                                       : aID.getValue () +
+                                                                         " (" +
+                                                                         aID.getSchemeID () +
+                                                                         ")";
   }
 
   @Nullable
@@ -484,7 +490,10 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
                                           aAddr.getLine2 (),
                                           aAddr.getLine3 (),
                                           aAddr.getPostCode () == null ? aAddr.getCity ()
-                                                                       : aAddr.getPostCode () + (aAddr.getCity () == null ? "" : " " + aAddr.getCity ()),
+                                                                       : aAddr.getPostCode () +
+                                                                         (aAddr.getCity () == null ? ""
+                                                                                                   : " " +
+                                                                                                     aAddr.getCity ()),
                                           aAddr.getCountrySubdivision (),
                                           aAddr.getCountryCode () })
       if (s != null && !s.isEmpty ())
@@ -610,9 +619,9 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
       aTbl.addRow (_td (_n (aLine.getID ()), aBF),
                    _td (aDesc.toString (), aBF),
                    _tdRight (_qty (aLine.getQuantity (), aLine.getQuantityUnit ()), aBF),
-                   _tdRight (aLine.getPrice () == null ? "" : _amount (aLine.getPrice ().getNetPrice (),
-                                                                       sCurrency,
-                                                                       aCtx), aBF),
+                   _tdRight (aLine.getPrice () == null ? ""
+                                                       : _amount (aLine.getPrice ().getNetPrice (), sCurrency, aCtx),
+                             aBF),
                    _tdRight (_lineVatCell (aLine, aCtx), aBF),
                    _tdRight (_amount (aLine.getNetAmount (), sCurrency, aCtx), aBF));
     }
@@ -645,20 +654,22 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
       aTbl.addRow (_td (aCtx.label ("BG-20"), aBF),
                    _td (_n (aA.getReason ()) + _allowanceExtras (aA, aCtx), aBF),
                    _tdRight (_n (aA.getVatCategoryCode ()) +
-                             (aA.getVatRate () == null ? "" : " " +
-                                                              PhloxFormat.percent (aA.getVatRate (),
-                                                                                   aCtx.getLocale (),
-                                                                                   aCtx.getFormatOptions ())),
+                             (aA.getVatRate () == null ? ""
+                                                       : " " +
+                                                         PhloxFormat.percent (aA.getVatRate (),
+                                                                              aCtx.getLocale (),
+                                                                              aCtx.getFormatOptions ())),
                              aBF),
                    _tdRight (_amount (_neg (aA.getAmount ()), sCurrency, aCtx), aBF));
     for (final PhloxDocumentCharge aC : aInvoice.documentCharges ())
       aTbl.addRow (_td (aCtx.label ("BG-21"), aBF),
                    _td (_n (aC.getReason ()) + _chargeExtras (aC, aCtx), aBF),
                    _tdRight (_n (aC.getVatCategoryCode ()) +
-                             (aC.getVatRate () == null ? "" : " " +
-                                                              PhloxFormat.percent (aC.getVatRate (),
-                                                                                   aCtx.getLocale (),
-                                                                                   aCtx.getFormatOptions ())),
+                             (aC.getVatRate () == null ? ""
+                                                       : " " +
+                                                         PhloxFormat.percent (aC.getVatRate (),
+                                                                              aCtx.getLocale (),
+                                                                              aCtx.getFormatOptions ())),
                              aBF),
                    _tdRight (_amount (aC.getAmount (), sCurrency, aCtx), aBF));
     aPS.addElement (aTbl);
@@ -1014,9 +1025,17 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
       {
         sb.append (aCtx.label ("BG-35")).append (":\n");
         if (aED.getEndDate () != null)
-          sb.append ("  ").append (aCtx.label ("BT-170")).append (": ").append (_date (aED.getEndDate (), aCtx)).append ('\n');
+          sb.append ("  ")
+            .append (aCtx.label ("BT-170"))
+            .append (": ")
+            .append (_date (aED.getEndDate (), aCtx))
+            .append ('\n');
         if (aED.getPercentage () != null)
-          sb.append ("  ").append (aCtx.label ("BT-171")).append (": ").append (_percent (aED.getPercentage (), aCtx)).append ('\n');
+          sb.append ("  ")
+            .append (aCtx.label ("BT-171"))
+            .append (": ")
+            .append (_percent (aED.getPercentage (), aCtx))
+            .append ('\n');
         if (aED.getAmount () != null)
           sb.append ("  ")
             .append (aCtx.label ("BT-172"))
@@ -1028,7 +1047,11 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
       {
         sb.append (aCtx.label ("BG-36")).append (":\n");
         if (aLP.getStartDate () != null)
-          sb.append ("  ").append (aCtx.label ("BT-181")).append (": ").append (_date (aLP.getStartDate (), aCtx)).append ('\n');
+          sb.append ("  ")
+            .append (aCtx.label ("BT-181"))
+            .append (": ")
+            .append (_date (aLP.getStartDate (), aCtx))
+            .append ('\n');
         if (aLP.getYearlyInterestPercentage () != null)
           sb.append ("  ")
             .append (aCtx.label ("BT-182"))

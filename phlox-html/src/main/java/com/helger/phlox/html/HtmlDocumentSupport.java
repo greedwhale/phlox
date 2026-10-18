@@ -97,7 +97,7 @@ final class HtmlDocumentSupport
   }
 
   /** The classpath location of the default stylesheet; <code>{p}</code> stands for the class prefix. */
-  private static final String DEFAULT_CSS_PATH = "phlox-default.css";
+  private static final String DEFAULT_CSS_PATH = "phlox-default.tcss";
 
   /** Embedded default stylesheet - prefix-aware. */
   @NonNull

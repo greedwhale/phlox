@@ -22,7 +22,6 @@ import java.util.ResourceBundle;
 import java.util.function.Function;
 
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,12 +45,12 @@ import com.helger.en16931.basics.codelist.EEN16931VATEXCode;
 import com.helger.text.display.IHasDisplayText;
 
 /**
- * Default {@link IPhloxLabelResolver}. The labels of the BG/BT and the section titles come from
- * the {@link ResourceBundle} {@code phlox-labels} of the {@code phlox-api} classpath. The names of
- * the values of a code list come from the code lists themselves: the enums of
- * {@code en16931-basics} and the unit codes of {@code ph-codelists-unit}. They know the languages
- * that exist for their list and fall back to English, so the translations are maintained once for
- * all projects. A code that is in none of the lists is shown as the code itself.
+ * Default {@link IPhloxLabelResolver}. The labels of the BG/BT and the section titles come from the
+ * {@link ResourceBundle} {@code phlox-labels} of the {@code phlox-api} classpath. The names of the
+ * values of a code list come from the code lists themselves: the enums of {@code en16931-basics}
+ * and the unit codes of {@code ph-codelists-unit}. They know the languages that exist for their
+ * list and fall back to English, so the translations are maintained once for all projects. A code
+ * that is in none of the lists is shown as the code itself.
  * <p>
  * Stateless and exposed as a singleton ({@link #INSTANCE}) so it can serve as a stable cache key in
  * {@link com.helger.phlox.api.template.IPhloxTemplate} localization caches without forcing callers

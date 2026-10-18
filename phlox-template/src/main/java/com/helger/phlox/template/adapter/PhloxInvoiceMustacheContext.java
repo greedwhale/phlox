@@ -49,8 +49,6 @@ import com.helger.phlox.api.i18n.PhloxFormat;
 import com.helger.phlox.api.model.PhloxIdentifier;
 import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.api.model.PhloxInvoiceLine;
-import com.helger.phlox.api.model.PhloxLineAllowance;
-import com.helger.phlox.api.model.PhloxLineCharge;
 import com.helger.phlox.template.PhloxTemplateException;
 import com.helger.phlox.template.PhloxTemplateException.EStage;
 import com.samskivert.mustache.Mustache;
@@ -59,12 +57,13 @@ import com.samskivert.mustache.Template;
 /**
  * The JMustache adapter — preprocesses {@code .ptpl} source so JMustache understands the phlox
  * extensions ({@code {{?…}}}, {@code {{label:…}}}, the pipe-modifier syntax), exposes a
- * {@link Mustache.Collector} that resolves BT/BG paths through {@link PhloxModelRegistry}, applies
- * format modifiers, emits {@code [[PHLOX:CLASS=…]]} / {@code [[PHLOX:PAGEBREAK]]} sentinels for the
- * post-pass, and routes {@code {{label:…}}} through the active {@code IPhloxLabelResolver}.
+ * {@link com.samskivert.mustache.Mustache.Collector} that resolves BT/BG paths through
+ * {@link PhloxModelRegistry}, applies format modifiers, emits {@code [[PHLOX:CLASS=…]]} /
+ * {@code [[PHLOX:PAGEBREAK]]} sentinels for the post-pass, and routes {@code {{label:…}}} through
+ * the active {@code IPhloxLabelResolver}.
  * <p>
  * Per-render execution state (the {@link PhloxRenderEnv}) flows through a {@link ThreadLocal} so
- * the compiled JMustache {@code Template} stays shareable across threads.
+ * the compiled JMustache {@code Template} stays sharable across threads.
  *
  * @author Philip Helger
  */
@@ -311,9 +310,9 @@ public final class PhloxInvoiceMustacheContext
   }
 
   /**
-   * Neutralise Markdown in invoice data. The substituted template is parsed as CommonMark, so
-   * data like <code>1. Main Street</code> or <code>a | b</code> would otherwise change the
-   * document structure. Line breaks become the template's explicit break tag.
+   * Neutralise Markdown in invoice data. The substituted template is parsed as CommonMark, so data
+   * like <code>1. Main Street</code> or <code>a | b</code> would otherwise change the document
+   * structure. Line breaks become the template's explicit break tag.
    */
   @NonNull
   private static String _escapeMarkdown (@NonNull final String sValue)
