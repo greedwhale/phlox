@@ -58,7 +58,7 @@
   </developers>
 
   <properties>
-    <maven.compiler.release>25</maven.compiler.release>
+    <java.version>25</java.version>
 
     <ph-commons.version>12.5.1</ph-commons.version>
     <ph-ubl.version>10.2.1</ph-ubl.version>
@@ -115,14 +115,12 @@
       </dependency>
       <dependency>
         <groupId>com.helger</groupId>
-        <artifactId>ph-pdf-layout</artifactId>
+        <artifactId>ph-pdf-layout-parent-pom</artifactId>
         <version>${ph-pdf-layout.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>com.helger</groupId>
-        <artifactId>ph-pdf-layout-richtext</artifactId>
-        <version>${ph-pdf-layout.version}</version>
-      </dependency>
+      
       <dependency>
         <groupId>info.picocli</groupId>
         <artifactId>picocli</artifactId>
