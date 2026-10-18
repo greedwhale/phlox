@@ -19,7 +19,9 @@ package com.helger.phlox.template.adapter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.FormatStyle;
+import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -183,7 +185,9 @@ public final class PhloxInvoiceMustacheContext
   private static String _encodePresenceChecks (@NonNull final String sSource)
   {
     final StringBuilder out = new StringBuilder (sSource.length ());
-    final java.util.Deque <String> aStack = new java.util.ArrayDeque <> ();
+    final Deque <String> aStack = new ArrayDeque <> ();
+    // The names as written in the template, to report unbalanced tags
+    final Deque <String> aWrittenNames = new ArrayDeque <> ();
     final int nLen = sSource.length ();
     int i = 0;
     while (i < nLen)
@@ -225,15 +229,25 @@ public final class PhloxInvoiceMustacheContext
               {
                 final String sEncoded = PRESENCE_PREFIX + StringReplace.replaceAll (sName, '.', DOT_PLACEHOLDER);
                 aStack.push (sEncoded);
+                aWrittenNames.push ("?" + sName);
                 out.append ("{{#").append (sEncoded).append ("}}");
               }
               case '#', '^' ->
               {
                 aStack.push (sName);
+                aWrittenNames.push (cOp + sName);
                 out.append ("{{").append (cOp).append (sName).append ("}}");
               }
               case '/' ->
               {
+                if (aStack.isEmpty ())
+                  LOGGER.warn ("Template tag '{{/" + sName + "}}' has no matching opening tag");
+                else
+                {
+                  final String sWritten = aWrittenNames.pop ();
+                  if (!sWritten.substring (1).equals (sName))
+                    LOGGER.warn ("Template tag '{{" + sWritten + "}}' is closed by '{{/" + sName + "}}'");
+                }
                 final String sOpenName = aStack.isEmpty () ? sName : aStack.pop ();
                 out.append ("{{/").append (sOpenName).append ("}}");
               }
@@ -254,6 +268,8 @@ public final class PhloxInvoiceMustacheContext
         i++;
       }
     }
+    for (final String sOpen : aWrittenNames)
+      LOGGER.warn ("Template tag '{{" + sOpen + "}}' is never closed");
     return out.toString ();
   }
 

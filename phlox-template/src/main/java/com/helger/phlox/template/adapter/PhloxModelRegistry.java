@@ -66,6 +66,87 @@ public final class PhloxModelRegistry
     return aSB.length () == 0 ? null : aSB.toString ();
   }
 
+  /**
+   * Join the non-empty identifiers, each prefixed with its scheme in the form
+   * <code>scheme:value</code>, separated by a comma.
+   */
+  @Nullable
+  private static String _joinIdentifiers (@NonNull final Iterable <PhloxIdentifier> aIDs)
+  {
+    final StringBuilder aSB = new StringBuilder ();
+    for (final PhloxIdentifier aID : aIDs)
+      if (StringHelper.isNotEmpty (aID.getValue ()))
+      {
+        if (aSB.length () > 0)
+          aSB.append (", ");
+        if (StringHelper.isNotEmpty (aID.getSchemeID ()))
+          aSB.append (aID.getSchemeID ()).append (':');
+        aSB.append (aID.getValue ());
+      }
+    return aSB.length () == 0 ? null : aSB.toString ();
+  }
+
+  /**
+   * Join the item classifications as <code>listID:code</code>, separated by a comma.
+   */
+  @Nullable
+  private static String _joinClassifications (@NonNull final PhloxItem aItem)
+  {
+    final StringBuilder aSB = new StringBuilder ();
+    for (final PhloxItemClassification aClass : aItem.classifications ())
+      if (StringHelper.isNotEmpty (aClass.getCode ()))
+      {
+        if (aSB.length () > 0)
+          aSB.append (", ");
+        if (StringHelper.isNotEmpty (aClass.getListID ()))
+          aSB.append (aClass.getListID ()).append (':');
+        aSB.append (aClass.getCode ());
+      }
+    return aSB.length () == 0 ? null : aSB.toString ();
+  }
+
+  private static void _appendLine (@NonNull final StringBuilder aSB, @Nullable final String sPart)
+  {
+    if (StringHelper.isNotEmpty (sPart))
+    {
+      if (aSB.length () > 0)
+        aSB.append ('\n');
+      aSB.append (sPart);
+    }
+  }
+
+  /**
+   * Format all address lines of a postal address, without the country: the three address lines,
+   * then "post code city, subdivision".
+   *
+   * @return <code>null</code> if there is nothing to show
+   */
+  @Nullable
+  private static String _formatAddress (@NonNull final PhloxPostalAddress aAddress)
+  {
+    final StringBuilder aSB = new StringBuilder ();
+    _appendLine (aSB, aAddress.getLine1 ());
+    _appendLine (aSB, aAddress.getLine2 ());
+    _appendLine (aSB, aAddress.getLine3 ());
+    final StringBuilder aCity = new StringBuilder ();
+    if (StringHelper.isNotEmpty (aAddress.getPostCode ()))
+      aCity.append (aAddress.getPostCode ());
+    if (StringHelper.isNotEmpty (aAddress.getCity ()))
+    {
+      if (aCity.length () > 0)
+        aCity.append (' ');
+      aCity.append (aAddress.getCity ());
+    }
+    if (StringHelper.isNotEmpty (aAddress.getCountrySubdivision ()))
+    {
+      if (aCity.length () > 0)
+        aCity.append (", ");
+      aCity.append (aAddress.getCountrySubdivision ());
+    }
+    _appendLine (aSB, aCity.toString ());
+    return aSB.length () == 0 ? null : aSB.toString ();
+  }
+
   private static <T> void _add (@NonNull final Class <T> aClass,
                                 @NonNull final String sName,
                                 @NonNull final Function <? super T, Object> aGetter)
@@ -135,6 +216,7 @@ public final class PhloxModelRegistry
 
     _add (PhloxSeller.class, "BT-27", PhloxSeller::getName);
     _add (PhloxSeller.class, "BT-28", PhloxSeller::getTradingName);
+    _add (PhloxSeller.class, "BT-29", s -> _joinIdentifiers (s.identifiers ()));
     _add (PhloxSeller.class, "BT-30", PhloxSeller::getLegalRegistration);
     _add (PhloxSeller.class, "BT-31", PhloxSeller::getVatIdentifier);
     _add (PhloxSeller.class, "BT-32", PhloxSeller::getTaxRegistration);
@@ -146,6 +228,7 @@ public final class PhloxModelRegistry
 
     _add (PhloxBuyer.class, "BT-44", PhloxBuyer::getName);
     _add (PhloxBuyer.class, "BT-45", PhloxBuyer::getTradingName);
+    _add (PhloxBuyer.class, "BT-46", b -> _joinIdentifiers (b.identifiers ()));
     _add (PhloxBuyer.class, "BT-47", PhloxBuyer::getLegalRegistration);
     _add (PhloxBuyer.class, "BT-48", PhloxBuyer::getVatIdentifier);
     _add (PhloxBuyer.class, "BT-49", PhloxBuyer::getElectronicAddress);
@@ -176,6 +259,15 @@ public final class PhloxModelRegistry
     _add (PhloxPostalAddress.class, "BT-77", PhloxPostalAddress::getCity);
     _add (PhloxPostalAddress.class, "BT-78", PhloxPostalAddress::getPostCode);
     _add (PhloxPostalAddress.class, "BT-80", PhloxPostalAddress::getCountryCode);
+    _add (PhloxPostalAddress.class, "address", PhloxModelRegistry::_formatAddress);
+    _add (PhloxPostalAddress.class, "BT-65", PhloxPostalAddress::getLine2);
+    _add (PhloxPostalAddress.class, "BT-68", PhloxPostalAddress::getCountrySubdivision);
+    _add (PhloxPostalAddress.class, "BT-76", PhloxPostalAddress::getLine2);
+    _add (PhloxPostalAddress.class, "BT-79", PhloxPostalAddress::getCountrySubdivision);
+    _add (PhloxPostalAddress.class, "BT-162", PhloxPostalAddress::getLine3);
+    _add (PhloxPostalAddress.class, "BT-163", PhloxPostalAddress::getLine3);
+    _add (PhloxPostalAddress.class, "BT-164", PhloxPostalAddress::getLine3);
+    _add (PhloxPostalAddress.class, "BT-165", PhloxPostalAddress::getLine3);
     // BG-38 (line deliver-to address): BT-203..209
     _add (PhloxPostalAddress.class, "BT-203", PhloxPostalAddress::getLine1);
     _add (PhloxPostalAddress.class, "BT-204", PhloxPostalAddress::getLine2);
@@ -231,6 +323,8 @@ public final class PhloxModelRegistry
     _add (PhloxDirectDebit.class, "BT-216", PhloxDirectDebit::getDebitedAccountName);
 
     _add (PhloxDocumentAllowance.class, "BT-92", PhloxDocumentAllowance::getAmount);
+    _add (PhloxDocumentAllowance.class, "BT-93", PhloxDocumentAllowance::getBaseAmount);
+    _add (PhloxDocumentAllowance.class, "BT-94", PhloxDocumentAllowance::getPercentage);
     _add (PhloxDocumentAllowance.class, "BT-95", PhloxDocumentAllowance::getVatCategoryCode);
     _add (PhloxDocumentAllowance.class, "BT-96", PhloxDocumentAllowance::getVatRate);
     _add (PhloxDocumentAllowance.class, "BT-97", PhloxDocumentAllowance::getReason);
@@ -240,6 +334,8 @@ public final class PhloxModelRegistry
     _add (PhloxDocumentAllowance.class, "BT-213", PhloxDocumentAllowance::getGoodsServicesCode);
 
     _add (PhloxDocumentCharge.class, "BT-99", PhloxDocumentCharge::getAmount);
+    _add (PhloxDocumentCharge.class, "BT-100", PhloxDocumentCharge::getBaseAmount);
+    _add (PhloxDocumentCharge.class, "BT-101", PhloxDocumentCharge::getPercentage);
     _add (PhloxDocumentCharge.class, "BT-102", PhloxDocumentCharge::getVatCategoryCode);
     _add (PhloxDocumentCharge.class, "BT-103", PhloxDocumentCharge::getVatRate);
     _add (PhloxDocumentCharge.class, "BT-104", PhloxDocumentCharge::getReason);
@@ -323,14 +419,24 @@ public final class PhloxModelRegistry
     _add (PhloxLineDelivery.class, "BG-38", PhloxLineDelivery::getPostalAddress);
 
     _add (PhloxLineAllowance.class, "BT-136", PhloxLineAllowance::getAmount);
+    _add (PhloxLineAllowance.class, "BT-137", PhloxLineAllowance::getBaseAmount);
+    _add (PhloxLineAllowance.class, "BT-138", PhloxLineAllowance::getPercentage);
+    _add (PhloxLineAllowance.class, "BT-140", PhloxLineAllowance::getReasonCode);
     _add (PhloxLineAllowance.class, "BT-139", PhloxLineAllowance::getReason);
 
     _add (PhloxLineCharge.class, "BT-141", PhloxLineCharge::getAmount);
+    _add (PhloxLineCharge.class, "BT-142", PhloxLineCharge::getBaseAmount);
+    _add (PhloxLineCharge.class, "BT-143", PhloxLineCharge::getPercentage);
+    _add (PhloxLineCharge.class, "BT-145", PhloxLineCharge::getReasonCode);
     _add (PhloxLineCharge.class, "BT-144", PhloxLineCharge::getReason);
     _add (PhloxLineCharge.class, "BT-193", PhloxLineCharge::getNonVatTaxTypeCode);
     _add (PhloxLineCharge.class, "BT-193-1", PhloxLineCharge::getNonVatTaxTypeCodeListID);
 
     _add (PhloxPriceDetails.class, "BT-146", PhloxPriceDetails::getNetPrice);
+    _add (PhloxPriceDetails.class, "BT-147", PhloxPriceDetails::getDiscount);
+    _add (PhloxPriceDetails.class, "BT-148", PhloxPriceDetails::getGrossPrice);
+    _add (PhloxPriceDetails.class, "BT-149", PhloxPriceDetails::getBaseQuantity);
+    _add (PhloxPriceDetails.class, "BT-150", PhloxPriceDetails::getBaseQuantityUnit);
 
     _add (PhloxLineVat.class, "BT-151", PhloxLineVat::getCategoryCode);
     _add (PhloxLineVat.class, "BT-152", PhloxLineVat::getRate);
@@ -340,6 +446,10 @@ public final class PhloxModelRegistry
     _add (PhloxItem.class, "BT-153", PhloxItem::getName);
     _add (PhloxItem.class, "BT-154", PhloxItem::getDescription);
     _add (PhloxItem.class, "BT-155", PhloxItem::getSellerItemID);
+    _add (PhloxItem.class, "BT-156", PhloxItem::getBuyerItemID);
+    _add (PhloxItem.class, "BT-157", PhloxItem::getStandardItemID);
+    _add (PhloxItem.class, "BT-158", PhloxModelRegistry::_joinClassifications);
+    _add (PhloxItem.class, "BT-159", PhloxItem::getCountryOfOrigin);
     _add (PhloxItem.class, "BT-196", PhloxItem::getGoodsServicesCode);
     _add (PhloxItem.class, "BG-32", PhloxItem::attributes);
 
