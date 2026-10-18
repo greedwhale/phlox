@@ -438,7 +438,7 @@ public final class HtmlTemplateEmitter
   {
     final HCHtml aHtml = new HCHtml ();
     final HCDiv aPage = HtmlDocumentSupport.createPage (aHtml,
-                                                        HtmlDocumentSupport.titleString (aAst.getInvoice (), m_aCtx),
+                                                        aAst.getInvoice (),
                                                         m_aCtx);
     _addChildrenRecursive (aAst, aAst.getRoot (), aPage);
     return aHtml;

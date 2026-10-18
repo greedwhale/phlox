@@ -19,6 +19,7 @@ package com.helger.phlox.html;
 import java.nio.charset.StandardCharsets;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import com.helger.base.io.stream.StreamHelper;
 import com.helger.base.string.StringReplace;
@@ -26,11 +27,12 @@ import com.helger.html.css.DefaultCSSClassProvider;
 import com.helger.html.css.ICSSClassProvider;
 import com.helger.html.hc.html.HC_Target;
 import com.helger.html.hc.html.grouping.HCDiv;
+import com.helger.html.hc.html.metadata.HCMeta;
 import com.helger.html.hc.html.metadata.HCStyle;
 import com.helger.html.hc.html.root.HCHtml;
 import com.helger.html.hc.html.textlevel.HCA;
 import com.helger.io.resource.ClassPathResource;
-import com.helger.phlox.api.model.EPhloxDocumentKind;
+import com.helger.phlox.api.PhloxDocumentProperties;
 import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.api.watermark.PhloxProgramWatermark;
 import com.helger.phlox.api.watermark.WatermarkSpec;
@@ -45,7 +47,7 @@ import com.helger.url.SimpleURL;
 final class HtmlDocumentSupport
 {
   /** The project page the program watermark links to. */
-  private static final String PROJECT_URL = "https://github.com/phax/phlox";
+  private static final String PROJECT_URL = PhloxDocumentProperties.PROJECT_URL;
   /** The name of the browser window the project page is opened in. */
   private static final String PROJECT_WINDOW_NAME = "phlox";
 
@@ -59,14 +61,6 @@ final class HtmlDocumentSupport
   static ICSSClassProvider cls (@NonNull final String sName)
   {
     return DefaultCSSClassProvider.create (sName);
-  }
-
-  @NonNull
-  static String titleString (@NonNull final PhloxInvoice aInvoice, @NonNull final HtmlRenderContext aCtx)
-  {
-    return aInvoice.getKind () == EPhloxDocumentKind.CREDIT_NOTE
-                                                                ? aCtx.label ("section.header.title.creditnote")
-                                                                : aCtx.label ("section.header.title.invoice");
   }
 
   /**
@@ -120,14 +114,26 @@ final class HtmlDocumentSupport
    *        The render context. Never {@code null}.
    * @return The page wrapper to add the content to. Never {@code null}.
    */
+  private static void _addMetaElement (@NonNull final HCHtml aHtml,
+                                       @NonNull final String sName,
+                                       @Nullable final String sContent)
+  {
+    if (sContent != null && !sContent.isEmpty ())
+      aHtml.head ().metaElements ().add (new HCMeta ().setName (sName).setContent (sContent));
+  }
+
   @NonNull
   static HCDiv createPage (@NonNull final HCHtml aHtml,
-                           @NonNull final String sTitle,
+                           @NonNull final PhloxInvoice aInvoice,
                            @NonNull final HtmlRenderContext aCtx)
   {
     final String sPrefix = aCtx.getCssClassPrefix ();
 
-    aHtml.head ().setPageTitle (sTitle);
+    aHtml.head ().setPageTitle (PhloxDocumentProperties.getTitle (aInvoice, aCtx));
+    _addMetaElement (aHtml, "generator", PhloxDocumentProperties.getGenerator ());
+    _addMetaElement (aHtml, "author", PhloxDocumentProperties.getAuthor (aInvoice));
+    _addMetaElement (aHtml, "description", PhloxDocumentProperties.getSubject (aInvoice, aCtx));
+    _addMetaElement (aHtml, "keywords", PhloxDocumentProperties.getKeywords (aInvoice, aCtx));
     if (aCtx.isEmbeddedStylesheet ())
     {
       final HCStyle aStyle = new HCStyle ();
