@@ -1,0 +1,70 @@
+/*
+ * Copyright (C) 2026 Philip Helger (www.helger.com)
+ * philip[at]helger[dot]com
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.helger.phlox.api;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.helger.annotation.concurrent.Immutable;
+import com.helger.base.rt.NonBlockingProperties;
+import com.helger.base.rt.PropertiesHelper;
+import com.helger.io.resource.ClassPathResource;
+
+/**
+ * Contains the version of phlox. The values are written into the resource
+ * <code>phlox-version.properties</code> by the Maven build.
+ *
+ * @author Philip Helger
+ */
+@Immutable
+public final class CPhloxVersion
+{
+  /** The version of phlox - from the properties file. <code>undefined</code> if it cannot be read. */
+  public static final String BUILD_VERSION;
+  /** The build timestamp - from the properties file. <code>undefined</code> if it cannot be read. */
+  public static final String BUILD_TIMESTAMP;
+
+  private static final Logger LOGGER = LoggerFactory.getLogger (CPhloxVersion.class);
+
+  static
+  {
+    String sProjectVersion = null;
+    String sProjectTimestamp = null;
+    final NonBlockingProperties aProps = PropertiesHelper.loadProperties (ClassPathResource.getInputStream ("phlox-version.properties",
+                                                                                                            CPhloxVersion.class.getClassLoader ()));
+    if (aProps != null)
+    {
+      sProjectVersion = aProps.get ("version");
+      sProjectTimestamp = aProps.get ("timestamp");
+    }
+    if (sProjectVersion == null)
+    {
+      sProjectVersion = "undefined";
+      LOGGER.error ("Failed to load the phlox version number. If that happens during development, please rebuild the project.");
+    }
+    BUILD_VERSION = sProjectVersion;
+    if (sProjectTimestamp == null)
+    {
+      sProjectTimestamp = "undefined";
+      LOGGER.error ("Failed to load the phlox build timestamp. If that happens during development, please rebuild the project.");
+    }
+    BUILD_TIMESTAMP = sProjectTimestamp;
+  }
+
+  private CPhloxVersion ()
+  {}
+}

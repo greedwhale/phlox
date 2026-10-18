@@ -16,6 +16,7 @@
  */
 package com.helger.phlox.template.adapter;
 
+import java.math.BigDecimal;
 import java.util.function.Function;
 
 import org.jspecify.annotations.NonNull;
@@ -181,6 +182,16 @@ public final class PhloxModelRegistry
     }
     _appendLine (aSB, aCity.toString ());
     return aSB.length () == 0 ? null : aSB.toString ();
+  }
+
+  /**
+   * @return The item price base quantity (BT-149) or <code>null</code> if it is not set or 1.
+   */
+  @Nullable
+  private static BigDecimal _baseQuantityIfNotOne (@NonNull final PhloxPriceDetails aPrice)
+  {
+    final BigDecimal aQuantity = aPrice.getBaseQuantity ();
+    return aQuantity == null || aQuantity.compareTo (BigDecimal.ONE) == 0 ? null : aQuantity;
   }
 
   private static <T> void _add (@NonNull final Class <T> aClass,
@@ -472,6 +483,8 @@ public final class PhloxModelRegistry
     _add (PhloxPriceDetails.class, "BT-147", PhloxPriceDetails::getDiscount);
     _add (PhloxPriceDetails.class, "BT-148", PhloxPriceDetails::getGrossPrice);
     _add (PhloxPriceDetails.class, "BT-149", PhloxPriceDetails::getBaseQuantity);
+    // A base quantity of 1 is the normal case and not worth printing
+    _add (PhloxPriceDetails.class, "BT-149-if-not-one", PhloxModelRegistry::_baseQuantityIfNotOne);
     _add (PhloxPriceDetails.class, "BT-150", PhloxPriceDetails::getBaseQuantityUnit);
 
     _add (PhloxLineVat.class, "BT-151", PhloxLineVat::getCategoryCode);

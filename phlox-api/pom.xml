@@ -73,4 +73,24 @@
       <artifactId>ph-codelists-unit</artifactId>
     </dependency>
   </dependencies>
+  <build>
+    <resources>
+      <!-- Don't specify the targetPath because this leads to a broken JAR file
+        in combination with the bundle plugin (absolute file paths in ZIP file) -->
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>phlox-version.properties</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+        <filtering>false</filtering>
+        <excludes>
+          <exclude>phlox-version.properties</exclude>
+        </excludes>
+      </resource>
+    </resources>
+  </build>
 </project>
