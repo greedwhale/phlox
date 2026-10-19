@@ -142,6 +142,19 @@ public final class PdfBlockStyle
     /**
      * Set the font size that replaces the one of the block.
      *
+     * @param fFontSize
+     *        The font size in points.
+     * @return this for chaining
+     */
+    @NonNull
+    public Builder fontSize (final float fFontSize)
+    {
+      return fontSize (Float.valueOf (fFontSize));
+    }
+
+    /**
+     * Set the font size that replaces the one of the block.
+     *
      * @param aFontSize
      *        The font size in points. May be {@code null} to keep the size of the font.
      * @return this for chaining
@@ -165,6 +178,19 @@ public final class PdfBlockStyle
     {
       m_bBold = bBold;
       return this;
+    }
+
+    /**
+     * Set the width of a cell in a row.
+     *
+     * @param fWidthPercent
+     *        The width in percent of the row.
+     * @return this for chaining
+     */
+    @NonNull
+    public Builder widthPercent (final float fWidthPercent)
+    {
+      return widthPercent (Float.valueOf (fWidthPercent));
     }
 
     /**
@@ -288,6 +314,11 @@ public final class PdfBlockStyle
   public Float getFontSize ()
   {
     return m_aFontSize;
+  }
+
+  public boolean hasFontSize ()
+  {
+    return m_aFontSize != null;
   }
 
   /**

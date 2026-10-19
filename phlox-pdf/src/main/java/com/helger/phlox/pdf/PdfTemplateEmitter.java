@@ -30,26 +30,7 @@ import org.commonmark.ext.gfm.tables.TableBody;
 import org.commonmark.ext.gfm.tables.TableCell;
 import org.commonmark.ext.gfm.tables.TableHead;
 import org.commonmark.ext.gfm.tables.TableRow;
-import org.commonmark.node.BlockQuote;
-import org.commonmark.node.BulletList;
-import org.commonmark.node.Code;
-import org.commonmark.node.Emphasis;
-import org.commonmark.node.FencedCodeBlock;
-import org.commonmark.node.HardLineBreak;
-import org.commonmark.node.Heading;
-import org.commonmark.node.HtmlBlock;
-import org.commonmark.node.HtmlInline;
-import org.commonmark.node.Image;
-import org.commonmark.node.IndentedCodeBlock;
-import org.commonmark.node.Link;
-import org.commonmark.node.ListItem;
-import org.commonmark.node.Node;
-import org.commonmark.node.OrderedList;
-import org.commonmark.node.Paragraph;
-import org.commonmark.node.SoftLineBreak;
-import org.commonmark.node.StrongEmphasis;
-import org.commonmark.node.Text;
-import org.commonmark.node.ThematicBreak;
+import org.commonmark.node.*;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -97,10 +78,9 @@ import com.helger.phlox.template.ast.PhloxTemplateAst;
  * ph-pdf-layout itself has one style per text element. The inline nodes of a paragraph, heading or
  * table cell are therefore folded into the markup of {@code ph-pdf-layout-richtext}
  * (<code>**bold**</code>, <code>*italic*</code>, <code>~~strikethrough~~</code>,
- * <code>`code`</code> for the monospace font,
- * <code>{link[uri]}text{link}</code>), which {@code PLRichText} wraps and draws. Inline images are
- * skipped. A block class that was attached with
- * {@code {{class:name}}} is looked up with {@link PdfRenderContext#getBlockStyle(String)}.
+ * <code>`code`</code> for the monospace font, <code>{link[uri]}text{link}</code>), which
+ * {@code PLRichText} wraps and draws. Inline images are skipped. A block class that was attached
+ * with {@code {{class:name}}} is looked up with {@link PdfRenderContext#getBlockStyle(String)}.
  *
  * @author Philip Helger
  */
@@ -112,8 +92,6 @@ public final class PdfTemplateEmitter
   private static final Pattern BR_TAG = Pattern.compile ("<br\\s*/?>", Pattern.CASE_INSENSITIVE);
   private static final float PARAGRAPH_GAP = 4f;
   private static final float ROW_GAP = 14f;
-  private static final PLColor HEADER_RULE = new PLColor (0x1d, 0x24, 0x33);
-  private static final PLColor ROW_RULE = new PLColor (0xe4, 0xe7, 0xec);
   private static final float LOGO_HEIGHT = 40f;
   private static final float MAX_IMAGE_WIDTH = 200f;
 
@@ -151,7 +129,7 @@ public final class PdfTemplateEmitter
       ret = ret.getCloneWithDifferentColor (aColor);
     if (aStyle != null)
     {
-      if (aStyle.getFontSize () != null)
+      if (aStyle.hasFontSize ())
         ret = ret.getCloneWithDifferentFontSize (aStyle.getFontSize ().floatValue ());
       if (aStyle.isBold ())
         ret = ret.getCloneWithDifferentFont (PreloadFont.REGULAR_BOLD);
@@ -220,7 +198,9 @@ public final class PdfTemplateEmitter
     {
       final StringBuilder aLine = aLines.get (aLines.size () - 1);
       if (aChild instanceof final Text aText)
-        aLine.append (PdfTextSupport.escapeMarkup (PdfTextSupport.separateCurrencySymbol (m_bUppercase ? aText.getLiteral ().toUpperCase (m_aCtx.getLocale ()) : aText.getLiteral ())));
+        aLine.append (PdfTextSupport.escapeMarkup (PdfTextSupport.separateCurrencySymbol (m_bUppercase ? aText.getLiteral ()
+                                                                                                              .toUpperCase (m_aCtx.getLocale ())
+                                                                                                       : aText.getLiteral ())));
       else
         if (aChild instanceof SoftLineBreak || aChild instanceof HardLineBreak)
           aLines.add (new StringBuilder ());
@@ -251,7 +231,9 @@ public final class PdfTemplateEmitter
                 else
                   if (aChild instanceof final Link aLink && _isSupportedLink (aLink.getDestination ()))
                   {
-                    aLine.append ("{link[").append (PdfTextSupport.escapeMarkup (_encodeLinkDestination (aLink.getDestination ()))).append ("]}");
+                    aLine.append ("{link[")
+                         .append (PdfTextSupport.escapeMarkup (_encodeLinkDestination (aLink.getDestination ())))
+                         .append ("]}");
                     _appendMarkupRecursive (aChild, aLines);
                     aLines.get (aLines.size () - 1).append ("{link}");
                   }
@@ -288,9 +270,9 @@ public final class PdfTemplateEmitter
    */
   @Nullable
   private IPLRenderableObject <?> _createInlineBlock (@NonNull final Node aParent,
-                                                             @NonNull final FontSpec aBase,
-                                                             @NonNull final EHorzAlignment eAlign,
-                                                             final boolean bVertSplittable)
+                                                      @NonNull final FontSpec aBase,
+                                                      @NonNull final EHorzAlignment eAlign,
+                                                      final boolean bVertSplittable)
   {
     final ICommonsList <StringBuilder> aLines = new CommonsArrayList <> ();
     aLines.add (new StringBuilder ());
@@ -419,8 +401,8 @@ public final class PdfTemplateEmitter
 
   @NonNull
   private IPLRenderableObject <?> _createCell (@NonNull final TableCell aCell,
-                                                      @NonNull final FontSpec aFont,
-                                                      @NonNull final EHorzAlignment eAlign)
+                                               @NonNull final FontSpec aFont,
+                                               @NonNull final EHorzAlignment eAlign)
   {
     final IPLRenderableObject <?> aContent = _createInlineBlock (aCell, aFont, eAlign, true);
     if (aContent == null)
@@ -462,8 +444,8 @@ public final class PdfTemplateEmitter
   }
 
   /**
-   * The columns get the width of their longest word first, so that amounts do not wrap. The rest
-   * of the width is shared in proportion to the longest content of the columns, within sensible
+   * The columns get the width of their longest word first, so that amounts do not wrap. The rest of
+   * the width is shared in proportion to the longest content of the columns, within sensible
    * limits.
    */
   @NonNull
@@ -471,6 +453,7 @@ public final class PdfTemplateEmitter
   {
     final float [] aWeights = new float [nColumns];
     final int [] aLongestWords = new int [nColumns];
+    final float fHeaderScale = m_aCtx.getTableHeaderFont ().getFontSize () * 1.1f / m_aCtx.getBodyFont ().getFontSize ();
     for (int i = 0; i < nColumns; ++i)
       aWeights[i] = 9f;
     for (Node aPart = aTable.getFirstChild (); aPart != null; aPart = aPart.getNext ())
@@ -482,7 +465,10 @@ public final class PdfTemplateEmitter
           aWeights[nCol] = Math.max (aWeights[nCol], Math.min (_textLength (aCell), 40));
           final int [] aWord = new int [1];
           _collectWordLengths (aCell, aWord);
-          aLongestWords[nCol] = Math.max (aLongestWords[nCol], aWord[0]);
+          // The header is set in a smaller bold font; the word is as long as it would be in the
+          // font of the body
+          final int nWordLength = aPart instanceof TableHead ? Math.round (aWord[0] * fHeaderScale) : aWord[0];
+          aLongestWords[nCol] = Math.max (aLongestWords[nCol], nWordLength);
           nCol++;
         }
       }
@@ -551,16 +537,18 @@ public final class PdfTemplateEmitter
           final PLTableCell aPLCell;
           try
           {
-            aPLCell = new PLTableCell (_createCell (aCell, _styled (aBaseFont, aStyle), _align (aCell.getAlignment ())));
+            aPLCell = new PLTableCell (_createCell (aCell,
+                                                    _styled (aBaseFont, aStyle),
+                                                    _align (aCell.getAlignment ())));
           }
           finally
           {
             m_bUppercase = false;
           }
           if (bHead)
-            aPLCell.setBorderBottom (new BorderStyleSpec (HEADER_RULE, 1f));
+            aPLCell.setBorderBottom (new BorderStyleSpec (m_aCtx.getPalette ().getInk (), 1f));
           else
-            aPLCell.setBorderBottom (new BorderStyleSpec (ROW_RULE, 0.5f));
+            aPLCell.setBorderBottom (new BorderStyleSpec (m_aCtx.getPalette ().getRule (), 0.5f));
           if (aStyle != null && aStyle.getFillColor () != null)
             aPLCell.setFillColor (aStyle.getFillColor ());
           aCells.add (aPLCell);
@@ -633,10 +621,13 @@ public final class PdfTemplateEmitter
         {
           final PLVBox aCellContent = new PLVBox ();
           final PdfBlockStyle aWidthStyle = aCell instanceof PhloxGroupNode ? _getStyle (aAst, aCell) : null;
-          final float fCellPercent = aWidthStyle != null && aWidthStyle.getWidthPercent () != null ? aWidthStyle.getWidthPercent ()
-                                                                                                    .floatValue ()
-                                                                                                  : (100f - fFixedPercent) /
-                                                                                                    Math.max (1, nStarCells);
+          final float fCellPercent = aWidthStyle != null && aWidthStyle.getWidthPercent () != null ? aWidthStyle
+                                                                                                                .getWidthPercent ()
+                                                                                                                .floatValue ()
+                                                                                                   : (100f -
+                                                                                                      fFixedPercent) /
+                                                                                                     Math.max (1,
+                                                                                                               nStarCells);
           m_fContentWidth = fRowWidth * fCellPercent / 100f - ROW_GAP;
           if (aCell instanceof final PhloxGroupNode aCellGroup && !aCellGroup.isRow ())
             _addBlocksRecursive (aAst, aCellGroup, aCellContent::addRow);
@@ -675,7 +666,7 @@ public final class PdfTemplateEmitter
       _addGroup (aAst, aGroup, aSink);
       return;
     }
-      if (aNode instanceof final Heading aHeading)
+    if (aNode instanceof final Heading aHeading)
       _addHeading (aAst, aHeading, aSink);
     else
       if (aNode instanceof final Paragraph aParagraph)
@@ -692,8 +683,7 @@ public final class PdfTemplateEmitter
           else
             if (aNode instanceof final OrderedList aList)
             {
-              final int nStart = aList.getMarkerStartNumber () == null ? 1
-                                                                       : aList.getMarkerStartNumber ().intValue ();
+              final int nStart = aList.getMarkerStartNumber () == null ? 1 : aList.getMarkerStartNumber ().intValue ();
               _addList (aAst,
                         aList,
                         new BulletPointCreatorNumeric (nIndex -> (nStart + nIndex) + ".", m_aCtx.getBodyFont ()),

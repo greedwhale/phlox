@@ -120,4 +120,43 @@ public final class PhloxCliTest
     final Path aOut = _tempFile (".html");
     assertEquals (2, _run ("-i", _copyInvoice ().toString (), "-o", aOut.toString (), "--template", "/no/such/template.ptpl"));
   }
+
+  @Test
+  public void testTheme () throws IOException
+  {
+    final Path aTheme = _tempFile (".json");
+    Files.writeString (aTheme,
+                       "{\"$comment\":\"test\",\"variables\":{\"--phlox-accent\":\"#8a1538\"},\"common\":{\"locale\":\"de\"}}",
+                       StandardCharsets.UTF_8);
+    final Path aOut = _tempFile (".html");
+    assertEquals (0, _run ("-i", _copyInvoice ().toString (), "-o", aOut.toString (), "--theme", aTheme.toString ()));
+    final String sHtml = Files.readString (aOut, StandardCharsets.UTF_8);
+    // The language and the colour come from the theme
+    assertTrue (sHtml.contains ("Rechnung"));
+    assertTrue (sHtml.contains ("--phlox-accent:#8a1538;"));
+
+    // The command line wins over the theme
+    final Path aOutEn = _tempFile (".html");
+    assertEquals (0,
+                  _run ("-i",
+                        _copyInvoice ().toString (),
+                        "-o",
+                        aOutEn.toString (),
+                        "--theme",
+                        aTheme.toString (),
+                        "-l",
+                        "en"));
+    assertTrue (Files.readString (aOutEn, StandardCharsets.UTF_8).contains ("Invoice"));
+  }
+
+  @Test
+  public void testInvalidTheme () throws IOException
+  {
+    final Path aTheme = _tempFile (".json");
+    Files.writeString (aTheme, "{\"common\":{\"colour\":\"red\"}}", StandardCharsets.UTF_8);
+    final Path aOut = _tempFile (".html");
+    Files.deleteIfExists (aOut);
+    assertEquals (2, _run ("-i", _copyInvoice ().toString (), "-o", aOut.toString (), "--theme", aTheme.toString ()));
+    assertEquals (2, _run ("-i", _copyInvoice ().toString (), "--theme", "does-not-exist.json"));
+  }
 }

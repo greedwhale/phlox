@@ -57,6 +57,35 @@ final class HtmlDocumentSupport
   private HtmlDocumentSupport ()
   {}
 
+  /**
+   * Fill the head of the document and add the watermarks and the page wrapper to the body.
+   *
+   * @param aHtml
+   *        The document to fill. Never {@code null}.
+   * @param sTitle
+   *        The page title. Never {@code null}.
+   * @param aCtx
+   *        The render context. Never {@code null}.
+   * @return The page wrapper to add the content to. Never {@code null}.
+   */
+  @NonNull
+  private static String _cssVariables (@NonNull final HtmlRenderContext aCtx)
+  {
+    if (aCtx.getCssVariables ().isEmpty ())
+      return "";
+    final StringBuilder aSB = new StringBuilder ("\n:root{");
+    aCtx.getCssVariables ().forEach ( (sName, sValue) -> aSB.append (sName).append (':').append (sValue).append (';'));
+    return aSB.append ('}').toString ();
+  }
+
+  private static void _addMetaElement (@NonNull final HCHtml aHtml,
+                                       @NonNull final String sName,
+                                       @Nullable final String sContent)
+  {
+    if (sContent != null && !sContent.isEmpty ())
+      aHtml.head ().metaElements ().add (new HCMeta ().setName (sName).setContent (sContent));
+  }
+
   @NonNull
   static ICSSClassProvider cls (@NonNull final String sName)
   {
@@ -103,25 +132,6 @@ final class HtmlDocumentSupport
     return StringReplace.replaceAll (sCss, "{p}", sPrefix);
   }
 
-  /**
-   * Fill the head of the document and add the watermarks and the page wrapper to the body.
-   *
-   * @param aHtml
-   *        The document to fill. Never {@code null}.
-   * @param sTitle
-   *        The page title. Never {@code null}.
-   * @param aCtx
-   *        The render context. Never {@code null}.
-   * @return The page wrapper to add the content to. Never {@code null}.
-   */
-  private static void _addMetaElement (@NonNull final HCHtml aHtml,
-                                       @NonNull final String sName,
-                                       @Nullable final String sContent)
-  {
-    if (sContent != null && !sContent.isEmpty ())
-      aHtml.head ().metaElements ().add (new HCMeta ().setName (sName).setContent (sContent));
-  }
-
   @NonNull
   static HCDiv createPage (@NonNull final HCHtml aHtml,
                            @NonNull final PhloxInvoice aInvoice,
@@ -138,6 +148,7 @@ final class HtmlDocumentSupport
     {
       final HCStyle aStyle = new HCStyle ();
       aStyle.setStyleContent (defaultCss (sPrefix) +
+                              _cssVariables (aCtx) +
                               (aCtx.getCustomStylesheet () == null ? "" : "\n" + aCtx.getCustomStylesheet ()));
       aHtml.head ().addCSS (aStyle);
     }

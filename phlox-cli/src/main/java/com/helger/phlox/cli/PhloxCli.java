@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -33,6 +34,7 @@ import com.helger.base.io.nonblocking.NonBlockingBufferedInputStream;
 import com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream;
 import com.helger.base.io.nonblocking.NonBlockingByteArrayOutputStream;
 import com.helger.diagnostics.error.list.ErrorList;
+import com.helger.phlox.api.AbstractRenderContext;
 import com.helger.phlox.api.PhloxRuntimeException;
 import com.helger.phlox.api.model.PhloxAttachment;
 import com.helger.phlox.api.model.PhloxInvoice;
@@ -43,6 +45,8 @@ import com.helger.phlox.html.HtmlRenderContext;
 import com.helger.phlox.pdf.PdfInvoiceWriter;
 import com.helger.phlox.pdf.PdfRenderContext;
 import com.helger.phlox.template.PhloxTemplate;
+import com.helger.phlox.theme.PhloxTheme;
+import com.helger.phlox.theme.PhloxThemeReader;
 import com.helger.phlox.ubl.UblInvoiceReader;
 
 import picocli.CommandLine.Command;
@@ -107,13 +111,16 @@ public class PhloxCli implements Callable <Integer>
   String m_sEnVersion;
 
   @Option (names = { "-l", "--lang" },
-           description = "Output language code (e.g. 'en', 'de'). Default: en.",
-           defaultValue = "en")
+           description = "Output language code (e.g. 'en', 'de'). Default: the language of the theme or en.")
   String m_sLang;
 
   @Option (names = { "-t", "--template" },
            description = "The template to render through: 'default' for the template shipped with phlox, 'classpath:<path>' for a template on the classpath, or the path of a .ptpl file. Default: 'default'.")
   String m_sTemplate;
+
+  @Option (names = "--theme",
+           description = "A JSON file with the layout parameters of the HTML and PDF output (colours, fonts, page size, language, watermark, ...). The options of the command line override the theme.")
+  Path m_aThemeFile;
 
   @Option (names = "--logo",
            description = "Optional logo image (PNG, JPEG or GIF) that the template shows in the header.")
@@ -166,6 +173,48 @@ public class PhloxCli implements Callable <Integer>
     {
       return aIn.readAllBytes ();
     }
+  }
+
+  /**
+   * Apply the theme and then the options of the command line, which win over the theme.
+   *
+   * @return <code>null</code> if everything is fine, otherwise the exit code.
+   */
+  @Nullable
+  private <CTX extends AbstractRenderContext <CTX>> Integer _prepare (@NonNull final CTX aCtx,
+                                                                      @Nullable final Consumer <CTX> aThemeApplier)
+  {
+    try
+    {
+      if (aThemeApplier != null)
+        aThemeApplier.accept (aCtx);
+      if (m_sLang != null)
+        aCtx.setLocale (Locale.forLanguageTag (m_sLang.replace ('_', '-')));
+      if (m_sTemplate != null)
+        aCtx.setTemplate (_loadTemplate (m_sTemplate));
+      if (m_aLogoFile != null)
+      {
+        if (!Files.isRegularFile (m_aLogoFile))
+        {
+          System.err.println ("Logo file '" + m_aLogoFile + "' does not exist");
+          return Integer.valueOf (2);
+        }
+        final String sFilename = m_aLogoFile.getFileName ().toString ();
+        aCtx.setLogo (new PhloxAttachment ().setBinary (Files.readAllBytes (m_aLogoFile))
+                                            .setMimeCode (_getMimeCode (sFilename))
+                                            .setFilename (sFilename));
+      }
+      if (m_sWatermark != null)
+        aCtx.setUserWatermark (WatermarkSpec.text (m_sWatermark)
+                                            .setOpacity (m_fWatermarkOpacity)
+                                            .setRotation (m_fWatermarkRotation));
+    }
+    catch (final PhloxRuntimeException | IOException ex)
+    {
+      System.err.println ("Failed to prepare the rendering: " + ex.getMessage ());
+      return Integer.valueOf (2);
+    }
+    return null;
   }
 
   /**
@@ -230,35 +279,21 @@ public class PhloxCli implements Callable <Integer>
       return Integer.valueOf (1);
     }
 
-    final PhloxTemplate aTemplate;
-    try
+    final PhloxTheme aTheme;
+    if (m_aThemeFile == null)
+      aTheme = null;
+    else
     {
-      aTemplate = _loadTemplate (m_sTemplate);
-    }
-    catch (final PhloxRuntimeException ex)
-    {
-      System.err.println ("Failed to load the template '" + m_sTemplate + "': " + ex.getMessage ());
-      return Integer.valueOf (2);
-    }
-
-    PhloxAttachment aLogo = null;
-    if (m_aLogoFile != null)
-    {
-      if (!Files.isRegularFile (m_aLogoFile))
+      try
       {
-        System.err.println ("Logo file '" + m_aLogoFile + "' does not exist");
+        aTheme = PhloxThemeReader.read (m_aThemeFile);
+      }
+      catch (final PhloxRuntimeException ex)
+      {
+        System.err.println ("Failed to read the theme '" + m_aThemeFile + "': " + ex.getMessage ());
         return Integer.valueOf (2);
       }
-      aLogo = new PhloxAttachment ().setBinary (Files.readAllBytes (m_aLogoFile))
-                                    .setMimeCode (_getMimeCode (m_aLogoFile.getFileName ().toString ()))
-                                    .setFilename (m_aLogoFile.getFileName ().toString ());
     }
-
-    final Locale aLocale = Locale.forLanguageTag (m_sLang.replace ('_', '-'));
-    final WatermarkSpec aWM = m_sWatermark == null ? null
-                                                : WatermarkSpec.text (m_sWatermark)
-                                                               .setOpacity (m_fWatermarkOpacity)
-                                                               .setRotation (m_fWatermarkRotation);
 
     if (m_eFormat == EOutputFormat.PDF)
     {
@@ -267,10 +302,10 @@ public class PhloxCli implements Callable <Integer>
         System.err.println ("PDF output requires --out");
         return Integer.valueOf (2);
       }
-      final PdfRenderContext aCtx = new PdfRenderContext ().setLocale (aLocale)
-                                                           .setUserWatermark (aWM)
-                                                           .setLogo (aLogo)
-                                                           .setTemplate (aTemplate);
+      final PdfRenderContext aCtx = new PdfRenderContext ();
+      final Integer aError = _prepare (aCtx, aTheme == null ? null : (final PdfRenderContext aTarget) -> aTarget.applyTheme (aTheme));
+      if (aError != null)
+        return aError;
       // Render completely before touching the output file, so a failure leaves no empty file
       final NonBlockingByteArrayOutputStream aBuffer = new NonBlockingByteArrayOutputStream ();
       try
@@ -289,10 +324,11 @@ public class PhloxCli implements Callable <Integer>
     }
     else
     {
-      final HtmlRenderContext aCtx = new HtmlRenderContext ().setLocale (aLocale)
-                                                             .setUserWatermark (aWM)
-                                                             .setLogo (aLogo)
-                                                             .setTemplate (aTemplate);
+      final HtmlRenderContext aCtx = new HtmlRenderContext ();
+      final Integer aError = _prepare (aCtx,
+                                       aTheme == null ? null : (final HtmlRenderContext aTarget) -> aTarget.applyTheme (aTheme));
+      if (aError != null)
+        return aError;
       final HtmlInvoiceWriter aHtmlWriter = new HtmlInvoiceWriter ();
       final String sHtml;
       try

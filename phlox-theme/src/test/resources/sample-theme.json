@@ -1,0 +1,27 @@
+{
+  "$comment": "A theme in burgundy. Every key that starts with a dollar sign is ignored.",
+  "variables": {
+    "--brand": "#8a1538",
+    "--brand-light": "#f7e9ed",
+    "--phlox-accent": "var(--brand)",
+    "--phlox-accent-wash": "var(--brand-light)",
+    "--phlox-muted": "#5b6270"
+  },
+  "common": {
+    "locale": "de",
+    "dateStyle": "medium",
+    "watermark": { "text": "MUSTER", "opacity": 0.08, "color": "var(--brand)" }
+  },
+  "html": {
+    "customStylesheet": ".phlox-title{letter-spacing:.02em}"
+  },
+  "pdf": {
+    "pageSize": "a4",
+    "margins": { "top": "18mm", "right": "20mm", "bottom": "18mm", "left": "20mm" },
+    "bodyFont": { "size": 9.5 },
+    "blockStyles": {
+      "due": { "padding": 10 },
+      "pay": { "borderTop": { "color": "var(--brand)", "width": 1 } }
+    }
+  }
+}

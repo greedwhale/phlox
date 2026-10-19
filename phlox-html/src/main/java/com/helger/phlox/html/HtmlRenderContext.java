@@ -16,10 +16,19 @@
  */
 package com.helger.phlox.html;
 
+import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
+
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import com.helger.base.enforce.ValueEnforcer;
+import com.helger.collection.commons.CommonsLinkedHashMap;
+import com.helger.collection.commons.ICommonsOrderedMap;
 import com.helger.phlox.api.AbstractRenderContext;
+import com.helger.phlox.theme.PhloxTheme;
+import com.helger.phlox.theme.PhloxThemeApplier;
+import com.helger.phlox.theme.PhloxThemeObject;
 
 /**
  * HTML-specific render context. Adds CSS prefix and stylesheet options on top of the shared
@@ -36,10 +45,13 @@ public class HtmlRenderContext extends AbstractRenderContext <HtmlRenderContext>
   /** Default for emitting the HTML doctype. */
   public static final boolean DEFAULT_EMIT_DOCTYPE = true;
 
+  private static final Pattern CSS_VARIABLE_NAME = Pattern.compile ("--[A-Za-z0-9_-]+");
+
   private String m_sCssClassPrefix = DEFAULT_CSS_CLASS_PREFIX;
   private boolean m_bEmbeddedStylesheet = DEFAULT_EMBEDDED_STYLESHEET;
   private String m_sCustomStylesheet;
   private boolean m_bEmitDoctype = DEFAULT_EMIT_DOCTYPE;
+  private final ICommonsOrderedMap <String, String> m_aCssVariables = new CommonsLinkedHashMap <> ();
 
   /** Create a new context with the default HTML settings. */
   public HtmlRenderContext ()
@@ -153,6 +165,90 @@ public class HtmlRenderContext extends AbstractRenderContext <HtmlRenderContext>
   public HtmlRenderContext setEmitDoctype (final boolean bEmitDoctype)
   {
     m_bEmitDoctype = bEmitDoctype;
+    return this;
+  }
+
+  /**
+   * Get the CSS custom properties that are written into the page after the default stylesheet.
+   *
+   * @return The properties with the name including <code>--</code>. Never {@code null}.
+   */
+  @NonNull
+  public ICommonsOrderedMap <String, String> getCssVariables ()
+  {
+    return new CommonsLinkedHashMap <> (m_aCssVariables);
+  }
+
+  /**
+   * Set a CSS custom property that is written into the page after the default stylesheet, like
+   * <code>--phlox-accent</code>. The stylesheet of the default layout takes its colours from such
+   * properties.
+   *
+   * @param sName
+   *        The name including the leading <code>--</code>. May not be {@code null}.
+   * @param sValue
+   *        The value. May not be {@code null} and must not contain <code>;</code>, <code>{</code>,
+   *        <code>}</code> or <code>&lt;</code>.
+   * @return this for chaining.
+   * @throws IllegalArgumentException
+   *         If the name or the value is invalid.
+   */
+  @NonNull
+  public HtmlRenderContext putCssVariable (@NonNull final String sName, @NonNull final String sValue)
+  {
+    ValueEnforcer.isTrue (CSS_VARIABLE_NAME.matcher (sName).matches (), "Invalid name of a CSS variable");
+    ValueEnforcer.isTrue (sValue.indexOf (';') < 0 &&
+                          sValue.indexOf ('{') < 0 &&
+                          sValue.indexOf ('}') < 0 &&
+                          sValue.indexOf ('<') < 0,
+                          "Invalid value of a CSS variable");
+    m_aCssVariables.put (sName, sValue);
+    return this;
+  }
+
+  /**
+   * Apply a theme: its <code>common</code> part, its variables (as CSS custom properties) and the
+   * <code>html</code> part with the keys <code>cssClassPrefix</code>, <code>embeddedStylesheet</code>,
+   * <code>emitDoctype</code>, <code>customStylesheet</code> (the CSS itself) and
+   * <code>customStylesheetFile</code> (the path of a CSS file). If both stylesheets are given, the
+   * file comes first. Only the values that are in the theme are changed.
+   *
+   * @param aTheme
+   *        The theme. May not be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public HtmlRenderContext applyTheme (@NonNull final PhloxTheme aTheme)
+  {
+    ValueEnforcer.notNull (aTheme, "Theme");
+    PhloxThemeApplier.applyCommon (this, aTheme);
+
+    aTheme.getVariables ().forEach (this::putCssVariable);
+
+    final PhloxThemeObject aHtml = aTheme.getHtml ();
+    aHtml.checkKeys ("cssClassPrefix", "embeddedStylesheet", "emitDoctype", "customStylesheet", "customStylesheetFile");
+    if (aHtml.getString ("cssClassPrefix") != null)
+      setCssClassPrefix (aHtml.getString ("cssClassPrefix"));
+    if (aHtml.getBoolean ("embeddedStylesheet") != null)
+      setEmbeddedStylesheet (aHtml.getBoolean ("embeddedStylesheet").booleanValue ());
+    if (aHtml.getBoolean ("emitDoctype") != null)
+      setEmitDoctype (aHtml.getBoolean ("emitDoctype").booleanValue ());
+
+    final String sFile = aHtml.getString ("customStylesheetFile");
+    final String sInline = aHtml.getString ("customStylesheet");
+    if (sFile != null || sInline != null)
+    {
+      final StringBuilder aCss = new StringBuilder ();
+      if (sFile != null)
+        aCss.append (new String (aTheme.readBinary (sFile), StandardCharsets.UTF_8));
+      if (sInline != null)
+      {
+        if (aCss.length () > 0)
+          aCss.append ('\n');
+        aCss.append (sInline);
+      }
+      setCustomStylesheet (aCss.toString ());
+    }
     return this;
   }
 }
