@@ -67,6 +67,7 @@ import com.helger.pdflayout.spec.FontSpec;
 import com.helger.pdflayout.spec.PaddingSpec;
 import com.helger.pdflayout.spec.PreloadFont;
 import com.helger.pdflayout.spec.WidthSpec;
+import com.helger.phlox.template.ast.AbstractPhloxAstVisitor;
 import com.helger.phlox.template.ast.PhloxGroupNode;
 import com.helger.phlox.template.ast.PhloxPageBreakNode;
 import com.helger.phlox.template.ast.PhloxResolvedImage;
@@ -84,7 +85,8 @@ import com.helger.phlox.template.ast.PhloxTemplateAst;
  *
  * @author Philip Helger
  */
-public final class PdfTemplateEmitter
+public final class PdfTemplateEmitter extends
+                                      AbstractPhloxAstVisitor <Consumer <IPLRenderableObject <?>>, List <StringBuilder>>
 {
   private static final Logger LOGGER = LoggerFactory.getLogger (PdfTemplateEmitter.class);
 
@@ -191,67 +193,25 @@ public final class PdfTemplateEmitter
     return StringReplace.replaceAll (ret, "}", "%7D");
   }
 
-  /** Append the inline nodes as ph-pdf-layout markup; a line break starts a new line. */
-  private void _appendMarkupRecursive (@NonNull final Node aParent, @NonNull final List <StringBuilder> aLines)
+  @NonNull
+  private static StringBuilder _getLastLine (@NonNull final List <StringBuilder> aLines)
   {
-    for (Node aChild = aParent.getFirstChild (); aChild != null; aChild = aChild.getNext ())
-    {
-      final StringBuilder aLine = aLines.get (aLines.size () - 1);
-      if (aChild instanceof final Text aText)
-        aLine.append (PdfTextSupport.escapeMarkup (PdfTextSupport.separateCurrencySymbol (m_bUppercase ? aText.getLiteral ()
-                                                                                                              .toUpperCase (m_aCtx.getLocale ())
-                                                                                                       : aText.getLiteral ())));
-      else
-        if (aChild instanceof SoftLineBreak || aChild instanceof HardLineBreak)
-          aLines.add (new StringBuilder ());
-        else
-          if (aChild instanceof final Code aCode)
-            aLine.append ('`').append (PdfTextSupport.escapeMarkup (aCode.getLiteral ())).append ('`');
-          else
-            if (aChild instanceof StrongEmphasis)
-            {
-              aLine.append ("**");
-              _appendMarkupRecursive (aChild, aLines);
-              aLines.get (aLines.size () - 1).append ("**");
-            }
-            else
-              if (aChild instanceof Emphasis)
-              {
-                aLine.append ('*');
-                _appendMarkupRecursive (aChild, aLines);
-                aLines.get (aLines.size () - 1).append ('*');
-              }
-              else
-                if (aChild instanceof Strikethrough)
-                {
-                  aLine.append ("~~");
-                  _appendMarkupRecursive (aChild, aLines);
-                  aLines.get (aLines.size () - 1).append ("~~");
-                }
-                else
-                  if (aChild instanceof final Link aLink && _isSupportedLink (aLink.getDestination ()))
-                  {
-                    aLine.append ("{link[")
-                         .append (PdfTextSupport.escapeMarkup (_encodeLinkDestination (aLink.getDestination ())))
-                         .append ("]}");
-                    _appendMarkupRecursive (aChild, aLines);
-                    aLines.get (aLines.size () - 1).append ("{link}");
-                  }
-                  else
-                    if (aChild instanceof final HtmlInline aInline)
-                    {
-                      if (BR_TAG.matcher (aInline.getLiteral ()).matches ())
-                        aLines.add (new StringBuilder ());
-                    }
-                    else
-                      if (aChild instanceof Image)
-                      {
-                        // Inline images are not supported - only block level images are
-                      }
-                      else
-                        // Links to unsupported targets and unknown inline nodes: keep the text
-                        _appendMarkupRecursive (aChild, aLines);
-    }
+    return aLines.get (aLines.size () - 1);
+  }
+
+  /**
+   * Append the inline children of a node as ph-pdf-layout markup between an opening and a closing
+   * marker. The children may start new lines, so the closing marker goes to the last line.
+   */
+  private void _appendWrappedRecursive (@NonNull final PhloxTemplateAst aAst,
+                                        @NonNull final Node aNode,
+                                        @NonNull final List <StringBuilder> aLines,
+                                        @NonNull final String sOpen,
+                                        @NonNull final String sClose)
+  {
+    _getLastLine (aLines).append (sOpen);
+    visitInlineChildren (aAst, aNode, aLines);
+    _getLastLine (aLines).append (sClose);
   }
 
   @NonNull
@@ -269,14 +229,15 @@ public final class PdfTemplateEmitter
    * Create the content of a block of text (paragraph, heading, table cell) from its inline nodes.
    */
   @Nullable
-  private IPLRenderableObject <?> _createInlineBlock (@NonNull final Node aParent,
+  private IPLRenderableObject <?> _createInlineBlock (@NonNull final PhloxTemplateAst aAst,
+                                                      @NonNull final Node aParent,
                                                       @NonNull final FontSpec aBase,
                                                       @NonNull final EHorzAlignment eAlign,
                                                       final boolean bVertSplittable)
   {
     final ICommonsList <StringBuilder> aLines = new CommonsArrayList <> ();
     aLines.add (new StringBuilder ());
-    _appendMarkupRecursive (aParent, aLines);
+    visitInlineChildren (aAst, aParent, aLines);
 
     final ICommonsList <String> aNonBlank = new CommonsArrayList <> ();
     for (final StringBuilder aLine : aLines)
@@ -317,7 +278,7 @@ public final class PdfTemplateEmitter
     final IPLRenderableObject <?> aContent;
     try
     {
-      aContent = _createInlineBlock (aHeading, _styled (aFont, aStyle), EHorzAlignment.LEFT, false);
+      aContent = _createInlineBlock (aAst, aHeading, _styled (aFont, aStyle), EHorzAlignment.LEFT, false);
     }
     finally
     {
@@ -390,7 +351,8 @@ public final class PdfTemplateEmitter
     }
 
     final PdfBlockStyle aStyle = _getStyle (aAst, aParagraph);
-    final IPLRenderableObject <?> aContent = _createInlineBlock (aParagraph,
+    final IPLRenderableObject <?> aContent = _createInlineBlock (aAst,
+                                                                 aParagraph,
                                                                  _styled (m_aCtx.getBodyFont (), aStyle),
                                                                  EHorzAlignment.LEFT,
                                                                  true);
@@ -400,11 +362,12 @@ public final class PdfTemplateEmitter
   }
 
   @NonNull
-  private IPLRenderableObject <?> _createCell (@NonNull final TableCell aCell,
+  private IPLRenderableObject <?> _createCell (@NonNull final PhloxTemplateAst aAst,
+                                               @NonNull final TableCell aCell,
                                                @NonNull final FontSpec aFont,
                                                @NonNull final EHorzAlignment eAlign)
   {
-    final IPLRenderableObject <?> aContent = _createInlineBlock (aCell, aFont, eAlign, true);
+    final IPLRenderableObject <?> aContent = _createInlineBlock (aAst, aCell, aFont, eAlign, true);
     if (aContent == null)
       return new PLSpacerX (1f);
     // The box aligns its content inside the width of the cell
@@ -537,7 +500,8 @@ public final class PdfTemplateEmitter
           final PLTableCell aPLCell;
           try
           {
-            aPLCell = new PLTableCell (_createCell (aCell,
+            aPLCell = new PLTableCell (_createCell (aAst,
+                                                    aCell,
                                                     _styled (aBaseFont, aStyle),
                                                     _align (aCell.getAlignment ())));
           }
@@ -581,7 +545,7 @@ public final class PdfTemplateEmitter
     for (Node aItem = aList.getFirstChild (); aItem instanceof ListItem; aItem = aItem.getNext ())
     {
       final PLVBox aContent = new PLVBox ();
-      _addBlocksRecursive (aAst, aItem, aContent::addRow);
+      visitBlockChildren (aAst, aItem, aContent::addRow);
       aBullets.addBulletPoint (aContent);
     }
     aSink.accept (new PLBox (aBullets).setMarginBottom (PARAGRAPH_GAP));
@@ -630,9 +594,9 @@ public final class PdfTemplateEmitter
                                                                                                                nStarCells);
           m_fContentWidth = fRowWidth * fCellPercent / 100f - ROW_GAP;
           if (aCell instanceof final PhloxGroupNode aCellGroup && !aCellGroup.isRow ())
-            _addBlocksRecursive (aAst, aCellGroup, aCellContent::addRow);
+            visitBlockChildren (aAst, aCellGroup, aCellContent::addRow);
           else
-            _addBlock (aAst, aCell, aCellContent::addRow);
+            visitBlock (aAst, aCell, aCellContent::addRow);
           m_fContentWidth = fRowWidth;
           final PdfBlockStyle aCellStyle = aCell instanceof PhloxGroupNode ? _getStyle (aAst, aCell) : null;
           final PLBox aCellBox = _decorate (new PLBox (aCellContent), aCellStyle);
@@ -646,7 +610,7 @@ public final class PdfTemplateEmitter
       else
       {
         final PLVBox aBlocks = new PLVBox ();
-        _addBlocksRecursive (aAst, aGroup, aBlocks::addRow);
+        visitBlockChildren (aAst, aGroup, aBlocks::addRow);
         aContent = aBlocks;
       }
       aSink.accept (_decorate (new PLBox (aContent).setMarginBottom (PARAGRAPH_GAP), aGroup.isRow () ? null : aStyle));
@@ -657,86 +621,214 @@ public final class PdfTemplateEmitter
     }
   }
 
-  private void _addBlock (@NonNull final PhloxTemplateAst aAst,
-                          @NonNull final Node aNode,
-                          @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  @Override
+  protected void visitText (@NonNull final PhloxTemplateAst aAst,
+                            @NonNull final Text aText,
+                            @NonNull final List <StringBuilder> aLines)
   {
-    if (aNode instanceof final PhloxGroupNode aGroup)
-    {
-      _addGroup (aAst, aGroup, aSink);
-      return;
-    }
-    if (aNode instanceof final Heading aHeading)
-      _addHeading (aAst, aHeading, aSink);
-    else
-      if (aNode instanceof final Paragraph aParagraph)
-        _addParagraph (aAst, aParagraph, aSink);
-      else
-        if (aNode instanceof final TableBlock aTable)
-          _addTable (aAst, aTable, aSink);
-        else
-          if (aNode instanceof BulletList)
-            _addList (aAst,
-                      aNode,
-                      BulletPointCreatorSymbol.createFilledDot (m_aCtx.getBodyFont ().getFontSize ()),
-                      aSink);
-          else
-            if (aNode instanceof final OrderedList aList)
-            {
-              final int nStart = aList.getMarkerStartNumber () == null ? 1 : aList.getMarkerStartNumber ().intValue ();
-              _addList (aAst,
-                        aList,
-                        new BulletPointCreatorNumeric (nIndex -> (nStart + nIndex) + ".", m_aCtx.getBodyFont ()),
-                        aSink);
-            }
-            else
-              if (aNode instanceof BlockQuote)
-              {
-                final PLVBox aContent = new PLVBox ();
-                _addBlocksRecursive (aAst, aNode, aContent::addRow);
-                aSink.accept (new PLBox (aContent).setBorderLeft (new BorderStyleSpec (PLColor.GRAY, 2f))
-                                                  .setPaddingLeft (6)
-                                                  .setMarginBottom (PARAGRAPH_GAP));
-              }
-              else
-                if (aNode instanceof final FencedCodeBlock aBlock)
-                  _addCodeBlock (aBlock.getLiteral (), aSink);
-                else
-                  if (aNode instanceof final IndentedCodeBlock aBlock)
-                    _addCodeBlock (aBlock.getLiteral (), aSink);
-                  else
-                    if (aNode instanceof ThematicBreak)
-                    {
-                      final PdfBlockStyle aRuleStyle = _getStyle (aAst, aNode);
-                      final boolean bStyled = aRuleStyle != null && aRuleStyle.getBorderTopColor () != null;
-                      aSink.accept (new PLBox (new PLSpacerY (1f)).setBorderTop (new BorderStyleSpec (bStyled ? aRuleStyle.getBorderTopColor ()
-                                                                                                              : PLColor.GRAY,
-                                                                                                      bStyled ? aRuleStyle.getBorderWidth ()
-                                                                                                              : 0.75f))
-                                                                  .setMarginY (4));
-                    }
-                    else
-                      if (aNode instanceof PhloxPageBreakNode)
-                        aSink.accept (new PLPageBreak (true));
-                      else
-                        if (aNode instanceof final Image aImage)
-                          _addImage (aAst, aImage, aSink);
-                        else
-                          if (aNode instanceof final HtmlBlock aHtml)
-                            aSink.accept (new PLText (aHtml.getLiteral ().strip (), m_aCtx.getBodyFont ()));
-                          else
-                          {
-                            LOGGER.warn ("Unsupported template node " + aNode.getClass ().getSimpleName ());
-                            _addBlocksRecursive (aAst, aNode, aSink);
-                          }
+    final String sText = m_bUppercase ? aText.getLiteral ().toUpperCase (m_aCtx.getLocale ()) : aText.getLiteral ();
+    _getLastLine (aLines).append (PdfTextSupport.escapeMarkup (PdfTextSupport.separateCurrencySymbol (sText)));
   }
 
-  private void _addBlocksRecursive (@NonNull final PhloxTemplateAst aAst,
-                                    @NonNull final Node aParent,
-                                    @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  @Override
+  protected void visitSoftLineBreak (@NonNull final PhloxTemplateAst aAst,
+                                     @NonNull final SoftLineBreak aBreak,
+                                     @NonNull final List <StringBuilder> aLines)
   {
-    for (Node aNode = aParent.getFirstChild (); aNode != null; aNode = aNode.getNext ())
-      _addBlock (aAst, aNode, aSink);
+    aLines.add (new StringBuilder ());
+  }
+
+  @Override
+  protected void visitHardLineBreak (@NonNull final PhloxTemplateAst aAst,
+                                     @NonNull final HardLineBreak aBreak,
+                                     @NonNull final List <StringBuilder> aLines)
+  {
+    aLines.add (new StringBuilder ());
+  }
+
+  @Override
+  protected void visitStrongEmphasis (@NonNull final PhloxTemplateAst aAst,
+                                      @NonNull final StrongEmphasis aStrong,
+                                      @NonNull final List <StringBuilder> aLines)
+  {
+    _appendWrappedRecursive (aAst, aStrong, aLines, "**", "**");
+  }
+
+  @Override
+  protected void visitEmphasis (@NonNull final PhloxTemplateAst aAst,
+                                @NonNull final Emphasis aEmphasis,
+                                @NonNull final List <StringBuilder> aLines)
+  {
+    _appendWrappedRecursive (aAst, aEmphasis, aLines, "*", "*");
+  }
+
+  @Override
+  protected void visitStrikethrough (@NonNull final PhloxTemplateAst aAst,
+                                     @NonNull final Strikethrough aStrikethrough,
+                                     @NonNull final List <StringBuilder> aLines)
+  {
+    _appendWrappedRecursive (aAst, aStrikethrough, aLines, "~~", "~~");
+  }
+
+  @Override
+  protected void visitCode (@NonNull final PhloxTemplateAst aAst,
+                            @NonNull final Code aCode,
+                            @NonNull final List <StringBuilder> aLines)
+  {
+    _getLastLine (aLines).append ('`').append (PdfTextSupport.escapeMarkup (aCode.getLiteral ())).append ('`');
+  }
+
+  @Override
+  protected void visitLink (@NonNull final PhloxTemplateAst aAst,
+                            @NonNull final Link aLink,
+                            @NonNull final List <StringBuilder> aLines)
+  {
+    if (_isSupportedLink (aLink.getDestination ()))
+      _appendWrappedRecursive (aAst,
+                               aLink,
+                               aLines,
+                               "{link[" + PdfTextSupport.escapeMarkup (_encodeLinkDestination (aLink.getDestination ())) + "]}",
+                               "{link}");
+    else
+    {
+      // Links to unsupported targets: keep the text
+      visitInlineChildren (aAst, aLink, aLines);
+    }
+  }
+
+  @Override
+  protected void visitInlineImage (@NonNull final PhloxTemplateAst aAst,
+                                   @NonNull final Image aImage,
+                                   @NonNull final List <StringBuilder> aLines)
+  {
+    // Inline images are not supported - only block level images are
+  }
+
+  @Override
+  protected void visitHtmlInline (@NonNull final PhloxTemplateAst aAst,
+                                  @NonNull final HtmlInline aHtml,
+                                  @NonNull final List <StringBuilder> aLines)
+  {
+    if (BR_TAG.matcher (aHtml.getLiteral ()).matches ())
+      aLines.add (new StringBuilder ());
+  }
+
+  @Override
+  protected void visitHeading (@NonNull final PhloxTemplateAst aAst,
+                               @NonNull final Heading aHeading,
+                               @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  {
+    _addHeading (aAst, aHeading, aSink);
+  }
+
+  @Override
+  protected void visitParagraph (@NonNull final PhloxTemplateAst aAst,
+                                 @NonNull final Paragraph aParagraph,
+                                 @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  {
+    _addParagraph (aAst, aParagraph, aSink);
+  }
+
+  @Override
+  protected void visitBulletList (@NonNull final PhloxTemplateAst aAst,
+                                  @NonNull final BulletList aList,
+                                  @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  {
+    _addList (aAst, aList, BulletPointCreatorSymbol.createFilledDot (m_aCtx.getBodyFont ().getFontSize ()), aSink);
+  }
+
+  @Override
+  protected void visitOrderedList (@NonNull final PhloxTemplateAst aAst,
+                                   @NonNull final OrderedList aList,
+                                   @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  {
+    final int nStart = aList.getMarkerStartNumber () == null ? 1 : aList.getMarkerStartNumber ().intValue ();
+    _addList (aAst,
+              aList,
+              new BulletPointCreatorNumeric (nIndex -> (nStart + nIndex) + ".", m_aCtx.getBodyFont ()),
+              aSink);
+  }
+
+  @Override
+  protected void visitBlockQuote (@NonNull final PhloxTemplateAst aAst,
+                                  @NonNull final BlockQuote aQuote,
+                                  @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  {
+    final PLVBox aContent = new PLVBox ();
+    visitBlockChildren (aAst, aQuote, aContent::addRow);
+    aSink.accept (new PLBox (aContent).setBorderLeft (new BorderStyleSpec (PLColor.GRAY, 2f))
+                                      .setPaddingLeft (6)
+                                      .setMarginBottom (PARAGRAPH_GAP));
+  }
+
+  @Override
+  protected void visitFencedCodeBlock (@NonNull final PhloxTemplateAst aAst,
+                                       @NonNull final FencedCodeBlock aBlock,
+                                       @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  {
+    _addCodeBlock (aBlock.getLiteral (), aSink);
+  }
+
+  @Override
+  protected void visitIndentedCodeBlock (@NonNull final PhloxTemplateAst aAst,
+                                         @NonNull final IndentedCodeBlock aBlock,
+                                         @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  {
+    _addCodeBlock (aBlock.getLiteral (), aSink);
+  }
+
+  @Override
+  protected void visitThematicBreak (@NonNull final PhloxTemplateAst aAst,
+                                     @NonNull final ThematicBreak aBreak,
+                                     @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  {
+    final PdfBlockStyle aRuleStyle = _getStyle (aAst, aBreak);
+    final boolean bStyled = aRuleStyle != null && aRuleStyle.getBorderTopColor () != null;
+    aSink.accept (new PLBox (new PLSpacerY (1f)).setBorderTop (new BorderStyleSpec (bStyled ? aRuleStyle.getBorderTopColor ()
+                                                                                            : PLColor.GRAY,
+                                                                                    bStyled ? aRuleStyle.getBorderWidth ()
+                                                                                            : 0.75f))
+                                                .setMarginY (4));
+  }
+
+  @Override
+  protected void visitTable (@NonNull final PhloxTemplateAst aAst,
+                             @NonNull final TableBlock aTable,
+                             @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  {
+    _addTable (aAst, aTable, aSink);
+  }
+
+  @Override
+  protected void visitBlockImage (@NonNull final PhloxTemplateAst aAst,
+                                  @NonNull final Image aImage,
+                                  @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  {
+    _addImage (aAst, aImage, aSink);
+  }
+
+  @Override
+  protected void visitHtmlBlock (@NonNull final PhloxTemplateAst aAst,
+                                 @NonNull final HtmlBlock aHtml,
+                                 @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  {
+    aSink.accept (new PLText (aHtml.getLiteral ().strip (), m_aCtx.getBodyFont ()));
+  }
+
+  @Override
+  protected void visitGroup (@NonNull final PhloxTemplateAst aAst,
+                             @NonNull final PhloxGroupNode aGroup,
+                             @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  {
+    _addGroup (aAst, aGroup, aSink);
+  }
+
+  @Override
+  protected void visitPageBreak (@NonNull final PhloxTemplateAst aAst,
+                                 @NonNull final PhloxPageBreakNode aPageBreak,
+                                 @NonNull final Consumer <IPLRenderableObject <?>> aSink)
+  {
+    aSink.accept (new PLPageBreak (true));
   }
 
   /**
@@ -750,7 +842,7 @@ public final class PdfTemplateEmitter
   public PLPageSet emit (@NonNull final PhloxTemplateAst aAst)
   {
     final PLPageSet aPS = new PLPageSet (m_aCtx.getPageSize ()).setMargin (m_aCtx.getMargins ());
-    _addBlocksRecursive (aAst, aAst.getRoot (), aPS::addElement);
+    visitBlockChildren (aAst, aAst.getRoot (), aPS::addElement);
     return aPS;
   }
 }
