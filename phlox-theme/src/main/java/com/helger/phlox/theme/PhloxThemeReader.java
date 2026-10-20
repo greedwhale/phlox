@@ -30,6 +30,7 @@ import com.helger.base.enforce.ValueEnforcer;
 import com.helger.base.wrapper.Wrapper;
 import com.helger.collection.commons.CommonsLinkedHashMap;
 import com.helger.collection.commons.ICommonsOrderedMap;
+import com.helger.io.resource.IReadableResource;
 import com.helger.json.IJson;
 import com.helger.json.IJsonObject;
 import com.helger.json.serialize.JsonReader;
@@ -51,7 +52,8 @@ public final class PhloxThemeReader
                                      @Nullable final Path aBaseDir)
   {
     if (aJson == null)
-      throw new PhloxThemeException ("The theme is no valid JSON" + (aError.get () != null ? ": " + aError.get () : ""));
+      throw new PhloxThemeException ("The theme is no valid JSON" +
+                                     (aError.get () != null ? ": " + aError.get () : ""));
     if (!aJson.isObject ())
       throw new PhloxThemeException ("The theme must be a JSON object");
     final IJsonObject aRoot = aJson.getAsObject ();
@@ -63,11 +65,13 @@ public final class PhloxThemeReader
     {
       if (!aVariablesJson.isObject ())
         throw new PhloxThemeException ("Theme error at 'variables': an object is expected");
-      aVariablesJson.getAsObject ().forEach ( (sName, aValue) -> {
+      aVariablesJson.getAsObject ().forEach ((sName, aValue) -> {
         if (sName.startsWith ("$"))
           return;
         if (!sName.startsWith ("--"))
-          throw new PhloxThemeException ("Theme error at 'variables." + sName + "': the name of a variable starts with --");
+          throw new PhloxThemeException ("Theme error at 'variables." +
+                                         sName +
+                                         "': the name of a variable starts with --");
         if (!aValue.isValue () || aValue.getAsValue ().getValue () == null)
           throw new PhloxThemeException ("Theme error at 'variables." + sName + "': a text or number is expected");
         aRaw.put (sName, aValue.getAsValue ().getValue ().toString ());
@@ -108,13 +112,36 @@ public final class PhloxThemeReader
   }
 
   /**
+   * Read a theme from a resource.
+   *
+   * @param aRes
+   *        The JSON file. May not be <code>null</code>.
+   * @return The theme. Never <code>null</code>.
+   * @throws PhloxThemeException
+   *         If the file cannot be read or has an invalid content.
+   */
+  @NonNull
+  public static PhloxTheme read (@NonNull final IReadableResource aRes)
+  {
+    ValueEnforcer.notNull (aRes, "Resource");
+    try (final InputStream aIS = aRes.getBufferedInputStream ())
+    {
+      return read (aIS, null);
+    }
+    catch (final IOException ex)
+    {
+      throw new PhloxThemeException ("Failed to read the theme '" + aRes.getPath () + "'", ex);
+    }
+  }
+
+  /**
    * Read a theme from a stream. The stream is closed.
    *
    * @param aIS
    *        The stream with the UTF-8 encoded JSON. May not be <code>null</code>.
    * @param aBaseDir
-   *        The folder that relative paths in the theme are relative to. May be <code>null</code> for
-   *        the current folder.
+   *        The folder that relative paths in the theme are relative to. May be <code>null</code>
+   *        for the current folder.
    * @return The theme. Never <code>null</code>.
    * @throws PhloxThemeException
    *         If the content is invalid.
@@ -137,8 +164,8 @@ public final class PhloxThemeReader
    * @param sJson
    *        The JSON. May not be <code>null</code>.
    * @param aBaseDir
-   *        The folder that relative paths in the theme are relative to. May be <code>null</code> for
-   *        the current folder.
+   *        The folder that relative paths in the theme are relative to. May be <code>null</code>
+   *        for the current folder.
    * @return The theme. Never <code>null</code>.
    * @throws PhloxThemeException
    *         If the content is invalid.

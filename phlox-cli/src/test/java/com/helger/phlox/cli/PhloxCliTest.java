@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.jspecify.annotations.NonNull;
 import org.junit.Test;
 
 import com.helger.io.resource.ClassPathResource;
@@ -39,6 +40,7 @@ import picocli.CommandLine;
  */
 public final class PhloxCliTest
 {
+  @NonNull
   private static Path _copyInvoice () throws IOException
   {
     final Path aFile = Files.createTempFile ("phlox-cli-invoice-", ".xml");
@@ -51,6 +53,7 @@ public final class PhloxCliTest
     return aFile;
   }
 
+  @NonNull
   private static Path _tempFile (final String sSuffix) throws IOException
   {
     final Path aFile = Files.createTempFile ("phlox-cli-", sSuffix);
@@ -109,7 +112,15 @@ public final class PhloxCliTest
   public void testTemplateForPdf () throws IOException
   {
     final Path aOut = _tempFile (".pdf");
-    assertEquals (0, _run ("-i", _copyInvoice ().toString (), "-f", "PDF", "-o", aOut.toString (), "--template", "default"));
+    assertEquals (0,
+                  _run ("-i",
+                        _copyInvoice ().toString (),
+                        "-f",
+                        "PDF",
+                        "-o",
+                        aOut.toString (),
+                        "--template",
+                        "default"));
     final byte [] aBytes = Files.readAllBytes (aOut);
     assertTrue (aBytes.length > 500 && aBytes[0] == '%' && aBytes[1] == 'P' && aBytes[2] == 'D' && aBytes[3] == 'F');
   }
@@ -118,7 +129,13 @@ public final class PhloxCliTest
   public void testMissingTemplateIsAnError () throws IOException
   {
     final Path aOut = _tempFile (".html");
-    assertEquals (2, _run ("-i", _copyInvoice ().toString (), "-o", aOut.toString (), "--template", "/no/such/template.ptpl"));
+    assertEquals (2,
+                  _run ("-i",
+                        _copyInvoice ().toString (),
+                        "-o",
+                        aOut.toString (),
+                        "--template",
+                        "/no/such/template.ptpl"));
   }
 
   @Test
