@@ -58,7 +58,7 @@
   </developers>
 
   <properties>
-    <java.version>25</java.version>
+    <java.version>17</java.version>
 
     <ph-commons.version>12.5.2</ph-commons.version>
     <ph-ubl.version>10.2.1</ph-ubl.version>
