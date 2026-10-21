@@ -61,6 +61,7 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
   private FontSpec m_aBodyFont = DEFAULT_BODY_FONT;
   private FontSpec m_aHeaderFont = DEFAULT_HEADER_FONT;
   private FontSpec m_aTableHeaderFont = DEFAULT_TABLE_HEADER_FONT;
+  private PdfFontFamily m_aFontFamily = PdfFontFamily.STANDARD;
   private PdfPalette m_aPalette = PdfPalette.DEFAULT;
   private final ICommonsMap <String, PdfBlockStyle> m_aBlockStyles = new CommonsHashMap <> ();
 
@@ -117,9 +118,9 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
   }
 
   @NonNull
-  private static FontSpec _getFont (@NonNull final PhloxThemeObject aPdf,
-                                    @NonNull final String sKey,
-                                    @NonNull final FontSpec aCurrent)
+  private FontSpec _getFont (@NonNull final PhloxThemeObject aPdf,
+                             @NonNull final String sKey,
+                             @NonNull final FontSpec aCurrent)
   {
     final PhloxThemeObject aFont = aPdf.getObject (sKey);
     if (aFont == null)
@@ -129,9 +130,51 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     final Float aSize = aFont.getFloat ("size");
     final Color aColor = aFont.getColor ("color");
     return new FontSpec (aBold == null ? aCurrent.getPreloadFont ()
-                                       : aBold.booleanValue () ? PreloadFont.REGULAR_BOLD : PreloadFont.REGULAR,
+                                       : aBold.booleanValue () ? m_aFontFamily.getBold () : m_aFontFamily.getRegular (),
                          aSize == null ? aCurrent.getFontSize () : aSize.floatValue (),
                          aColor == null ? aCurrent.getColor () : new PLColor (aColor.getRed (), aColor.getGreen (), aColor.getBlue ()));
+  }
+
+  @NonNull
+  private static FontSpec _switchFamily (@NonNull final FontSpec aSpec,
+                                         @NonNull final PdfFontFamily aOld,
+                                         @NonNull final PdfFontFamily aNew)
+  {
+    return aSpec.getCloneWithDifferentFont (aOld.getSameStyleIn (aSpec.getPreloadFont (), aNew));
+  }
+
+  @Nullable
+  private static PreloadFont _getFontFile (@NonNull final PhloxTheme aTheme,
+                                           @NonNull final PhloxThemeObject aFonts,
+                                           @NonNull final String sKey)
+  {
+    final String sReference = aFonts.getString (sKey);
+    if (sReference == null)
+      return null;
+    try
+    {
+      return PreloadFont.createEmbedding (new PdfFontBytesResource (sReference, aTheme.readBinary (sReference)));
+    }
+    catch (final IllegalArgumentException | PhloxThemeException ex)
+    {
+      throw new PhloxThemeException ("Theme error at '" + aFonts.getPath () + "." + sKey + "': " + ex.getMessage (), ex);
+    }
+  }
+
+  @NonNull
+  private static PdfFontFamily _getFontFamily (@NonNull final PhloxTheme aTheme, @NonNull final PhloxThemeObject aFonts)
+  {
+    aFonts.checkKeys ("regular", "bold", "italic", "boldItalic");
+    final PreloadFont aRegular = _getFontFile (aTheme, aFonts, "regular");
+    if (aRegular == null)
+      throw new PhloxThemeException ("Theme error at '" + aFonts.getPath () + ".regular': the regular font is required");
+    final PreloadFont aBold = _getFontFile (aTheme, aFonts, "bold");
+    final PreloadFont aItalic = _getFontFile (aTheme, aFonts, "italic");
+    final PreloadFont aBoldItalic = _getFontFile (aTheme, aFonts, "boldItalic");
+    // A style without a file uses the closest style that has one
+    final PreloadFont aRealBold = aBold == null ? aRegular : aBold;
+    final PreloadFont aRealItalic = aItalic == null ? aRegular : aItalic;
+    return new PdfFontFamily (aRegular, aRealBold, aRealItalic, aBoldItalic == null ? aRealBold : aBoldItalic);
   }
 
   private static void _setBorder (final PdfBlockStyle.@NonNull Builder aBuilder,
@@ -215,6 +258,38 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
   public PdfRenderContext setMargins (@NonNull final MarginSpec aMargins)
   {
     m_aMargins = aMargins;
+    return this;
+  }
+
+  /**
+   * Get the fonts of the output.
+   *
+   * @return The fonts. Never {@code null}.
+   */
+  @NonNull
+  public PdfFontFamily getFontFamily ()
+  {
+    return m_aFontFamily;
+  }
+
+  /**
+   * Set the fonts of the output. The body font, the header font and the table header font switch to
+   * the fonts of the new family, so call it before the sizes and colours of these fonts are changed.
+   * The standard fonts of PDF contain only the characters of Western European languages; set a family
+   * with the needed characters to render a text in another script.
+   *
+   * @param aFontFamily
+   *        The new fonts. May not be {@code null}.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PdfRenderContext setFontFamily (@NonNull final PdfFontFamily aFontFamily)
+  {
+    ValueEnforcer.notNull (aFontFamily, "FontFamily");
+    m_aBodyFont = _switchFamily (m_aBodyFont, m_aFontFamily, aFontFamily);
+    m_aHeaderFont = _switchFamily (m_aHeaderFont, m_aFontFamily, aFontFamily);
+    m_aTableHeaderFont = _switchFamily (m_aTableHeaderFont, m_aFontFamily, aFontFamily);
+    m_aFontFamily = aFontFamily;
     return this;
   }
 
@@ -366,8 +441,8 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
   {
     ValueEnforcer.notNull (aPalette, "Palette");
     m_aPalette = aPalette;
-    m_aHeaderFont = DEFAULT_HEADER_FONT.getCloneWithDifferentColor (aPalette.getMuted ());
-    m_aTableHeaderFont = DEFAULT_TABLE_HEADER_FONT.getCloneWithDifferentColor (aPalette.getMuted ());
+    m_aHeaderFont = _switchFamily (DEFAULT_HEADER_FONT, PdfFontFamily.STANDARD, m_aFontFamily).getCloneWithDifferentColor (aPalette.getMuted ());
+    m_aTableHeaderFont = _switchFamily (DEFAULT_TABLE_HEADER_FONT, PdfFontFamily.STANDARD, m_aFontFamily).getCloneWithDifferentColor (aPalette.getMuted ());
     _registerDefaultStyles ();
     return this;
   }
@@ -446,6 +521,11 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
    * <code>right</code>, <code>bottom</code> and <code>left</code>. A length is a number of points or
    * a number with <code>mm</code>, <code>cm</code>, <code>in</code>, <code>pt</code> or
    * <code>px</code></li>
+   * <li><code>fonts</code> - an object with the keys <code>regular</code> (required),
+   * <code>bold</code>, <code>italic</code> and <code>boldItalic</code>. Each is the path of a
+   * <code>.ttf</code> or <code>.otf</code> file (relative to the theme file) or
+   * <code>classpath:path</code>. A style without a file uses the closest style that has one. The
+   * fonts are embedded into the PDF and applied before the following three keys</li>
    * <li><code>bodyFont</code>, <code>headerFont</code>, <code>tableHeaderFont</code> - an object
    * with the keys <code>size</code>, <code>bold</code> and <code>color</code></li>
    * <li><code>blockStyles</code> - an object that maps the name of a block class of the template
@@ -469,7 +549,14 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     setPalette (PdfPalette.fromTheme (aTheme));
 
     final PhloxThemeObject aPdf = aTheme.getPdf ();
-    aPdf.checkKeys ("pageSize", "landscape", "margins", "bodyFont", "headerFont", "tableHeaderFont", "blockStyles");
+    aPdf.checkKeys ("pageSize",
+                    "landscape",
+                    "margins",
+                    "fonts",
+                    "bodyFont",
+                    "headerFont",
+                    "tableHeaderFont",
+                    "blockStyles");
 
     final String sPageSize = aPdf.getString ("pageSize");
     PDRectangle aPageSize = sPageSize == null ? m_aPageSize : _getPageSize (aPdf, sPageSize);
@@ -482,6 +569,9 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     }
     m_aPageSize = aPageSize;
     m_aMargins = _getMargins (aPdf, m_aMargins);
+    final PhloxThemeObject aFonts = aPdf.getObject ("fonts");
+    if (aFonts != null)
+      setFontFamily (_getFontFamily (aTheme, aFonts));
     m_aBodyFont = _getFont (aPdf, "bodyFont", m_aBodyFont);
     m_aHeaderFont = _getFont (aPdf, "headerFont", m_aHeaderFont);
     m_aTableHeaderFont = _getFont (aPdf, "tableHeaderFont", m_aTableHeaderFont);

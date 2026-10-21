@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+         xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+         xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>
+  <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+  <cbc:ID>ФАКТУРА-2026-0042</cbc:ID>
+  <cbc:IssueDate>2026-02-10</cbc:IssueDate>
+  <cbc:DueDate>2026-03-12</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:Note>Доставка до склада на купувача. / Παράδοση στην αποθήκη του αγοραστή.</cbc:Note>
+  <cbc:Note>Ενδοκοινοτική παράδοση – освободена доставка, чл. 138 от Директива 2006/112/ЕО.</cbc:Note>
+  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>BUYER-REF-ФАКТУРА-2026-0042</cbc:BuyerReference>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0088">9930123456789</cbc:EndpointID>
+      <cac:PartyName>
+        <cbc:Name>Фотон Електроникс ООД</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>ул. Околовръстен път 118</cbc:StreetName>
+        <cbc:CityName>София</cbc:CityName>
+        <cbc:PostalZone>1000</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>BG</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:CompanyID>BG123456789</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Фотон Електроникс ООД</cbc:RegistrationName>
+        <cbc:CompanyID>123456789</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+      <cac:Contact>
+        <cbc:Name>Иван Петров</cbc:Name>
+        <cbc:Telephone>+359 2 123 4567</cbc:Telephone>
+        <cbc:ElectronicMail>ivan.petrov@foton.example</cbc:ElectronicMail>
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0088">9930987654321</cbc:EndpointID>
+      <cac:PartyName>
+        <cbc:Name>Ελληνική Βιομηχανία Αισθητήρων Α.Ε.</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>Οδός Σταδίου 25</cbc:StreetName>
+        <cbc:CityName>Αθήνα</cbc:CityName>
+        <cbc:PostalZone>10564</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>GR</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:CompanyID>EL123456789</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Ελληνική Βιομηχανία Αισθητήρων Α.Ε.</cbc:RegistrationName>
+        <cbc:CompanyID>123456789</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+      <cac:Contact>
+        <cbc:Name>Μαρία Παπαδοπούλου</cbc:Name>
+        <cbc:Telephone>+30 210 1234567</cbc:Telephone>
+        <cbc:ElectronicMail>m.papadopoulou@sensors.example</cbc:ElectronicMail>
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:PaymentMeans>
+    <cbc:PaymentMeansCode name="Credit transfer">30</cbc:PaymentMeansCode>
+    <cbc:PaymentID>ФАКТУРА-2026-0042</cbc:PaymentID>
+    <cac:PayeeFinancialAccount>
+      <cbc:ID>BG80BNBG96611020345678</cbc:ID>
+      <cbc:Name>Фотон Електроникс ООД</cbc:Name>
+      <cac:FinancialInstitutionBranch>
+        <cbc:ID>BNBGBGSD</cbc:ID>
+      </cac:FinancialInstitutionBranch>
+    </cac:PayeeFinancialAccount>
+  </cac:PaymentMeans>
+  <cac:PaymentTerms>
+    <cbc:Note>Плащане в срок от 30 дни. / Πληρωμή εντός 30 ημερών.</cbc:Note>
+  </cac:PaymentTerms>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="EUR">0.00</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">3102.50</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">0.00</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>K</cbc:ID>
+        <cbc:Percent>0</cbc:Percent>
+        <cbc:TaxExemptionReasonCode>VATEX-EU-IC</cbc:TaxExemptionReasonCode>
+        <cbc:TaxExemptionReason>Intra-community supply / Вътреобщностна доставка / Ενδοκοινοτική παράδοση</cbc:TaxExemptionReason>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="EUR">3102.50</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="EUR">3102.50</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="EUR">3102.50</cbc:TaxInclusiveAmount>
+    <cbc:PayableAmount currencyID="EUR">3102.50</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">12</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1014.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>Обхват до 40 м, точност ±1 мм</cbc:Description>
+      <cbc:Name>Лазерен дистанционен сензор</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0001</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>K</cbc:ID>
+        <cbc:Percent>0</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">84.50</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>2</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">30</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">387.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>Από −40 °C έως +125 °C, έξοδος 4–20 mA</cbc:Description>
+      <cbc:Name>Αισθητήρας θερμοκρασίας</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0002</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>K</cbc:ID>
+        <cbc:Percent>0</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">12.90</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>3</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">250</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">462.50</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Захранващ кабел 3×1,5 мм²</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0003</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>K</cbc:ID>
+        <cbc:Percent>0</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">1.85</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>4</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">180</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">432.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>Θωράκιση πλεγμένη, εξωτερική διάμετρος 6 mm</cbc:Description>
+      <cbc:Name>Καλώδιο σήματος θωρακισμένο</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0004</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>K</cbc:ID>
+        <cbc:Percent>0</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">2.40</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>5</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">12</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">81.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>Неръждаема стомана</cbc:Description>
+      <cbc:Name>Конзола за монтаж</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0005</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>K</cbc:ID>
+        <cbc:Percent>0</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">6.75</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>6</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">42</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">630.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>Πιστοποιητικό βαθμονόμησης ανά αισθητήρα</cbc:Description>
+      <cbc:Name>Υπηρεσία βαθμονόμησης</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0006</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>K</cbc:ID>
+        <cbc:Percent>0</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">15.00</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>7</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">96.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Транспорт и застраховка</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0007</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>K</cbc:ID>
+        <cbc:Percent>0</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">96.00</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+</Invoice>

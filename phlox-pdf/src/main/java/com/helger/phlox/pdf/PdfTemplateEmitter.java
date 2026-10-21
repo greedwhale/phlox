@@ -134,7 +134,7 @@ public final class PdfTemplateEmitter extends
       if (aStyle.hasFontSize ())
         ret = ret.getCloneWithDifferentFontSize (aStyle.getFontSize ().floatValue ());
       if (aStyle.isBold ())
-        ret = ret.getCloneWithDifferentFont (PreloadFont.REGULAR_BOLD);
+        ret = ret.getCloneWithDifferentFont (m_aCtx.getFontFamily ().getBold ());
     }
     return ret;
   }
@@ -215,14 +215,12 @@ public final class PdfTemplateEmitter extends
   }
 
   @NonNull
-  private static PLFontFamily _fontFamily (@NonNull final FontSpec aBase)
+  private PLFontFamily _fontFamily (@NonNull final FontSpec aBase)
   {
-    if (aBase.getPreloadFont () == PreloadFont.REGULAR_BOLD)
-      return new PLFontFamily (PreloadFont.REGULAR_BOLD,
-                               PreloadFont.REGULAR_BOLD,
-                               PreloadFont.REGULAR_BOLD_ITALIC,
-                               PreloadFont.REGULAR_BOLD_ITALIC);
-    return PLFontFamily.regular ();
+    final PdfFontFamily aFamily = m_aCtx.getFontFamily ();
+    if (aBase.getPreloadFont ().equals (aFamily.getBold ()))
+      return new PLFontFamily (aFamily.getBold (), aFamily.getBold (), aFamily.getBoldItalic (), aFamily.getBoldItalic ());
+    return aFamily.getAsPLFontFamily ();
   }
 
   /**
@@ -269,9 +267,9 @@ public final class PdfTemplateEmitter extends
     final PLBox aBox;
     aFont = switch (aHeading.getLevel ())
     {
-      case 1 -> new FontSpec (PreloadFont.REGULAR_BOLD, 18f);
+      case 1 -> new FontSpec (m_aCtx.getFontFamily ().getBold (), 18f);
       case 2 -> m_aCtx.getHeaderFont ();
-      default -> aBody.getCloneWithDifferentFont (PreloadFont.REGULAR_BOLD)
+      default -> aBody.getCloneWithDifferentFont (m_aCtx.getFontFamily ().getBold ())
                       .getCloneWithDifferentFontSize (aBody.getFontSize () + (aHeading.getLevel () == 3 ? 1f : 0f));
     };
     m_bUppercase = aHeading.getLevel () == 2;

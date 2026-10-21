@@ -17,6 +17,7 @@
 package com.helger.phlox.api.i18n;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -72,6 +73,28 @@ public final class PhloxFormatTest
     assertNotNull (sEur);
     assertTrue ("expected US-formatted USD amount '" + sUsd + "' to contain 123.45", sUsd.contains ("123.45"));
     assertTrue ("expected DE-formatted EUR amount '" + sEur + "' to contain 123,45", sEur.contains ("123,45"));
+  }
+
+  @Test
+  public void testAmountUsesTheFractionDigitsOfTheCurrency ()
+  {
+    final PhloxFormatOptions aOpts = PhloxFormatOptions.defaults ();
+    // No decimals, whatever the locale uses
+    final String sJpyEn = PhloxFormat.amount (new BigDecimal ("1250000"), "JPY", Locale.US, aOpts);
+    assertTrue (sJpyEn, sJpyEn.contains ("1,250,000"));
+    assertFalse (sJpyEn, sJpyEn.contains ("."));
+    final String sJpyDe = PhloxFormat.amount (new BigDecimal ("1250000"), "JPY", Locale.GERMANY, aOpts);
+    assertTrue (sJpyDe, sJpyDe.contains ("1.250.000"));
+    assertFalse (sJpyDe, sJpyDe.contains (","));
+    // Three decimals
+    final String sBhd = PhloxFormat.amount (new BigDecimal ("1.5"), "BHD", Locale.US, aOpts);
+    assertTrue (sBhd, sBhd.contains ("1.500"));
+    // The override wins
+    final String sOverride = PhloxFormat.amount (new BigDecimal ("1250000"),
+                                                 "JPY",
+                                                 Locale.US,
+                                                 PhloxFormatOptions.defaults ().setAmountFractionDigits (Integer.valueOf (2)));
+    assertTrue (sOverride, sOverride.contains ("1,250,000.00"));
   }
 
   @Test

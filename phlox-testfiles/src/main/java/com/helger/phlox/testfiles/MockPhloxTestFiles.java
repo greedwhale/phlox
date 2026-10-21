@@ -35,6 +35,21 @@ public final class MockPhloxTestFiles
   /** Base path inside the JAR for all EN 16931 examples. */
   public static final String BASE_PATH = "external/en16931/";
 
+  /** Classpath path of the logo (the phoss logo, 180 x 180 pixels, PNG) for tests with a logo. */
+  public static final String LOGO_PATH = "logo/phoss.png";
+
+  /** Path of the synthetic UBL 2.1 invoice with 120 lines. */
+  public static final String SYNTHETIC_LONG_INVOICE = "synthetic/ubl/invoice/phlox-long-invoice.xml";
+  /** Path of the synthetic UBL 2.1 invoice with Cyrillic and Greek text. */
+  public static final String SYNTHETIC_CYRILLIC_GREEK_INVOICE = "synthetic/ubl/invoice/phlox-cyrillic-greek-invoice.xml";
+  /** Path of the synthetic UBL 2.1 invoice in Japanese yen, a currency without decimals. */
+  public static final String SYNTHETIC_JPY_INVOICE = "synthetic/ubl/invoice/phlox-jpy-invoice.xml";
+
+  // Generated for phlox with tools/generate-synthetic.py - not part of the EN 16931 examples
+  private static final String [] SYNTHETIC_UBL21_FILES = { SYNTHETIC_LONG_INVOICE,
+                                                           SYNTHETIC_CYRILLIC_GREEK_INVOICE,
+                                                           SYNTHETIC_JPY_INVOICE };
+
   // EN 16931:2017 / UBL 2.1 — Invoices
   private static final String [] UBL21_INVOICE_FILES = { "2017/ubl/invoice/guide-example1.xml",
                                                          "2017/ubl/invoice/guide-example2.xml",
@@ -430,5 +445,30 @@ public final class MockPhloxTestFiles
   public static ICommonsList <ClassPathResource> getCiiD25AFiles ()
   {
     return _toResources (CII_D25A_FILES);
+  }
+
+  /**
+   * Get the classpath resources for the synthetic UBL 2.1 invoices that cover what the EN 16931
+   * examples do not: an invoice with many lines, a text in Cyrillic and Greek and a currency without
+   * decimals. They are not part of the lists of the other methods.
+   *
+   * @return Classpath resources for the synthetic UBL 2.1 invoices.
+   */
+  @NonNull
+  @ReturnsMutableCopy
+  public static ICommonsList <ClassPathResource> getSyntheticUbl21Files ()
+  {
+    return _toResources (SYNTHETIC_UBL21_FILES);
+  }
+
+  /**
+   * Get the classpath resource of the logo for tests with a logo.
+   *
+   * @return The classpath resource of the logo. Never <code>null</code>.
+   */
+  @NonNull
+  public static ClassPathResource getLogo ()
+  {
+    return new ClassPathResource (LOGO_PATH);
   }
 }

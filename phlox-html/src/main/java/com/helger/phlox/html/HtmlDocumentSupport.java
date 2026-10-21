@@ -139,6 +139,9 @@ final class HtmlDocumentSupport
   {
     final String sPrefix = aCtx.getCssClassPrefix ();
 
+    // The writer produces UTF-8, and a browser needs to be told so for the characters that are not
+    // ASCII (umlauts, Cyrillic, Greek, ...)
+    aHtml.head ().metaElements ().add (new HCMeta ().setCharset (StandardCharsets.UTF_8));
     aHtml.head ().setPageTitle (PhloxDocumentProperties.getTitle (aInvoice, aCtx));
     _addMetaElement (aHtml, "generator", PhloxDocumentProperties.getGenerator ());
     _addMetaElement (aHtml, "author", PhloxDocumentProperties.getAuthor (aInvoice));

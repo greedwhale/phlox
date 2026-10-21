@@ -125,7 +125,16 @@ public final class PhloxFormat
     {
       try
       {
-        aFmt.setCurrency (Currency.getInstance (sCurrencyCode));
+        final Currency aCurrency = Currency.getInstance (sCurrencyCode);
+        aFmt.setCurrency (aCurrency);
+        // Setting the currency does not change the number of fraction digits, which are the ones of
+        // the currency of the locale (2 for EUR, 0 for JPY, 3 for BHD)
+        final int nDigits = aCurrency.getDefaultFractionDigits ();
+        if (nDigits >= 0)
+        {
+          aFmt.setMinimumFractionDigits (nDigits);
+          aFmt.setMaximumFractionDigits (nDigits);
+        }
       }
       catch (final IllegalArgumentException ex)
       {

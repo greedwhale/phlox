@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+         xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+         xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>
+  <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+  <cbc:ID>SAKURA-2026-0007</cbc:ID>
+  <cbc:IssueDate>2026-04-20</cbc:IssueDate>
+  <cbc:DueDate>2026-05-20</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:Note>All amounts in Japanese yen, which has no decimals.</cbc:Note>
+  <cbc:DocumentCurrencyCode>JPY</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>BUYER-REF-SAKURA-2026-0007</cbc:BuyerReference>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0088">9999123456789</cbc:EndpointID>
+      <cac:PartyName>
+        <cbc:Name>Sakura Trading Co., Ltd.</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>1-2-3 Marunouchi, Chiyoda-ku</cbc:StreetName>
+        <cbc:CityName>Tokyo</cbc:CityName>
+        <cbc:PostalZone>100-0005</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>JP</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:CompanyID>T1234567890123</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Sakura Trading Co., Ltd.</cbc:RegistrationName>
+        <cbc:CompanyID>0100-01-123456</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+      <cac:Contact>
+        <cbc:Name>Hiro Tanaka</cbc:Name>
+        <cbc:Telephone>+81 3 1234 5678</cbc:Telephone>
+        <cbc:ElectronicMail>h.tanaka@sakura.example</cbc:ElectronicMail>
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0088">9955123456789</cbc:EndpointID>
+      <cac:PartyName>
+        <cbc:Name>Nordic Import AB</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>Drottninggatan 10</cbc:StreetName>
+        <cbc:CityName>Stockholm</cbc:CityName>
+        <cbc:PostalZone>111 51</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>SE</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:CompanyID>SE556677889901</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Nordic Import AB</cbc:RegistrationName>
+        <cbc:CompanyID>556677-8899</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:PaymentMeans>
+    <cbc:PaymentMeansCode name="Credit transfer">30</cbc:PaymentMeansCode>
+    <cbc:PaymentID>SAKURA-2026-0007</cbc:PaymentID>
+    <cac:PayeeFinancialAccount>
+      <cbc:ID>JP0000000000000000</cbc:ID>
+      <cbc:Name>Sakura Trading Co., Ltd.</cbc:Name>
+      <cac:FinancialInstitutionBranch>
+        <cbc:ID>SAKUJPJT</cbc:ID>
+      </cac:FinancialInstitutionBranch>
+    </cac:PayeeFinancialAccount>
+  </cac:PaymentMeans>
+  <cac:PaymentTerms>
+    <cbc:Note>Payment within 30 days.</cbc:Note>
+  </cac:PaymentTerms>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="JPY">202008</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="JPY">1926000</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="JPY">192600</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>10</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="JPY">117600</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="JPY">9408</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>8</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="JPY">2043600</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="JPY">2043600</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="JPY">2245608</cbc:TaxInclusiveAmount>
+    <cbc:PayableAmount currencyID="JPY">2245608</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">40</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="JPY">152000</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>Sencha, 1 kg bag</cbc:Description>
+      <cbc:Name>Green tea, premium grade</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0001</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>10</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="JPY">3800</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>2</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">15</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="JPY">192000</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>Teapot and four cups</cbc:Description>
+      <cbc:Name>Ceramic tea set</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0002</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>10</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="JPY">12800</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>3</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">6</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="JPY">147000</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Cast iron kettle</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0003</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>10</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="JPY">24500</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>4</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">120</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="JPY">117600</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>Assorted, 500 g box</cbc:Description>
+      <cbc:Name>Rice crackers</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0004</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>8</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="JPY">980</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>5</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="JPY">185000</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Export packaging</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0005</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>10</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="JPY">185000</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>6</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="JPY">1250000</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Sea freight, Yokohama to Gothenburg</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0006</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>10</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="JPY">1250000</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+</Invoice>

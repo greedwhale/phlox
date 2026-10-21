@@ -21,12 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.util.Matrix;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -41,7 +40,6 @@ import com.helger.pdflayout.base.PLPageSet;
 import com.helger.pdflayout.element.box.PLBox;
 import com.helger.pdflayout.pdfbox.PDPageContentStreamExt;
 import com.helger.pdflayout.richtext.element.PLRichText;
-import com.helger.pdflayout.richtext.run.PLFontFamily;
 import com.helger.pdflayout.spec.EHorzAlignment;
 import com.helger.pdflayout.spec.PreloadFont;
 import com.helger.phlox.api.PhloxDocumentProperties;
@@ -66,8 +64,10 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
   public PdfInvoiceWriter ()
   {}
 
-  private static void _drawWatermark (@NonNull final PDPageContentStreamExt aCS,
+  private static void _drawWatermark (@NonNull final PDDocument aDoc,
+                                      @NonNull final PDPageContentStreamExt aCS,
                                       @NonNull final PDPage aPage,
+                                      @NonNull final PdfFontFamily aFamily,
                                       @NonNull final WatermarkSpec aSpec) throws IOException
   {
     final PDRectangle aPageSize = aPage.getMediaBox ();
@@ -75,10 +75,9 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     final float fPageHeight = aPageSize.getHeight ();
 
     // Font: bold for centered/large watermarks, regular for the small program attribution.
-    final PreloadFont eFontKind = aSpec.getPosition () == EWatermarkPosition.CENTER ? PreloadFont.REGULAR_BOLD
-                                                                                    : PreloadFont.REGULAR;
-    final PDFont aFont = new PDType1Font (eFontKind == PreloadFont.REGULAR_BOLD ? Standard14Fonts.FontName.HELVETICA_BOLD
-                                                                                : Standard14Fonts.FontName.HELVETICA);
+    final PreloadFont aFontKind = aSpec.getPosition () == EWatermarkPosition.CENTER ? aFamily.getBold ()
+                                                                                    : aFamily.getRegular ();
+    final PDFont aFont = aFontKind.loadPDFont (aDoc);
     final float fFontSize = aSpec.getFontSizePt ();
     final String sText = aSpec.getText ();
     final float fTextWidth = aFont.getStringWidth (sText) / 1000f * fFontSize;
@@ -136,7 +135,8 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
    * Create the footer with the attribution of the program. The text links to the phlox project.
    */
   @NonNull
-  private static IPLRenderableObject <?> _createProgramFooter (@NonNull final WatermarkSpec aSpec)
+  private static IPLRenderableObject <?> _createProgramFooter (@NonNull final PdfFontFamily aFamily,
+                                                               @NonNull final WatermarkSpec aSpec)
   {
     // PLColor is RGB-only - approximate the opacity by lightening the colour towards white
     final Color aRGB = aSpec.getColor ();
@@ -149,7 +149,7 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
                                                           "]}" +
                                                           PdfTextSupport.escapeMarkup (aSpec.getText ()) +
                                                           "{link}",
-                                                          PLFontFamily.regular (),
+                                                          aFamily.getAsPLFontFamily (),
                                                           aSpec.getFontSizePt (),
                                                           aColor);
     aText.setHorzAlign (EHorzAlignment.RIGHT);
@@ -157,7 +157,8 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
   }
 
   @NonNull
-  private static IPDDocumentCustomizer _buildWatermarkCustomizer (@Nullable final WatermarkSpec aUserWM,
+  private static IPDDocumentCustomizer _buildWatermarkCustomizer (@NonNull final PdfFontFamily aFamily,
+                                                                  @Nullable final WatermarkSpec aUserWM,
                                                                   @Nullable final WatermarkSpec aProgramWM)
   {
     return aDoc -> {
@@ -170,9 +171,9 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
                                                                             true))
         {
           if (aUserWM != null)
-            _drawWatermark (aCS, aPage, aUserWM);
+            _drawWatermark (aDoc, aCS, aPage, aFamily, aUserWM);
           if (aProgramWM != null)
-            _drawWatermark (aCS, aPage, aProgramWM);
+            _drawWatermark (aDoc, aCS, aPage, aFamily, aProgramWM);
         }
       }
     };
@@ -212,12 +213,12 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     // ph-pdf-layout's PLPageSetTest.testCreateWatermark.
     final WatermarkSpec aUW = aCtx.getUserWatermark ();
     if (aUW != null)
-      aPdf.setDocumentCustomizer (_buildWatermarkCustomizer (aUW, null));
+      aPdf.setDocumentCustomizer (_buildWatermarkCustomizer (aCtx.getFontFamily (), aUW, null));
 
     // The attribution of the program is a link to the project, so it is part of the layout
     final WatermarkSpec aPW = PhloxProgramWatermark.getInstance ();
     if (aPW != null)
-      aPS.setPageFooter (_createProgramFooter (aPW));
+      aPS.setPageFooter (_createProgramFooter (aCtx.getFontFamily (), aPW));
 
     return aPdf;
   }

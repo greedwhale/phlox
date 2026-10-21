@@ -1,0 +1,2644 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+         xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+         xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>
+  <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+  <cbc:ID>PHLOX-LONG-1</cbc:ID>
+  <cbc:IssueDate>2026-03-02</cbc:IssueDate>
+  <cbc:DueDate>2026-04-01</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:Note>This invoice has 120 lines, to check the page breaks, the repeated table header and the totals at the end.</cbc:Note>
+  <cbc:Note>Prices in EUR. Delivery free to the address of the buyer.</cbc:Note>
+  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>BUYER-REF-PHLOX-LONG-1</cbc:BuyerReference>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0088">9915123456789</cbc:EndpointID>
+      <cac:PartyName>
+        <cbc:Name>Mustermann Industrial Supplies GmbH</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>Werkstrasse 12</cbc:StreetName>
+        <cbc:CityName>Linz</cbc:CityName>
+        <cbc:PostalZone>4020</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>AT</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:CompanyID>ATU12345678</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Mustermann Industrial Supplies GmbH</cbc:RegistrationName>
+        <cbc:CompanyID>FN123456a</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0088">9915987654321</cbc:EndpointID>
+      <cac:PartyName>
+        <cbc:Name>Beispiel Maschinenbau AG</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>Industrieweg 5</cbc:StreetName>
+        <cbc:CityName>Salzburg</cbc:CityName>
+        <cbc:PostalZone>5020</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>AT</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:CompanyID>ATU87654321</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Beispiel Maschinenbau AG</cbc:RegistrationName>
+        <cbc:CompanyID>FN654321b</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+      <cac:Contact>
+        <cbc:Name>Erika Beispiel</cbc:Name>
+        <cbc:Telephone>+43 662 123456</cbc:Telephone>
+        <cbc:ElectronicMail>einkauf@beispiel.example</cbc:ElectronicMail>
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:PaymentMeans>
+    <cbc:PaymentMeansCode name="Credit transfer">30</cbc:PaymentMeansCode>
+    <cbc:PaymentID>PHLOX-LONG-1</cbc:PaymentID>
+    <cac:PayeeFinancialAccount>
+      <cbc:ID>AT611904300234573201</cbc:ID>
+      <cbc:Name>Mustermann Industrial Supplies</cbc:Name>
+      <cac:FinancialInstitutionBranch>
+        <cbc:ID>BKAUATWW</cbc:ID>
+      </cac:FinancialInstitutionBranch>
+    </cac:PayeeFinancialAccount>
+  </cac:PaymentMeans>
+  <cac:PaymentTerms>
+    <cbc:Note>Payment within 30 days net.</cbc:Note>
+  </cac:PaymentTerms>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="EUR">11895.84</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">13887.60</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">972.13</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">57493.20</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">10923.71</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="EUR">71380.80</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="EUR">71380.80</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="EUR">83276.64</cbc:TaxInclusiveAmount>
+    <cbc:PayableAmount currencyID="EUR">83276.64</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">2.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Hex bolt type A1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0001</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">2.00</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>2</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">8</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">313.04</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Washer type B1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0002</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">39.13</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>3</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">3</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">228.78</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Cable tie type C1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0003</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">76.26</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>4</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">10</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1133.90</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.</cbc:Description>
+      <cbc:Name>Ball bearing type D1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0004</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">113.39</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>5</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">5</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">752.60</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Gasket type E1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0005</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">150.52</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>6</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">12</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">91.80</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Copper pipe type F1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0006</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">7.65</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>7</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">7</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">313.46</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Valve type G1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0007</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">44.78</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>8</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">2</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">163.82</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Fuse type H1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0008</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">81.91</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>9</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">9</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1062.36</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Terminal block type I1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0009</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">118.04</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>10</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">4</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">620.68</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Hose clamp type J1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0010</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">155.17</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>11</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">11</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">135.30</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Drive belt type K1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0011</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">12.30</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>12</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">6</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">296.58</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Spring type L1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0012</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">49.43</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>13</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">86.56</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Bracket type M1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0013</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">86.56</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>14</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">8</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">989.52</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Sensor type N1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0014</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">123.69</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>15</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">3</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">482.46</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Relay type O1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0015</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">160.82</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>16</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">10</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">179.50</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Hex bolt type P1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0016</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">17.95</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>17</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">5</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">270.40</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Washer type Q1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0017</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">54.08</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>18</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">12</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1094.52</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Cable tie type R1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0018</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">91.21</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>19</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">7</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">898.38</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Ball bearing type S1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0019</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">128.34</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>20</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">2</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">330.94</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Gasket type T1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0020</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">165.47</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>21</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">9</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">203.40</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.</cbc:Description>
+      <cbc:Name>Copper pipe type U1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0021</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">22.60</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>22</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">4</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">238.92</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Valve type V1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0022</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">59.73</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>23</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">11</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1065.46</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Fuse type W1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0023</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">96.86</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>24</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">6</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">803.94</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Terminal block type X1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0024</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">133.99</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>25</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">170.12</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Hose clamp type Y1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0025</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">170.12</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>26</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">8</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">218.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Drive belt type Z1</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0026</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">27.25</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>27</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">3</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">193.14</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Spring type A2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0027</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">64.38</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>28</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">10</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1015.10</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Bracket type B2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0028</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">101.51</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>29</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">5</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">693.20</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Sensor type C2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0029</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">138.64</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>30</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">12</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">2109.24</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Relay type D2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0030</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">175.77</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>31</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">7</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">230.30</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Hex bolt type E2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0031</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">32.90</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>32</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">2</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">138.06</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Washer type F2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0032</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">69.03</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>33</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">9</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">955.44</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Cable tie type G2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0033</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">106.16</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>34</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">4</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">573.16</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Ball bearing type H2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0034</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">143.29</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>35</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">11</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1984.62</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Gasket type I2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0035</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">180.42</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>36</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">6</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">225.30</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Copper pipe type J2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0036</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">37.55</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>37</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">74.68</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Valve type K2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0037</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">74.68</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>38</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">8</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">894.48</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.</cbc:Description>
+      <cbc:Name>Fuse type L2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0038</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">111.81</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>39</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">3</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">446.82</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Terminal block type M2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0039</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">148.94</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>40</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">10</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">50.70</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Hose clamp type N2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0040</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">5.07</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>41</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">5</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">211.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Drive belt type O2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0041</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">42.20</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>42</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">12</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">951.96</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Spring type P2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0042</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">79.33</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>43</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">7</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">815.22</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Bracket type Q2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0043</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">116.46</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>44</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">2</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">307.18</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Sensor type R2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0044</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">153.59</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>45</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">9</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">96.48</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Relay type S2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0045</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">10.72</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>46</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">4</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">191.40</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Hex bolt type T2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0046</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">47.85</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>47</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">11</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">934.78</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Washer type U2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0047</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">84.98</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>48</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">6</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">726.66</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Cable tie type V2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0048</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">121.11</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>49</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">158.24</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Ball bearing type W2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0049</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">158.24</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>50</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">8</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">122.96</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Gasket type X2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0050</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">15.37</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>51</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">3</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">157.50</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Copper pipe type Y2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0051</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">52.50</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>52</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">10</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">896.30</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Valve type Z2</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0052</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">89.63</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>53</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">5</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">633.80</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Fuse type A3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0053</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">126.76</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>54</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">12</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1966.68</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Terminal block type B3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0054</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">163.89</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>55</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">7</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">140.14</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.</cbc:Description>
+      <cbc:Name>Hose clamp type C3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0055</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">20.02</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>56</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">2</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">114.30</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Drive belt type D3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0056</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">57.15</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>57</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">9</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">848.52</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Spring type E3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0057</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">94.28</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>58</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">4</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">525.64</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Bracket type F3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0058</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">131.41</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>59</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">11</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1853.94</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Sensor type G3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0059</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">168.54</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>60</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">6</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">154.02</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Relay type H3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0060</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">25.67</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>61</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">62.80</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Hex bolt type I3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0061</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">62.80</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>62</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">8</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">799.44</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Washer type J3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0062</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">99.93</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>63</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">3</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">408.18</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Cable tie type K3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0063</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">136.06</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>64</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">10</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1731.90</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Ball bearing type L3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0064</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">173.19</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>65</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">5</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">151.60</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Gasket type M3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0065</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">30.32</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>66</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">12</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">809.40</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Copper pipe type N3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0066</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">67.45</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>67</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">7</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">732.06</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Valve type O3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0067</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">104.58</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>68</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">2</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">283.42</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Fuse type P3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0068</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">141.71</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>69</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">9</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1609.56</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Terminal block type Q3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0069</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">178.84</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>70</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">4</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">143.88</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Hose clamp type R3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0070</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">35.97</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>71</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">11</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">793.10</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Drive belt type S3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0071</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">72.10</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>72</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">6</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">655.38</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.</cbc:Description>
+      <cbc:Name>Spring type T3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0072</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">109.23</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>73</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">146.36</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Bracket type U3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0073</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">146.36</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>74</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">8</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">27.92</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Sensor type V3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0074</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">3.49</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>75</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">3</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">121.86</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Relay type W3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0075</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">40.62</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>76</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">10</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">777.50</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Hex bolt type X3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0076</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">77.75</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>77</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">5</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">574.40</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Washer type Y3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0077</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">114.88</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>78</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">12</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1812.12</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Cable tie type Z3</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0078</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">151.01</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>79</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">7</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">56.98</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Ball bearing type A4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0079</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">8.14</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>80</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">2</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">90.54</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Gasket type B4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0080</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">45.27</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>81</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">9</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">741.60</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Copper pipe type C4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0081</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">82.40</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>82</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">4</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">478.12</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Valve type D4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0082</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">119.53</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>83</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">11</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1723.26</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Fuse type E4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0083</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">156.66</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>84</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">6</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">82.74</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Terminal block type F4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0084</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">13.79</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>85</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">50.92</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Hose clamp type G4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0085</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">50.92</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>86</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">8</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">696.40</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Drive belt type H4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0086</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">87.05</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>87</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">3</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">372.54</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Spring type I4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0087</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">124.18</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>88</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">10</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1613.10</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Bracket type J4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0088</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">161.31</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>89</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">5</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">92.20</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.</cbc:Description>
+      <cbc:Name>Sensor type K4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0089</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">18.44</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>90</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">12</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">666.84</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Relay type L4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0090</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">55.57</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>91</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">7</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">648.90</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Hex bolt type M4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0091</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">92.70</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>92</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">2</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">259.66</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Washer type N4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0092</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">129.83</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>93</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">9</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1502.64</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Cable tie type O4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0093</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">166.96</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>94</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">4</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">92.36</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Ball bearing type P4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0094</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">23.09</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>95</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">11</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">662.42</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Gasket type Q4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0095</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">60.22</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>96</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">6</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">584.10</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Copper pipe type R4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0096</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">97.35</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>97</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">134.48</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Valve type S4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0097</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">134.48</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>98</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">8</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1372.88</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Fuse type T4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0098</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">171.61</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>99</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">3</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">86.22</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Terminal block type U4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0099</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">28.74</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>100</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">10</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">658.70</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Hose clamp type V4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0100</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">65.87</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>101</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">5</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">510.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Drive belt type W4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0101</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">102.00</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>102</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">12</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1669.56</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Spring type X4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0102</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">139.13</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>103</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">7</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1233.82</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Bracket type Y4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0103</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">176.26</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>104</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">2</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">66.78</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Sensor type Z4</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0104</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">33.39</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>105</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">9</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">634.68</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Relay type A5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0105</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">70.52</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>106</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">4</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">430.60</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.</cbc:Description>
+      <cbc:Name>Hex bolt type B5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0106</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">107.65</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>107</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">11</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1592.58</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Washer type C5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0107</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">144.78</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>108</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">6</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1091.46</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Cable tie type D5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0108</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">181.91</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>109</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">38.04</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Ball bearing type E5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0109</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">38.04</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>110</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">8</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">601.36</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Gasket type F5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0110</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">75.17</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>111</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">3</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">336.90</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Copper pipe type G5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0111</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">112.30</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>112</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">10</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1494.30</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Valve type H5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0112</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">149.43</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>113</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">5</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">32.80</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Fuse type I5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0113</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">6.56</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>114</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">12</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">524.28</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Terminal block type J5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0114</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">43.69</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>115</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">7</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">565.74</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Hose clamp type K5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0115</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">80.82</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>116</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">2</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">235.90</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Drive belt type L5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0116</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">117.95</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>117</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="MTR">9</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">1386.72</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Spring type M5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0117</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>7</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">154.08</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>118</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="KGM">4</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">44.84</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Bracket type N5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0118</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">11.21</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>119</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">11</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">531.74</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Sensor type O5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0119</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">48.34</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>120</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">6</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">512.82</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Relay type P5</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>ART-0120</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">85.47</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+</Invoice>
