@@ -16,7 +16,6 @@
  */
 package com.helger.phlox.pdf;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Locale;
 
@@ -24,6 +23,7 @@ import org.jspecify.annotations.NonNull;
 
 import com.helger.annotation.Nonempty;
 import com.helger.base.enforce.ValueEnforcer;
+import com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream;
 import com.helger.font.api.EFontStyle;
 import com.helger.font.api.EFontType;
 import com.helger.font.api.EFontWeight;
@@ -119,7 +119,7 @@ final class PdfFontBytesResource implements IFontResource
   @NonNull
   public InputStream getInputStream ()
   {
-    return new ByteArrayInputStream (m_aBytes);
+    return new NonBlockingByteArrayInputStream (m_aBytes);
   }
 
   public boolean isReadMultiple ()

@@ -196,6 +196,35 @@ public final class PdfSyntheticInvoiceTest
     }
   }
 
+  private static int _pageOf (final byte [] aPdf, final String sText)
+  {
+    for (int nPage = 1; nPage <= _pageCount (aPdf); nPage++)
+      if (_pageText (aPdf, nPage).contains (sText))
+        return nPage;
+    return -1;
+  }
+
+  @Test
+  public void testPaymentBlockIsKeptTogether ()
+  {
+    final PhloxInvoice aModel = _read (MockPhloxTestFiles.SYNTHETIC_LONG_INVOICE);
+    final String sIban = "AT611904300234573201";
+
+    // The block is on one page: the account is on the page of the last line of the payment block
+    final byte [] aPdf = _render (aModel, new PdfRenderContext (), "long-keep-together");
+    final int nIbanPage = _pageOf (aPdf, sIban);
+    assertTrue (nIbanPage > 1);
+    assertTrue (_pageText (aPdf, nIbanPage).contains ("Payment means type code"));
+    assertEquals (nIbanPage, _pageOf (aPdf, "Remittance information"));
+
+    // The flag can be switched off in a theme
+    final PdfRenderContext aSplit = new PdfRenderContext ().applyTheme (PhloxThemeReader.readFromString ("{\"pdf\":{\"blockStyles\":{\"pay\":{\"keepTogether\":false}}}}",
+                                                                                                       null));
+    assertTrue (new PdfRenderContext ().getBlockStyle ("pay").isKeepTogether ());
+    assertFalse (aSplit.getBlockStyle ("pay").isKeepTogether ());
+    assertEquals (aSplit.getBlockStyle ("pay").getFillColor (), new PdfRenderContext ().getBlockStyle ("pay").getFillColor ());
+  }
+
   @Test
   public void testCyrillicAndGreekNeedAnEmbeddedFont ()
   {

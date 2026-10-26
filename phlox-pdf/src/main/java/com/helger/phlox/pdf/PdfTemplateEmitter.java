@@ -608,6 +608,8 @@ public final class PdfTemplateEmitter extends
       else
       {
         final PLVBox aBlocks = new PLVBox ();
+        if (aStyle != null && aStyle.isKeepTogether ())
+          aBlocks.setVertSplittable (false);
         visitBlockChildren (aAst, aGroup, aBlocks::addRow);
         aContent = aBlocks;
       }

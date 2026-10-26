@@ -51,6 +51,7 @@ public final class PdfBlockStyle
     private Float m_aFontSize;
     private boolean m_bBold;
     private Float m_aWidthPercent;
+    private boolean m_bKeepTogether;
 
     private Builder ()
     {}
@@ -209,6 +210,21 @@ public final class PdfBlockStyle
     }
 
     /**
+     * Set whether the block is moved to the next page as a whole instead of being split across two
+     * pages. A block that is higher than a page cannot be kept together.
+     *
+     * @param bKeepTogether
+     *        <code>true</code> to never split the block.
+     * @return this for chaining
+     */
+    @NonNull
+    public Builder keepTogether (final boolean bKeepTogether)
+    {
+      m_bKeepTogether = bKeepTogether;
+      return this;
+    }
+
+    /**
      * @return The new style. Never {@code null}.
      */
     @NonNull
@@ -227,6 +243,7 @@ public final class PdfBlockStyle
   private final Float m_aFontSize;
   private final boolean m_bBold;
   private final Float m_aWidthPercent;
+  private final boolean m_bKeepTogether;
 
   private PdfBlockStyle (@NonNull final Builder aBuilder)
   {
@@ -239,6 +256,7 @@ public final class PdfBlockStyle
     m_aFontSize = aBuilder.m_aFontSize;
     m_bBold = aBuilder.m_bBold;
     m_aWidthPercent = aBuilder.m_aWidthPercent;
+    m_bKeepTogether = aBuilder.m_bKeepTogether;
   }
 
   /**
@@ -372,7 +390,8 @@ public final class PdfBlockStyle
                          .borderWidth (aSource.m_fBorderWidth)
                          .fontSize (aSource.m_aFontSize)
                          .bold (aSource.m_bBold)
-                         .widthPercent (aSource.m_aWidthPercent);
+                         .widthPercent (aSource.m_aWidthPercent)
+                         .keepTogether (aSource.m_bKeepTogether);
   }
 
   /**
@@ -423,5 +442,16 @@ public final class PdfBlockStyle
   public static PdfBlockStyle text (@NonNull final PLColor aTextColor)
   {
     return builder ().textColor (aTextColor).build ();
+  }
+
+  /**
+   * Check if the block is moved to the next page as a whole instead of being split across two
+   * pages.
+   *
+   * @return <code>true</code> if the block is never split.
+   */
+  public boolean isKeepTogether ()
+  {
+    return m_bKeepTogether;
   }
 }

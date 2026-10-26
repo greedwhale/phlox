@@ -406,7 +406,8 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
                                 .padding (8f)
                                 .bold (true)
                                 .build ());
-    putBlockStyle ("pay", PdfBlockStyle.builder ().fillColor (m_aPalette.getAccentWash ()).padding (10f).build ());
+    putBlockStyle ("pay",
+                   PdfBlockStyle.builder ().fillColor (m_aPalette.getAccentWash ()).padding (10f).keepTogether (true).build ());
     putBlockStyle ("foot", PdfBlockStyle.builder ().textColor (m_aPalette.getMuted ()).fontSize (Float.valueOf (7.5f)).build ());
   }
 
@@ -471,7 +472,8 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
                       "borderBottom",
                       "fontSize",
                       "bold",
-                      "widthPercent");
+                      "widthPercent",
+                      "keepTogether");
     // Start from the style of the same name, from the one that is named or from nothing
     PdfBlockStyle aStart = null;
     final String sExtends = aStyle.getString ("extends");
@@ -502,6 +504,8 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
       aBuilder.bold (aStyle.getBoolean ("bold").booleanValue ());
     if (aStyle.getFloat ("widthPercent") != null)
       aBuilder.widthPercent (aStyle.getFloat ("widthPercent"));
+    if (aStyle.getBoolean ("keepTogether") != null)
+      aBuilder.keepTogether (aStyle.getBoolean ("keepTogether").booleanValue ());
     putBlockStyle (sName, aBuilder.build ());
   }
 
