@@ -74,4 +74,4 @@ See the [wiki](https://github.com/phax/phlox/wiki/Home) for the full documentati
 
 ## License
 
-Apache License 2.0.
+Apache License 2.0, see [LICENSE](LICENSE). Third-party notes are in [NOTICE](NOTICE).

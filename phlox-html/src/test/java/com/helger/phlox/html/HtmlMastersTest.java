@@ -30,6 +30,7 @@ import java.util.Locale;
 import org.jspecify.annotations.NonNull;
 import org.junit.Test;
 
+import com.helger.base.string.StringReplace;
 import com.helger.collection.commons.CommonsArrayList;
 import com.helger.collection.commons.ICommonsList;
 import com.helger.diagnostics.error.list.ErrorList;
@@ -45,8 +46,9 @@ import com.helger.phlox.ubl.UblInvoiceReader;
  * Compares the HTML of the invoices of {@link MockPhloxTestFiles#getMasterFiles()} with the
  * reference files in <code>src/test/resources/masters</code>, in English and German. A change of
  * the output shows as a difference of one of the files. If the change is wanted, write the
- * reference files again with <code>mvn test -Dtest=HtmlMastersTest -Dphlox.updateMasters=true</code>
- * and look at the difference in the version control system.
+ * reference files again with
+ * <code>mvn test -Dtest=HtmlMastersTest -Dphlox.updateMasters=true</code> and look at the
+ * difference in the version control system.
  *
  * @author Philip Helger
  */
@@ -65,9 +67,11 @@ public final class HtmlMastersTest
       // Some of the examples do not contain BT-24, so the edition is selected by the folder
       final boolean b2026 = sPath.startsWith ("2026/");
       final PhloxInvoice aInvoice = sPath.contains ("/cii/") ? (b2026 ? CiiInvoiceReader.fromD25A ()
-                                                                      : CiiInvoiceReader.fromD16B ()).read (aIS, aErrors)
-                                                              : (b2026 ? UblInvoiceReader.fromUbl25 ()
-                                                                       : UblInvoiceReader.fromUbl21 ()).read (aIS, aErrors);
+                                                                      : CiiInvoiceReader.fromD16B ()).read (aIS,
+                                                                                                            aErrors)
+                                                             : (b2026 ? UblInvoiceReader.fromUbl25 ()
+                                                                      : UblInvoiceReader.fromUbl21 ()).read (aIS,
+                                                                                                             aErrors);
       assertNotNull ("Failed to read " + sPath + ": " + aErrors, aInvoice);
       return aInvoice;
     }
@@ -80,7 +84,7 @@ public final class HtmlMastersTest
   @NonNull
   private static String _masterName (@NonNull final String sPath, @NonNull final String sLang, final boolean bLogo)
   {
-    return sPath.substring (0, sPath.length () - ".xml".length ()).replace ('/', '_') +
+    return StringReplace.replaceAll (sPath.substring (0, sPath.length () - ".xml".length ()), '/', '_') +
            (bLogo ? "-logo" : "") +
            "-" +
            sLang +
@@ -102,28 +106,31 @@ public final class HtmlMastersTest
       }
     }
     // The version changes with every release
-    final String sActual = new HtmlInvoiceWriter ().writeAsString (_read (sPath), aCtx)
-                                                   .replace (CPhloxVersion.BUILD_VERSION, "@VERSION@");
+    String sActual = new HtmlInvoiceWriter ().writeAsString (_read (sPath), aCtx);
+    sActual = StringReplace.replaceAll (sActual, CPhloxVersion.BUILD_VERSION, "@VERSION@");
 
     final File aMaster = new File (MASTER_DIR, _masterName (sPath, sLang, bLogo));
     if (Boolean.getBoolean (UPDATE_PROPERTY))
     {
       MASTER_DIR.mkdirs ();
       Files.writeString (aMaster.toPath (), sActual, StandardCharsets.UTF_8);
-      return;
     }
-    assertTrue ("There is no reference file " +
-                aMaster.getPath () +
-                " - create it with -D" +
-                UPDATE_PROPERTY +
-                "=true", aMaster.isFile ());
-    assertEquals ("The HTML differs from the reference file " +
+    else
+    {
+      assertTrue ("There is no reference file " +
                   aMaster.getPath () +
-                  " - if the change is wanted, write the files again with -D" +
+                  " - create it with -D" +
                   UPDATE_PROPERTY +
                   "=true",
-                  Files.readString (aMaster.toPath (), StandardCharsets.UTF_8),
-                  sActual);
+                  aMaster.isFile ());
+      assertEquals ("The HTML differs from the reference file " +
+                    aMaster.getPath () +
+                    " - if the change is wanted, write the files again with -D" +
+                    UPDATE_PROPERTY +
+                    "=true",
+                    Files.readString (aMaster.toPath (), StandardCharsets.UTF_8),
+                    sActual);
+    }
   }
 
   @Test
@@ -138,7 +145,7 @@ public final class HtmlMastersTest
         }
         catch (final AssertionError ex)
         {
-          aFailures.add (ex.getMessage ().split ("\n") [0]);
+          aFailures.add (ex.getMessage ().split ("\n")[0]);
         }
     try
     {
@@ -146,7 +153,7 @@ public final class HtmlMastersTest
     }
     catch (final AssertionError ex)
     {
-      aFailures.add (ex.getMessage ().split ("\n") [0]);
+      aFailures.add (ex.getMessage ().split ("\n")[0]);
     }
     assertTrue (aFailures.size () + " of the reference files differ:\n" + String.join ("\n", aFailures),
                 aFailures.isEmpty ());

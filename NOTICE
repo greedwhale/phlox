@@ -1,0 +1,20 @@
+phlox
+Copyright 2026 Philip Helger (www.helger.com)
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+--------------------------------------------------------------------------------
+Third-party components
+
+Runtime dependencies are resolved by Maven and keep their own licences.
+
+The example invoices in the module phlox-testfiles (directory
+src/main/resources/external/en16931) are used for testing only. They originate
+from publicly available EN 16931 example sets (among them the examples of CEN/TC
+434, of Peppol and of the XRechnung releases, partly taken over from the project
+en16931-cii2ubl). The origin of each set is described in the README.md of its
+directory. The files under synthetic/ were generated for phlox with
+phlox-testfiles/tools/generate-synthetic.py.
+
+The file phlox-testfiles/src/main/resources/logo/phoss.png is the logo of the
+phoss projects of Philip Helger. It serves as the sample logo of the tests.
