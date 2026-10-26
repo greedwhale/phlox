@@ -1,0 +1,182 @@
+Invoice
+
+D25A-NEW-BG34-INV-1
+===================
+
+Invoice issue date          January 15, 2026
+Payment due date            February 14, 2026
+Value added tax point date  January 10, 2026
+Invoice currency code       EUR
+Buyer reference             BUYER-REF-4711 (ADE)
+Invoice type code           380 — Commercial invoice
+
+--------------------------------------------------------------------------------
+
+Seller
+
+Seller Ltd
+
+Seller Trading Name
+
+Main Street 1
+1010 Vienna
+Austria
+
+Seller identifier: 0088:4035811234567
+Seller VAT identifier: ATU12345678
+Seller legal registration identifier: 0198:FN123456x
+
+Buyer
+
+Buyer Ltd
+
+Buyer Street 2
+5020 Salzburg
+Austria
+
+Buyer VAT identifier: ATU87654321
+
+--------------------------------------------------------------------------------
+
+Delivery
+
+Delivery Site
+
+Delivery Road 7
+4020 Linz
+Austria
+
+Deliver to location identifier: 0088:4035811111111
+Actual delivery date: January 12, 2026
+
+Payee
+
+Payee Ltd
+
+Payee identifier: 0088:4035822222222
+Payee legal registration identifier: 0198:FN999999z
+
+Seller tax representative
+
+Tax Rep GmbH
+
+Rep Street 3
+1020 Vienna
+Austria
+
+Seller tax representative VAT identifier: ATU11111111
+
+Invoicing period
+----------------
+
+January 1, 2026 — January 31, 2026
+
+References
+----------
+
+- Project reference: PROJECT-7
+- Contract reference: CONTRACT-42
+- Purchase order reference: PO-2026-0001
+- Sales order reference: SO-2026-9
+- Receiving advice reference: RECEIPT-4
+- Despatch advice reference: DESPATCH-3
+- Tender or lot reference: TENDER-5
+- Invoiced object identifier: AVE:METER-9
+- Buyer accounting reference: COST-CENTRE-1
+- Preceding invoice reference: PREV-INV-1 (Dec 15, 2025)
+- Preceding invoice reference: PREV-INV-2
+
+Notes
+-----
+
+[General information] Header note
+
+Invoice lines
+-------------
+
+#  Description                                     Qty                   Unit price                   VAT  Line total
+-  --------------------------------------------  -----  ---------------------------  --------------------  ----------
+1  Widget                                        4 one                      € 25.00  Standard rate 20.00%    € 100.00
+   A round widget                                         Item gross price: € 30.00
+   Item seller's identifier: SELLER-ART-1               Item price discount: € 5.00
+   Item buyer's identifier: BUYER-ART-1
+   Item standard identifier: 0160:1234567890128
+   Item classification identifier: TST:CLASS-1
+   Item country of origin: Austria
+   Colour: Blue
+   Weight: 2 kg
+
+Invoice line allowance
+----------------------
+
+#  Reason                    Base amount       %    Amount
+-  ------------------------  -----------  ------  --------
+1  (Discount) Line discount     € 100.00  10.00%  -€ 10.00
+
+Invoice line charges and taxes
+------------------------------
+
+#  Reason                          Base amount  %    Amount
+-  ------------------------------  -----------  -  --------
+1  (Freight service) Line freight     € 100.00     +€ 10.00
+
+  Invoice line identifier 1 — Invoice line note: Line one note
+
+Allowances and charges
+----------------------
+
+Reason                      Base amount      %   Amount  VAT category   VAT rate
+--------------------------  -----------  -----  -------  -------------  --------
+Volume discount (Discount)     € 100.00  5.00%  -€ 5.00  Standard rate    20.00%
+
+Reason                     Base amount  %    Amount  VAT category   VAT rate
+-------------------------  -----------  -  --------  -------------  --------
+Freight (Freight service)     € 100.00     +€ 15.00  Standard rate    20.00%
+
+VAT breakdown
+-------------
+
+VAT category                         Taxable amount  VAT rate  VAT amount
+-----------------------------------  --------------  --------  ----------
+Standard rate                              € 100.00    20.00%     € 20.00
+VAT Reverse charge (Reverse charge)         € 50.00     0.00%      € 0.00
+
+  VAT category code AE: Reverse charge
+
+Sum of invoice line net amounts                      € 100.00
+Sum of allowances on document level                   -€ 5.00
+Sum of charges and taxes on document level           +€ 15.00
+Charges on behalf of a third party: Copyright levy    +€ 3.20
+Charges on behalf of a third party: Recycling fee     +€ 1.75
+Invoice total amount without VAT                     € 110.00
+Invoice total VAT amount                              € 22.00
+Invoice total VAT amount in VAT accounting currency   $ 24.20
+Invoice total amount with VAT                        € 132.00
+Paid amount                                          -€ 32.00
+
+Amount due  € 100.00
+
+Payment
+
+Payment means type code: SEPA credit transfer
+SEPA credit transfer
+Remittance information: REMIT-1
+
+Credit transfer
+
+- Seller Account — AT611904300234573201 (BIC GIBAATWWXXX)
+
+Payment terms
+-------------
+
+Net 30 days
+
+Supporting documents
+--------------------
+
+- DOC-916 — Supporting document (https://example.org/doc)
+
+Specification identifier: urn:cen.eu:en16931:2026 · Business process type:
+urn:fdc:peppol.eu:2017:poacc:billing:01:1.0
+
+Generated by phlox · open-source edition · github.com/phax/phlox

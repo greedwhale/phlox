@@ -17,11 +17,11 @@ Reads invoices in **UBL** or **CII** syntax, lifts them into a syntax-neutral in
 
 - **Both editions of the standard:** EN 16931:2017 (UBL 2.1, CII D16B) and EN 16931:2026 (UBL 2.5, CII D25A). The edition is detected from BT-24 or chosen explicitly.
 - **Complete model:** every EN 16931 business group and business term is represented; terms that only exist in 2026 stay empty for 2017 documents.
-- **Template driven output:** HTML and PDF are rendered from a `.ptpl` template (JMustache plus CommonMark). The default template ships with phlox; your own replaces it without writing Java.
+- **Template driven output:** HTML, PDF and plain text are rendered from a `.ptpl` template (JMustache plus CommonMark). The default template ships with phlox; your own replaces it without writing Java.
 - **Themes:** colours, fonts, page layout, block styles, language, logo and watermark come from one JSON file. See [Styling](https://github.com/phax/phlox/wiki/Styling).
 - **Any script in PDF:** embed TTF or OTF fonts (for example Roboto for Cyrillic and Greek) in HTML and PDF with `--font`, the theme or the API. The standard PDF fonts only contain Western European characters.
 - **Watermarks:** a user watermark such as `DRAFT`, plus the program watermark.
-- **Command line:** `phlox-cli` renders an invoice file to HTML or PDF.
+- **Command line:** `phlox-cli` renders an invoice file to HTML, PDF or plain text.
 - **No validation:** phlox only visualizes. Use `phive-rules-en16931` to check business rules.
 
 ## Modules
@@ -35,6 +35,7 @@ Reads invoices in **UBL** or **CII** syntax, lifts them into a syntax-neutral in
 | `phlox-theme` | JSON theme reader |
 | `phlox-html` | HTML5 writer |
 | `phlox-pdf` | PDF writer |
+| `phlox-text` | Plain-text writer |
 | `phlox-cli` | Command line tool |
 | `phlox-testfiles` | Shared example invoices for tests |
 
@@ -57,8 +58,8 @@ java -jar phlox-cli/target/phlox-cli-full.jar -i invoice.xml -f PDF -o invoice.p
 | Option | Meaning |
 |--------|---------|
 | `-i`, `--in` | Input invoice XML file (stdin if omitted) |
-| `-o`, `--out` | Output file (stdout if omitted, HTML only) |
-| `-f`, `--format` | `HTML` (default) or `PDF` |
+| `-o`, `--out` | Output file (stdout if omitted, HTML and TEXT only) |
+| `-f`, `--format` | `HTML` (default), `PDF` or `TEXT` |
 | `-s`, `--syntax` | `AUTO` (default), `UBL` or `CII` |
 | `--en-version` | `auto` (default), `2017` or `2026` |
 | `-l`, `--lang` | Output language, `en` or `de` |

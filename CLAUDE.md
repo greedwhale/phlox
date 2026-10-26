@@ -4,13 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this project is
 
-**phlox** is a visualizer for EN 16931 electronic invoices (the EU structured e-invoicing standard). It reads UBL (2.1 / 2.5) or CII (D16B / D25A) XML into a syntax-neutral intermediate model, then writes HTML or PDF in EN/DE.
+**phlox** is a visualizer for EN 16931 electronic invoices (the EU structured e-invoicing standard). It reads UBL (2.1 / 2.5) or CII (D16B / D25A) XML into a syntax-neutral intermediate model, then writes HTML, PDF or plain text in EN/DE.
 
 Both editions of the standard are supported: EN 16931:2017 (UBL 2.1, CII D16B) and EN 16931:2026 (UBL 2.5, CII D25A). The model is a superset of both; terms that only exist in 2026 stay empty for 2017 documents. The edition is detected from BT-24 (`EEN16931Edition` from `com.helger:en16931-basics`) or chosen explicitly via the reader factories (`UblInvoiceReader.fromUbl21()/fromUbl25()/autoDetect()`, `CiiInvoiceReader.fromD16B()/fromD25A()/autoDetect()`).
 
 ## Architecture (read this before changing code)
 
-Three-stage pipeline: **Read** (source XML → intermediate model) → **Hold** (in-memory model) → **Write** (model → HTML / PDF).
+Three-stage pipeline: **Read** (source XML → intermediate model) → **Hold** (in-memory model) → **Write** (model → HTML / PDF / text).
 
 Module dependency rules are strict:
 - Readers and writers depend **only** on `phlox-api`, never on each other.
@@ -27,6 +27,7 @@ Modules:
 - `phlox-theme` — reads the JSON theme (`PhloxThemeReader`, `PhloxTheme`) that defines colours (CSS-like `--variables`, referenced with `var(--name)`), fonts, page layout, block styles and the defaults of the render context. `HtmlRenderContext.applyTheme` / `PdfRenderContext.applyTheme` apply it; `--theme` in the CLI. Depends on `phlox-api` and `phlox-template`. See the wiki page `Themes`. Keys starting with `$` are comments; unknown keys are errors.
 - `phlox-html` — HTML5 writer
 - `phlox-pdf` — PDF writer (PDFBox via ph-pdf-layout, rich text via ph-pdf-layout-richtext)
+- `phlox-text` — plain-text writer: `TextTemplateEmitter` walks the AST (styling stripped, tables in aligned columns, groups stacked), `TextRenderContext.setLineWidth` (default 80, 0 = no wrapping); `applyTheme` applies only the `common` part
 - `phlox-cli` — picocli CLI; produces `phlox-cli-full.jar` (shaded fat JAR, main class `PhloxCli`)
 
 ## Hard constraints
@@ -34,7 +35,7 @@ Modules:
 - **No validation in phlox.** Business-rule checks (e.g. VAT consistency) belong in `phive-rules-en16931`. Do not add them here.
 - **Stateless library.** No config files, no environment variables, no system properties at startup. All tuning flows through typed `RenderContext` parameters. Never reach for `System.getProperty(...)` or `System.getenv(...)`.
 - **Intermediate model is the contract.** Every EN 16931 Business Group (BG) and Business Term (BT) is always populated. Use empty collections, never `null`. Writers must not have "field not present" branches.
-- **`RenderContext` type hierarchy is load-bearing.** `HtmlRenderContext` and `PdfRenderContext` both extend `AbstractRenderContext`. Writers accept their specific subclass — this is intentional, do not widen to the base type.
+- **`RenderContext` type hierarchy is load-bearing.** `HtmlRenderContext`, `PdfRenderContext` and `TextRenderContext` all extend `AbstractRenderContext`. Writers accept their specific subclass — this is intentional, do not widen to the base type.
 - **JSpecify annotations** (`@NonNull` / `@Nullable`) on public types — used in 47 of 51 Java files.
 - **forbiddenapis** plugin runs at compile time using `ph-forbidden-apis` signatures. If it fails, fix the call site — do not exclude the rule.
 
@@ -51,7 +52,7 @@ Standard Maven (Java 17+, Maven 3.x). The effective compiler release is 17: the 
 - Test fixtures live in `phlox-testfiles/src/main/resources/external/en16931/{2017,2026}/{ubl,cii}/...`.
 - Adding regression coverage usually means adding an XML fixture there, not a new Java test class.
 - JUnit 4 + AssertJ.
-- Reference files: `HtmlMastersTest` (phlox-html) and `PdfMastersTest` (phlox-pdf) compare the output of `MockPhloxTestFiles.getMasterFiles ()` with `src/test/resources/masters`. After an intended change of the output write them again with `-Dphlox.updateMasters=true` and review the `git diff`. The PDF master is a text description of the layout plus a PDF that is compared with pdfcompare.
+- Reference files: `HtmlMastersTest` (phlox-html), `PdfMastersTest` (phlox-pdf) and `TextMastersTest` (phlox-text) compare the output of `MockPhloxTestFiles.getMasterFiles ()` with `src/test/resources/masters`. After an intended change of the output write them again with `-Dphlox.updateMasters=true` and review the `git diff`. The PDF master is a text description of the layout plus a PDF that is compared with pdfcompare.
 
 ## Localization
 

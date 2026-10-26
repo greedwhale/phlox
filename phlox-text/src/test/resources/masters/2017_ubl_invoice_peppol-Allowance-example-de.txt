@@ -1,0 +1,179 @@
+Rechnung
+
+Snippet1
+========
+
+Rechnungsdatum    13. November 2017
+Fälligkeitsdatum  1. Dezember 2017
+USt-Stichtag      1. Dezember 2017
+Rechnungswährung  EUR
+Käuferreferenz    0150abc
+Rechnungstyp      380 — Handelsrechnung
+
+--------------------------------------------------------------------------------
+
+Verkäufer
+
+SupplierOfficialName Ltd
+
+SupplierTradingName Ltd.
+
+Main street 1
+Postbox 123
+GB 123 EW London
+Vereinigtes Königreich
+
+Kennung Verkäufer: 99887766
+USt-IdNr. Verkäufer: GB1232434
+Rechtliche Registrierungs-ID Verkäufer: GB983294
+Elektronische Adresse Verkäufer: 0088:7300010000001
+
+  AdditionalLegalInformation
+
+Käufer
+
+Buyer Official Name
+
+BuyerTradingName AS
+
+Hovedgatan 32
+Po box 878
+456 34 Stockholm, Södermalm
+Schweden
+
+Kennung Käufer: 0002:4598375937
+USt-IdNr. Käufer: SE4598375937
+Rechtliche Registrierungs-ID Käufer: 0183:39937423947
+Elektronische Adresse Käufer: 0002:4598375937
+Lisa Johnson · 23434234 · lj@buyer.se
+
+--------------------------------------------------------------------------------
+
+Lieferung
+
+Delivery party Name
+
+Delivery street 2
+Building 56
+Gate 15
+21234 Stockholm, Södermalm
+Schweden
+
+Kennung Lieferort: 0088:7300010000001
+Tatsächliches Lieferdatum: 1. November 2017
+
+Rechnungszeitraum
+-----------------
+
+1. Dezember 2017 — 31. Dezember 2017
+
+Referenzen
+----------
+
+- Vertragsreferenz: framework no 1
+- Referenzobjekt-Kennung: ABT:DR35141
+- Buchungsreferenz Käufer: 4025:123:4343
+
+Anmerkungen
+-----------
+
+Please note we have a new phone number: 22 22 22 22
+
+Rechnungspositionen
+-------------------
+
+Nr.  Beschreibung                               Menge                     Einzelpreis                      USt  Zeilensumme
+---  ---------------------------------------  -------  ------------------------------  -----------------------  -----------
+  1  item name                                10 Eins                        410,00 €  Regelsteuersatz 25,00 %   4.000,00 €
+     Description of item                                  Bruttoeinzelpreis: 450,00 €
+     Artikel-ID Verkäufer: 97iugug876                  Artikel-Preisnachlass: 40,00 €
+     Klassifikationskennung: SRV:09348023
+     Ursprungsland des Artikels: Norwegen
+  2  item name                                10 Eins                        200,00 €       USt-befreit 0,00 %   1.000,00 €
+     Description of item                                           Basismenge: 2 Eins
+     Artikel-ID Verkäufer: 97iugug876
+     Klassifikationskennung: SRV:86776
+     AdditionalItemName: AdditionalItemValue
+  3  item name                                10 Eins                        100,00 €  Regelsteuersatz 25,00 %     900,00 €
+     Description of item
+     Artikel-ID Verkäufer: 97iugug876
+     Klassifikationskennung: SRV:86776
+     AdditionalItemName: AdditionalItemValue
+
+Positions-Nachlass
+------------------
+
+Nr.  Grund                Basisbetrag  %     Betrag
+---  -------------------  -----------  -  ---------
+  1  (Discount) Discount                  -101,00 €
+  3  (Discount) Discount                  -101,00 €
+
+Zuschläge und Steuern der Rechnungsposition
+-------------------------------------------
+
+Nr.  Grund                Basisbetrag       %   Betrag
+---  -------------------  -----------  ------  -------
+  1  (Cleaning) Cleaning     100,00 €  1,00 %  +1,00 €
+  3  (Cleaning) Charge       100,00 €  1,00 %  +1,00 €
+
+  Positionsnummer 1 — Positionshinweis: Testing note on line level
+  Positionsnummer 2 — Positionshinweis: Testing note on line level
+  Positionsnummer 3 — Positionshinweis: Testing note on line level
+
+Nachlässe und Gebühren
+----------------------
+
+Grund                Basisbetrag  %     Betrag  USt-Kategorie    USt-Satz
+-------------------  -----------  -  ---------  ---------------  --------
+Discount (Discount)                  -200,00 €  Regelsteuersatz   25,00 %
+
+Grund                Basisbetrag        %     Betrag  USt-Kategorie    USt-Satz
+-------------------  -----------  -------  ---------  ---------------  --------
+Cleaning (Cleaning)   1.000,00 €  20,00 %  +200,00 €  Regelsteuersatz   25,00 %
+
+Steueraufschlüsselung
+---------------------
+
+USt-Kategorie    Steuerbasis  USt-Satz  USt-Betrag
+---------------  -----------  --------  ----------
+Regelsteuersatz   4.900,00 €   25,00 %  1.225,00 €
+USt-befreit       1.000,00 €    0,00 %      0,00 €
+
+  USt-Kategorie E: Reason for tax exempt
+
+Summe Nettobeträge der Positionen                                               5.900,00 €
+Summe Nachlässe auf Dokumentenebene                                              -200,00 €
+Summe der Zuschläge und Steuern auf Dokumentenebene                              +200,00 €
+Nettogesamtbetrag                                                               5.900,00 €
+USt-Gesamtbetrag                                                                1.225,00 €
+Gesamtbetrag der Rechnungsumsatzsteuer in der Umsatzsteuerabrechnungswährung  9.324,00 SEK
+Bruttogesamtbetrag                                                              7.125,00 €
+Bereits bezahlter Betrag                                                       -1.000,00 €
+
+Zahlbar  6.125,00 €
+
+Zahlung
+
+Zahlungsart: Überweisung
+Credit transfer
+Verwendungszweck: Snippet1
+
+Überweisung
+
+- AccountName — IBAN32423940 (BIC BIC324098)
+
+Zahlungsbedingungen
+-------------------
+
+Payment within 10 days, 2% discount
+
+Unterstützende Dokumente
+------------------------
+
+- ts12345 — Technical specification (www.techspec.no)
+
+Spezifikationskennung:
+urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0 ·
+Geschäftsprozesstyp: urn:fdc:peppol.eu:2017:poacc:billing:01:1.0
+
+Generated by phlox · open-source edition · github.com/phax/phlox

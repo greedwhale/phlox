@@ -385,6 +385,34 @@ public final class PhloxCliTest
   }
 
   @Test
+  public void testTextOutput () throws IOException
+  {
+    final Path aOut = _tempFile (".txt");
+    assertEquals (0, _run ("-i", _copyInvoice ().toString (), "-f", "TEXT", "-o", aOut.toString ()));
+    assertTrue (Files.readString (aOut, StandardCharsets.UTF_8).startsWith ("Invoice\n\n12115118\n========\n"));
+
+    // Language, watermark and template work as for the other formats
+    final Path aTemplate = _tempFile (".ptpl");
+    Files.writeString (aTemplate, "# {{label:section.lines.title}} **{{BT-1}}**\n", StandardCharsets.UTF_8);
+    final Path aOutDe = _tempFile (".txt");
+    assertEquals (0,
+                  _run ("-i",
+                        _copyInvoice ().toString (),
+                        "-f",
+                        "TEXT",
+                        "-l",
+                        "de",
+                        "--watermark",
+                        "ENTWURF",
+                        "-t",
+                        aTemplate.toString (),
+                        "-o",
+                        aOutDe.toString ()));
+    assertTrue (Files.readString (aOutDe, StandardCharsets.UTF_8)
+                     .startsWith ("*** ENTWURF ***\n\nRechnungspositionen 12115118\n============================\n"));
+  }
+
+  @Test
   public void testWatermarkErrors () throws IOException
   {
     final Path aOut = _tempFile (".html");

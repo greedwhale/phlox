@@ -47,6 +47,8 @@ import com.helger.phlox.pdf.PdfFontFamily;
 import com.helger.phlox.pdf.PdfInvoiceWriter;
 import com.helger.phlox.pdf.PdfRenderContext;
 import com.helger.phlox.template.PhloxTemplate;
+import com.helger.phlox.text.TextInvoiceWriter;
+import com.helger.phlox.text.TextRenderContext;
 import com.helger.phlox.theme.PhloxTheme;
 import com.helger.phlox.theme.PhloxThemeReader;
 import com.helger.phlox.ubl.UblInvoiceReader;
@@ -57,14 +59,14 @@ import picocli.CommandLine;
 
 /**
  * Command-line entry point for {@code phlox}. Reads an electronic invoice from XML and renders it
- * to HTML or PDF.
+ * to HTML, PDF or plain text.
  *
  * @author Philip Helger
  */
 @Command (name = "phlox",
           mixinStandardHelpOptions = true,
           version = "phlox 0.1.0",
-          description = "Render EN 16931 electronic invoices (UBL / CII) to HTML or PDF.")
+          description = "Render EN 16931 electronic invoices (UBL / CII) to HTML, PDF or plain text.")
 public class PhloxCli implements Callable <Integer>
 {
   /** The supported output formats. */
@@ -73,7 +75,9 @@ public class PhloxCli implements Callable <Integer>
     /** HTML5 output. */
     HTML,
     /** PDF output. */
-    PDF
+    PDF,
+    /** Plain-text output. */
+    TEXT
   }
 
   /** The supported source syntaxes. */
@@ -93,12 +97,12 @@ public class PhloxCli implements Callable <Integer>
   Path m_aInputFile;
 
   @Option (names = { "-o", "--out" },
-           description = "Output file. Written to stdout when omitted (HTML only).",
+           description = "Output file. Written to stdout when omitted (HTML and TEXT only).",
            required = false)
   Path m_aOutputFile;
 
   @Option (names = { "-f", "--format" },
-           description = "Output format: HTML or PDF. Default: HTML.",
+           description = "Output format: HTML, PDF or TEXT. Default: HTML.",
            defaultValue = "HTML")
   EOutputFormat m_eFormat;
 
@@ -259,6 +263,21 @@ public class PhloxCli implements Callable <Integer>
   }
 
   /**
+   * Write the rendered text as UTF-8 to the output file, or to stdout if there is none.
+   */
+  private void _writeText (@NonNull final String sText) throws IOException
+  {
+    final byte [] aBytes = sText.getBytes (StandardCharsets.UTF_8);
+    if (m_aOutputFile == null)
+      System.out.write (aBytes);
+    else
+      try (final OutputStream aOut = new FileOutputStream (m_aOutputFile.toFile ()))
+      {
+        aOut.write (aBytes);
+      }
+  }
+
+  /**
    * Command line entry point.
    *
    * @param args
@@ -371,36 +390,51 @@ public class PhloxCli implements Callable <Integer>
       }
     }
     else
-    {
-      final HtmlRenderContext aCtx = new HtmlRenderContext ();
-      final Integer aError = _prepare (aCtx,
-                                       aTheme == null ? null : (final HtmlRenderContext aTarget) -> aTarget.applyTheme (aTheme),
-                                       aTarget -> aTarget.setFontFamily (HtmlFontFamily.ofFiles (m_aFontFile,
-                                                                                                  m_aFontBoldFile,
-                                                                                                  m_aFontItalicFile,
-                                                                                                  m_aFontBoldItalicFile)));
-      if (aError != null)
-        return aError;
-      final HtmlInvoiceWriter aHtmlWriter = new HtmlInvoiceWriter ();
-      final String sHtml;
-      try
+      if (m_eFormat == EOutputFormat.TEXT)
       {
-        sHtml = aHtmlWriter.writeAsString (aInvoice, aCtx);
-      }
-      catch (final PhloxRuntimeException ex)
-      {
-        System.err.println ("Failed to render the invoice: " + ex.getMessage ());
-        return Integer.valueOf (2);
-      }
-      final byte [] aHtmlBytes = sHtml.getBytes (StandardCharsets.UTF_8);
-      if (m_aOutputFile == null)
-        System.out.write (aHtmlBytes);
-      else
-        try (final OutputStream aOut = new FileOutputStream (m_aOutputFile.toFile ()))
+        final TextRenderContext aCtx = new TextRenderContext ();
+        // Fonts have no meaning in plain text
+        final Integer aError = _prepare (aCtx,
+                                         aTheme == null ? null : (final TextRenderContext aTarget) -> aTarget.applyTheme (aTheme),
+                                         aTarget -> {});
+        if (aError != null)
+          return aError;
+        final String sText;
+        try
         {
-          aOut.write (aHtmlBytes);
+          sText = new TextInvoiceWriter ().writeAsString (aInvoice, aCtx);
         }
-    }
+        catch (final PhloxRuntimeException ex)
+        {
+          System.err.println ("Failed to render the invoice: " + ex.getMessage ());
+          return Integer.valueOf (2);
+        }
+        _writeText (sText);
+      }
+      else
+      {
+        final HtmlRenderContext aCtx = new HtmlRenderContext ();
+        final Integer aError = _prepare (aCtx,
+                                         aTheme == null ? null : (final HtmlRenderContext aTarget) -> aTarget.applyTheme (aTheme),
+                                         aTarget -> aTarget.setFontFamily (HtmlFontFamily.ofFiles (m_aFontFile,
+                                                                                                    m_aFontBoldFile,
+                                                                                                    m_aFontItalicFile,
+                                                                                                    m_aFontBoldItalicFile)));
+        if (aError != null)
+          return aError;
+        final HtmlInvoiceWriter aHtmlWriter = new HtmlInvoiceWriter ();
+        final String sHtml;
+        try
+        {
+          sHtml = aHtmlWriter.writeAsString (aInvoice, aCtx);
+        }
+        catch (final PhloxRuntimeException ex)
+        {
+          System.err.println ("Failed to render the invoice: " + ex.getMessage ());
+          return Integer.valueOf (2);
+        }
+        _writeText (sHtml);
+      }
     return Integer.valueOf (0);
   }
 }

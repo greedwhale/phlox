@@ -1,0 +1,192 @@
+Rechnung
+
+TOSL108
+=======
+
+Rechnungsdatum     30. Juni 2013
+Fälligkeitsdatum   20. Juli 2013
+USt-Stichtagscode  3
+Rechnungswährung   NOK
+Rechnungstyp       380 — Handelsrechnung
+
+--------------------------------------------------------------------------------
+
+Verkäufer
+
+Salescompany ltd.
+
+Main street 34
+Suite 123
+303 Big city, RegionA
+Norwegen
+
+Kennung Verkäufer: 0088:1238764941386
+USt-IdNr. Verkäufer: NO123456789MVA
+Rechtliche Registrierungs-ID Verkäufer: 123456789
+Antonio Salesmacher · 46211230 · antonio@salescompany.no
+
+Käufer
+
+The Buyercompany
+
+Anystreet 8
+Back door
+101 Anytown, RegionB
+Norwegen
+
+Kennung Käufer: 0088:3456789012098
+USt-IdNr. Käufer: NO987654321MVA
+Rechtliche Registrierungs-ID Käufer: 987654321
+John Doe · 5121230 · john@buyercompany.no
+
+--------------------------------------------------------------------------------
+
+Lieferung
+
+Deliverystreet 2
+Side door
+523427 DeliveryCity, RegionD
+Norwegen
+
+Kennung Lieferort: 0088:6754238987643
+Tatsächliches Lieferdatum: 15. Juni 2013
+
+Zahlungsempfänger
+
+Ebeneser Scrooge AS
+
+Kennung Zahlungsempfänger: 0088:2298740918237
+Rechtliche Registrierungs-ID Zahlungsempfänger: 989823401
+
+Steuervertreter
+
+Tax handling company AS
+
+Regent street
+Front door
+202 Newtown, RegionC
+Norwegen
+
+USt-IdNr. Steuervertreter: NO967611265MVA
+
+Rechnungszeitraum
+-----------------
+
+1. Juni 2013 — 30. Juni 2013
+
+Referenzen
+----------
+
+- Vertragsreferenz: Contract321
+- Bestellreferenz: 123
+- Buchungsreferenz Käufer: Project cost code 123
+
+Anmerkungen
+-----------
+
+Ordered in our booth at the convention
+
+Rechnungspositionen
+-------------------
+
+Nr.  Beschreibung                                                                   Menge                        Einzelpreis                      USt   Zeilensumme
+---  -------------------------------------------------------------------------  ---------  ---------------------------------  -----------------------  ------------
+  1  Laptop computer                                                              2 Stück                       1.273,00 NOK  Regelsteuersatz 25,00 %  1.273,00 NOK
+     Processor: Intel Core 2 Duo SU9400 LV (1.4GHz). RAM: 3MB. Screen 1440x900             Artikel-Preisnachlass: 225,00 NOK
+     Artikel-ID Verkäufer: JB007
+     Standardartikelkennung: 0088:1234567890128
+     Klassifikationskennung: ZZZ:12344321, STI:65434568
+     Ursprungsland des Artikels: Deutschland
+     Color: Black
+  2  Returned "Advanced computing" book                                          -1 Stück                           3,96 NOK  Regelsteuersatz 15,00 %     -3,96 NOK
+     Artikel-ID Verkäufer: JB008
+     Standardartikelkennung: 0088:1234567890135
+     Klassifikationskennung: ZZZ:32344324, STI:65434567
+  3  "Computing for dummies" book                                                 2 Stück                           2,48 NOK  Regelsteuersatz 15,00 %      4,96 NOK
+     Artikel-ID Verkäufer: JB009                                                                 Bruttoeinzelpreis: 2,70 NOK
+     Standardartikelkennung: 0088:1234567890135                                              Artikel-Preisnachlass: 0,27 NOK
+     Klassifikationskennung: ZZZ:32344324, STI:65434567
+  4  Returned IBM 5150 desktop                                                   -1 Stück                          25,00 NOK       USt-befreit 0,00 %    -25,00 NOK
+     Artikel-ID Verkäufer: JB010
+     Standardartikelkennung: 0088:1234567890159
+     Klassifikationskennung: ZZZ:12344322, STI:65434565
+  5  Network cable                                                              250 Meter                           0,75 NOK  Regelsteuersatz 25,00 %    187,50 NOK
+     Artikel-ID Verkäufer: JB011
+     Standardartikelkennung: 0088:1234567890166
+     Klassifikationskennung: ZZZ:12344325, STI:65434564
+     Type: Cat5
+
+Positions-Nachlass
+------------------
+
+Nr.  Grund   Basisbetrag  %      Betrag
+---  ------  -----------  -  ----------
+  1  Damage                  -12,00 NOK
+
+Zuschläge und Steuern der Rechnungsposition
+-------------------------------------------
+
+Nr.  Grund    Basisbetrag  %      Betrag
+---  -------  -----------  -  ----------
+  1  Testing                  +12,00 NOK
+
+  Positionsnummer 1 — Positionshinweis: Scratch on box
+  Positionsnummer 2 — Positionshinweis: Cover is slightly damaged.
+
+Nachlässe und Gebühren
+----------------------
+
+Grund                                              Basisbetrag  %       Betrag  USt-Kategorie    USt-Satz
+-------------------------------------------------  -----------  -  -----------  ---------------  --------
+Promotion discount (Material surcharge/deduction)                  -100,00 NOK  Regelsteuersatz   25,00 %
+
+Grund    Basisbetrag  %       Betrag  USt-Kategorie    USt-Satz
+-------  -----------  -  -----------  ---------------  --------
+Freight                  +100,00 NOK  Regelsteuersatz   25,00 %
+
+Steueraufschlüsselung
+---------------------
+
+USt-Kategorie     Steuerbasis  USt-Satz  USt-Betrag
+---------------  ------------  --------  ----------
+Regelsteuersatz  1.460,50 NOK   25,00 %  365,13 NOK
+Regelsteuersatz      1,00 NOK   15,00 %    0,15 NOK
+USt-befreit        -25,00 NOK    0,00 %    0,00 NOK
+
+  USt-Kategorie E: Exempt New Means of Transport
+
+Summe Nettobeträge der Positionen                     1.436,50 NOK
+Summe Nachlässe auf Dokumentenebene                    -100,00 NOK
+Summe der Zuschläge und Steuern auf Dokumentenebene    +100,00 NOK
+Nettogesamtbetrag                                     1.436,50 NOK
+USt-Gesamtbetrag                                        365,28 NOK
+Bruttogesamtbetrag                                    1.801,78 NOK
+Bereits bezahlter Betrag                             -1.000,00 NOK
+
+Zahlbar  801,78 NOK
+
+Zahlung
+
+Zahlungsart: Überweisung
+Verwendungszweck: 0003434323213231
+
+Überweisung
+
+- NO9386011117947 (BIC DNBANOKK)
+
+Zahlungsbedingungen
+-------------------
+
+2 % discount if paid within 2 days
+Penalty percentage 10% from due date
+
+Unterstützende Dokumente
+------------------------
+
+- Doc1 — Timesheet (http://www.suppliersite.eu/sheet001.html)
+- Doc2 — EHF specification (test.pdf)
+
+Spezifikationskennung: urn:cen.eu:en16931:2017 · Geschäftsprozesstyp: Invoicing
+on purchase order
+
+Generated by phlox · open-source edition · github.com/phax/phlox

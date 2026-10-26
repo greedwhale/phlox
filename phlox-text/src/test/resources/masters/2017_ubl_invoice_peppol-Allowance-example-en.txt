@@ -1,0 +1,179 @@
+Invoice
+
+Snippet1
+========
+
+Invoice issue date          November 13, 2017
+Payment due date            December 1, 2017
+Value added tax point date  December 1, 2017
+Invoice currency code       EUR
+Buyer reference             0150abc
+Invoice type code           380 — Commercial invoice
+
+--------------------------------------------------------------------------------
+
+Seller
+
+SupplierOfficialName Ltd
+
+SupplierTradingName Ltd.
+
+Main street 1
+Postbox 123
+GB 123 EW London
+United Kingdom of Great Britain and Northern Ireland (the)
+
+Seller identifier: 99887766
+Seller VAT identifier: GB1232434
+Seller legal registration identifier: GB983294
+Seller electronic address: 0088:7300010000001
+
+  AdditionalLegalInformation
+
+Buyer
+
+Buyer Official Name
+
+BuyerTradingName AS
+
+Hovedgatan 32
+Po box 878
+456 34 Stockholm, Södermalm
+Sweden
+
+Buyer identifier: 0002:4598375937
+Buyer VAT identifier: SE4598375937
+Buyer legal registration identifier: 0183:39937423947
+Buyer electronic address: 0002:4598375937
+Lisa Johnson · 23434234 · lj@buyer.se
+
+--------------------------------------------------------------------------------
+
+Delivery
+
+Delivery party Name
+
+Delivery street 2
+Building 56
+Gate 15
+21234 Stockholm, Södermalm
+Sweden
+
+Deliver to location identifier: 0088:7300010000001
+Actual delivery date: November 1, 2017
+
+Invoicing period
+----------------
+
+December 1, 2017 — December 31, 2017
+
+References
+----------
+
+- Contract reference: framework no 1
+- Invoiced object identifier: ABT:DR35141
+- Buyer accounting reference: 4025:123:4343
+
+Notes
+-----
+
+Please note we have a new phone number: 22 22 22 22
+
+Invoice lines
+-------------
+
+#  Description                                      Qty                       Unit price                    VAT  Line total
+-  --------------------------------------------  ------  -------------------------------  ---------------------  ----------
+1  item name                                     10 one                         € 410.00   Standard rate 25.00%  € 4,000.00
+   Description of item                                        Item gross price: € 450.00
+   Item seller's identifier: 97iugug876                     Item price discount: € 40.00
+   Item classification identifier: SRV:09348023
+   Item country of origin: Norway
+2  item name                                     10 one                         € 200.00  Exempt from tax 0.00%  € 1,000.00
+   Description of item                                   Item price base quantity: 2 one
+   Item seller's identifier: 97iugug876
+   Item classification identifier: SRV:86776
+   AdditionalItemName: AdditionalItemValue
+3  item name                                     10 one                         € 100.00   Standard rate 25.00%    € 900.00
+   Description of item
+   Item seller's identifier: 97iugug876
+   Item classification identifier: SRV:86776
+   AdditionalItemName: AdditionalItemValue
+
+Invoice line allowance
+----------------------
+
+#  Reason               Base amount  %     Amount
+-  -------------------  -----------  -  ---------
+1  (Discount) Discount                  -€ 101.00
+3  (Discount) Discount                  -€ 101.00
+
+Invoice line charges and taxes
+------------------------------
+
+#  Reason               Base amount      %   Amount
+-  -------------------  -----------  -----  -------
+1  (Cleaning) Cleaning     € 100.00  1.00%  +€ 1.00
+3  (Cleaning) Charge       € 100.00  1.00%  +€ 1.00
+
+  Invoice line identifier 1 — Invoice line note: Testing note on line level
+  Invoice line identifier 2 — Invoice line note: Testing note on line level
+  Invoice line identifier 3 — Invoice line note: Testing note on line level
+
+Allowances and charges
+----------------------
+
+Reason               Base amount  %     Amount  VAT category   VAT rate
+-------------------  -----------  -  ---------  -------------  --------
+Discount (Discount)                  -€ 200.00  Standard rate    25.00%
+
+Reason               Base amount       %     Amount  VAT category   VAT rate
+-------------------  -----------  ------  ---------  -------------  --------
+Cleaning (Cleaning)   € 1,000.00  20.00%  +€ 200.00  Standard rate    25.00%
+
+VAT breakdown
+-------------
+
+VAT category     Taxable amount  VAT rate  VAT amount
+---------------  --------------  --------  ----------
+Standard rate        € 4,900.00    25.00%  € 1,225.00
+Exempt from tax      € 1,000.00     0.00%      € 0.00
+
+  VAT category code E: Reason for tax exempt
+
+Sum of invoice line net amounts                        € 5,900.00
+Sum of allowances on document level                     -€ 200.00
+Sum of charges and taxes on document level              +€ 200.00
+Invoice total amount without VAT                       € 5,900.00
+Invoice total VAT amount                               € 1,225.00
+Invoice total VAT amount in VAT accounting currency  SEK 9,324.00
+Invoice total amount with VAT                          € 7,125.00
+Paid amount                                           -€ 1,000.00
+
+Amount due  € 6,125.00
+
+Payment
+
+Payment means type code: Credit transfer
+Credit transfer
+Remittance information: Snippet1
+
+Credit transfer
+
+- AccountName — IBAN32423940 (BIC BIC324098)
+
+Payment terms
+-------------
+
+Payment within 10 days, 2% discount
+
+Supporting documents
+--------------------
+
+- ts12345 — Technical specification (www.techspec.no)
+
+Specification identifier:
+urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0 ·
+Business process type: urn:fdc:peppol.eu:2017:poacc:billing:01:1.0
+
+Generated by phlox · open-source edition · github.com/phax/phlox

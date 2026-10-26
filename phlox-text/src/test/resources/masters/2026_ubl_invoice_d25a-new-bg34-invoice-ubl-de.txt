@@ -1,0 +1,182 @@
+Rechnung
+
+D25A-NEW-BG34-INV-1
+===================
+
+Rechnungsdatum    15. Januar 2026
+Fälligkeitsdatum  14. Februar 2026
+USt-Stichtag      10. Januar 2026
+Rechnungswährung  EUR
+Käuferreferenz    BUYER-REF-4711 (ADE)
+Rechnungstyp      380 — Handelsrechnung
+
+--------------------------------------------------------------------------------
+
+Verkäufer
+
+Seller Ltd
+
+Seller Trading Name
+
+Main Street 1
+1010 Vienna
+Österreich
+
+Kennung Verkäufer: 0088:4035811234567
+USt-IdNr. Verkäufer: ATU12345678
+Rechtliche Registrierungs-ID Verkäufer: 0198:FN123456x
+
+Käufer
+
+Buyer Ltd
+
+Buyer Street 2
+5020 Salzburg
+Österreich
+
+USt-IdNr. Käufer: ATU87654321
+
+--------------------------------------------------------------------------------
+
+Lieferung
+
+Delivery Site
+
+Delivery Road 7
+4020 Linz
+Österreich
+
+Kennung Lieferort: 0088:4035811111111
+Tatsächliches Lieferdatum: 12. Januar 2026
+
+Zahlungsempfänger
+
+Payee Ltd
+
+Kennung Zahlungsempfänger: 0088:4035822222222
+Rechtliche Registrierungs-ID Zahlungsempfänger: 0198:FN999999z
+
+Steuervertreter
+
+Tax Rep GmbH
+
+Rep Street 3
+1020 Vienna
+Österreich
+
+USt-IdNr. Steuervertreter: ATU11111111
+
+Rechnungszeitraum
+-----------------
+
+1. Januar 2026 — 31. Januar 2026
+
+Referenzen
+----------
+
+- Projektreferenz: PROJECT-7
+- Vertragsreferenz: CONTRACT-42
+- Bestellreferenz: PO-2026-0001
+- Auftragsreferenz: SO-2026-9
+- Empfangsbestätigungsreferenz: RECEIPT-4
+- Lieferavis-Referenz: DESPATCH-3
+- Ausschreibungs- oder Losreferenz: TENDER-5
+- Referenzobjekt-Kennung: AVE:METER-9
+- Buchungsreferenz Käufer: COST-CENTRE-1
+- Vorhergehende Rechnungsreferenz: PREV-INV-1 (15.12.2025)
+- Vorhergehende Rechnungsreferenz: PREV-INV-2
+
+Anmerkungen
+-----------
+
+[General information] Header note
+
+Rechnungspositionen
+-------------------
+
+Nr.  Beschreibung                                 Menge                    Einzelpreis                      USt  Zeilensumme
+---  ------------------------------------------  ------  -----------------------------  -----------------------  -----------
+  1  Widget                                      4 Eins                        25,00 €  Regelsteuersatz 20,00 %     100,00 €
+     A round widget                                         Bruttoeinzelpreis: 30,00 €
+     Artikel-ID Verkäufer: SELLER-ART-1                  Artikel-Preisnachlass: 5,00 €
+     Artikel-ID Käufer: BUYER-ART-1
+     Standardartikelkennung: 0160:1234567890128
+     Klassifikationskennung: TST:CLASS-1
+     Ursprungsland des Artikels: Österreich
+     Colour: Blue
+     Weight: 2 kg
+
+Positions-Nachlass
+------------------
+
+Nr.  Grund                     Basisbetrag        %    Betrag
+---  ------------------------  -----------  -------  --------
+  1  (Discount) Line discount     100,00 €  10,00 %  -10,00 €
+
+Zuschläge und Steuern der Rechnungsposition
+-------------------------------------------
+
+Nr.  Grund                           Basisbetrag  %    Betrag
+---  ------------------------------  -----------  -  --------
+  1  (Freight service) Line freight     100,00 €     +10,00 €
+
+  Positionsnummer 1 — Positionshinweis: Line one note
+
+Nachlässe und Gebühren
+----------------------
+
+Grund                       Basisbetrag       %   Betrag  USt-Kategorie    USt-Satz
+--------------------------  -----------  ------  -------  ---------------  --------
+Volume discount (Discount)     100,00 €  5,00 %  -5,00 €  Regelsteuersatz   20,00 %
+
+Grund                      Basisbetrag  %    Betrag  USt-Kategorie    USt-Satz
+-------------------------  -----------  -  --------  ---------------  --------
+Freight (Freight service)     100,00 €     +15,00 €  Regelsteuersatz   20,00 %
+
+Steueraufschlüsselung
+---------------------
+
+USt-Kategorie                                         Steuerbasis  USt-Satz  USt-Betrag
+----------------------------------------------------  -----------  --------  ----------
+Regelsteuersatz                                          100,00 €   20,00 %     20,00 €
+Umkehrung der Steuerschuldnerschaft (Reverse charge)      50,00 €    0,00 %      0,00 €
+
+  USt-Kategorie AE: Reverse charge
+
+Summe Nettobeträge der Positionen                                             100,00 €
+Summe Nachlässe auf Dokumentenebene                                            -5,00 €
+Summe der Zuschläge und Steuern auf Dokumentenebene                           +15,00 €
+Zuschläge im Auftrag einer dritten Partei: Copyright levy                      +3,20 €
+Zuschläge im Auftrag einer dritten Partei: Recycling fee                       +1,75 €
+Nettogesamtbetrag                                                             110,00 €
+USt-Gesamtbetrag                                                               22,00 €
+Gesamtbetrag der Rechnungsumsatzsteuer in der Umsatzsteuerabrechnungswährung   24,20 $
+Bruttogesamtbetrag                                                            132,00 €
+Bereits bezahlter Betrag                                                      -32,00 €
+
+Zahlbar  100,00 €
+
+Zahlung
+
+Zahlungsart: SEPA-Überweisung
+SEPA credit transfer
+Verwendungszweck: REMIT-1
+
+Überweisung
+
+- Seller Account — AT611904300234573201 (BIC GIBAATWWXXX)
+
+Zahlungsbedingungen
+-------------------
+
+Net 30 days
+
+Unterstützende Dokumente
+------------------------
+
+- DOC-916 — Supporting document (https://example.org/doc)
+
+Spezifikationskennung: urn:cen.eu:en16931:2026 · Geschäftsprozesstyp:
+urn:fdc:peppol.eu:2017:poacc:billing:01:1.0
+
+Generated by phlox · open-source edition · github.com/phax/phlox

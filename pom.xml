@@ -208,6 +208,11 @@
       </dependency>
       <dependency>
         <groupId>com.helger.phlox</groupId>
+        <artifactId>phlox-text</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.helger.phlox</groupId>
         <artifactId>phlox-cli</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -247,6 +252,7 @@
     <module>phlox-theme</module>
     <module>phlox-html</module>
     <module>phlox-pdf</module>
+    <module>phlox-text</module>
     <module>phlox-cli</module>
   </modules>
 

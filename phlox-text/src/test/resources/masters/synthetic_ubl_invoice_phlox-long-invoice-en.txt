@@ -1,0 +1,340 @@
+Invoice
+
+PHLOX-LONG-1
+============
+
+Invoice issue date     March 2, 2026
+Payment due date       April 1, 2026
+Invoice currency code  EUR
+Buyer reference        BUYER-REF-PHLOX-LONG-1
+Invoice type code      380 — Commercial invoice
+
+--------------------------------------------------------------------------------
+
+Seller
+
+Mustermann Industrial Supplies GmbH
+
+Mustermann Industrial Supplies GmbH
+
+Werkstrasse 12
+4020 Linz
+Austria
+
+Seller VAT identifier: ATU12345678
+Seller legal registration identifier: FN123456a
+Seller electronic address: 0088:9915123456789
+
+Buyer
+
+Beispiel Maschinenbau AG
+
+Beispiel Maschinenbau AG
+
+Industrieweg 5
+5020 Salzburg
+Austria
+
+Buyer VAT identifier: ATU87654321
+Buyer legal registration identifier: FN654321b
+Buyer electronic address: 0088:9915987654321
+Erika Beispiel · +43 662 123456 · einkauf@beispiel.example
+
+--------------------------------------------------------------------------------
+
+Notes
+-----
+
+This invoice has 120 lines, to check the page breaks, the repeated table header
+and the totals at the end.
+
+Prices in EUR. Delivery free to the address of the buyer.
+
+Invoice lines
+-------------
+
+  #  Description                                                                                                                                                                                                                                                            Qty  Unit price                   VAT  Line total
+---  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  -----------  ----------  --------------------  ----------
+  1  Hex bolt type A1                                                                                                                                                                                                                                                     1 one      € 2.00   Standard rate 7.00%      € 2.00
+     Item seller's identifier: ART-0001
+  2  Washer type B1                                                                                                                                                                                                                                                       8 one     € 39.13  Standard rate 19.00%    € 313.04
+     Item seller's identifier: ART-0002
+  3  Cable tie type C1                                                                                                                                                                                                                                                  3 metre     € 76.26  Standard rate 19.00%    € 228.78
+     Item seller's identifier: ART-0003
+  4  Ball bearing type D1                                                                                                                                                                                                                                           10 kilogram    € 113.39  Standard rate 19.00%  € 1,133.90
+     Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.
+     Item seller's identifier: ART-0004
+  5  Gasket type E1                                                                                                                                                                                                                                                       5 one    € 150.52   Standard rate 7.00%    € 752.60
+     Item seller's identifier: ART-0005
+  6  Copper pipe type F1                                                                                                                                                                                                                                                12 hour      € 7.65  Standard rate 19.00%     € 91.80
+     Item seller's identifier: ART-0006
+  7  Valve type G1                                                                                                                                                                                                                                                        7 one     € 44.78  Standard rate 19.00%    € 313.46
+     Item seller's identifier: ART-0007
+  8  Fuse type H1                                                                                                                                                                                                                                                         2 one     € 81.91  Standard rate 19.00%    € 163.82
+     Item seller's identifier: ART-0008
+  9  Terminal block type I1                                                                                                                                                                                                                                             9 metre    € 118.04   Standard rate 7.00%  € 1,062.36
+     Item seller's identifier: ART-0009
+ 10  Hose clamp type J1                                                                                                                                                                                                                                              4 kilogram    € 155.17  Standard rate 19.00%    € 620.68
+     Item seller's identifier: ART-0010
+ 11  Drive belt type K1                                                                                                                                                                                                                                                  11 one     € 12.30  Standard rate 19.00%    € 135.30
+     Item seller's identifier: ART-0011
+ 12  Spring type L1                                                                                                                                                                                                                                                      6 hour     € 49.43  Standard rate 19.00%    € 296.58
+     Item seller's identifier: ART-0012
+ 13  Bracket type M1                                                                                                                                                                                                                                                      1 one     € 86.56   Standard rate 7.00%     € 86.56
+     Item seller's identifier: ART-0013
+ 14  Sensor type N1                                                                                                                                                                                                                                                       8 one    € 123.69  Standard rate 19.00%    € 989.52
+     Item seller's identifier: ART-0014
+ 15  Relay type O1                                                                                                                                                                                                                                                      3 metre    € 160.82  Standard rate 19.00%    € 482.46
+     Item seller's identifier: ART-0015
+ 16  Hex bolt type P1                                                                                                                                                                                                                                               10 kilogram     € 17.95  Standard rate 19.00%    € 179.50
+     Item seller's identifier: ART-0016
+ 17  Washer type Q1                                                                                                                                                                                                                                                       5 one     € 54.08   Standard rate 7.00%    € 270.40
+     Item seller's identifier: ART-0017
+ 18  Cable tie type R1                                                                                                                                                                                                                                                  12 hour     € 91.21  Standard rate 19.00%  € 1,094.52
+     Item seller's identifier: ART-0018
+ 19  Ball bearing type S1                                                                                                                                                                                                                                                 7 one    € 128.34  Standard rate 19.00%    € 898.38
+     Item seller's identifier: ART-0019
+ 20  Gasket type T1                                                                                                                                                                                                                                                       2 one    € 165.47  Standard rate 19.00%    € 330.94
+     Item seller's identifier: ART-0020
+ 21  Copper pipe type U1                                                                                                                                                                                                                                                9 metre     € 22.60   Standard rate 7.00%    € 203.40
+     Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.
+     Item seller's identifier: ART-0021
+ 22  Valve type V1                                                                                                                                                                                                                                                   4 kilogram     € 59.73  Standard rate 19.00%    € 238.92
+     Item seller's identifier: ART-0022
+ 23  Fuse type W1                                                                                                                                                                                                                                                        11 one     € 96.86  Standard rate 19.00%  € 1,065.46
+     Item seller's identifier: ART-0023
+ 24  Terminal block type X1                                                                                                                                                                                                                                              6 hour    € 133.99  Standard rate 19.00%    € 803.94
+     Item seller's identifier: ART-0024
+ 25  Hose clamp type Y1                                                                                                                                                                                                                                                   1 one    € 170.12   Standard rate 7.00%    € 170.12
+     Item seller's identifier: ART-0025
+ 26  Drive belt type Z1                                                                                                                                                                                                                                                   8 one     € 27.25  Standard rate 19.00%    € 218.00
+     Item seller's identifier: ART-0026
+ 27  Spring type A2                                                                                                                                                                                                                                                     3 metre     € 64.38  Standard rate 19.00%    € 193.14
+     Item seller's identifier: ART-0027
+ 28  Bracket type B2                                                                                                                                                                                                                                                10 kilogram    € 101.51  Standard rate 19.00%  € 1,015.10
+     Item seller's identifier: ART-0028
+ 29  Sensor type C2                                                                                                                                                                                                                                                       5 one    € 138.64   Standard rate 7.00%    € 693.20
+     Item seller's identifier: ART-0029
+ 30  Relay type D2                                                                                                                                                                                                                                                      12 hour    € 175.77  Standard rate 19.00%  € 2,109.24
+     Item seller's identifier: ART-0030
+ 31  Hex bolt type E2                                                                                                                                                                                                                                                     7 one     € 32.90  Standard rate 19.00%    € 230.30
+     Item seller's identifier: ART-0031
+ 32  Washer type F2                                                                                                                                                                                                                                                       2 one     € 69.03  Standard rate 19.00%    € 138.06
+     Item seller's identifier: ART-0032
+ 33  Cable tie type G2                                                                                                                                                                                                                                                  9 metre    € 106.16   Standard rate 7.00%    € 955.44
+     Item seller's identifier: ART-0033
+ 34  Ball bearing type H2                                                                                                                                                                                                                                            4 kilogram    € 143.29  Standard rate 19.00%    € 573.16
+     Item seller's identifier: ART-0034
+ 35  Gasket type I2                                                                                                                                                                                                                                                      11 one    € 180.42  Standard rate 19.00%  € 1,984.62
+     Item seller's identifier: ART-0035
+ 36  Copper pipe type J2                                                                                                                                                                                                                                                 6 hour     € 37.55  Standard rate 19.00%    € 225.30
+     Item seller's identifier: ART-0036
+ 37  Valve type K2                                                                                                                                                                                                                                                        1 one     € 74.68   Standard rate 7.00%     € 74.68
+     Item seller's identifier: ART-0037
+ 38  Fuse type L2                                                                                                                                                                                                                                                         8 one    € 111.81  Standard rate 19.00%    € 894.48
+     Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.
+     Item seller's identifier: ART-0038
+ 39  Terminal block type M2                                                                                                                                                                                                                                             3 metre    € 148.94  Standard rate 19.00%    € 446.82
+     Item seller's identifier: ART-0039
+ 40  Hose clamp type N2                                                                                                                                                                                                                                             10 kilogram      € 5.07  Standard rate 19.00%     € 50.70
+     Item seller's identifier: ART-0040
+ 41  Drive belt type O2                                                                                                                                                                                                                                                   5 one     € 42.20   Standard rate 7.00%    € 211.00
+     Item seller's identifier: ART-0041
+ 42  Spring type P2                                                                                                                                                                                                                                                     12 hour     € 79.33  Standard rate 19.00%    € 951.96
+     Item seller's identifier: ART-0042
+ 43  Bracket type Q2                                                                                                                                                                                                                                                      7 one    € 116.46  Standard rate 19.00%    € 815.22
+     Item seller's identifier: ART-0043
+ 44  Sensor type R2                                                                                                                                                                                                                                                       2 one    € 153.59  Standard rate 19.00%    € 307.18
+     Item seller's identifier: ART-0044
+ 45  Relay type S2                                                                                                                                                                                                                                                      9 metre     € 10.72   Standard rate 7.00%     € 96.48
+     Item seller's identifier: ART-0045
+ 46  Hex bolt type T2                                                                                                                                                                                                                                                4 kilogram     € 47.85  Standard rate 19.00%    € 191.40
+     Item seller's identifier: ART-0046
+ 47  Washer type U2                                                                                                                                                                                                                                                      11 one     € 84.98  Standard rate 19.00%    € 934.78
+     Item seller's identifier: ART-0047
+ 48  Cable tie type V2                                                                                                                                                                                                                                                   6 hour    € 121.11  Standard rate 19.00%    € 726.66
+     Item seller's identifier: ART-0048
+ 49  Ball bearing type W2                                                                                                                                                                                                                                                 1 one    € 158.24   Standard rate 7.00%    € 158.24
+     Item seller's identifier: ART-0049
+ 50  Gasket type X2                                                                                                                                                                                                                                                       8 one     € 15.37  Standard rate 19.00%    € 122.96
+     Item seller's identifier: ART-0050
+ 51  Copper pipe type Y2                                                                                                                                                                                                                                                3 metre     € 52.50  Standard rate 19.00%    € 157.50
+     Item seller's identifier: ART-0051
+ 52  Valve type Z2                                                                                                                                                                                                                                                  10 kilogram     € 89.63  Standard rate 19.00%    € 896.30
+     Item seller's identifier: ART-0052
+ 53  Fuse type A3                                                                                                                                                                                                                                                         5 one    € 126.76   Standard rate 7.00%    € 633.80
+     Item seller's identifier: ART-0053
+ 54  Terminal block type B3                                                                                                                                                                                                                                             12 hour    € 163.89  Standard rate 19.00%  € 1,966.68
+     Item seller's identifier: ART-0054
+ 55  Hose clamp type C3                                                                                                                                                                                                                                                   7 one     € 20.02  Standard rate 19.00%    € 140.14
+     Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.
+     Item seller's identifier: ART-0055
+ 56  Drive belt type D3                                                                                                                                                                                                                                                   2 one     € 57.15  Standard rate 19.00%    € 114.30
+     Item seller's identifier: ART-0056
+ 57  Spring type E3                                                                                                                                                                                                                                                     9 metre     € 94.28   Standard rate 7.00%    € 848.52
+     Item seller's identifier: ART-0057
+ 58  Bracket type F3                                                                                                                                                                                                                                                 4 kilogram    € 131.41  Standard rate 19.00%    € 525.64
+     Item seller's identifier: ART-0058
+ 59  Sensor type G3                                                                                                                                                                                                                                                      11 one    € 168.54  Standard rate 19.00%  € 1,853.94
+     Item seller's identifier: ART-0059
+ 60  Relay type H3                                                                                                                                                                                                                                                       6 hour     € 25.67  Standard rate 19.00%    € 154.02
+     Item seller's identifier: ART-0060
+ 61  Hex bolt type I3                                                                                                                                                                                                                                                     1 one     € 62.80   Standard rate 7.00%     € 62.80
+     Item seller's identifier: ART-0061
+ 62  Washer type J3                                                                                                                                                                                                                                                       8 one     € 99.93  Standard rate 19.00%    € 799.44
+     Item seller's identifier: ART-0062
+ 63  Cable tie type K3                                                                                                                                                                                                                                                  3 metre    € 136.06  Standard rate 19.00%    € 408.18
+     Item seller's identifier: ART-0063
+ 64  Ball bearing type L3                                                                                                                                                                                                                                           10 kilogram    € 173.19  Standard rate 19.00%  € 1,731.90
+     Item seller's identifier: ART-0064
+ 65  Gasket type M3                                                                                                                                                                                                                                                       5 one     € 30.32   Standard rate 7.00%    € 151.60
+     Item seller's identifier: ART-0065
+ 66  Copper pipe type N3                                                                                                                                                                                                                                                12 hour     € 67.45  Standard rate 19.00%    € 809.40
+     Item seller's identifier: ART-0066
+ 67  Valve type O3                                                                                                                                                                                                                                                        7 one    € 104.58  Standard rate 19.00%    € 732.06
+     Item seller's identifier: ART-0067
+ 68  Fuse type P3                                                                                                                                                                                                                                                         2 one    € 141.71  Standard rate 19.00%    € 283.42
+     Item seller's identifier: ART-0068
+ 69  Terminal block type Q3                                                                                                                                                                                                                                             9 metre    € 178.84   Standard rate 7.00%  € 1,609.56
+     Item seller's identifier: ART-0069
+ 70  Hose clamp type R3                                                                                                                                                                                                                                              4 kilogram     € 35.97  Standard rate 19.00%    € 143.88
+     Item seller's identifier: ART-0070
+ 71  Drive belt type S3                                                                                                                                                                                                                                                  11 one     € 72.10  Standard rate 19.00%    € 793.10
+     Item seller's identifier: ART-0071
+ 72  Spring type T3                                                                                                                                                                                                                                                      6 hour    € 109.23  Standard rate 19.00%    € 655.38
+     Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.
+     Item seller's identifier: ART-0072
+ 73  Bracket type U3                                                                                                                                                                                                                                                      1 one    € 146.36   Standard rate 7.00%    € 146.36
+     Item seller's identifier: ART-0073
+ 74  Sensor type V3                                                                                                                                                                                                                                                       8 one      € 3.49  Standard rate 19.00%     € 27.92
+     Item seller's identifier: ART-0074
+ 75  Relay type W3                                                                                                                                                                                                                                                      3 metre     € 40.62  Standard rate 19.00%    € 121.86
+     Item seller's identifier: ART-0075
+ 76  Hex bolt type X3                                                                                                                                                                                                                                               10 kilogram     € 77.75  Standard rate 19.00%    € 777.50
+     Item seller's identifier: ART-0076
+ 77  Washer type Y3                                                                                                                                                                                                                                                       5 one    € 114.88   Standard rate 7.00%    € 574.40
+     Item seller's identifier: ART-0077
+ 78  Cable tie type Z3                                                                                                                                                                                                                                                  12 hour    € 151.01  Standard rate 19.00%  € 1,812.12
+     Item seller's identifier: ART-0078
+ 79  Ball bearing type A4                                                                                                                                                                                                                                                 7 one      € 8.14  Standard rate 19.00%     € 56.98
+     Item seller's identifier: ART-0079
+ 80  Gasket type B4                                                                                                                                                                                                                                                       2 one     € 45.27  Standard rate 19.00%     € 90.54
+     Item seller's identifier: ART-0080
+ 81  Copper pipe type C4                                                                                                                                                                                                                                                9 metre     € 82.40   Standard rate 7.00%    € 741.60
+     Item seller's identifier: ART-0081
+ 82  Valve type D4                                                                                                                                                                                                                                                   4 kilogram    € 119.53  Standard rate 19.00%    € 478.12
+     Item seller's identifier: ART-0082
+ 83  Fuse type E4                                                                                                                                                                                                                                                        11 one    € 156.66  Standard rate 19.00%  € 1,723.26
+     Item seller's identifier: ART-0083
+ 84  Terminal block type F4                                                                                                                                                                                                                                              6 hour     € 13.79  Standard rate 19.00%     € 82.74
+     Item seller's identifier: ART-0084
+ 85  Hose clamp type G4                                                                                                                                                                                                                                                   1 one     € 50.92   Standard rate 7.00%     € 50.92
+     Item seller's identifier: ART-0085
+ 86  Drive belt type H4                                                                                                                                                                                                                                                   8 one     € 87.05  Standard rate 19.00%    € 696.40
+     Item seller's identifier: ART-0086
+ 87  Spring type I4                                                                                                                                                                                                                                                     3 metre    € 124.18  Standard rate 19.00%    € 372.54
+     Item seller's identifier: ART-0087
+ 88  Bracket type J4                                                                                                                                                                                                                                                10 kilogram    € 161.31  Standard rate 19.00%  € 1,613.10
+     Item seller's identifier: ART-0088
+ 89  Sensor type K4                                                                                                                                                                                                                                                       5 one     € 18.44   Standard rate 7.00%     € 92.20
+     Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.
+     Item seller's identifier: ART-0089
+ 90  Relay type L4                                                                                                                                                                                                                                                      12 hour     € 55.57  Standard rate 19.00%    € 666.84
+     Item seller's identifier: ART-0090
+ 91  Hex bolt type M4                                                                                                                                                                                                                                                     7 one     € 92.70  Standard rate 19.00%    € 648.90
+     Item seller's identifier: ART-0091
+ 92  Washer type N4                                                                                                                                                                                                                                                       2 one    € 129.83  Standard rate 19.00%    € 259.66
+     Item seller's identifier: ART-0092
+ 93  Cable tie type O4                                                                                                                                                                                                                                                  9 metre    € 166.96   Standard rate 7.00%  € 1,502.64
+     Item seller's identifier: ART-0093
+ 94  Ball bearing type P4                                                                                                                                                                                                                                            4 kilogram     € 23.09  Standard rate 19.00%     € 92.36
+     Item seller's identifier: ART-0094
+ 95  Gasket type Q4                                                                                                                                                                                                                                                      11 one     € 60.22  Standard rate 19.00%    € 662.42
+     Item seller's identifier: ART-0095
+ 96  Copper pipe type R4                                                                                                                                                                                                                                                 6 hour     € 97.35  Standard rate 19.00%    € 584.10
+     Item seller's identifier: ART-0096
+ 97  Valve type S4                                                                                                                                                                                                                                                        1 one    € 134.48   Standard rate 7.00%    € 134.48
+     Item seller's identifier: ART-0097
+ 98  Fuse type T4                                                                                                                                                                                                                                                         8 one    € 171.61  Standard rate 19.00%  € 1,372.88
+     Item seller's identifier: ART-0098
+ 99  Terminal block type U4                                                                                                                                                                                                                                             3 metre     € 28.74  Standard rate 19.00%     € 86.22
+     Item seller's identifier: ART-0099
+100  Hose clamp type V4                                                                                                                                                                                                                                             10 kilogram     € 65.87  Standard rate 19.00%    € 658.70
+     Item seller's identifier: ART-0100
+101  Drive belt type W4                                                                                                                                                                                                                                                   5 one    € 102.00   Standard rate 7.00%    € 510.00
+     Item seller's identifier: ART-0101
+102  Spring type X4                                                                                                                                                                                                                                                     12 hour    € 139.13  Standard rate 19.00%  € 1,669.56
+     Item seller's identifier: ART-0102
+103  Bracket type Y4                                                                                                                                                                                                                                                      7 one    € 176.26  Standard rate 19.00%  € 1,233.82
+     Item seller's identifier: ART-0103
+104  Sensor type Z4                                                                                                                                                                                                                                                       2 one     € 33.39  Standard rate 19.00%     € 66.78
+     Item seller's identifier: ART-0104
+105  Relay type A5                                                                                                                                                                                                                                                      9 metre     € 70.52   Standard rate 7.00%    € 634.68
+     Item seller's identifier: ART-0105
+106  Hex bolt type B5                                                                                                                                                                                                                                                4 kilogram    € 107.65  Standard rate 19.00%    € 430.60
+     Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.
+     Item seller's identifier: ART-0106
+107  Washer type C5                                                                                                                                                                                                                                                      11 one    € 144.78  Standard rate 19.00%  € 1,592.58
+     Item seller's identifier: ART-0107
+108  Cable tie type D5                                                                                                                                                                                                                                                   6 hour    € 181.91  Standard rate 19.00%  € 1,091.46
+     Item seller's identifier: ART-0108
+109  Ball bearing type E5                                                                                                                                                                                                                                                 1 one     € 38.04   Standard rate 7.00%     € 38.04
+     Item seller's identifier: ART-0109
+110  Gasket type F5                                                                                                                                                                                                                                                       8 one     € 75.17  Standard rate 19.00%    € 601.36
+     Item seller's identifier: ART-0110
+111  Copper pipe type G5                                                                                                                                                                                                                                                3 metre    € 112.30  Standard rate 19.00%    € 336.90
+     Item seller's identifier: ART-0111
+112  Valve type H5                                                                                                                                                                                                                                                  10 kilogram    € 149.43  Standard rate 19.00%  € 1,494.30
+     Item seller's identifier: ART-0112
+113  Fuse type I5                                                                                                                                                                                                                                                         5 one      € 6.56   Standard rate 7.00%     € 32.80
+     Item seller's identifier: ART-0113
+114  Terminal block type J5                                                                                                                                                                                                                                             12 hour     € 43.69  Standard rate 19.00%    € 524.28
+     Item seller's identifier: ART-0114
+115  Hose clamp type K5                                                                                                                                                                                                                                                   7 one     € 80.82  Standard rate 19.00%    € 565.74
+     Item seller's identifier: ART-0115
+116  Drive belt type L5                                                                                                                                                                                                                                                   2 one    € 117.95  Standard rate 19.00%    € 235.90
+     Item seller's identifier: ART-0116
+117  Spring type M5                                                                                                                                                                                                                                                     9 metre    € 154.08   Standard rate 7.00%  € 1,386.72
+     Item seller's identifier: ART-0117
+118  Bracket type N5                                                                                                                                                                                                                                                 4 kilogram     € 11.21  Standard rate 19.00%     € 44.84
+     Item seller's identifier: ART-0118
+119  Sensor type O5                                                                                                                                                                                                                                                      11 one     € 48.34  Standard rate 19.00%    € 531.74
+     Item seller's identifier: ART-0119
+120  Relay type P5                                                                                                                                                                                                                                                       6 hour     € 85.47  Standard rate 19.00%    € 512.82
+     Item seller's identifier: ART-0120
+
+VAT breakdown
+-------------
+
+VAT category   Taxable amount  VAT rate   VAT amount
+-------------  --------------  --------  -----------
+Standard rate     € 13,887.60     7.00%     € 972.13
+Standard rate     € 57,493.20    19.00%  € 10,923.71
+
+Sum of invoice line net amounts   € 71,380.80
+Invoice total amount without VAT  € 71,380.80
+Invoice total VAT amount          € 11,895.84
+Invoice total amount with VAT     € 83,276.64
+
+Amount due  € 83,276.64
+
+Payment
+
+Payment means type code: Credit transfer
+Credit transfer
+Remittance information: PHLOX-LONG-1
+
+Credit transfer
+
+- Mustermann Industrial Supplies — AT611904300234573201 (BIC BKAUATWW)
+
+Payment terms
+-------------
+
+Payment within 30 days net.
+
+Specification identifier:
+urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0 ·
+Business process type: urn:fdc:peppol.eu:2017:poacc:billing:01:1.0
+
+Generated by phlox · open-source edition · github.com/phax/phlox
