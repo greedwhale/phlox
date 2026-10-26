@@ -7,12 +7,14 @@ Visualizer for EN 16931 electronic invoices.
 Reads invoices in **UBL** or **CII** syntax, lifts them into a syntax-neutral intermediate model, and renders the result to **HTML**, **PDF** or **plain text** in English or German.
 
 ```
-┌──────────────┐     ┌──────────────────┐     ┌──────────────┐
-│ UBL Invoice  │ ──▶ │                  │ ──▶ │ HTML output  │
-│ UBL CredNote │     │  PhloxInvoice    │     │              │
-│ CII D16B/D25A│ ──▶ │  (EN 16931 BGs)  │ ──▶ │ PDF output   │
-└──────────────┘     └──────────────────┘     └──────────────┘
-   Source readers      Intermediate model         Writers
+┌────────────────┐     ┌──────────────────┐     ┌──────────────┐
+│ UBL 2.1 / 2.5  │ ──▶ │                  │ ──▶ │ HTML output  │
+│ Invoice and    │     │  PhloxInvoice    │     │              │
+│ CreditNote     │     │  (EN 16931 BGs)  │ ──▶ │ PDF output   │
+│ CII D16B / D25A│ ──▶ │                  │     │              │
+│                │     │                  │ ──▶ │ Plain text   │
+└────────────────┘     └──────────────────┘     └──────────────┘
+  Source readers        Intermediate model          Writers
 ```
 
 ## Features

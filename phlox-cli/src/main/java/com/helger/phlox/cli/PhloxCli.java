@@ -35,6 +35,7 @@ import com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream;
 import com.helger.base.io.nonblocking.NonBlockingByteArrayOutputStream;
 import com.helger.diagnostics.error.list.ErrorList;
 import com.helger.phlox.api.AbstractRenderContext;
+import com.helger.phlox.api.CPhloxVersion;
 import com.helger.phlox.api.PhloxRuntimeException;
 import com.helger.phlox.api.model.PhloxAttachment;
 import com.helger.phlox.api.model.PhloxInvoice;
@@ -65,10 +66,27 @@ import picocli.CommandLine;
  */
 @Command (name = "phlox",
           mixinStandardHelpOptions = true,
-          version = "phlox 0.1.0",
+          versionProvider = PhloxCli.VersionProvider.class,
           description = "Render EN 16931 electronic invoices (UBL / CII) to HTML, PDF or plain text.")
 public class PhloxCli implements Callable <Integer>
 {
+  /**
+   * Provides the version for <code>--version</code> from {@link CPhloxVersion}, which the Maven
+   * build fills from the project version.
+   */
+  public static final class VersionProvider implements CommandLine.IVersionProvider
+  {
+    /** Create a new version provider. Called by picocli. */
+    public VersionProvider ()
+    {}
+
+    @NonNull
+    public String [] getVersion ()
+    {
+      return new String [] { "phlox " + CPhloxVersion.BUILD_VERSION };
+    }
+  }
+
   /** The supported output formats. */
   public enum EOutputFormat
   {

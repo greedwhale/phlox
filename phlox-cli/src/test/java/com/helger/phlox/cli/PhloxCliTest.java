@@ -24,6 +24,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,6 +47,7 @@ import com.helger.collection.commons.CommonsArrayList;
 import com.helger.collection.commons.ICommonsList;
 import com.helger.font.roboto.EFontResourceRoboto;
 import com.helger.io.resource.ClassPathResource;
+import com.helger.phlox.api.CPhloxVersion;
 import com.helger.phlox.testfiles.MockPhloxTestFiles;
 
 import picocli.CommandLine;
@@ -80,6 +83,16 @@ public final class PhloxCliTest
   private static int _run (final String... aArgs)
   {
     return new CommandLine (new PhloxCli ()).execute (aArgs);
+  }
+
+  @Test
+  public void testVersion ()
+  {
+    final StringWriter aSW = new StringWriter ();
+    final CommandLine aCmd = new CommandLine (new PhloxCli ()).setOut (new PrintWriter (aSW));
+    assertEquals (0, aCmd.execute ("--version"));
+    assertEquals ("phlox " + CPhloxVersion.BUILD_VERSION, aSW.toString ().strip ());
+    assertFalse (CPhloxVersion.BUILD_VERSION.equals ("undefined"));
   }
 
   @Test
