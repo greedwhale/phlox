@@ -22,9 +22,8 @@ package com.helger.phlox.api.template;
  * {@code AbstractRenderContext} can hold a typed reference without dragging in JMustache or
  * commonmark-java.
  * <p>
- * A {@link com.helger.phlox.api.AbstractRenderContext} with {@code getTemplate() == null} falls
- * back to the hard-coded section grammar shipped in the writer modules — this is the default
- * and preserves byte-for-byte the 0.1.0 output.
+ * A {@link com.helger.phlox.api.AbstractRenderContext} with {@code getTemplate() == null} is
+ * rendered with the default template of the {@code phlox-template} module.
  *
  * @author Philip Helger
  */

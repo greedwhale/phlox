@@ -213,10 +213,10 @@ public abstract class AbstractRenderContext <IMPLTYPE extends AbstractRenderCont
   }
 
   /**
-   * Get the optional template that drives both writers when set.
+   * Get the optional template that drives the writers when set.
    *
-   * @return The optional template that drives both writers when set. When {@code null} (the
-   *         default), writers fall back to their hard-coded section grammar.
+   * @return The optional template that drives the writers when set. When {@code null} (the
+   *         default), the writers use the default template ({@code PhloxTemplate.getDefault ()}).
    */
   @Nullable
   public IPhloxTemplate getTemplate ()

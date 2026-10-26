@@ -244,7 +244,7 @@ public final class PhloxTemplate implements IPhloxTemplate
    * Get the default template shipped in this module — a single language-independent.
    *
    * @return The default template shipped in this module — a single language-independent
-   *         {@code default.ptpl} that reproduces the layout of the 0.1.0 hard-coded writers.
+   *         {@code default.ptpl}. The writers use it when the render context has no template.
    *         Returned instance is a lazily created singleton.
    */
   @NonNull

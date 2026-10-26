@@ -16,5 +16,10 @@ en16931-cii2ubl). The origin of each set is described in the README.md of its
 directory. The files under synthetic/ were generated for phlox with
 phlox-testfiles/tools/generate-synthetic.py.
 
-The file phlox-testfiles/src/main/resources/logo/phoss.png is the logo of the
-phoss projects of Philip Helger. It serves as the sample logo of the tests.
+The logos are not covered by the Apache License:
+
+- phlox-testfiles/src/main/resources/logo/phoss.png is the logo of the phoss
+  projects. It serves as the sample logo of the tests.
+- docs/logo/phlox-logo-644-180.png is the logo of phlox.
+
+Copyright Helger IT Consulting GmbH - all rights reserved.

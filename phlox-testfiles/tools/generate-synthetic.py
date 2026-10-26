@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 """
 Generates the synthetic UBL 2.1 invoices in
 src/main/resources/external/en16931/synthetic/ubl/invoice/ . They cover the cases that the imported

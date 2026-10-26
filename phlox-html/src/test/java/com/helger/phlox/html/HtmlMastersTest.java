@@ -57,6 +57,8 @@ public final class HtmlMastersTest
 {
   private static final String UPDATE_PROPERTY = "phlox.updateMasters";
   private static final File MASTER_DIR = new File ("src/test/resources/masters");
+  private static final String LICENSE_HEADER_START = "<!--\n";
+  private static final String LICENSE_HEADER_END = "-->\n";
   private static final String LOGO_CASE = "2017/ubl/invoice/ubl-tc434-example1.xml";
 
   @NonNull
@@ -80,6 +82,22 @@ public final class HtmlMastersTest
     {
       throw new IllegalStateException ("Failed to open " + sPath, ex);
     }
+  }
+
+  /**
+   * "mvn license:format" prepends the licence header as an HTML comment to the reference files. The
+   * writer never creates a leading comment, so it is removed before the comparison.
+   */
+  @NonNull
+  private static String _removeLicenseHeader (@NonNull final String sMaster)
+  {
+    if (sMaster.startsWith (LICENSE_HEADER_START))
+    {
+      final int nEnd = sMaster.indexOf (LICENSE_HEADER_END);
+      if (nEnd >= 0)
+        return sMaster.substring (nEnd + LICENSE_HEADER_END.length ());
+    }
+    return sMaster;
   }
 
   @NonNull
@@ -129,7 +147,7 @@ public final class HtmlMastersTest
                     " - if the change is wanted, write the files again with -D" +
                     UPDATE_PROPERTY +
                     "=true",
-                    Files.readString (aMaster.toPath (), StandardCharsets.UTF_8),
+                    _removeLicenseHeader (Files.readString (aMaster.toPath (), StandardCharsets.UTF_8)),
                     sActual);
     }
   }
