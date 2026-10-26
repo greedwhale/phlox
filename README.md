@@ -1,8 +1,10 @@
 # phlox
 
+![Logo](https://github.com/phax/phlox/blob/main/docs/logo/phlox-logo-644-180.png)
+
 Visualizer for EN 16931 electronic invoices.
 
-Reads invoices in **UBL** or **CII** syntax, lifts them into a syntax-neutral intermediate model, and renders the result to **HTML** or **PDF** in English or German.
+Reads invoices in **UBL** or **CII** syntax, lifts them into a syntax-neutral intermediate model, and renders the result to **HTML**, **PDF** or **plain text** in English or German.
 
 ```
 ┌──────────────┐     ┌──────────────────┐     ┌──────────────┐
