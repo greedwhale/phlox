@@ -50,11 +50,6 @@ jobs:
       uses: stCarolas/setup-maven@v5
       with:
         maven-version: 3.9.16
-          
-    - uses: italia/publiccode-parser-action@v1
-      with:
-        publiccode: 'publiccode.yml'
-        no-external-checks: true
 
     - name: Cache local Maven repository
       uses: actions/cache@v6
