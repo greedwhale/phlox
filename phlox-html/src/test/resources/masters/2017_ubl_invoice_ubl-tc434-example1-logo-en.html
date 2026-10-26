@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="generator" content="phlox @VERSION@" />
+    <meta name="author" content="De Koksmaat" />
+    <meta name="description" content="EN 16931:2017 Invoice" />
+    <meta name="keywords" content="EN 16931, Invoice, phlox" />
+    <title>Invoice: 12115118</title>
+    <style type="text/css">:root{--phlox-ink:#1d2433;--phlox-muted:#667085;--phlox-faint:#98a2b3;--phlox-rule:#e4e7ec;--phlox-wash:#f6f7f9;--phlox-accent:#245c64;--phlox-accent-wash:#e8f1f2}
+*{box-sizing:border-box}
+body{margin:0;color:var(--phlox-ink);font:10.5pt/1.45 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+@media screen{body{background:#eceef2}.phlox-page{margin:12mm auto;box-shadow:0 1px 3px rgba(16,24,40,.12)}}
+@page{size:A4;margin:0}
+@media print{.phlox-page{margin:0;box-shadow:none}}
+.phlox-page{width:210mm;max-width:100%;min-height:297mm;background:#fff;padding:16mm 18mm}
+.phlox-logo{max-height:14mm;max-width:50mm}
+a{color:var(--phlox-accent)}
+h1,h2,h3{margin:0}
+.phlox-title{font-size:24pt;font-weight:650;letter-spacing:-.01em;margin:1mm 0 0}
+.phlox-section-title,h2.phlox-section-title{font-size:8pt;letter-spacing:.12em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;margin:6mm 0 2mm;padding:0;border:0}
+.phlox-subsection-title,h3.phlox-subsection-title{font-size:9pt;margin:3mm 0 1.5mm;font-weight:650}
+p{margin:0 0 2mm}
+.phlox-label{font-size:7.5pt;letter-spacing:.12em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;margin:0 0 1.5mm}
+.phlox-kind{font-size:8.5pt;letter-spacing:.14em;text-transform:uppercase;color:var(--phlox-accent);font-weight:600;margin:0}
+.phlox-muted{color:var(--phlox-muted);font-size:9pt}
+.phlox-party-name{font-weight:650;font-size:11.5pt;margin:0 0 1mm}
+.phlox-row>*{min-width:0}
+.phlox-row:empty{display:none}
+.phlox-row{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8mm}
+.phlox-head{grid-template-columns:1fr auto;grid-auto-flow:row}
+hr{border:0;border-top:1px solid var(--phlox-rule);margin:4mm 0}
+hr.phlox-rule{border-top:2px solid var(--phlox-accent);margin:5mm 0 6mm}
+.phlox-head-logo{text-align:right}
+.phlox-parties{margin-bottom:5mm}
+.phlox-secondary{font-size:9pt;margin-bottom:5mm}
+.phlox-table{width:100%;border-collapse:collapse;margin:0 0 3mm}
+.phlox-table th{font-size:7.5pt;letter-spacing:.08em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;text-align:left;padding:2mm;border-bottom:1.5px solid var(--phlox-ink)}
+.phlox-table td{padding:2.4mm 2mm;border-bottom:1px solid var(--phlox-rule);vertical-align:top}
+.phlox-meta{width:auto;margin-top:4mm;font-size:9.5pt}
+.phlox-meta thead,.phlox-totals thead,.phlox-due thead,.phlox-terms thead{display:none}
+.phlox-meta td{border:0;padding:.6mm 6mm .6mm 0}
+.phlox-totals td,.phlox-due td{border:0;padding:1mm 0;font-size:9.5pt}
+.phlox-meta td:first-child{color:var(--phlox-muted)}
+.phlox-meta td:last-child{font-weight:550}
+.phlox-vat .phlox-table th,.phlox-vat .phlox-table td{font-size:8.5pt;padding:1.6mm 2mm}
+.phlox-bottom{margin-top:6mm;grid-auto-flow:row;grid-template-columns:minmax(0,1fr) 78mm;align-items:start}
+.phlox-totals{background:var(--phlox-wash);border-radius:3px;padding:3mm 4mm}
+.phlox-totals .phlox-table,.phlox-due .phlox-table{margin:0}
+.phlox-due{background:var(--phlox-accent);color:#fff;border-radius:3px;padding:3.2mm 4mm;margin-top:2mm;font-size:12pt;font-weight:650}
+.phlox-due td{padding:0;color:#fff;font-size:12pt}
+.phlox-due td:last-child{font-size:15pt}
+.phlox-pay{margin-top:6mm;padding:4mm;background:var(--phlox-accent-wash);border-radius:3px;font-size:9.5pt}
+.phlox-pay .phlox-label{color:var(--phlox-accent)}
+.phlox-pay p{margin:0 0 2mm}
+.phlox-pay code{font-family:ui-monospace,Menlo,monospace}
+code{font-family:ui-monospace,Menlo,monospace}
+blockquote{margin:0 0 2mm;padding-left:3mm;border-left:2px solid var(--phlox-rule);color:var(--phlox-muted);font-size:9pt}
+ul,ol{margin:0 0 2mm;padding-left:5mm}
+li{margin:0 0 1mm}
+.phlox-totals-due td{font-weight:650}
+.phlox-watermark-user{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-45deg);font-size:6em;color:rgba(128,128,128,0.12);pointer-events:none;z-index:9999;user-select:none}
+.phlox-watermark-program{position:fixed;bottom:4mm;right:4mm;font-size:.8em;color:rgba(100,100,100,0.6);z-index:9999}
+.phlox-watermark-program a{color:inherit}
+.phlox-section-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
+.phlox-header-meta{display:grid;grid-template-columns:auto auto;gap:.25rem 1rem}
+.phlox-parties-grid{display:grid;grid-template-columns:1fr 1fr;gap:8mm}
+.phlox-party-title{font-size:7.5pt;letter-spacing:.12em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;margin:0 0 1.5mm}
+.phlox-address div{line-height:1.4}
+.phlox-contact{margin-top:.5rem;font-size:.9rem;color:var(--phlox-muted)}
+.phlox-kv-label{color:var(--phlox-muted);margin-right:.5rem}
+.phlox-kvgrid{display:grid;grid-template-columns:auto 1fr;column-gap:1rem;row-gap:.2rem}
+.phlox-lines-table,.phlox-vat-table,.phlox-ac-table{width:100%;border-collapse:collapse;margin-top:.5rem}
+.phlox-lines-table th,.phlox-vat-table th,.phlox-ac-table th{font-size:7.5pt;letter-spacing:.08em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;text-align:left;padding:2mm;border-bottom:1.5px solid var(--phlox-ink)}
+.phlox-lines-table td,.phlox-vat-table td,.phlox-ac-table td{padding:2.4mm 2mm;border-bottom:1px solid var(--phlox-rule);vertical-align:top}
+.phlox-lines-table th:nth-child(n+3),.phlox-lines-table td:nth-child(n+3){text-align:right}
+.phlox-ac-table th:nth-child(n+3),.phlox-ac-table td:nth-child(n+3){text-align:right}
+.phlox-vat-table th:nth-child(n+2),.phlox-vat-table td:nth-child(n+2){text-align:right}
+.phlox-item-name{font-weight:650}
+.phlox-item-desc,.phlox-item-attr,.phlox-line-note{color:var(--phlox-muted);font-size:8.5pt}
+.phlox-totals-ladder{display:grid;grid-template-columns:1fr auto;row-gap:.25rem;max-width:78mm;margin-left:auto;background:var(--phlox-wash);border-radius:3px;padding:3mm 4mm}
+.phlox-total-row{display:contents}
+.phlox-total-label{padding-right:1rem}
+.phlox-total-amount{text-align:right}
+.phlox-totals-due .phlox-total-row:last-child .phlox-total-amount{font-weight:650;border-top:2px solid var(--phlox-accent);padding-top:.25rem}
+@media print{.phlox-watermark-user{position:fixed}}
+.phlox-foot{margin-top:10mm;padding-top:3mm;border-top:1px solid var(--phlox-rule);font-size:7.5pt;color:var(--phlox-faint)}
+.phlox-lines td:first-child{width:2em;color:var(--phlox-muted)}
+.phlox-lines td em{font-style:normal;color:var(--phlox-muted);font-size:8.5pt}
+.phlox-lines th:nth-child(n+3),.phlox-lines td:nth-child(n+3){text-align:right}
+</style>
+  </head>
+  <body>
+    <div class="phlox-watermark-program">
+      <a href="https://github.com/phax/phlox" target="phlox">Generated by phlox · open-source edition · github.com/phax/phlox</a>
+    </div>
+    <div class="phlox-page">
+      <div class="phlox-row phlox-head">
+        <div class="phlox-head-main">
+          <p class="phlox-kind">Invoice</p>
+          <h1 class="phlox-title">12115118</h1>
+          <table class="phlox-table phlox-meta">
+            <thead>
+              <tr>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Invoice issue date</td>
+                <td>January 9, 2015</td>
+              </tr>
+              <tr>
+                <td>Payment due date</td>
+                <td>January 9, 2015</td>
+              </tr>
+              <tr>
+                <td>Invoice currency code</td>
+                <td>EUR</td>
+              </tr>
+              <tr>
+                <td>Invoice type code</td>
+                <td>380 — Commercial invoice</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="phlox-head-logo">
+          <p>
+            <img class="phlox-logo" src="data:image/png;base64,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" alt="Logo" />
+          </p>
+        </div>
+      </div>
+      <hr class="phlox-rule" />
+      <div class="phlox-row phlox-parties">
+        <div class="phlox-party">
+          <p class="phlox-label">Seller</p>
+          <p class="phlox-party-name">De Koksmaat</p>
+          <p>Postbus 7l<br />1950 AB Velsen-Noord<br />Netherlands (the)</p>
+          <p class="phlox-muted">Seller VAT identifier: NL8200.98.395.B.01<br />Seller legal registration identifier: 57151520</p>
+        </div>
+        <div class="phlox-party">
+          <p class="phlox-label">Buyer</p>
+          <p class="phlox-party-name">ODIN 59</p>
+          <p>POSTBUS 367<br />1960 AJ HEEMSKERK<br />Netherlands (the)</p>
+          <p class="phlox-muted">Buyer identifier: 10202<br />Dhr. J BLOKKER</p>
+        </div>
+      </div>
+      <hr />
+      <div class="phlox-row phlox-secondary"></div>
+      <h2 class="phlox-section-title">Notes</h2>
+      <p>Alle leveringen zijn franco. Alle prijzen zijn incl. BTW. Betalingstermijn: 14 dagen netto. Prijswijzigingen voorbehouden. Op al onze aanbiedingen, leveringen en overeenkomsten zijn van toepassing in de algemene verkoop en leveringsvoorwaarden. Gedeponeerd bij de K.v.K. te Amsterdam 25-04-&#39;85##Delivery terms</p>
+      <h2 class="phlox-section-title">Invoice lines</h2>
+      <table class="phlox-table phlox-lines">
+        <thead>
+          <tr>
+            <th style="text-align:right;">#</th>
+            <th>Description</th>
+            <th style="text-align:right;">Qty</th>
+            <th style="text-align:right;">Unit price</th>
+            <th style="text-align:right;">VAT</th>
+            <th style="text-align:right;">Line total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align:right;">1</td>
+            <td>
+              <strong>PATAT FRITES 10MM 10KG</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 166022</em>
+            </td>
+            <td style="text-align:right;">2 each</td>
+            <td style="text-align:right;">€ 9.95</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">€ 19.90</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">2</td>
+            <td>
+              <strong>PKAAS 50PL. JONG BEL. 1KG</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 661813</em>
+            </td>
+            <td style="text-align:right;">1 each</td>
+            <td style="text-align:right;">€ 9.85</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">€ 9.85</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">3</td>
+            <td>
+              <strong>POT KETCHUP 3 LT</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 438146</em>
+            </td>
+            <td style="text-align:right;">1 each</td>
+            <td style="text-align:right;">€ 8.29</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">€ 8.29</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">4</td>
+            <td>
+              <strong>FRITESSAUS 3 LRR</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 438103</em>
+            </td>
+            <td style="text-align:right;">2 each</td>
+            <td style="text-align:right;">€ 7.23</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">€ 14.46</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">5</td>
+            <td>
+              <strong>KOFFIE BLIK 3,5KG SNELF</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 666955</em>
+            </td>
+            <td style="text-align:right;">1 each</td>
+            <td style="text-align:right;">€ 35.00</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">€ 35.00</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">6</td>
+            <td>
+              <strong>KOFFIE 3.5 KG BLIK STAND</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 664871</em>
+            </td>
+            <td style="text-align:right;">1 each</td>
+            <td style="text-align:right;">€ 35.00</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">€ 35.00</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">7</td>
+            <td>
+              <strong>SUIKERKLONT</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 350257</em>
+            </td>
+            <td style="text-align:right;">1 each</td>
+            <td style="text-align:right;">€ 10.65</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">€ 10.65</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">8</td>
+            <td>
+              <strong>1 KG UL BLOKJES</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 350258</em>
+            </td>
+            <td style="text-align:right;">1 each</td>
+            <td style="text-align:right;">€ 1.55</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">€ 1.55</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">9</td>
+            <td>
+              <strong>BLOCKNOTE A5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 999998</em>
+            </td>
+            <td style="text-align:right;">3 each</td>
+            <td style="text-align:right;">€ 4.79</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">€ 14.37</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">10</td>
+            <td>
+              <strong>CHIPS NAT KLEIN ZAKJES</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 740810</em>
+            </td>
+            <td style="text-align:right;">1 each</td>
+            <td style="text-align:right;">€ 8.29</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">€ 8.29</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">11</td>
+            <td>
+              <strong>CHIPS PAP KLEINE ZAKJES</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 740829</em>
+            </td>
+            <td style="text-align:right;">2 each</td>
+            <td style="text-align:right;">€ 8.29</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">€ 16.58</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">12</td>
+            <td>
+              <strong>TR KL PAKJES APPELSAP</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 740828</em>
+            </td>
+            <td style="text-align:right;">1 each</td>
+            <td style="text-align:right;">€ 9.95</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">€ 9.95</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">13</td>
+            <td>
+              <strong>PK CHOCOLADEMEL</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 740827</em>
+            </td>
+            <td style="text-align:right;">2 each</td>
+            <td style="text-align:right;">€ 1.65</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">€ 3.30</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">14</td>
+            <td>
+              <strong>KRAT BIER</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 999996</em>
+            </td>
+            <td style="text-align:right;">1 each</td>
+            <td style="text-align:right;">€ 10.80</td>
+            <td style="text-align:right;">Standard rate 21.00%</td>
+            <td style="text-align:right;">€ 10.80</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">15</td>
+            <td>
+              <strong>STATIEGELD</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 999995</em>
+            </td>
+            <td style="text-align:right;">1 each</td>
+            <td style="text-align:right;">€ 3.90</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">€ 3.90</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">16</td>
+            <td>
+              <strong>BLEEK 3 X 750 ML</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 102172</em>
+            </td>
+            <td style="text-align:right;">2 each</td>
+            <td style="text-align:right;">€ 3.80</td>
+            <td style="text-align:right;">Standard rate 21.00%</td>
+            <td style="text-align:right;">€ 7.60</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">17</td>
+            <td>
+              <strong>WC PAPIER</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 999994</em>
+            </td>
+            <td style="text-align:right;">2 each</td>
+            <td style="text-align:right;">€ 4.67</td>
+            <td style="text-align:right;">Standard rate 21.00%</td>
+            <td style="text-align:right;">€ 9.34</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">18</td>
+            <td>
+              <strong>BALPENNEN 50 ST BLAUW</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 999993</em>
+            </td>
+            <td style="text-align:right;">1 each</td>
+            <td style="text-align:right;">€ 18.63</td>
+            <td style="text-align:right;">Standard rate 21.00%</td>
+            <td style="text-align:right;">€ 18.63</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">19</td>
+            <td>
+              <strong>EM FRITUURVET</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 999992</em>
+            </td>
+            <td style="text-align:right;">6 each</td>
+            <td style="text-align:right;">€ 17.02</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">€ 102.12</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">20</td>
+            <td>
+              <strong>FRITUUR VET 10 KG RETOUR</strong>
+              <br />
+              <em>Item seller&#39;s identifier: 175137</em>
+            </td>
+            <td style="text-align:right;">6 each</td>
+            <td style="text-align:right;">€ 18.33</td>
+            <td style="text-align:right;">Standard rate 6.00%</td>
+            <td style="text-align:right;">-€ 109.98</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="phlox-row phlox-bottom">
+        <div class="phlox-vat">
+          <h2 class="phlox-section-title">VAT breakdown</h2>
+          <table class="phlox-table">
+            <thead>
+              <tr>
+                <th>VAT category</th>
+                <th style="text-align:right;">Taxable amount</th>
+                <th style="text-align:right;">VAT rate</th>
+                <th style="text-align:right;">VAT amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Standard rate</td>
+                <td style="text-align:right;">€ 183.23</td>
+                <td style="text-align:right;">6.00%</td>
+                <td style="text-align:right;">€ 10.99</td>
+              </tr>
+              <tr>
+                <td>Standard rate</td>
+                <td style="text-align:right;">€ 46.37</td>
+                <td style="text-align:right;">21.00%</td>
+                <td style="text-align:right;">€ 9.74</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="phlox-totals-col">
+          <div class="phlox-totals">
+            <table class="phlox-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th style="text-align:right;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Sum of invoice line net amounts</td>
+                  <td style="text-align:right;">€ 229.60</td>
+                </tr>
+                <tr>
+                  <td>Invoice total amount without VAT</td>
+                  <td style="text-align:right;">€ 229.60</td>
+                </tr>
+                <tr>
+                  <td>Invoice total VAT amount</td>
+                  <td style="text-align:right;">€ 20.73</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Invoice total amount with VAT</strong>
+                  </td>
+                  <td style="text-align:right;">
+                    <strong>€ 250.33</strong>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="phlox-due">
+            <table class="phlox-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th style="text-align:right;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Amount due</td>
+                  <td style="text-align:right;">€ 250.33</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="phlox-pay">
+        <p class="phlox-label">Payment</p>
+        <p>
+          <strong>Payment means type code:</strong> Credit transfer<br />
+          <em>Remittance information:</em> Deb. 10202 / Fact. 12115118        </p>
+        <p class="phlox-label">Credit transfer</p>
+        <ul>
+          <li>
+            <p>
+              <code>NL57 RABO 0107307510</code>
+            </p>
+          </li>
+          <li>
+            <p>
+              <code>NL03 INGB 0004489902</code>
+            </p>
+          </li>
+        </ul>
+      </div>
+      <p class="phlox-foot">Specification identifier: urn:cen.eu:en16931:2017</p>
+    </div>
+  </body>
+</html>

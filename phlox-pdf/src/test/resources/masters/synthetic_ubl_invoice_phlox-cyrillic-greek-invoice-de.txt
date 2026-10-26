@@ -1,0 +1,496 @@
+pages 2
+page 1 595.3x841.9
+G p1 sc 0.14 0.36 0.39
+G p1 sc 0.00 0.00 0.00
+G p1 SC 0.89 0.91 0.93
+G p1 w 0.50
+G p1 m 56.69 720.51
+G p1 l 238.11 720.51
+G p1 S
+G p1 m 238.11 720.51
+G p1 l 538.58 720.51
+G p1 S
+G p1 m 56.69 700.73
+G p1 l 238.11 700.73
+G p1 S
+G p1 m 238.11 700.73
+G p1 l 538.58 700.73
+G p1 S
+G p1 m 56.69 680.96
+G p1 l 238.11 680.96
+G p1 S
+G p1 m 238.11 680.96
+G p1 l 538.58 680.96
+G p1 S
+G p1 m 56.69 661.19
+G p1 l 238.11 661.19
+G p1 S
+G p1 m 238.11 661.19
+G p1 l 538.58 661.19
+G p1 S
+G p1 m 56.69 641.42
+G p1 l 238.11 641.42
+G p1 S
+G p1 m 238.11 641.42
+G p1 l 538.58 641.42
+G p1 S
+G p1 SC 0.14 0.36 0.39
+G p1 w 1.50
+G p1 m 56.69 632.42
+G p1 l 538.58 632.42
+G p1 S
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 SC 0.50 0.50 0.50
+G p1 w 0.75
+G p1 m 56.69 466.24
+G p1 l 538.58 466.24
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 SC 0.11 0.14 0.20
+G p1 w 1.00
+G p1 m 56.69 362.64
+G p1 l 82.81 362.64
+G p1 S
+G p1 m 82.81 362.64
+G p1 l 194.38 362.64
+G p1 S
+G p1 m 194.38 362.64
+G p1 l 237.30 362.64
+G p1 S
+G p1 m 237.30 362.64
+G p1 l 304.16 362.64
+G p1 S
+G p1 m 304.16 362.64
+G p1 l 466.12 362.64
+G p1 S
+G p1 m 466.12 362.64
+G p1 l 538.58 362.64
+G p1 S
+G p1 SC 0.89 0.91 0.93
+G p1 w 0.50
+G p1 m 56.69 276.26
+G p1 l 82.81 276.26
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 m 82.81 276.26
+G p1 l 194.38 276.26
+G p1 S
+G p1 m 194.38 276.26
+G p1 l 237.30 276.26
+G p1 S
+G p1 m 237.30 276.26
+G p1 l 304.16 276.26
+G p1 S
+G p1 m 304.16 276.26
+G p1 l 466.12 276.26
+G p1 S
+G p1 m 466.12 276.26
+G p1 l 538.58 276.26
+G p1 S
+G p1 m 56.69 190.13
+G p1 l 82.81 190.13
+G p1 S
+G p1 m 82.81 190.13
+G p1 l 194.38 190.13
+G p1 S
+G p1 m 194.38 190.13
+G p1 l 237.30 190.13
+G p1 S
+G p1 m 237.30 190.13
+G p1 l 304.16 190.13
+G p1 S
+G p1 m 304.16 190.13
+G p1 l 466.12 190.13
+G p1 S
+G p1 m 466.12 190.13
+G p1 l 538.58 190.13
+G p1 S
+G p1 m 56.69 130.54
+G p1 l 82.81 130.54
+G p1 S
+G p1 m 82.81 130.54
+G p1 l 194.38 130.54
+G p1 S
+G p1 m 194.38 130.54
+G p1 l 237.30 130.54
+G p1 S
+G p1 m 237.30 130.54
+G p1 l 304.16 130.54
+G p1 S
+G p1 m 304.16 130.54
+G p1 l 466.12 130.54
+G p1 S
+G p1 m 466.12 130.54
+G p1 l 538.58 130.54
+G p1 S
+G p1 sc 0.83 0.83 0.83
+page 2 595.3x841.9
+G p2 SC 0.11 0.14 0.20
+G p2 w 1.00
+G p2 m 56.69 768.74
+G p2 l 82.81 768.74
+G p2 S
+G p2 sc 0.40 0.44 0.52
+G p2 m 82.81 768.74
+G p2 l 194.38 768.74
+G p2 S
+G p2 m 194.38 768.74
+G p2 l 237.30 768.74
+G p2 S
+G p2 m 237.30 768.74
+G p2 l 304.16 768.74
+G p2 S
+G p2 m 304.16 768.74
+G p2 l 466.12 768.74
+G p2 S
+G p2 m 466.12 768.74
+G p2 l 538.58 768.74
+G p2 S
+G p2 SC 0.89 0.91 0.93
+G p2 w 0.50
+G p2 m 56.69 669.09
+G p2 l 82.81 669.09
+G p2 S
+G p2 sc 0.00 0.00 0.00
+G p2 m 82.81 669.09
+G p2 l 194.38 669.09
+G p2 S
+G p2 m 194.38 669.09
+G p2 l 237.30 669.09
+G p2 S
+G p2 m 237.30 669.09
+G p2 l 304.16 669.09
+G p2 S
+G p2 m 304.16 669.09
+G p2 l 466.12 669.09
+G p2 S
+G p2 m 466.12 669.09
+G p2 l 538.58 669.09
+G p2 S
+G p2 m 56.69 609.51
+G p2 l 82.81 609.51
+G p2 S
+G p2 m 82.81 609.51
+G p2 l 194.38 609.51
+G p2 S
+G p2 m 194.38 609.51
+G p2 l 237.30 609.51
+G p2 S
+G p2 m 237.30 609.51
+G p2 l 304.16 609.51
+G p2 S
+G p2 m 304.16 609.51
+G p2 l 466.12 609.51
+G p2 S
+G p2 m 466.12 609.51
+G p2 l 538.58 609.51
+G p2 S
+G p2 m 56.69 510.11
+G p2 l 82.81 510.11
+G p2 S
+G p2 m 82.81 510.11
+G p2 l 194.38 510.11
+G p2 S
+G p2 m 194.38 510.11
+G p2 l 237.30 510.11
+G p2 S
+G p2 m 237.30 510.11
+G p2 l 304.16 510.11
+G p2 S
+G p2 m 304.16 510.11
+G p2 l 466.12 510.11
+G p2 S
+G p2 m 466.12 510.11
+G p2 l 538.58 510.11
+G p2 S
+G p2 m 56.69 450.52
+G p2 l 82.81 450.52
+G p2 S
+G p2 m 82.81 450.52
+G p2 l 194.38 450.52
+G p2 S
+G p2 m 194.38 450.52
+G p2 l 237.30 450.52
+G p2 S
+G p2 m 237.30 450.52
+G p2 l 304.16 450.52
+G p2 S
+G p2 m 304.16 450.52
+G p2 l 466.12 450.52
+G p2 S
+G p2 m 466.12 450.52
+G p2 l 538.58 450.52
+G p2 S
+G p2 sc 0.40 0.44 0.52
+G p2 SC 0.11 0.14 0.20
+G p2 w 1.00
+G p2 m 56.69 402.25
+G p2 l 174.69 402.25
+G p2 S
+G p2 m 174.69 402.25
+G p2 l 232.25 402.25
+G p2 S
+G p2 m 232.25 402.25
+G p2 l 274.70 402.25
+G p2 S
+G p2 m 274.70 402.25
+G p2 l 322.19 402.25
+G p2 S
+G p2 SC 0.89 0.91 0.93
+G p2 w 0.50
+G p2 m 56.69 342.41
+G p2 l 174.69 342.41
+G p2 S
+G p2 sc 0.00 0.00 0.00
+G p2 m 174.69 342.41
+G p2 l 232.25 342.41
+G p2 S
+G p2 m 232.25 342.41
+G p2 l 274.70 342.41
+G p2 S
+G p2 m 274.70 342.41
+G p2 l 322.19 342.41
+G p2 S
+G p2 SC 0.50 0.50 0.50
+G p2 w 2.00
+G p2 m 57.69 342.16
+G p2 l 57.69 311.62
+G p2 S
+G p2 sc 0.96 0.97 0.98
+G p2 re 336.19 341.91 202.39 108.36
+G p2 f
+G p2 SC 0.89 0.91 0.93
+G p2 w 0.50
+G p2 m 344.19 409.48
+G p2 l 463.67 409.48
+G p2 S
+G p2 sc 0.00 0.00 0.00
+G p2 m 463.67 409.48
+G p2 l 530.58 409.48
+G p2 S
+G p2 m 344.19 389.71
+G p2 l 463.67 389.71
+G p2 S
+G p2 m 463.67 389.71
+G p2 l 530.58 389.71
+G p2 S
+G p2 m 344.19 369.93
+G p2 l 463.67 369.93
+G p2 S
+G p2 m 463.67 369.93
+G p2 l 530.58 369.93
+G p2 S
+G p2 m 344.19 350.16
+G p2 l 463.67 350.16
+G p2 S
+G p2 m 463.67 350.16
+G p2 l 530.58 350.16
+G p2 S
+G p2 sc 0.14 0.36 0.39
+G p2 re 336.19 302.14 202.39 35.77
+G p2 f
+G p2 m 344.19 310.39
+G p2 l 427.07 310.39
+G p2 S
+G p2 sc 1.00 1.00 1.00
+G p2 m 427.07 310.39
+G p2 l 530.58 310.39
+G p2 S
+G p2 sc 0.91 0.95 0.95
+G p2 re 56.69 181.15 481.89 112.99
+G p2 f
+G p2 sc 0.40 0.44 0.52
+G p2 sc 0.00 0.00 0.00
+G p2 sc 0.40 0.44 0.52
+G p2 sc 0.00 0.00 0.00
+G p2 sc 0.40 0.44 0.52
+G p2 sc 0.00 0.00 0.00
+G p2 sc 0.40 0.44 0.52
+G p2 sc 0.83 0.83 0.83
+T p1 56.7 68.0 8.0 Roboto-Bold Rechnung
+T p1 56.7 95.9 18.0 Roboto-Bold ФАКТУРА-2026-0042
+T p1 59.7 118.1 10.0 Roboto-Regular Rechnungsdatum
+T p1 241.1 118.1 10.0 Roboto-Regular 10. Februar 2026
+T p1 59.7 137.9 10.0 Roboto-Regular Fälligkeitsdatum
+T p1 241.1 137.9 10.0 Roboto-Regular 12. März 2026
+T p1 59.7 157.7 10.0 Roboto-Regular Rechnungswährung
+T p1 241.1 157.7 10.0 Roboto-Regular EUR
+T p1 59.7 177.4 10.0 Roboto-Regular Käuferreferenz
+T p1 241.1 177.4 10.0 Roboto-Regular BUYER-REF-ФАКТУРА-2026-0042
+T p1 59.7 197.2 10.0 Roboto-Regular Rechnungstyp
+T p1 241.1 197.2 10.0 Roboto-Regular 380 — Handelsrechnung
+T p1 56.7 225.2 7.0 Roboto-Bold Verkäufer
+T p1 56.7 243.8 11.0 Roboto-Bold Фотон Електроникс ООД
+T p1 56.7 259.1 8.0 Roboto-Regular Фотон Електроникс ООД
+T p1 56.7 276.3 10.0 Roboto-Regular ул. Околовръстен път 118
+T p1 56.7 289.6 10.0 Roboto-Regular 1000 София
+T p1 56.7 302.9 10.0 Roboto-Regular Bulgarien
+T p1 56.7 318.1 8.0 Roboto-Regular USt-IdNr. Verkäufer: BG123456789
+T p1 56.7 329.4 8.0 Roboto-Regular Rechtliche Registrierungs-ID Verkäufer: 123456789
+T p1 56.7 340.7 8.0 Roboto-Regular Elektronische Adresse Verkäufer: 0088:9930123456789
+T p1 56.7 352.0 8.0 Roboto-Regular Иван Петров · +359 2 123 4567 · 
+T p1 56.7 363.3 8.0 Roboto-Regular ivan.petrov@foton.example
+T p1 297.6 225.2 7.0 Roboto-Bold Käufer
+T p1 297.6 243.8 11.0 Roboto-Bold Ελληνική Βιομηχανία Αισθητήρων Α.Ε.
+T p1 297.6 259.1 8.0 Roboto-Regular Ελληνική Βιομηχανία Αισθητήρων Α.Ε.
+T p1 297.6 276.3 10.0 Roboto-Regular Οδός Σταδίου 25
+T p1 297.6 289.6 10.0 Roboto-Regular 10564 Αθήνα
+T p1 297.6 302.9 10.0 Roboto-Regular Griechenland
+T p1 297.6 318.1 8.0 Roboto-Regular USt-IdNr. Käufer: EL123456789
+T p1 297.6 329.4 8.0 Roboto-Regular Rechtliche Registrierungs-ID Käufer: 123456789
+T p1 297.6 340.7 8.0 Roboto-Regular Elektronische Adresse Käufer: 0088:9930987654321
+T p1 297.6 352.0 8.0 Roboto-Regular Μαρία Παπαδοπούλου · +30 210 1234567 · 
+T p1 297.6 363.3 8.0 Roboto-Regular m.papadopoulou@sensors.example
+T p1 56.7 403.6 8.0 Roboto-Bold ANMERKUNGEN
+T p1 56.7 419.9 10.0 Roboto-Regular Доставка до склада на купувача. / Παράδοση στην αποθήκη του αγοραστή.
+T p1 56.7 437.2 10.0 Roboto-Regular Ενδοκοινοτική παράδοση – освободена доставка, чл. 138 от Директива 2006/112/ЕО.
+T p1 56.7 459.8 8.0 Roboto-Bold RECHNUNGSPOSITIONEN
+T p1 67.6 475.8 7.0 Roboto-Bold NR.
+T p1 85.8 475.8 7.0 Roboto-Bold BESCHREIBUNG
+T p1 208.9 475.8 7.0 Roboto-Bold MENGE
+T p1 256.0 475.8 7.0 Roboto-Bold EINZELPREIS
+T p1 448.9 475.8 7.0 Roboto-Bold UST
+T p1 484.1 475.8 7.0 Roboto-Bold ZEILENSUMME
+T p1 74.2 496.0 10.0 Roboto-Regular 1
+T p1 85.8 496.0 10.0 Roboto-Bold Лазерен
+T p1 85.8 509.3 10.0 Roboto-Bold дистанционен сензор
+T p1 85.8 522.6 10.0 Roboto-Regular Обхват до 40 м,
+T p1 85.8 535.8 10.0 Roboto-Regular точност ±1 мм
+T p1 85.8 549.1 10.0 Roboto-Italic Artikel-ID Verkäufer:
+T p1 85.8 562.4 10.0 Roboto-Italic ART-0001
+T p1 201.8 496.0 10.0 Roboto-Regular 12 Eins
+T p1 268.6 496.0 10.0 Roboto-Regular 84,50 €
+T p1 401.1 496.0 10.0 Roboto-Regular USt-befreit für
+T p1 359.1 509.3 10.0 Roboto-Regular innergemeinschaftliche
+T p1 366.7 522.6 10.0 Roboto-Regular EWR-Lieferung 0,00 %
+T p1 489.2 496.0 10.0 Roboto-Regular 1.014,00 €
+T p1 74.2 582.2 10.0 Roboto-Regular 2
+T p1 85.8 582.2 10.0 Roboto-Bold Αισθητήρας
+T p1 85.8 595.4 10.0 Roboto-Bold θερμοκρασίας
+T p1 85.8 608.7 10.0 Roboto-Regular Από −40 °C έως +125
+T p1 85.8 622.0 10.0 Roboto-Regular °C, έξοδος 4–20 mA
+T p1 85.8 635.2 10.0 Roboto-Italic Artikel-ID Verkäufer:
+T p1 85.8 648.5 10.0 Roboto-Italic ART-0002
+T p1 201.8 582.2 10.0 Roboto-Regular 30 Eins
+T p1 268.6 582.2 10.0 Roboto-Regular 12,90 €
+T p1 401.1 582.2 10.0 Roboto-Regular USt-befreit für
+T p1 359.1 595.4 10.0 Roboto-Regular innergemeinschaftliche
+T p1 366.7 608.7 10.0 Roboto-Regular EWR-Lieferung 0,00 %
+T p1 497.4 582.2 10.0 Roboto-Regular 387,00 €
+T p1 74.2 668.3 10.0 Roboto-Regular 3
+T p1 85.8 668.3 10.0 Roboto-Bold Захранващ кабел
+T p1 85.8 681.6 10.0 Roboto-Bold 3×1,5 мм²
+T p1 85.8 694.8 10.0 Roboto-Italic Artikel-ID Verkäufer:
+T p1 85.8 708.1 10.0 Roboto-Italic ART-0003
+T p1 217.4 668.3 10.0 Roboto-Regular 250
+T p1 208.3 681.6 10.0 Roboto-Regular Meter
+T p1 274.2 668.3 10.0 Roboto-Regular 1,85 €
+T p1 401.1 668.3 10.0 Roboto-Regular USt-befreit für
+T p1 359.1 681.6 10.0 Roboto-Regular innergemeinschaftliche
+T p1 366.7 694.8 10.0 Roboto-Regular EWR-Lieferung 0,00 %
+T p1 497.4 668.3 10.0 Roboto-Regular 462,50 €
+T p1 362.9 797.2 6.0 Roboto-Regular Generated by phlox · open-source edition · github.com/phax/phlox
+T p2 67.6 69.6 7.0 Roboto-Bold NR.
+T p2 85.8 69.6 7.0 Roboto-Bold BESCHREIBUNG
+T p2 208.9 69.6 7.0 Roboto-Bold MENGE
+T p2 256.0 69.6 7.0 Roboto-Bold EINZELPREIS
+T p2 448.9 69.6 7.0 Roboto-Bold UST
+T p2 484.1 69.6 7.0 Roboto-Bold ZEILENSUMME
+T p2 74.2 89.9 10.0 Roboto-Regular 4
+T p2 85.8 89.9 10.0 Roboto-Bold Καλώδιο σήματος
+T p2 85.8 103.2 10.0 Roboto-Bold θωρακισμένο
+T p2 85.8 116.5 10.0 Roboto-Regular Θωράκιση πλεγμένη,
+T p2 85.8 129.7 10.0 Roboto-Regular εξωτερική διάμετρος
+T p2 85.8 143.0 10.0 Roboto-Regular 6 mm
+T p2 85.8 156.3 10.0 Roboto-Italic Artikel-ID Verkäufer:
+T p2 85.8 169.5 10.0 Roboto-Italic ART-0004
+T p2 217.4 89.9 10.0 Roboto-Regular 180
+T p2 208.3 103.2 10.0 Roboto-Regular Meter
+T p2 274.2 89.9 10.0 Roboto-Regular 2,40 €
+T p2 401.1 89.9 10.0 Roboto-Regular USt-befreit für
+T p2 359.1 103.2 10.0 Roboto-Regular innergemeinschaftliche
+T p2 366.7 116.5 10.0 Roboto-Regular EWR-Lieferung 0,00 %
+T p2 497.4 89.9 10.0 Roboto-Regular 432,00 €
+T p2 74.2 189.3 10.0 Roboto-Regular 5
+T p2 85.8 189.3 10.0 Roboto-Bold Конзола за монтаж
+T p2 85.8 202.6 10.0 Roboto-Regular Неръждаема стомана
+T p2 85.8 215.9 10.0 Roboto-Italic Artikel-ID Verkäufer:
+T p2 85.8 229.1 10.0 Roboto-Italic ART-0005
+T p2 201.8 189.3 10.0 Roboto-Regular 12 Eins
+T p2 274.2 189.3 10.0 Roboto-Regular 6,75 €
+T p2 401.1 189.3 10.0 Roboto-Regular USt-befreit für
+T p2 359.1 202.6 10.0 Roboto-Regular innergemeinschaftliche
+T p2 366.7 215.9 10.0 Roboto-Regular EWR-Lieferung 0,00 %
+T p2 503.0 189.3 10.0 Roboto-Regular 81,00 €
+T p2 74.2 248.9 10.0 Roboto-Regular 6
+T p2 85.8 248.9 10.0 Roboto-Bold Υπηρεσία
+T p2 85.8 262.2 10.0 Roboto-Bold βαθμονόμησης
+T p2 85.8 275.4 10.0 Roboto-Regular Πιστοποιητικό
+T p2 85.8 288.7 10.0 Roboto-Regular βαθμονόμησης ανά
+T p2 85.8 302.0 10.0 Roboto-Regular αισθητήρα
+T p2 85.8 315.3 10.0 Roboto-Italic Artikel-ID Verkäufer:
+T p2 85.8 328.5 10.0 Roboto-Italic ART-0006
+T p2 201.8 248.9 10.0 Roboto-Regular 42 Eins
+T p2 268.6 248.9 10.0 Roboto-Regular 15,00 €
+T p2 401.1 248.9 10.0 Roboto-Regular USt-befreit für
+T p2 359.1 262.2 10.0 Roboto-Regular innergemeinschaftliche
+T p2 366.7 275.4 10.0 Roboto-Regular EWR-Lieferung 0,00 %
+T p2 497.4 248.9 10.0 Roboto-Regular 630,00 €
+T p2 74.2 348.3 10.0 Roboto-Regular 7
+T p2 85.8 348.3 10.0 Roboto-Bold Транспорт и
+T p2 85.8 361.6 10.0 Roboto-Bold застраховка
+T p2 85.8 374.8 10.0 Roboto-Italic Artikel-ID Verkäufer:
+T p2 85.8 388.1 10.0 Roboto-Italic ART-0007
+T p2 207.4 348.3 10.0 Roboto-Regular 1 Eins
+T p2 268.6 348.3 10.0 Roboto-Regular 96,00 €
+T p2 401.1 348.3 10.0 Roboto-Regular USt-befreit für
+T p2 359.1 361.6 10.0 Roboto-Regular innergemeinschaftliche
+T p2 366.7 374.8 10.0 Roboto-Regular EWR-Lieferung 0,00 %
+T p2 503.0 348.3 10.0 Roboto-Regular 96,00 €
+T p2 56.7 410.2 8.0 Roboto-Bold STEUERAUFSCHLÜSSELUNG
+T p2 59.7 426.2 7.0 Roboto-Bold UST-KATEGORIE
+T p2 180.6 426.2 7.0 Roboto-Bold STEUERBASIS
+T p2 235.8 426.2 7.0 Roboto-Bold UST-SATZ
+T p2 278.6 426.2 7.0 Roboto-Bold UST-BETRA
+T p2 314.1 436.1 7.0 Roboto-Bold G
+T p2 59.7 456.4 10.0 Roboto-Regular USt-befreit für
+T p2 59.7 469.7 10.0 Roboto-Regular innergemeinschaftliche
+T p2 59.7 483.0 10.0 Roboto-Regular EWR-Lieferung 
+T p2 59.7 496.2 10.0 Roboto-Italic (Intra-community supply)
+T p2 182.8 456.4 10.0 Roboto-Regular 3.102,50 €
+T p2 243.1 456.4 10.0 Roboto-Regular 0,00 %
+T p2 292.3 456.4 10.0 Roboto-Regular 0,00 €
+T p2 64.7 513.0 10.0 Roboto-Regular USt-Kategorie K: Intra-community supply /
+T p2 64.7 526.3 10.0 Roboto-Regular Вътреобщностна доставка / Ενδοκοινοτική παράδοση
+T p2 347.2 415.9 10.0 Roboto-Regular Summe Nettobeträge
+T p2 347.2 429.2 10.0 Roboto-Regular der Positionen
+T p2 481.2 415.9 10.0 Roboto-Regular 3.102,50 €
+T p2 347.2 448.9 10.0 Roboto-Regular Nettogesamtbetrag
+T p2 481.2 448.9 10.0 Roboto-Regular 3.102,50 €
+T p2 347.2 468.7 10.0 Roboto-Regular USt-Gesamtbetrag
+T p2 500.7 468.7 10.0 Roboto-Regular 0,00 €
+T p2 347.2 488.5 10.0 Roboto-Bold Bruttogesamtbetrag
+T p2 479.6 488.5 10.0 Roboto-Bold 3.102,50 €
+T p2 347.2 528.2 10.0 Roboto-Regular Zahlbar
+T p2 481.2 528.2 10.0 Roboto-Regular 3.102,50 €
+T p2 66.7 567.7 7.0 Roboto-Bold Zahlung
+T p2 66.7 585.0 10.0 Roboto-Bold Zahlungsart: Überweisung
+T p2 66.7 598.2 10.0 Roboto-Regular Credit transfer
+T p2 66.7 611.5 10.0 Roboto-Italic Verwendungszweck: ФАКТУРА-2026-0042
+T p2 66.7 625.5 7.0 Roboto-Bold Überweisung
+T p2 66.7 638.0 10.0 Symbol •
+T p2 82.7 642.7 10.0 Roboto-Regular Фотон Електроникс ООД — BG80BNBG96611020345678 (BIC BNBGBGSD)
+T p2 56.7 683.4 8.0 Roboto-Bold ZAHLUNGSBEDINGUNGEN
+T p2 56.7 699.6 10.0 Roboto-Regular Плащане в срок от 30 дни. / Πληρωμή εντός 30 ημερών.
+T p2 56.7 713.6 7.0 Roboto-Regular Spezifikationskennung: urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0 · Geschäftsprozesstyp:
+T p2 56.7 723.5 7.0 Roboto-Regular urn:fdc:peppol.eu:2017:poacc:billing:01:1.0
+T p2 362.9 797.2 6.0 Roboto-Regular Generated by phlox · open-source edition · github.com/phax/phlox

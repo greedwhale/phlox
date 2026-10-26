@@ -1,0 +1,292 @@
+pages 2
+page 1 595.3x841.9
+G p1 sc 0.14 0.36 0.39
+G p1 sc 0.00 0.00 0.00
+G p1 SC 0.89 0.91 0.93
+G p1 w 0.50
+G p1 m 56.69 725.85
+G p1 l 276.17 725.85
+G p1 S
+G p1 m 276.17 725.85
+G p1 l 538.58 725.85
+G p1 S
+G p1 m 56.69 707.79
+G p1 l 276.17 707.79
+G p1 S
+G p1 m 276.17 707.79
+G p1 l 538.58 707.79
+G p1 S
+G p1 m 56.69 689.73
+G p1 l 276.17 689.73
+G p1 S
+G p1 m 276.17 689.73
+G p1 l 538.58 689.73
+G p1 S
+G p1 m 56.69 671.67
+G p1 l 276.17 671.67
+G p1 S
+G p1 m 276.17 671.67
+G p1 l 538.58 671.67
+G p1 S
+G p1 SC 0.14 0.36 0.39
+G p1 w 1.50
+G p1 m 56.69 662.67
+G p1 l 538.58 662.67
+G p1 S
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 SC 0.50 0.50 0.50
+G p1 w 2.00
+G p1 m 57.69 531.10
+G p1 l 57.69 515.54
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 w 0.75
+G p1 m 56.69 503.16
+G p1 l 538.58 503.16
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 SC 0.11 0.14 0.20
+G p1 w 1.00
+G p1 m 56.69 412.84
+G p1 l 141.08 412.84
+G p1 S
+G p1 m 141.08 412.84
+G p1 l 284.72 412.84
+G p1 S
+G p1 m 284.72 412.84
+G p1 l 322.26 412.84
+G p1 S
+G p1 m 322.26 412.84
+G p1 l 382.54 412.84
+G p1 S
+G p1 m 382.54 412.84
+G p1 l 478.30 412.84
+G p1 S
+G p1 m 478.30 412.84
+G p1 l 538.58 412.84
+G p1 S
+G p1 SC 0.89 0.91 0.93
+G p1 w 0.50
+G p1 m 56.69 346.59
+G p1 l 141.08 346.59
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 m 141.08 346.59
+G p1 l 284.72 346.59
+G p1 S
+G p1 m 284.72 346.59
+G p1 l 322.26 346.59
+G p1 S
+G p1 m 322.26 346.59
+G p1 l 382.54 346.59
+G p1 S
+G p1 m 382.54 346.59
+G p1 l 478.30 346.59
+G p1 S
+G p1 m 478.30 346.59
+G p1 l 538.58 346.59
+G p1 S
+G p1 m 56.69 316.97
+G p1 l 141.08 316.97
+G p1 S
+G p1 m 141.08 316.97
+G p1 l 284.72 316.97
+G p1 S
+G p1 m 284.72 316.97
+G p1 l 322.26 316.97
+G p1 S
+G p1 m 322.26 316.97
+G p1 l 382.54 316.97
+G p1 S
+G p1 m 382.54 316.97
+G p1 l 478.30 316.97
+G p1 S
+G p1 m 478.30 316.97
+G p1 l 538.58 316.97
+G p1 S
+G p1 SC 0.50 0.50 0.50
+G p1 w 2.00
+G p1 m 57.69 316.72
+G p1 l 57.69 288.92
+G p1 S
+G p1 sc 0.40 0.44 0.52
+G p1 SC 0.11 0.14 0.20
+G p1 w 1.00
+G p1 m 56.69 248.97
+G p1 l 153.72 248.97
+G p1 S
+G p1 m 153.72 248.97
+G p1 l 215.82 248.97
+G p1 S
+G p1 m 215.82 248.97
+G p1 l 266.03 248.97
+G p1 S
+G p1 m 266.03 248.97
+G p1 l 322.19 248.97
+G p1 S
+G p1 SC 0.89 0.91 0.93
+G p1 w 0.50
+G p1 m 56.69 230.66
+G p1 l 153.72 230.66
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 m 153.72 230.66
+G p1 l 215.82 230.66
+G p1 S
+G p1 m 215.82 230.66
+G p1 l 266.03 230.66
+G p1 S
+G p1 m 266.03 230.66
+G p1 l 322.19 230.66
+G p1 S
+G p1 sc 0.96 0.97 0.98
+G p1 re 336.19 184.78 202.39 100.14
+G p1 f
+G p1 m 344.19 247.55
+G p1 l 472.66 247.55
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 m 472.66 247.55
+G p1 l 530.58 247.55
+G p1 S
+G p1 m 344.19 229.49
+G p1 l 472.66 229.49
+G p1 S
+G p1 m 472.66 229.49
+G p1 l 530.58 229.49
+G p1 S
+G p1 m 344.19 211.43
+G p1 l 472.66 211.43
+G p1 S
+G p1 m 472.66 211.43
+G p1 l 530.58 211.43
+G p1 S
+G p1 m 344.19 193.03
+G p1 l 472.66 193.03
+G p1 S
+G p1 m 472.66 193.03
+G p1 l 530.58 193.03
+G p1 S
+G p1 sc 0.14 0.36 0.39
+G p1 re 336.19 146.72 202.39 34.06
+G p1 f
+G p1 m 344.19 154.97
+G p1 l 434.62 154.97
+G p1 S
+G p1 sc 1.00 1.00 1.00
+G p1 m 434.62 154.97
+G p1 l 530.58 154.97
+G p1 S
+G p1 sc 0.83 0.83 0.83
+page 2 595.3x841.9
+G p2 sc 0.91 0.95 0.95
+G p2 re 56.69 704.90 481.89 80.30
+G p2 f
+G p2 sc 0.40 0.44 0.52
+G p2 sc 0.00 0.00 0.00
+G p2 sc 0.40 0.44 0.52
+G p2 sc 0.00 0.00 0.00
+G p2 sc 0.40 0.44 0.52
+G p2 sc 0.00 0.00 0.00
+G p2 sc 0.40 0.44 0.52
+G p2 sc 0.83 0.83 0.83
+T p1 56.7 66.8 8.0 Helvetica-Bold Rechnung
+T p1 56.7 92.2 18.0 Helvetica-Bold 123456XX
+T p1 59.7 112.8 10.0 Helvetica Rechnungsdatum
+T p1 279.2 112.8 10.0 Helvetica 4. April 2016
+T p1 59.7 130.8 10.0 Helvetica Rechnungswährung
+T p1 279.2 130.8 10.0 Helvetica EUR
+T p1 59.7 148.9 10.0 Helvetica Käuferreferenz
+T p1 279.2 148.9 10.0 Helvetica 04011000-12345-03
+T p1 59.7 167.0 10.0 Helvetica Rechnungstyp
+T p1 279.2 167.0 10.0 Helvetica 380 — Handelsrechnung
+T p1 56.7 193.9 7.0 Helvetica-Bold Verkäufer
+T p1 56.7 211.0 11.0 Helvetica-Bold [Seller name]
+T p1 56.7 224.8 8.0 Helvetica [Seller trading name]
+T p1 56.7 240.4 10.0 Helvetica [Seller address line 1]
+T p1 56.7 251.9 10.0 Helvetica 12345 [Seller city]
+T p1 56.7 263.5 10.0 Helvetica Deutschland
+T p1 56.7 277.3 8.0 Helvetica USt-IdNr. Verkäufer: DE 123456789
+T p1 56.7 287.1 8.0 Helvetica Rechtliche Registrierungs-ID Verkäufer: [HRA-Eintrag]
+T p1 56.7 297.0 8.0 Helvetica Elektronische Adresse Verkäufer: EM:seller@email.de
+T p1 56.7 306.8 8.0 Helvetica nicht vorhanden · +49 1234-5678 · seller@email.de
+T p1 64.7 322.4 10.0 Helvetica 123/456/7890, HRA-Eintrag in […]
+T p1 297.6 193.9 7.0 Helvetica-Bold Käufer
+T p1 297.6 211.0 11.0 Helvetica-Bold [Buyer name]
+T p1 297.6 226.5 10.0 Helvetica [Buyer address line 1]
+T p1 297.6 238.1 10.0 Helvetica 12345 [Buyer city]
+T p1 297.6 249.7 10.0 Helvetica Deutschland
+T p1 297.6 263.5 8.0 Helvetica Kennung Käufer: [Buyer identifier]
+T p1 297.6 273.3 8.0 Helvetica Elektronische Adresse Käufer: EM:buyer@info.de
+T p1 56.7 365.6 8.0 Helvetica-Bold ANMERKUNGEN
+T p1 56.7 380.2 10.0 Helvetica-Oblique [Note] Es gelten unsere Allgem. Geschäftsbedingungen, die Sie unter […] finden.
+T p1 56.7 401.7 8.0 Helvetica-Bold RECHNUNGSPOSITIONEN
+T p1 125.2 416.6 7.0 Helvetica-Bold NR.
+T p1 144.1 416.6 7.0 Helvetica-Bold BESCHREIBUNG
+T p1 291.8 416.6 7.0 Helvetica-Bold MENGE
+T p1 330.4 416.6 7.0 Helvetica-Bold EINZELPREIS
+T p1 460.3 416.6 7.0 Helvetica-Bold UST
+T p1 486.0 416.6 7.0 Helvetica-Bold ZEILENSUMM
+T p1 530.6 425.6 7.0 Helvetica-Bold E
+T p1 78.1 444.1 10.0 Helvetica Zeitschrift [...]
+T p1 144.1 444.5 10.0 Helvetica-Bold Zeitschrift [...]
+T p1 144.1 456.4 10.0 Helvetica Zeitschrift Inland
+T p1 144.1 468.3 10.0 Helvetica-Oblique Artikel-ID Verkäufer: 246
+T p1 144.1 480.2 10.0 Helvetica-Oblique Klassifikationskennung:
+T p1 144.1 492.1 10.0 Helvetica-Oblique IB:0721-880X
+T p1 313.7 444.1 10.0 Helvetica 1
+T p1 294.3 455.7 10.0 Helvetica Stück
+T p1 340.6 444.1 10.0 Helvetica 288,79 €
+T p1 403.1 444.1 10.0 Helvetica Regelsteuersatz
+T p1 444.2 455.7 10.0 Helvetica 7,00 %
+T p1 496.7 444.1 10.0 Helvetica 288,79 €
+T p1 105.6 510.1 10.0 Helvetica Porto +
+T p1 71.4 521.7 10.0 Helvetica Versandkosten
+T p1 144.1 510.5 10.0 Helvetica-Bold Porto + Versandkosten
+T p1 313.7 510.1 10.0 Helvetica 1
+T p1 294.3 521.7 10.0 Helvetica Stück
+T p1 346.2 510.1 10.0 Helvetica 26,07 €
+T p1 403.1 510.1 10.0 Helvetica Regelsteuersatz
+T p1 444.2 521.7 10.0 Helvetica 7,00 %
+T p1 502.2 510.1 10.0 Helvetica 26,07 €
+T p1 64.7 537.1 10.0 Helvetica-Bold Positionsnummer Zeitschrift [...] — Positionshinweis: Die letzte Lieferung im Rahmen des
+T p1 64.7 549.0 10.0 Helvetica abgerechneten Abonnements erfolgt in 12/2016 Lieferung erfolgt / erfolgte direkt vom Verlag
+T p1 56.7 574.5 8.0 Helvetica-Bold STEUERAUFSCHLÜSSELUNG
+T p1 59.7 589.4 7.0 Helvetica-Bold UST-KATEGORIE
+T p1 159.5 589.4 7.0 Helvetica-Bold STEUERBASIS
+T p1 226.0 589.4 7.0 Helvetica-Bold UST-SATZ
+T p1 270.0 589.4 7.0 Helvetica-Bold UST-BETRAG
+T p1 59.7 608.0 10.0 Helvetica Regelsteuersatz
+T p1 173.9 608.0 10.0 Helvetica 314,86 €
+T p1 231.9 608.0 10.0 Helvetica 7,00 %
+T p1 285.8 608.0 10.0 Helvetica 22,04 €
+T p1 347.2 579.5 10.0 Helvetica Summe Nettobeträge der
+T p1 347.2 591.1 10.0 Helvetica Positionen
+T p1 488.7 579.5 10.0 Helvetica 314,86 €
+T p1 347.2 609.2 10.0 Helvetica Nettogesamtbetrag
+T p1 488.7 609.2 10.0 Helvetica 314,86 €
+T p1 347.2 627.2 10.0 Helvetica USt-Gesamtbetrag
+T p1 494.2 627.2 10.0 Helvetica 22,04 €
+T p1 347.2 645.6 10.0 Helvetica-Bold Bruttogesamtbetrag
+T p1 488.7 645.6 10.0 Helvetica-Bold 336,90 €
+T p1 347.2 683.7 10.0 Helvetica Zahlbar
+T p1 488.7 683.7 10.0 Helvetica 336,90 €
+T p1 363.5 796.1 6.0 Helvetica Generated by phlox · open-source edition · github.com/phax/phlox
+T p2 66.7 75.6 7.0 Helvetica-Bold Zahlung
+T p2 66.7 91.5 10.0 Helvetica-Bold Zahlungsart: SEPA-Überweisung
+T p2 66.7 104.4 7.0 Helvetica-Bold Überweisung
+T p2 66.7 117.0 10.0 Symbol •
+T p2 82.7 119.0 10.0 Courier DE75512108001245126199
+T p2 56.7 158.5 8.0 Helvetica-Bold ZAHLUNGSBEDINGUNGEN
+T p2 56.7 173.1 10.0 Helvetica Zahlbar sofort ohne Abzug.
+T p2 56.7 185.7 7.0 Helvetica Spezifikationskennung: urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0 · Geschäftsprozesstyp:
+T p2 56.7 194.4 7.0 Helvetica urn:fdc:peppol.eu:2017:poacc:billing:01:1.0
+T p2 363.5 796.1 6.0 Helvetica Generated by phlox · open-source edition · github.com/phax/phlox

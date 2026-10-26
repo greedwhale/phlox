@@ -1,0 +1,197 @@
+pages 1
+page 1 595.3x841.9
+G p1 sc 0.14 0.36 0.39
+G p1 sc 0.00 0.00 0.00
+G p1 SC 0.89 0.91 0.93
+G p1 w 0.50
+G p1 m 56.69 725.85
+G p1 l 281.16 725.85
+G p1 S
+G p1 m 281.16 725.85
+G p1 l 538.58 725.85
+G p1 S
+G p1 m 56.69 707.79
+G p1 l 281.16 707.79
+G p1 S
+G p1 m 281.16 707.79
+G p1 l 538.58 707.79
+G p1 S
+G p1 m 56.69 689.73
+G p1 l 281.16 689.73
+G p1 S
+G p1 m 281.16 689.73
+G p1 l 538.58 689.73
+G p1 S
+G p1 SC 0.14 0.36 0.39
+G p1 w 1.50
+G p1 m 56.69 680.73
+G p1 l 538.58 680.73
+G p1 S
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 SC 0.50 0.50 0.50
+G p1 w 0.75
+G p1 m 56.69 636.59
+G p1 l 538.58 636.59
+G p1 S
+G p1 sc 0.40 0.44 0.52
+G p1 SC 0.11 0.14 0.20
+G p1 w 1.00
+G p1 m 56.69 591.27
+G p1 l 95.03 591.27
+G p1 S
+G p1 m 95.03 591.27
+G p1 l 184.55 591.27
+G p1 S
+G p1 m 184.55 591.27
+G p1 l 234.09 591.27
+G p1 S
+G p1 m 234.09 591.27
+G p1 l 315.88 591.27
+G p1 S
+G p1 m 315.88 591.27
+G p1 l 456.79 591.27
+G p1 S
+G p1 m 456.79 591.27
+G p1 l 538.58 591.27
+G p1 S
+G p1 SC 0.89 0.91 0.93
+G p1 w 0.50
+G p1 m 56.69 572.62
+G p1 l 95.03 572.62
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 m 95.03 572.62
+G p1 l 184.55 572.62
+G p1 S
+G p1 m 184.55 572.62
+G p1 l 234.09 572.62
+G p1 S
+G p1 m 234.09 572.62
+G p1 l 315.88 572.62
+G p1 S
+G p1 m 315.88 572.62
+G p1 l 456.79 572.62
+G p1 S
+G p1 m 456.79 572.62
+G p1 l 538.58 572.62
+G p1 S
+G p1 sc 0.40 0.44 0.52
+G p1 SC 0.11 0.14 0.20
+G p1 w 1.00
+G p1 m 56.69 536.43
+G p1 l 153.72 536.43
+G p1 S
+G p1 m 153.72 536.43
+G p1 l 215.82 536.43
+G p1 S
+G p1 m 215.82 536.43
+G p1 l 266.03 536.43
+G p1 S
+G p1 m 266.03 536.43
+G p1 l 322.19 536.43
+G p1 S
+G p1 SC 0.89 0.91 0.93
+G p1 w 0.50
+G p1 m 56.69 518.12
+G p1 l 153.72 518.12
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 m 153.72 518.12
+G p1 l 215.82 518.12
+G p1 S
+G p1 m 215.82 518.12
+G p1 l 266.03 518.12
+G p1 S
+G p1 m 266.03 518.12
+G p1 l 322.19 518.12
+G p1 S
+G p1 sc 0.96 0.97 0.98
+G p1 re 336.19 472.23 202.39 100.14
+G p1 f
+G p1 m 344.19 535.00
+G p1 l 472.66 535.00
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 m 472.66 535.00
+G p1 l 530.58 535.00
+G p1 S
+G p1 m 344.19 516.94
+G p1 l 472.66 516.94
+G p1 S
+G p1 m 472.66 516.94
+G p1 l 530.58 516.94
+G p1 S
+G p1 m 344.19 498.88
+G p1 l 472.66 498.88
+G p1 S
+G p1 m 472.66 498.88
+G p1 l 530.58 498.88
+G p1 S
+G p1 m 344.19 480.48
+G p1 l 472.66 480.48
+G p1 S
+G p1 m 472.66 480.48
+G p1 l 530.58 480.48
+G p1 S
+G p1 sc 0.14 0.36 0.39
+G p1 re 336.19 434.17 202.39 34.06
+G p1 f
+G p1 m 344.19 442.42
+G p1 l 434.62 442.42
+G p1 S
+G p1 sc 1.00 1.00 1.00
+G p1 m 434.62 442.42
+G p1 l 530.58 442.42
+G p1 S
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.83 0.83 0.83
+T p1 56.7 66.8 8.0 Helvetica-Bold Rechnung
+T p1 56.7 92.2 18.0 Helvetica-Bold D25A-MIN-INV-1
+T p1 59.7 112.8 10.0 Helvetica Rechnungsdatum
+T p1 284.2 112.8 10.0 Helvetica 15. Januar 2026
+T p1 59.7 130.8 10.0 Helvetica Rechnungswährung
+T p1 284.2 130.8 10.0 Helvetica EUR
+T p1 59.7 148.9 10.0 Helvetica Rechnungstyp
+T p1 284.2 148.9 10.0 Helvetica 380 — Handelsrechnung
+T p1 56.7 175.8 7.0 Helvetica-Bold Verkäufer
+T p1 56.7 192.9 11.0 Helvetica-Bold Seller Ltd
+T p1 297.6 175.8 7.0 Helvetica-Bold Käufer
+T p1 297.6 192.9 11.0 Helvetica-Bold Buyer Ltd
+T p1 56.7 232.2 8.0 Helvetica-Bold RECHNUNGSPOSITIONEN
+T p1 79.1 247.1 7.0 Helvetica-Bold NR.
+T p1 98.0 247.1 7.0 Helvetica-Bold BESCHREIBUNG
+T p1 203.6 247.1 7.0 Helvetica-Bold MENGE
+T p1 263.7 247.1 7.0 Helvetica-Bold EINZELPREIS
+T p1 438.8 247.1 7.0 Helvetica-Bold UST
+T p1 481.0 247.1 7.0 Helvetica-Bold ZEILENSUMME
+T p1 86.5 265.7 10.0 Helvetica 1
+T p1 98.0 266.0 10.0 Helvetica-Bold Test item
+T p1 203.3 265.7 10.0 Helvetica 4 Eins
+T p1 279.5 265.7 10.0 Helvetica 25,00 €
+T p1 342.1 265.7 10.0 Helvetica Regelsteuersatz 20,00 %
+T p1 496.7 265.7 10.0 Helvetica 100,00 €
+T p1 56.7 287.0 8.0 Helvetica-Bold STEUERAUFSCHLÜSSELUNG
+T p1 59.7 302.0 7.0 Helvetica-Bold UST-KATEGORIE
+T p1 159.5 302.0 7.0 Helvetica-Bold STEUERBASIS
+T p1 226.0 302.0 7.0 Helvetica-Bold UST-SATZ
+T p1 270.0 302.0 7.0 Helvetica-Bold UST-BETRAG
+T p1 59.7 320.5 10.0 Helvetica Regelsteuersatz
+T p1 173.9 320.5 10.0 Helvetica 100,00 €
+T p1 226.3 320.5 10.0 Helvetica 20,00 %
+T p1 285.8 320.5 10.0 Helvetica 20,00 €
+T p1 347.2 292.1 10.0 Helvetica Summe Nettobeträge der
+T p1 347.2 303.6 10.0 Helvetica Positionen
+T p1 488.7 292.1 10.0 Helvetica 100,00 €
+T p1 347.2 321.7 10.0 Helvetica Nettogesamtbetrag
+T p1 488.7 321.7 10.0 Helvetica 100,00 €
+T p1 347.2 339.8 10.0 Helvetica USt-Gesamtbetrag
+T p1 494.2 339.8 10.0 Helvetica 20,00 €
+T p1 347.2 358.2 10.0 Helvetica-Bold Bruttogesamtbetrag
+T p1 488.7 358.2 10.0 Helvetica-Bold 120,00 €
+T p1 347.2 396.2 10.0 Helvetica Zahlbar
+T p1 488.7 396.2 10.0 Helvetica 120,00 €
+T p1 56.7 424.4 7.0 Helvetica Spezifikationskennung: urn:cen.eu:en16931:2026 · Geschäftsprozesstyp: urn:fdc:peppol.eu:2017:poacc:billing:01:1.0
+T p1 363.5 796.1 6.0 Helvetica Generated by phlox · open-source edition · github.com/phax/phlox

@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="generator" content="phlox @VERSION@" />
+    <meta name="author" content="Mustermann Industrial Supplies GmbH" />
+    <meta name="description" content="EN 16931:2017 Invoice" />
+    <meta name="keywords" content="EN 16931, Invoice, phlox" />
+    <title>Invoice: PHLOX-LONG-1</title>
+    <style type="text/css">:root{--phlox-ink:#1d2433;--phlox-muted:#667085;--phlox-faint:#98a2b3;--phlox-rule:#e4e7ec;--phlox-wash:#f6f7f9;--phlox-accent:#245c64;--phlox-accent-wash:#e8f1f2}
+*{box-sizing:border-box}
+body{margin:0;color:var(--phlox-ink);font:10.5pt/1.45 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+@media screen{body{background:#eceef2}.phlox-page{margin:12mm auto;box-shadow:0 1px 3px rgba(16,24,40,.12)}}
+@page{size:A4;margin:0}
+@media print{.phlox-page{margin:0;box-shadow:none}}
+.phlox-page{width:210mm;max-width:100%;min-height:297mm;background:#fff;padding:16mm 18mm}
+.phlox-logo{max-height:14mm;max-width:50mm}
+a{color:var(--phlox-accent)}
+h1,h2,h3{margin:0}
+.phlox-title{font-size:24pt;font-weight:650;letter-spacing:-.01em;margin:1mm 0 0}
+.phlox-section-title,h2.phlox-section-title{font-size:8pt;letter-spacing:.12em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;margin:6mm 0 2mm;padding:0;border:0}
+.phlox-subsection-title,h3.phlox-subsection-title{font-size:9pt;margin:3mm 0 1.5mm;font-weight:650}
+p{margin:0 0 2mm}
+.phlox-label{font-size:7.5pt;letter-spacing:.12em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;margin:0 0 1.5mm}
+.phlox-kind{font-size:8.5pt;letter-spacing:.14em;text-transform:uppercase;color:var(--phlox-accent);font-weight:600;margin:0}
+.phlox-muted{color:var(--phlox-muted);font-size:9pt}
+.phlox-party-name{font-weight:650;font-size:11.5pt;margin:0 0 1mm}
+.phlox-row>*{min-width:0}
+.phlox-row:empty{display:none}
+.phlox-row{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8mm}
+.phlox-head{grid-template-columns:1fr auto;grid-auto-flow:row}
+hr{border:0;border-top:1px solid var(--phlox-rule);margin:4mm 0}
+hr.phlox-rule{border-top:2px solid var(--phlox-accent);margin:5mm 0 6mm}
+.phlox-head-logo{text-align:right}
+.phlox-parties{margin-bottom:5mm}
+.phlox-secondary{font-size:9pt;margin-bottom:5mm}
+.phlox-table{width:100%;border-collapse:collapse;margin:0 0 3mm}
+.phlox-table th{font-size:7.5pt;letter-spacing:.08em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;text-align:left;padding:2mm;border-bottom:1.5px solid var(--phlox-ink)}
+.phlox-table td{padding:2.4mm 2mm;border-bottom:1px solid var(--phlox-rule);vertical-align:top}
+.phlox-meta{width:auto;margin-top:4mm;font-size:9.5pt}
+.phlox-meta thead,.phlox-totals thead,.phlox-due thead,.phlox-terms thead{display:none}
+.phlox-meta td{border:0;padding:.6mm 6mm .6mm 0}
+.phlox-totals td,.phlox-due td{border:0;padding:1mm 0;font-size:9.5pt}
+.phlox-meta td:first-child{color:var(--phlox-muted)}
+.phlox-meta td:last-child{font-weight:550}
+.phlox-vat .phlox-table th,.phlox-vat .phlox-table td{font-size:8.5pt;padding:1.6mm 2mm}
+.phlox-bottom{margin-top:6mm;grid-auto-flow:row;grid-template-columns:minmax(0,1fr) 78mm;align-items:start}
+.phlox-totals{background:var(--phlox-wash);border-radius:3px;padding:3mm 4mm}
+.phlox-totals .phlox-table,.phlox-due .phlox-table{margin:0}
+.phlox-due{background:var(--phlox-accent);color:#fff;border-radius:3px;padding:3.2mm 4mm;margin-top:2mm;font-size:12pt;font-weight:650}
+.phlox-due td{padding:0;color:#fff;font-size:12pt}
+.phlox-due td:last-child{font-size:15pt}
+.phlox-pay{margin-top:6mm;padding:4mm;background:var(--phlox-accent-wash);border-radius:3px;font-size:9.5pt}
+.phlox-pay .phlox-label{color:var(--phlox-accent)}
+.phlox-pay p{margin:0 0 2mm}
+.phlox-pay code{font-family:ui-monospace,Menlo,monospace}
+code{font-family:ui-monospace,Menlo,monospace}
+blockquote{margin:0 0 2mm;padding-left:3mm;border-left:2px solid var(--phlox-rule);color:var(--phlox-muted);font-size:9pt}
+ul,ol{margin:0 0 2mm;padding-left:5mm}
+li{margin:0 0 1mm}
+.phlox-totals-due td{font-weight:650}
+.phlox-watermark-user{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-45deg);font-size:6em;color:rgba(128,128,128,0.12);pointer-events:none;z-index:9999;user-select:none}
+.phlox-watermark-program{position:fixed;bottom:4mm;right:4mm;font-size:.8em;color:rgba(100,100,100,0.6);z-index:9999}
+.phlox-watermark-program a{color:inherit}
+.phlox-section-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
+.phlox-header-meta{display:grid;grid-template-columns:auto auto;gap:.25rem 1rem}
+.phlox-parties-grid{display:grid;grid-template-columns:1fr 1fr;gap:8mm}
+.phlox-party-title{font-size:7.5pt;letter-spacing:.12em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;margin:0 0 1.5mm}
+.phlox-address div{line-height:1.4}
+.phlox-contact{margin-top:.5rem;font-size:.9rem;color:var(--phlox-muted)}
+.phlox-kv-label{color:var(--phlox-muted);margin-right:.5rem}
+.phlox-kvgrid{display:grid;grid-template-columns:auto 1fr;column-gap:1rem;row-gap:.2rem}
+.phlox-lines-table,.phlox-vat-table,.phlox-ac-table{width:100%;border-collapse:collapse;margin-top:.5rem}
+.phlox-lines-table th,.phlox-vat-table th,.phlox-ac-table th{font-size:7.5pt;letter-spacing:.08em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;text-align:left;padding:2mm;border-bottom:1.5px solid var(--phlox-ink)}
+.phlox-lines-table td,.phlox-vat-table td,.phlox-ac-table td{padding:2.4mm 2mm;border-bottom:1px solid var(--phlox-rule);vertical-align:top}
+.phlox-lines-table th:nth-child(n+3),.phlox-lines-table td:nth-child(n+3){text-align:right}
+.phlox-ac-table th:nth-child(n+3),.phlox-ac-table td:nth-child(n+3){text-align:right}
+.phlox-vat-table th:nth-child(n+2),.phlox-vat-table td:nth-child(n+2){text-align:right}
+.phlox-item-name{font-weight:650}
+.phlox-item-desc,.phlox-item-attr,.phlox-line-note{color:var(--phlox-muted);font-size:8.5pt}
+.phlox-totals-ladder{display:grid;grid-template-columns:1fr auto;row-gap:.25rem;max-width:78mm;margin-left:auto;background:var(--phlox-wash);border-radius:3px;padding:3mm 4mm}
+.phlox-total-row{display:contents}
+.phlox-total-label{padding-right:1rem}
+.phlox-total-amount{text-align:right}
+.phlox-totals-due .phlox-total-row:last-child .phlox-total-amount{font-weight:650;border-top:2px solid var(--phlox-accent);padding-top:.25rem}
+@media print{.phlox-watermark-user{position:fixed}}
+.phlox-foot{margin-top:10mm;padding-top:3mm;border-top:1px solid var(--phlox-rule);font-size:7.5pt;color:var(--phlox-faint)}
+.phlox-lines td:first-child{width:2em;color:var(--phlox-muted)}
+.phlox-lines td em{font-style:normal;color:var(--phlox-muted);font-size:8.5pt}
+.phlox-lines th:nth-child(n+3),.phlox-lines td:nth-child(n+3){text-align:right}
+</style>
+  </head>
+  <body>
+    <div class="phlox-watermark-program">
+      <a href="https://github.com/phax/phlox" target="phlox">Generated by phlox · open-source edition · github.com/phax/phlox</a>
+    </div>
+    <div class="phlox-page">
+      <div class="phlox-row phlox-head">
+        <div class="phlox-head-main">
+          <p class="phlox-kind">Invoice</p>
+          <h1 class="phlox-title">PHLOX-LONG-1</h1>
+          <table class="phlox-table phlox-meta">
+            <thead>
+              <tr>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Invoice issue date</td>
+                <td>March 2, 2026</td>
+              </tr>
+              <tr>
+                <td>Payment due date</td>
+                <td>April 1, 2026</td>
+              </tr>
+              <tr>
+                <td>Invoice currency code</td>
+                <td>EUR</td>
+              </tr>
+              <tr>
+                <td>Buyer reference</td>
+                <td>BUYER-REF-PHLOX-LONG-1</td>
+              </tr>
+              <tr>
+                <td>Invoice type code</td>
+                <td>380 — Commercial invoice</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <hr class="phlox-rule" />
+      <div class="phlox-row phlox-parties">
+        <div class="phlox-party">
+          <p class="phlox-label">Seller</p>
+          <p class="phlox-party-name">Mustermann Industrial Supplies GmbH</p>
+          <p class="phlox-muted">Mustermann Industrial Supplies GmbH</p>
+          <p>Werkstrasse 12<br />4020 Linz<br />Austria</p>
+          <p class="phlox-muted">Seller VAT identifier: ATU12345678<br />Seller legal registration identifier: FN123456a<br />Seller electronic address: 0088:9915123456789</p>
+        </div>
+        <div class="phlox-party">
+          <p class="phlox-label">Buyer</p>
+          <p class="phlox-party-name">Beispiel Maschinenbau AG</p>
+          <p class="phlox-muted">Beispiel Maschinenbau AG</p>
+          <p>Industrieweg 5<br />5020 Salzburg<br />Austria</p>
+          <p class="phlox-muted">Buyer VAT identifier: ATU87654321<br />Buyer legal registration identifier: FN654321b<br />Buyer electronic address: 0088:9915987654321<br />Erika Beispiel · +43 662 123456 · <a href="mailto:einkauf@beispiel.example">einkauf@beispiel.example</a>
+</p>
+        </div>
+      </div>
+      <hr />
+      <div class="phlox-row phlox-secondary"></div>
+      <h2 class="phlox-section-title">Notes</h2>
+      <p>This invoice has 120 lines, to check the page breaks, the repeated table header and the totals at the end.</p>
+      <p>Prices in EUR. Delivery free to the address of the buyer.</p>
+      <h2 class="phlox-section-title">Invoice lines</h2>
+      <table class="phlox-table phlox-lines">
+        <thead>
+          <tr>
+            <th style="text-align:right;">#</th>
+            <th>Description</th>
+            <th style="text-align:right;">Qty</th>
+            <th style="text-align:right;">Unit price</th>
+            <th style="text-align:right;">VAT</th>
+            <th style="text-align:right;">Line total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align:right;">1</td>
+            <td>
+              <strong>Hex bolt type A1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0001</em>
+            </td>
+            <td style="text-align:right;">1 one</td>
+            <td style="text-align:right;">€ 2.00</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 2.00</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">2</td>
+            <td>
+              <strong>Washer type B1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0002</em>
+            </td>
+            <td style="text-align:right;">8 one</td>
+            <td style="text-align:right;">€ 39.13</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 313.04</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">3</td>
+            <td>
+              <strong>Cable tie type C1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0003</em>
+            </td>
+            <td style="text-align:right;">3 metre</td>
+            <td style="text-align:right;">€ 76.26</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 228.78</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">4</td>
+            <td>
+              <strong>Ball bearing type D1</strong>
+              <br />Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.<br />
+              <em>Item seller&#39;s identifier: ART-0004</em>
+            </td>
+            <td style="text-align:right;">10 kilogram</td>
+            <td style="text-align:right;">€ 113.39</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,133.90</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">5</td>
+            <td>
+              <strong>Gasket type E1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0005</em>
+            </td>
+            <td style="text-align:right;">5 one</td>
+            <td style="text-align:right;">€ 150.52</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 752.60</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">6</td>
+            <td>
+              <strong>Copper pipe type F1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0006</em>
+            </td>
+            <td style="text-align:right;">12 hour</td>
+            <td style="text-align:right;">€ 7.65</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 91.80</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">7</td>
+            <td>
+              <strong>Valve type G1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0007</em>
+            </td>
+            <td style="text-align:right;">7 one</td>
+            <td style="text-align:right;">€ 44.78</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 313.46</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">8</td>
+            <td>
+              <strong>Fuse type H1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0008</em>
+            </td>
+            <td style="text-align:right;">2 one</td>
+            <td style="text-align:right;">€ 81.91</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 163.82</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">9</td>
+            <td>
+              <strong>Terminal block type I1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0009</em>
+            </td>
+            <td style="text-align:right;">9 metre</td>
+            <td style="text-align:right;">€ 118.04</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 1,062.36</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">10</td>
+            <td>
+              <strong>Hose clamp type J1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0010</em>
+            </td>
+            <td style="text-align:right;">4 kilogram</td>
+            <td style="text-align:right;">€ 155.17</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 620.68</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">11</td>
+            <td>
+              <strong>Drive belt type K1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0011</em>
+            </td>
+            <td style="text-align:right;">11 one</td>
+            <td style="text-align:right;">€ 12.30</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 135.30</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">12</td>
+            <td>
+              <strong>Spring type L1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0012</em>
+            </td>
+            <td style="text-align:right;">6 hour</td>
+            <td style="text-align:right;">€ 49.43</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 296.58</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">13</td>
+            <td>
+              <strong>Bracket type M1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0013</em>
+            </td>
+            <td style="text-align:right;">1 one</td>
+            <td style="text-align:right;">€ 86.56</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 86.56</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">14</td>
+            <td>
+              <strong>Sensor type N1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0014</em>
+            </td>
+            <td style="text-align:right;">8 one</td>
+            <td style="text-align:right;">€ 123.69</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 989.52</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">15</td>
+            <td>
+              <strong>Relay type O1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0015</em>
+            </td>
+            <td style="text-align:right;">3 metre</td>
+            <td style="text-align:right;">€ 160.82</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 482.46</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">16</td>
+            <td>
+              <strong>Hex bolt type P1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0016</em>
+            </td>
+            <td style="text-align:right;">10 kilogram</td>
+            <td style="text-align:right;">€ 17.95</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 179.50</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">17</td>
+            <td>
+              <strong>Washer type Q1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0017</em>
+            </td>
+            <td style="text-align:right;">5 one</td>
+            <td style="text-align:right;">€ 54.08</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 270.40</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">18</td>
+            <td>
+              <strong>Cable tie type R1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0018</em>
+            </td>
+            <td style="text-align:right;">12 hour</td>
+            <td style="text-align:right;">€ 91.21</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,094.52</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">19</td>
+            <td>
+              <strong>Ball bearing type S1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0019</em>
+            </td>
+            <td style="text-align:right;">7 one</td>
+            <td style="text-align:right;">€ 128.34</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 898.38</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">20</td>
+            <td>
+              <strong>Gasket type T1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0020</em>
+            </td>
+            <td style="text-align:right;">2 one</td>
+            <td style="text-align:right;">€ 165.47</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 330.94</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">21</td>
+            <td>
+              <strong>Copper pipe type U1</strong>
+              <br />Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.<br />
+              <em>Item seller&#39;s identifier: ART-0021</em>
+            </td>
+            <td style="text-align:right;">9 metre</td>
+            <td style="text-align:right;">€ 22.60</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 203.40</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">22</td>
+            <td>
+              <strong>Valve type V1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0022</em>
+            </td>
+            <td style="text-align:right;">4 kilogram</td>
+            <td style="text-align:right;">€ 59.73</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 238.92</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">23</td>
+            <td>
+              <strong>Fuse type W1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0023</em>
+            </td>
+            <td style="text-align:right;">11 one</td>
+            <td style="text-align:right;">€ 96.86</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,065.46</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">24</td>
+            <td>
+              <strong>Terminal block type X1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0024</em>
+            </td>
+            <td style="text-align:right;">6 hour</td>
+            <td style="text-align:right;">€ 133.99</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 803.94</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">25</td>
+            <td>
+              <strong>Hose clamp type Y1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0025</em>
+            </td>
+            <td style="text-align:right;">1 one</td>
+            <td style="text-align:right;">€ 170.12</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 170.12</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">26</td>
+            <td>
+              <strong>Drive belt type Z1</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0026</em>
+            </td>
+            <td style="text-align:right;">8 one</td>
+            <td style="text-align:right;">€ 27.25</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 218.00</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">27</td>
+            <td>
+              <strong>Spring type A2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0027</em>
+            </td>
+            <td style="text-align:right;">3 metre</td>
+            <td style="text-align:right;">€ 64.38</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 193.14</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">28</td>
+            <td>
+              <strong>Bracket type B2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0028</em>
+            </td>
+            <td style="text-align:right;">10 kilogram</td>
+            <td style="text-align:right;">€ 101.51</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,015.10</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">29</td>
+            <td>
+              <strong>Sensor type C2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0029</em>
+            </td>
+            <td style="text-align:right;">5 one</td>
+            <td style="text-align:right;">€ 138.64</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 693.20</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">30</td>
+            <td>
+              <strong>Relay type D2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0030</em>
+            </td>
+            <td style="text-align:right;">12 hour</td>
+            <td style="text-align:right;">€ 175.77</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 2,109.24</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">31</td>
+            <td>
+              <strong>Hex bolt type E2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0031</em>
+            </td>
+            <td style="text-align:right;">7 one</td>
+            <td style="text-align:right;">€ 32.90</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 230.30</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">32</td>
+            <td>
+              <strong>Washer type F2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0032</em>
+            </td>
+            <td style="text-align:right;">2 one</td>
+            <td style="text-align:right;">€ 69.03</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 138.06</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">33</td>
+            <td>
+              <strong>Cable tie type G2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0033</em>
+            </td>
+            <td style="text-align:right;">9 metre</td>
+            <td style="text-align:right;">€ 106.16</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 955.44</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">34</td>
+            <td>
+              <strong>Ball bearing type H2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0034</em>
+            </td>
+            <td style="text-align:right;">4 kilogram</td>
+            <td style="text-align:right;">€ 143.29</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 573.16</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">35</td>
+            <td>
+              <strong>Gasket type I2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0035</em>
+            </td>
+            <td style="text-align:right;">11 one</td>
+            <td style="text-align:right;">€ 180.42</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,984.62</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">36</td>
+            <td>
+              <strong>Copper pipe type J2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0036</em>
+            </td>
+            <td style="text-align:right;">6 hour</td>
+            <td style="text-align:right;">€ 37.55</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 225.30</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">37</td>
+            <td>
+              <strong>Valve type K2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0037</em>
+            </td>
+            <td style="text-align:right;">1 one</td>
+            <td style="text-align:right;">€ 74.68</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 74.68</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">38</td>
+            <td>
+              <strong>Fuse type L2</strong>
+              <br />Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.<br />
+              <em>Item seller&#39;s identifier: ART-0038</em>
+            </td>
+            <td style="text-align:right;">8 one</td>
+            <td style="text-align:right;">€ 111.81</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 894.48</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">39</td>
+            <td>
+              <strong>Terminal block type M2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0039</em>
+            </td>
+            <td style="text-align:right;">3 metre</td>
+            <td style="text-align:right;">€ 148.94</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 446.82</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">40</td>
+            <td>
+              <strong>Hose clamp type N2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0040</em>
+            </td>
+            <td style="text-align:right;">10 kilogram</td>
+            <td style="text-align:right;">€ 5.07</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 50.70</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">41</td>
+            <td>
+              <strong>Drive belt type O2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0041</em>
+            </td>
+            <td style="text-align:right;">5 one</td>
+            <td style="text-align:right;">€ 42.20</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 211.00</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">42</td>
+            <td>
+              <strong>Spring type P2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0042</em>
+            </td>
+            <td style="text-align:right;">12 hour</td>
+            <td style="text-align:right;">€ 79.33</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 951.96</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">43</td>
+            <td>
+              <strong>Bracket type Q2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0043</em>
+            </td>
+            <td style="text-align:right;">7 one</td>
+            <td style="text-align:right;">€ 116.46</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 815.22</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">44</td>
+            <td>
+              <strong>Sensor type R2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0044</em>
+            </td>
+            <td style="text-align:right;">2 one</td>
+            <td style="text-align:right;">€ 153.59</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 307.18</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">45</td>
+            <td>
+              <strong>Relay type S2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0045</em>
+            </td>
+            <td style="text-align:right;">9 metre</td>
+            <td style="text-align:right;">€ 10.72</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 96.48</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">46</td>
+            <td>
+              <strong>Hex bolt type T2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0046</em>
+            </td>
+            <td style="text-align:right;">4 kilogram</td>
+            <td style="text-align:right;">€ 47.85</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 191.40</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">47</td>
+            <td>
+              <strong>Washer type U2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0047</em>
+            </td>
+            <td style="text-align:right;">11 one</td>
+            <td style="text-align:right;">€ 84.98</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 934.78</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">48</td>
+            <td>
+              <strong>Cable tie type V2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0048</em>
+            </td>
+            <td style="text-align:right;">6 hour</td>
+            <td style="text-align:right;">€ 121.11</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 726.66</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">49</td>
+            <td>
+              <strong>Ball bearing type W2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0049</em>
+            </td>
+            <td style="text-align:right;">1 one</td>
+            <td style="text-align:right;">€ 158.24</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 158.24</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">50</td>
+            <td>
+              <strong>Gasket type X2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0050</em>
+            </td>
+            <td style="text-align:right;">8 one</td>
+            <td style="text-align:right;">€ 15.37</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 122.96</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">51</td>
+            <td>
+              <strong>Copper pipe type Y2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0051</em>
+            </td>
+            <td style="text-align:right;">3 metre</td>
+            <td style="text-align:right;">€ 52.50</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 157.50</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">52</td>
+            <td>
+              <strong>Valve type Z2</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0052</em>
+            </td>
+            <td style="text-align:right;">10 kilogram</td>
+            <td style="text-align:right;">€ 89.63</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 896.30</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">53</td>
+            <td>
+              <strong>Fuse type A3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0053</em>
+            </td>
+            <td style="text-align:right;">5 one</td>
+            <td style="text-align:right;">€ 126.76</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 633.80</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">54</td>
+            <td>
+              <strong>Terminal block type B3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0054</em>
+            </td>
+            <td style="text-align:right;">12 hour</td>
+            <td style="text-align:right;">€ 163.89</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,966.68</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">55</td>
+            <td>
+              <strong>Hose clamp type C3</strong>
+              <br />Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.<br />
+              <em>Item seller&#39;s identifier: ART-0055</em>
+            </td>
+            <td style="text-align:right;">7 one</td>
+            <td style="text-align:right;">€ 20.02</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 140.14</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">56</td>
+            <td>
+              <strong>Drive belt type D3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0056</em>
+            </td>
+            <td style="text-align:right;">2 one</td>
+            <td style="text-align:right;">€ 57.15</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 114.30</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">57</td>
+            <td>
+              <strong>Spring type E3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0057</em>
+            </td>
+            <td style="text-align:right;">9 metre</td>
+            <td style="text-align:right;">€ 94.28</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 848.52</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">58</td>
+            <td>
+              <strong>Bracket type F3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0058</em>
+            </td>
+            <td style="text-align:right;">4 kilogram</td>
+            <td style="text-align:right;">€ 131.41</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 525.64</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">59</td>
+            <td>
+              <strong>Sensor type G3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0059</em>
+            </td>
+            <td style="text-align:right;">11 one</td>
+            <td style="text-align:right;">€ 168.54</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,853.94</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">60</td>
+            <td>
+              <strong>Relay type H3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0060</em>
+            </td>
+            <td style="text-align:right;">6 hour</td>
+            <td style="text-align:right;">€ 25.67</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 154.02</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">61</td>
+            <td>
+              <strong>Hex bolt type I3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0061</em>
+            </td>
+            <td style="text-align:right;">1 one</td>
+            <td style="text-align:right;">€ 62.80</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 62.80</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">62</td>
+            <td>
+              <strong>Washer type J3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0062</em>
+            </td>
+            <td style="text-align:right;">8 one</td>
+            <td style="text-align:right;">€ 99.93</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 799.44</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">63</td>
+            <td>
+              <strong>Cable tie type K3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0063</em>
+            </td>
+            <td style="text-align:right;">3 metre</td>
+            <td style="text-align:right;">€ 136.06</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 408.18</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">64</td>
+            <td>
+              <strong>Ball bearing type L3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0064</em>
+            </td>
+            <td style="text-align:right;">10 kilogram</td>
+            <td style="text-align:right;">€ 173.19</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,731.90</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">65</td>
+            <td>
+              <strong>Gasket type M3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0065</em>
+            </td>
+            <td style="text-align:right;">5 one</td>
+            <td style="text-align:right;">€ 30.32</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 151.60</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">66</td>
+            <td>
+              <strong>Copper pipe type N3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0066</em>
+            </td>
+            <td style="text-align:right;">12 hour</td>
+            <td style="text-align:right;">€ 67.45</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 809.40</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">67</td>
+            <td>
+              <strong>Valve type O3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0067</em>
+            </td>
+            <td style="text-align:right;">7 one</td>
+            <td style="text-align:right;">€ 104.58</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 732.06</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">68</td>
+            <td>
+              <strong>Fuse type P3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0068</em>
+            </td>
+            <td style="text-align:right;">2 one</td>
+            <td style="text-align:right;">€ 141.71</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 283.42</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">69</td>
+            <td>
+              <strong>Terminal block type Q3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0069</em>
+            </td>
+            <td style="text-align:right;">9 metre</td>
+            <td style="text-align:right;">€ 178.84</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 1,609.56</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">70</td>
+            <td>
+              <strong>Hose clamp type R3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0070</em>
+            </td>
+            <td style="text-align:right;">4 kilogram</td>
+            <td style="text-align:right;">€ 35.97</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 143.88</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">71</td>
+            <td>
+              <strong>Drive belt type S3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0071</em>
+            </td>
+            <td style="text-align:right;">11 one</td>
+            <td style="text-align:right;">€ 72.10</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 793.10</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">72</td>
+            <td>
+              <strong>Spring type T3</strong>
+              <br />Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.<br />
+              <em>Item seller&#39;s identifier: ART-0072</em>
+            </td>
+            <td style="text-align:right;">6 hour</td>
+            <td style="text-align:right;">€ 109.23</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 655.38</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">73</td>
+            <td>
+              <strong>Bracket type U3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0073</em>
+            </td>
+            <td style="text-align:right;">1 one</td>
+            <td style="text-align:right;">€ 146.36</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 146.36</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">74</td>
+            <td>
+              <strong>Sensor type V3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0074</em>
+            </td>
+            <td style="text-align:right;">8 one</td>
+            <td style="text-align:right;">€ 3.49</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 27.92</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">75</td>
+            <td>
+              <strong>Relay type W3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0075</em>
+            </td>
+            <td style="text-align:right;">3 metre</td>
+            <td style="text-align:right;">€ 40.62</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 121.86</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">76</td>
+            <td>
+              <strong>Hex bolt type X3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0076</em>
+            </td>
+            <td style="text-align:right;">10 kilogram</td>
+            <td style="text-align:right;">€ 77.75</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 777.50</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">77</td>
+            <td>
+              <strong>Washer type Y3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0077</em>
+            </td>
+            <td style="text-align:right;">5 one</td>
+            <td style="text-align:right;">€ 114.88</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 574.40</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">78</td>
+            <td>
+              <strong>Cable tie type Z3</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0078</em>
+            </td>
+            <td style="text-align:right;">12 hour</td>
+            <td style="text-align:right;">€ 151.01</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,812.12</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">79</td>
+            <td>
+              <strong>Ball bearing type A4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0079</em>
+            </td>
+            <td style="text-align:right;">7 one</td>
+            <td style="text-align:right;">€ 8.14</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 56.98</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">80</td>
+            <td>
+              <strong>Gasket type B4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0080</em>
+            </td>
+            <td style="text-align:right;">2 one</td>
+            <td style="text-align:right;">€ 45.27</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 90.54</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">81</td>
+            <td>
+              <strong>Copper pipe type C4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0081</em>
+            </td>
+            <td style="text-align:right;">9 metre</td>
+            <td style="text-align:right;">€ 82.40</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 741.60</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">82</td>
+            <td>
+              <strong>Valve type D4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0082</em>
+            </td>
+            <td style="text-align:right;">4 kilogram</td>
+            <td style="text-align:right;">€ 119.53</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 478.12</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">83</td>
+            <td>
+              <strong>Fuse type E4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0083</em>
+            </td>
+            <td style="text-align:right;">11 one</td>
+            <td style="text-align:right;">€ 156.66</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,723.26</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">84</td>
+            <td>
+              <strong>Terminal block type F4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0084</em>
+            </td>
+            <td style="text-align:right;">6 hour</td>
+            <td style="text-align:right;">€ 13.79</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 82.74</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">85</td>
+            <td>
+              <strong>Hose clamp type G4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0085</em>
+            </td>
+            <td style="text-align:right;">1 one</td>
+            <td style="text-align:right;">€ 50.92</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 50.92</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">86</td>
+            <td>
+              <strong>Drive belt type H4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0086</em>
+            </td>
+            <td style="text-align:right;">8 one</td>
+            <td style="text-align:right;">€ 87.05</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 696.40</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">87</td>
+            <td>
+              <strong>Spring type I4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0087</em>
+            </td>
+            <td style="text-align:right;">3 metre</td>
+            <td style="text-align:right;">€ 124.18</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 372.54</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">88</td>
+            <td>
+              <strong>Bracket type J4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0088</em>
+            </td>
+            <td style="text-align:right;">10 kilogram</td>
+            <td style="text-align:right;">€ 161.31</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,613.10</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">89</td>
+            <td>
+              <strong>Sensor type K4</strong>
+              <br />Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.<br />
+              <em>Item seller&#39;s identifier: ART-0089</em>
+            </td>
+            <td style="text-align:right;">5 one</td>
+            <td style="text-align:right;">€ 18.44</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 92.20</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">90</td>
+            <td>
+              <strong>Relay type L4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0090</em>
+            </td>
+            <td style="text-align:right;">12 hour</td>
+            <td style="text-align:right;">€ 55.57</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 666.84</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">91</td>
+            <td>
+              <strong>Hex bolt type M4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0091</em>
+            </td>
+            <td style="text-align:right;">7 one</td>
+            <td style="text-align:right;">€ 92.70</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 648.90</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">92</td>
+            <td>
+              <strong>Washer type N4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0092</em>
+            </td>
+            <td style="text-align:right;">2 one</td>
+            <td style="text-align:right;">€ 129.83</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 259.66</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">93</td>
+            <td>
+              <strong>Cable tie type O4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0093</em>
+            </td>
+            <td style="text-align:right;">9 metre</td>
+            <td style="text-align:right;">€ 166.96</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 1,502.64</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">94</td>
+            <td>
+              <strong>Ball bearing type P4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0094</em>
+            </td>
+            <td style="text-align:right;">4 kilogram</td>
+            <td style="text-align:right;">€ 23.09</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 92.36</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">95</td>
+            <td>
+              <strong>Gasket type Q4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0095</em>
+            </td>
+            <td style="text-align:right;">11 one</td>
+            <td style="text-align:right;">€ 60.22</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 662.42</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">96</td>
+            <td>
+              <strong>Copper pipe type R4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0096</em>
+            </td>
+            <td style="text-align:right;">6 hour</td>
+            <td style="text-align:right;">€ 97.35</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 584.10</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">97</td>
+            <td>
+              <strong>Valve type S4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0097</em>
+            </td>
+            <td style="text-align:right;">1 one</td>
+            <td style="text-align:right;">€ 134.48</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 134.48</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">98</td>
+            <td>
+              <strong>Fuse type T4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0098</em>
+            </td>
+            <td style="text-align:right;">8 one</td>
+            <td style="text-align:right;">€ 171.61</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,372.88</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">99</td>
+            <td>
+              <strong>Terminal block type U4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0099</em>
+            </td>
+            <td style="text-align:right;">3 metre</td>
+            <td style="text-align:right;">€ 28.74</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 86.22</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">100</td>
+            <td>
+              <strong>Hose clamp type V4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0100</em>
+            </td>
+            <td style="text-align:right;">10 kilogram</td>
+            <td style="text-align:right;">€ 65.87</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 658.70</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">101</td>
+            <td>
+              <strong>Drive belt type W4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0101</em>
+            </td>
+            <td style="text-align:right;">5 one</td>
+            <td style="text-align:right;">€ 102.00</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 510.00</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">102</td>
+            <td>
+              <strong>Spring type X4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0102</em>
+            </td>
+            <td style="text-align:right;">12 hour</td>
+            <td style="text-align:right;">€ 139.13</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,669.56</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">103</td>
+            <td>
+              <strong>Bracket type Y4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0103</em>
+            </td>
+            <td style="text-align:right;">7 one</td>
+            <td style="text-align:right;">€ 176.26</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,233.82</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">104</td>
+            <td>
+              <strong>Sensor type Z4</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0104</em>
+            </td>
+            <td style="text-align:right;">2 one</td>
+            <td style="text-align:right;">€ 33.39</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 66.78</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">105</td>
+            <td>
+              <strong>Relay type A5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0105</em>
+            </td>
+            <td style="text-align:right;">9 metre</td>
+            <td style="text-align:right;">€ 70.52</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 634.68</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">106</td>
+            <td>
+              <strong>Hex bolt type B5</strong>
+              <br />Long description to check the wrapping of the text in the table of the invoice lines: this item is delivered in a corrosion-resistant packaging and comes with a certificate of conformity, a data sheet and the installation instructions in four languages.<br />
+              <em>Item seller&#39;s identifier: ART-0106</em>
+            </td>
+            <td style="text-align:right;">4 kilogram</td>
+            <td style="text-align:right;">€ 107.65</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 430.60</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">107</td>
+            <td>
+              <strong>Washer type C5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0107</em>
+            </td>
+            <td style="text-align:right;">11 one</td>
+            <td style="text-align:right;">€ 144.78</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,592.58</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">108</td>
+            <td>
+              <strong>Cable tie type D5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0108</em>
+            </td>
+            <td style="text-align:right;">6 hour</td>
+            <td style="text-align:right;">€ 181.91</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,091.46</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">109</td>
+            <td>
+              <strong>Ball bearing type E5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0109</em>
+            </td>
+            <td style="text-align:right;">1 one</td>
+            <td style="text-align:right;">€ 38.04</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 38.04</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">110</td>
+            <td>
+              <strong>Gasket type F5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0110</em>
+            </td>
+            <td style="text-align:right;">8 one</td>
+            <td style="text-align:right;">€ 75.17</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 601.36</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">111</td>
+            <td>
+              <strong>Copper pipe type G5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0111</em>
+            </td>
+            <td style="text-align:right;">3 metre</td>
+            <td style="text-align:right;">€ 112.30</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 336.90</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">112</td>
+            <td>
+              <strong>Valve type H5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0112</em>
+            </td>
+            <td style="text-align:right;">10 kilogram</td>
+            <td style="text-align:right;">€ 149.43</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 1,494.30</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">113</td>
+            <td>
+              <strong>Fuse type I5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0113</em>
+            </td>
+            <td style="text-align:right;">5 one</td>
+            <td style="text-align:right;">€ 6.56</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 32.80</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">114</td>
+            <td>
+              <strong>Terminal block type J5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0114</em>
+            </td>
+            <td style="text-align:right;">12 hour</td>
+            <td style="text-align:right;">€ 43.69</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 524.28</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">115</td>
+            <td>
+              <strong>Hose clamp type K5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0115</em>
+            </td>
+            <td style="text-align:right;">7 one</td>
+            <td style="text-align:right;">€ 80.82</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 565.74</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">116</td>
+            <td>
+              <strong>Drive belt type L5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0116</em>
+            </td>
+            <td style="text-align:right;">2 one</td>
+            <td style="text-align:right;">€ 117.95</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 235.90</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">117</td>
+            <td>
+              <strong>Spring type M5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0117</em>
+            </td>
+            <td style="text-align:right;">9 metre</td>
+            <td style="text-align:right;">€ 154.08</td>
+            <td style="text-align:right;">Standard rate 7.00%</td>
+            <td style="text-align:right;">€ 1,386.72</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">118</td>
+            <td>
+              <strong>Bracket type N5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0118</em>
+            </td>
+            <td style="text-align:right;">4 kilogram</td>
+            <td style="text-align:right;">€ 11.21</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 44.84</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">119</td>
+            <td>
+              <strong>Sensor type O5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0119</em>
+            </td>
+            <td style="text-align:right;">11 one</td>
+            <td style="text-align:right;">€ 48.34</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 531.74</td>
+          </tr>
+          <tr>
+            <td style="text-align:right;">120</td>
+            <td>
+              <strong>Relay type P5</strong>
+              <br />
+              <em>Item seller&#39;s identifier: ART-0120</em>
+            </td>
+            <td style="text-align:right;">6 hour</td>
+            <td style="text-align:right;">€ 85.47</td>
+            <td style="text-align:right;">Standard rate 19.00%</td>
+            <td style="text-align:right;">€ 512.82</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="phlox-row phlox-bottom">
+        <div class="phlox-vat">
+          <h2 class="phlox-section-title">VAT breakdown</h2>
+          <table class="phlox-table">
+            <thead>
+              <tr>
+                <th>VAT category</th>
+                <th style="text-align:right;">Taxable amount</th>
+                <th style="text-align:right;">VAT rate</th>
+                <th style="text-align:right;">VAT amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Standard rate</td>
+                <td style="text-align:right;">€ 13,887.60</td>
+                <td style="text-align:right;">7.00%</td>
+                <td style="text-align:right;">€ 972.13</td>
+              </tr>
+              <tr>
+                <td>Standard rate</td>
+                <td style="text-align:right;">€ 57,493.20</td>
+                <td style="text-align:right;">19.00%</td>
+                <td style="text-align:right;">€ 10,923.71</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="phlox-totals-col">
+          <div class="phlox-totals">
+            <table class="phlox-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th style="text-align:right;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Sum of invoice line net amounts</td>
+                  <td style="text-align:right;">€ 71,380.80</td>
+                </tr>
+                <tr>
+                  <td>Invoice total amount without VAT</td>
+                  <td style="text-align:right;">€ 71,380.80</td>
+                </tr>
+                <tr>
+                  <td>Invoice total VAT amount</td>
+                  <td style="text-align:right;">€ 11,895.84</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Invoice total amount with VAT</strong>
+                  </td>
+                  <td style="text-align:right;">
+                    <strong>€ 83,276.64</strong>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="phlox-due">
+            <table class="phlox-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th style="text-align:right;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Amount due</td>
+                  <td style="text-align:right;">€ 83,276.64</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="phlox-pay">
+        <p class="phlox-label">Payment</p>
+        <p>
+          <strong>Payment means type code:</strong> Credit transfer<br />Credit transfer<br />
+          <em>Remittance information:</em> PHLOX-LONG-1        </p>
+        <p class="phlox-label">Credit transfer</p>
+        <ul>
+          <li>
+            <p>Mustermann Industrial Supplies — <code>AT611904300234573201</code> (BIC BKAUATWW)</p>
+          </li>
+        </ul>
+      </div>
+      <h2 class="phlox-section-title">Payment terms</h2>
+      <p>Payment within 30 days net.</p>
+      <p class="phlox-foot">Specification identifier: urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0 · Business process type: urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</p>
+    </div>
+  </body>
+</html>

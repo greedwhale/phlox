@@ -1,0 +1,787 @@
+pages 2
+page 1 595.3x841.9
+G p1 sc 0.14 0.36 0.39
+G p1 sc 0.00 0.00 0.00
+G p1 SC 0.89 0.91 0.93
+G p1 w 0.50
+G p1 m 56.69 725.85
+G p1 l 217.11 725.85
+G p1 S
+G p1 m 217.11 725.85
+G p1 l 404.11 725.85
+G p1 S
+G p1 m 56.69 707.79
+G p1 l 217.11 707.79
+G p1 S
+G p1 m 217.11 707.79
+G p1 l 404.11 707.79
+G p1 S
+G p1 m 56.69 689.73
+G p1 l 217.11 689.73
+G p1 S
+G p1 m 217.11 689.73
+G p1 l 404.11 689.73
+G p1 S
+G p1 m 56.69 671.67
+G p1 l 217.11 671.67
+G p1 S
+G p1 m 217.11 671.67
+G p1 l 404.11 671.67
+G p1 S
+G p1 Do /Im1
+G p1 SC 0.14 0.36 0.39
+G p1 w 1.50
+G p1 m 56.69 662.67
+G p1 l 538.58 662.67
+G p1 S
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 SC 0.50 0.50 0.50
+G p1 w 0.75
+G p1 m 56.69 556.20
+G p1 l 538.58 556.20
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 SC 0.11 0.14 0.20
+G p1 w 1.00
+G p1 m 56.69 440.12
+G p1 l 94.14 440.12
+G p1 S
+G p1 m 94.14 440.12
+G p1 l 250.44 440.12
+G p1 S
+G p1 m 250.44 440.12
+G p1 l 299.08 440.12
+G p1 S
+G p1 m 299.08 440.12
+G p1 l 366.56 440.12
+G p1 S
+G p1 m 366.56 440.12
+G p1 l 459.91 440.12
+G p1 S
+G p1 m 459.91 440.12
+G p1 l 538.58 440.12
+G p1 S
+G p1 SC 0.89 0.91 0.93
+G p1 w 0.50
+G p1 m 56.69 409.57
+G p1 l 94.14 409.57
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 m 94.14 409.57
+G p1 l 250.44 409.57
+G p1 S
+G p1 m 250.44 409.57
+G p1 l 299.08 409.57
+G p1 S
+G p1 m 299.08 409.57
+G p1 l 366.56 409.57
+G p1 S
+G p1 m 366.56 409.57
+G p1 l 459.91 409.57
+G p1 S
+G p1 m 459.91 409.57
+G p1 l 538.58 409.57
+G p1 S
+G p1 m 56.69 379.27
+G p1 l 94.14 379.27
+G p1 S
+G p1 m 94.14 379.27
+G p1 l 250.44 379.27
+G p1 S
+G p1 m 250.44 379.27
+G p1 l 299.08 379.27
+G p1 S
+G p1 m 299.08 379.27
+G p1 l 366.56 379.27
+G p1 S
+G p1 m 366.56 379.27
+G p1 l 459.91 379.27
+G p1 S
+G p1 m 459.91 379.27
+G p1 l 538.58 379.27
+G p1 S
+G p1 m 56.69 348.97
+G p1 l 94.14 348.97
+G p1 S
+G p1 m 94.14 348.97
+G p1 l 250.44 348.97
+G p1 S
+G p1 m 250.44 348.97
+G p1 l 299.08 348.97
+G p1 S
+G p1 m 299.08 348.97
+G p1 l 366.56 348.97
+G p1 S
+G p1 m 366.56 348.97
+G p1 l 459.91 348.97
+G p1 S
+G p1 m 459.91 348.97
+G p1 l 538.58 348.97
+G p1 S
+G p1 m 56.69 318.67
+G p1 l 94.14 318.67
+G p1 S
+G p1 m 94.14 318.67
+G p1 l 250.44 318.67
+G p1 S
+G p1 m 250.44 318.67
+G p1 l 299.08 318.67
+G p1 S
+G p1 m 299.08 318.67
+G p1 l 366.56 318.67
+G p1 S
+G p1 m 366.56 318.67
+G p1 l 459.91 318.67
+G p1 S
+G p1 m 459.91 318.67
+G p1 l 538.58 318.67
+G p1 S
+G p1 m 56.69 288.37
+G p1 l 94.14 288.37
+G p1 S
+G p1 m 94.14 288.37
+G p1 l 250.44 288.37
+G p1 S
+G p1 m 250.44 288.37
+G p1 l 299.08 288.37
+G p1 S
+G p1 m 299.08 288.37
+G p1 l 366.56 288.37
+G p1 S
+G p1 m 366.56 288.37
+G p1 l 459.91 288.37
+G p1 S
+G p1 m 459.91 288.37
+G p1 l 538.58 288.37
+G p1 S
+G p1 m 56.69 258.07
+G p1 l 94.14 258.07
+G p1 S
+G p1 m 94.14 258.07
+G p1 l 250.44 258.07
+G p1 S
+G p1 m 250.44 258.07
+G p1 l 299.08 258.07
+G p1 S
+G p1 m 299.08 258.07
+G p1 l 366.56 258.07
+G p1 S
+G p1 m 366.56 258.07
+G p1 l 459.91 258.07
+G p1 S
+G p1 m 459.91 258.07
+G p1 l 538.58 258.07
+G p1 S
+G p1 m 56.69 227.77
+G p1 l 94.14 227.77
+G p1 S
+G p1 m 94.14 227.77
+G p1 l 250.44 227.77
+G p1 S
+G p1 m 250.44 227.77
+G p1 l 299.08 227.77
+G p1 S
+G p1 m 299.08 227.77
+G p1 l 366.56 227.77
+G p1 S
+G p1 m 366.56 227.77
+G p1 l 459.91 227.77
+G p1 S
+G p1 m 459.91 227.77
+G p1 l 538.58 227.77
+G p1 S
+G p1 m 56.69 197.47
+G p1 l 94.14 197.47
+G p1 S
+G p1 m 94.14 197.47
+G p1 l 250.44 197.47
+G p1 S
+G p1 m 250.44 197.47
+G p1 l 299.08 197.47
+G p1 S
+G p1 m 299.08 197.47
+G p1 l 366.56 197.47
+G p1 S
+G p1 m 366.56 197.47
+G p1 l 459.91 197.47
+G p1 S
+G p1 m 459.91 197.47
+G p1 l 538.58 197.47
+G p1 S
+G p1 m 56.69 167.17
+G p1 l 94.14 167.17
+G p1 S
+G p1 m 94.14 167.17
+G p1 l 250.44 167.17
+G p1 S
+G p1 m 250.44 167.17
+G p1 l 299.08 167.17
+G p1 S
+G p1 m 299.08 167.17
+G p1 l 366.56 167.17
+G p1 S
+G p1 m 366.56 167.17
+G p1 l 459.91 167.17
+G p1 S
+G p1 m 459.91 167.17
+G p1 l 538.58 167.17
+G p1 S
+G p1 m 56.69 136.87
+G p1 l 94.14 136.87
+G p1 S
+G p1 m 94.14 136.87
+G p1 l 250.44 136.87
+G p1 S
+G p1 m 250.44 136.87
+G p1 l 299.08 136.87
+G p1 S
+G p1 m 299.08 136.87
+G p1 l 366.56 136.87
+G p1 S
+G p1 m 366.56 136.87
+G p1 l 459.91 136.87
+G p1 S
+G p1 m 459.91 136.87
+G p1 l 538.58 136.87
+G p1 S
+G p1 m 56.69 106.57
+G p1 l 94.14 106.57
+G p1 S
+G p1 m 94.14 106.57
+G p1 l 250.44 106.57
+G p1 S
+G p1 m 250.44 106.57
+G p1 l 299.08 106.57
+G p1 S
+G p1 m 299.08 106.57
+G p1 l 366.56 106.57
+G p1 S
+G p1 m 366.56 106.57
+G p1 l 459.91 106.57
+G p1 S
+G p1 m 459.91 106.57
+G p1 l 538.58 106.57
+G p1 S
+G p1 m 56.69 76.27
+G p1 l 94.14 76.27
+G p1 S
+G p1 m 94.14 76.27
+G p1 l 250.44 76.27
+G p1 S
+G p1 m 250.44 76.27
+G p1 l 299.08 76.27
+G p1 S
+G p1 m 299.08 76.27
+G p1 l 366.56 76.27
+G p1 S
+G p1 m 366.56 76.27
+G p1 l 459.91 76.27
+G p1 S
+G p1 m 459.91 76.27
+G p1 l 538.58 76.27
+G p1 S
+G p1 sc 0.83 0.83 0.83
+page 2 595.3x841.9
+G p2 SC 0.11 0.14 0.20
+G p2 w 1.00
+G p2 m 56.69 769.77
+G p2 l 94.14 769.77
+G p2 S
+G p2 sc 0.40 0.44 0.52
+G p2 m 94.14 769.77
+G p2 l 250.44 769.77
+G p2 S
+G p2 m 250.44 769.77
+G p2 l 299.08 769.77
+G p2 S
+G p2 m 299.08 769.77
+G p2 l 366.56 769.77
+G p2 S
+G p2 m 366.56 769.77
+G p2 l 459.91 769.77
+G p2 S
+G p2 m 459.91 769.77
+G p2 l 538.58 769.77
+G p2 S
+G p2 SC 0.89 0.91 0.93
+G p2 w 0.50
+G p2 m 56.69 739.22
+G p2 l 94.14 739.22
+G p2 S
+G p2 sc 0.00 0.00 0.00
+G p2 m 94.14 739.22
+G p2 l 250.44 739.22
+G p2 S
+G p2 m 250.44 739.22
+G p2 l 299.08 739.22
+G p2 S
+G p2 m 299.08 739.22
+G p2 l 366.56 739.22
+G p2 S
+G p2 m 366.56 739.22
+G p2 l 459.91 739.22
+G p2 S
+G p2 m 459.91 739.22
+G p2 l 538.58 739.22
+G p2 S
+G p2 m 56.69 708.92
+G p2 l 94.14 708.92
+G p2 S
+G p2 m 94.14 708.92
+G p2 l 250.44 708.92
+G p2 S
+G p2 m 250.44 708.92
+G p2 l 299.08 708.92
+G p2 S
+G p2 m 299.08 708.92
+G p2 l 366.56 708.92
+G p2 S
+G p2 m 366.56 708.92
+G p2 l 459.91 708.92
+G p2 S
+G p2 m 459.91 708.92
+G p2 l 538.58 708.92
+G p2 S
+G p2 m 56.69 678.62
+G p2 l 94.14 678.62
+G p2 S
+G p2 m 94.14 678.62
+G p2 l 250.44 678.62
+G p2 S
+G p2 m 250.44 678.62
+G p2 l 299.08 678.62
+G p2 S
+G p2 m 299.08 678.62
+G p2 l 366.56 678.62
+G p2 S
+G p2 m 366.56 678.62
+G p2 l 459.91 678.62
+G p2 S
+G p2 m 459.91 678.62
+G p2 l 538.58 678.62
+G p2 S
+G p2 m 56.69 648.32
+G p2 l 94.14 648.32
+G p2 S
+G p2 m 94.14 648.32
+G p2 l 250.44 648.32
+G p2 S
+G p2 m 250.44 648.32
+G p2 l 299.08 648.32
+G p2 S
+G p2 m 299.08 648.32
+G p2 l 366.56 648.32
+G p2 S
+G p2 m 366.56 648.32
+G p2 l 459.91 648.32
+G p2 S
+G p2 m 459.91 648.32
+G p2 l 538.58 648.32
+G p2 S
+G p2 m 56.69 618.02
+G p2 l 94.14 618.02
+G p2 S
+G p2 m 94.14 618.02
+G p2 l 250.44 618.02
+G p2 S
+G p2 m 250.44 618.02
+G p2 l 299.08 618.02
+G p2 S
+G p2 m 299.08 618.02
+G p2 l 366.56 618.02
+G p2 S
+G p2 m 366.56 618.02
+G p2 l 459.91 618.02
+G p2 S
+G p2 m 459.91 618.02
+G p2 l 538.58 618.02
+G p2 S
+G p2 m 56.69 587.72
+G p2 l 94.14 587.72
+G p2 S
+G p2 m 94.14 587.72
+G p2 l 250.44 587.72
+G p2 S
+G p2 m 250.44 587.72
+G p2 l 299.08 587.72
+G p2 S
+G p2 m 299.08 587.72
+G p2 l 366.56 587.72
+G p2 S
+G p2 m 366.56 587.72
+G p2 l 459.91 587.72
+G p2 S
+G p2 m 459.91 587.72
+G p2 l 538.58 587.72
+G p2 S
+G p2 m 56.69 557.42
+G p2 l 94.14 557.42
+G p2 S
+G p2 m 94.14 557.42
+G p2 l 250.44 557.42
+G p2 S
+G p2 m 250.44 557.42
+G p2 l 299.08 557.42
+G p2 S
+G p2 m 299.08 557.42
+G p2 l 366.56 557.42
+G p2 S
+G p2 m 366.56 557.42
+G p2 l 459.91 557.42
+G p2 S
+G p2 m 459.91 557.42
+G p2 l 538.58 557.42
+G p2 S
+G p2 m 56.69 527.12
+G p2 l 94.14 527.12
+G p2 S
+G p2 m 94.14 527.12
+G p2 l 250.44 527.12
+G p2 S
+G p2 m 250.44 527.12
+G p2 l 299.08 527.12
+G p2 S
+G p2 m 299.08 527.12
+G p2 l 366.56 527.12
+G p2 S
+G p2 m 366.56 527.12
+G p2 l 459.91 527.12
+G p2 S
+G p2 m 459.91 527.12
+G p2 l 538.58 527.12
+G p2 S
+G p2 sc 0.40 0.44 0.52
+G p2 SC 0.11 0.14 0.20
+G p2 w 1.00
+G p2 m 56.69 482.00
+G p2 l 129.59 482.00
+G p2 S
+G p2 m 129.59 482.00
+G p2 l 204.02 482.00
+G p2 S
+G p2 m 204.02 482.00
+G p2 l 259.53 482.00
+G p2 S
+G p2 m 259.53 482.00
+G p2 l 322.19 482.00
+G p2 S
+G p2 SC 0.89 0.91 0.93
+G p2 w 0.50
+G p2 m 56.69 463.69
+G p2 l 129.59 463.69
+G p2 S
+G p2 sc 0.00 0.00 0.00
+G p2 m 129.59 463.69
+G p2 l 204.02 463.69
+G p2 S
+G p2 m 204.02 463.69
+G p2 l 259.53 463.69
+G p2 S
+G p2 m 259.53 463.69
+G p2 l 322.19 463.69
+G p2 S
+G p2 m 56.69 445.63
+G p2 l 129.59 445.63
+G p2 S
+G p2 m 129.59 445.63
+G p2 l 204.02 445.63
+G p2 S
+G p2 m 204.02 445.63
+G p2 l 259.53 445.63
+G p2 S
+G p2 m 259.53 445.63
+G p2 l 322.19 445.63
+G p2 S
+G p2 sc 0.96 0.97 0.98
+G p2 re 336.19 391.71 202.39 135.16
+G p2 f
+G p2 m 344.19 489.50
+G p2 l 459.15 489.50
+G p2 S
+G p2 sc 0.00 0.00 0.00
+G p2 m 459.15 489.50
+G p2 l 530.58 489.50
+G p2 S
+G p2 m 344.19 459.88
+G p2 l 459.15 459.88
+G p2 S
+G p2 m 459.15 459.88
+G p2 l 530.58 459.88
+G p2 S
+G p2 m 344.19 430.26
+G p2 l 459.15 430.26
+G p2 S
+G p2 m 459.15 430.26
+G p2 l 530.58 430.26
+G p2 S
+G p2 m 344.19 399.96
+G p2 l 459.15 399.96
+G p2 S
+G p2 m 459.15 399.96
+G p2 l 530.58 399.96
+G p2 S
+G p2 sc 0.14 0.36 0.39
+G p2 re 336.19 353.65 202.39 34.06
+G p2 f
+G p2 m 344.19 361.90
+G p2 l 434.29 361.90
+G p2 S
+G p2 sc 1.00 1.00 1.00
+G p2 m 434.29 361.90
+G p2 l 530.58 361.90
+G p2 S
+G p2 sc 0.91 0.95 0.95
+G p2 re 56.69 238.90 481.89 106.75
+G p2 f
+G p2 sc 0.40 0.44 0.52
+G p2 sc 0.00 0.00 0.00
+G p2 sc 0.40 0.44 0.52
+G p2 sc 0.00 0.00 0.00
+G p2 sc 0.40 0.44 0.52
+G p2 sc 0.83 0.83 0.83
+T p1 56.7 66.8 8.0 Helvetica-Bold Invoice
+T p1 56.7 92.2 18.0 Helvetica-Bold 12115118
+T p1 59.7 112.8 10.0 Helvetica Invoice issue date
+T p1 220.1 112.8 10.0 Helvetica January 9, 2015
+T p1 59.7 130.8 10.0 Helvetica Payment due date
+T p1 220.1 130.8 10.0 Helvetica January 9, 2015
+T p1 59.7 148.9 10.0 Helvetica Invoice currency code
+T p1 220.1 148.9 10.0 Helvetica EUR
+T p1 59.7 167.0 10.0 Helvetica Invoice type code
+T p1 220.1 167.0 10.0 Helvetica 380 — Commercial invoice
+T p1 56.7 193.9 7.0 Helvetica-Bold Seller
+T p1 56.7 211.0 11.0 Helvetica-Bold De Koksmaat
+T p1 56.7 226.5 10.0 Helvetica Postbus 7l
+T p1 56.7 238.1 10.0 Helvetica 1950 AB Velsen-Noord
+T p1 56.7 249.7 10.0 Helvetica Netherlands (the)
+T p1 56.7 263.5 8.0 Helvetica Seller VAT identifier: NL8200.98.395.B.01
+T p1 56.7 273.3 8.0 Helvetica Seller legal registration identifier: 57151520
+T p1 297.6 193.9 7.0 Helvetica-Bold Buyer
+T p1 297.6 211.0 11.0 Helvetica-Bold ODIN 59
+T p1 297.6 226.5 10.0 Helvetica POSTBUS 367
+T p1 297.6 238.1 10.0 Helvetica 1960 AJ HEEMSKERK
+T p1 297.6 249.7 10.0 Helvetica Netherlands (the)
+T p1 297.6 263.5 8.0 Helvetica Buyer identifier: 10202
+T p1 297.6 273.3 8.0 Helvetica Dhr. J BLOKKER
+T p1 56.7 312.6 8.0 Helvetica-Bold NOTES
+T p1 56.7 327.1 10.0 Helvetica Alle leveringen zijn franco. Alle prijzen zijn incl. BTW. Betalingstermijn: 14 dagen netto. Prijswijzigingen
+T p1 56.7 338.7 10.0 Helvetica voorbehouden. Op al onze aanbiedingen, leveringen en overeenkomsten zijn van toepassing in de
+T p1 56.7 350.3 10.0 Helvetica algemene verkoop en leveringsvoorwaarden. Gedeponeerd bij de K.v.K. te Amsterdam 25-04-'85##Delivery
+T p1 56.7 361.8 10.0 Helvetica terms
+T p1 56.7 383.3 8.0 Helvetica-Bold INVOICE LINES
+T p1 87.0 398.3 7.0 Helvetica-Bold #
+T p1 97.1 398.3 7.0 Helvetica-Bold DESCRIPTION
+T p1 280.7 398.3 7.0 Helvetica-Bold QTY
+T p1 321.1 398.3 7.0 Helvetica-Bold UNIT PRICE
+T p1 441.9 398.3 7.0 Helvetica-Bold VAT
+T p1 491.4 398.3 7.0 Helvetica-Bold LINE TOTAL
+T p1 85.6 416.8 10.0 Helvetica 1
+T p1 97.1 417.2 10.0 Helvetica-Bold PATAT FRITES 10MM 10KG
+T p1 97.1 429.1 10.0 Helvetica-Oblique Item seller's identifier: 166022
+T p1 266.1 416.8 10.0 Helvetica 2 each
+T p1 335.8 416.8 10.0 Helvetica € 9.95
+T p1 396.3 416.8 10.0 Helvetica Standard rate
+T p1 428.6 428.4 10.0 Helvetica 6.00%
+T p1 502.2 416.8 10.0 Helvetica € 19.90
+T p1 85.6 447.1 10.0 Helvetica 2
+T p1 97.1 447.5 10.0 Helvetica-Bold PKAAS 50PL. JONG BEL. 1KG
+T p1 97.1 459.4 10.0 Helvetica-Oblique Item seller's identifier: 661813
+T p1 266.1 447.1 10.0 Helvetica 1 each
+T p1 335.8 447.1 10.0 Helvetica € 9.85
+T p1 396.3 447.1 10.0 Helvetica Standard rate
+T p1 428.6 458.7 10.0 Helvetica 6.00%
+T p1 507.8 447.1 10.0 Helvetica € 9.85
+T p1 85.6 477.4 10.0 Helvetica 3
+T p1 97.1 477.8 10.0 Helvetica-Bold POT KETCHUP 3 LT
+T p1 97.1 489.7 10.0 Helvetica-Oblique Item seller's identifier: 438146
+T p1 266.1 477.4 10.0 Helvetica 1 each
+T p1 335.8 477.4 10.0 Helvetica € 8.29
+T p1 396.3 477.4 10.0 Helvetica Standard rate
+T p1 428.6 489.0 10.0 Helvetica 6.00%
+T p1 507.8 477.4 10.0 Helvetica € 8.29
+T p1 85.6 507.7 10.0 Helvetica 4
+T p1 97.1 508.1 10.0 Helvetica-Bold FRITESSAUS 3 LRR
+T p1 97.1 520.0 10.0 Helvetica-Oblique Item seller's identifier: 438103
+T p1 266.1 507.7 10.0 Helvetica 2 each
+T p1 335.8 507.7 10.0 Helvetica € 7.23
+T p1 396.3 507.7 10.0 Helvetica Standard rate
+T p1 428.6 519.3 10.0 Helvetica 6.00%
+T p1 502.2 507.7 10.0 Helvetica € 14.46
+T p1 85.6 538.0 10.0 Helvetica 5
+T p1 97.1 538.4 10.0 Helvetica-Bold KOFFIE BLIK 3,5KG SNELF
+T p1 97.1 550.3 10.0 Helvetica-Oblique Item seller's identifier: 666955
+T p1 266.1 538.0 10.0 Helvetica 1 each
+T p1 330.2 538.0 10.0 Helvetica € 35.00
+T p1 396.3 538.0 10.0 Helvetica Standard rate
+T p1 428.6 549.6 10.0 Helvetica 6.00%
+T p1 502.2 538.0 10.0 Helvetica € 35.00
+T p1 85.6 568.3 10.0 Helvetica 6
+T p1 97.1 568.7 10.0 Helvetica-Bold KOFFIE 3.5 KG BLIK STAND
+T p1 97.1 580.6 10.0 Helvetica-Oblique Item seller's identifier: 664871
+T p1 266.1 568.3 10.0 Helvetica 1 each
+T p1 330.2 568.3 10.0 Helvetica € 35.00
+T p1 396.3 568.3 10.0 Helvetica Standard rate
+T p1 428.6 579.9 10.0 Helvetica 6.00%
+T p1 502.2 568.3 10.0 Helvetica € 35.00
+T p1 85.6 598.6 10.0 Helvetica 7
+T p1 97.1 599.0 10.0 Helvetica-Bold SUIKERKLONT
+T p1 97.1 610.9 10.0 Helvetica-Oblique Item seller's identifier: 350257
+T p1 266.1 598.6 10.0 Helvetica 1 each
+T p1 330.2 598.6 10.0 Helvetica € 10.65
+T p1 396.3 598.6 10.0 Helvetica Standard rate
+T p1 428.6 610.2 10.0 Helvetica 6.00%
+T p1 502.2 598.6 10.0 Helvetica € 10.65
+T p1 85.6 628.9 10.0 Helvetica 8
+T p1 97.1 629.3 10.0 Helvetica-Bold 1 KG UL BLOKJES
+T p1 97.1 641.2 10.0 Helvetica-Oblique Item seller's identifier: 350258
+T p1 266.1 628.9 10.0 Helvetica 1 each
+T p1 335.8 628.9 10.0 Helvetica € 1.55
+T p1 396.3 628.9 10.0 Helvetica Standard rate
+T p1 428.6 640.5 10.0 Helvetica 6.00%
+T p1 507.8 628.9 10.0 Helvetica € 1.55
+T p1 85.6 659.2 10.0 Helvetica 9
+T p1 97.1 659.6 10.0 Helvetica-Bold BLOCKNOTE A5
+T p1 97.1 671.5 10.0 Helvetica-Oblique Item seller's identifier: 999998
+T p1 266.1 659.2 10.0 Helvetica 3 each
+T p1 335.8 659.2 10.0 Helvetica € 4.79
+T p1 396.3 659.2 10.0 Helvetica Standard rate
+T p1 428.6 670.8 10.0 Helvetica 6.00%
+T p1 502.2 659.2 10.0 Helvetica € 14.37
+T p1 80.0 689.5 10.0 Helvetica 10
+T p1 97.1 689.9 10.0 Helvetica-Bold CHIPS NAT KLEIN ZAKJES
+T p1 97.1 701.8 10.0 Helvetica-Oblique Item seller's identifier: 740810
+T p1 266.1 689.5 10.0 Helvetica 1 each
+T p1 335.8 689.5 10.0 Helvetica € 8.29
+T p1 396.3 689.5 10.0 Helvetica Standard rate
+T p1 428.6 701.1 10.0 Helvetica 6.00%
+T p1 507.8 689.5 10.0 Helvetica € 8.29
+T p1 80.0 719.8 10.0 Helvetica 11
+T p1 97.1 720.2 10.0 Helvetica-Bold CHIPS PAP KLEINE ZAKJES
+T p1 97.1 732.1 10.0 Helvetica-Oblique Item seller's identifier: 740829
+T p1 266.1 719.8 10.0 Helvetica 2 each
+T p1 335.8 719.8 10.0 Helvetica € 8.29
+T p1 396.3 719.8 10.0 Helvetica Standard rate
+T p1 428.6 731.4 10.0 Helvetica 6.00%
+T p1 502.2 719.8 10.0 Helvetica € 16.58
+T p1 80.0 750.1 10.0 Helvetica 12
+T p1 97.1 750.5 10.0 Helvetica-Bold TR KL PAKJES APPELSAP
+T p1 97.1 762.4 10.0 Helvetica-Oblique Item seller's identifier: 740828
+T p1 266.1 750.1 10.0 Helvetica 1 each
+T p1 335.8 750.1 10.0 Helvetica € 9.95
+T p1 396.3 750.1 10.0 Helvetica Standard rate
+T p1 428.6 761.7 10.0 Helvetica 6.00%
+T p1 507.8 750.1 10.0 Helvetica € 9.95
+T p1 363.5 796.1 6.0 Helvetica Generated by phlox · open-source edition · github.com/phax/phlox
+T p2 87.0 68.6 7.0 Helvetica-Bold #
+T p2 97.1 68.6 7.0 Helvetica-Bold DESCRIPTION
+T p2 280.7 68.6 7.0 Helvetica-Bold QTY
+T p2 321.1 68.6 7.0 Helvetica-Bold UNIT PRICE
+T p2 441.9 68.6 7.0 Helvetica-Bold VAT
+T p2 491.4 68.6 7.0 Helvetica-Bold LINE TOTAL
+T p2 80.0 87.2 10.0 Helvetica 13
+T p2 97.1 87.5 10.0 Helvetica-Bold PK CHOCOLADEMEL
+T p2 97.1 99.4 10.0 Helvetica-Oblique Item seller's identifier: 740827
+T p2 266.1 87.2 10.0 Helvetica 2 each
+T p2 335.8 87.2 10.0 Helvetica € 1.65
+T p2 396.3 87.2 10.0 Helvetica Standard rate
+T p2 428.6 98.7 10.0 Helvetica 6.00%
+T p2 507.8 87.2 10.0 Helvetica € 3.30
+T p2 80.0 117.5 10.0 Helvetica 14
+T p2 97.1 117.8 10.0 Helvetica-Bold KRAT BIER
+T p2 97.1 129.7 10.0 Helvetica-Oblique Item seller's identifier: 999996
+T p2 266.1 117.5 10.0 Helvetica 1 each
+T p2 330.2 117.5 10.0 Helvetica € 10.80
+T p2 396.3 117.5 10.0 Helvetica Standard rate
+T p2 423.0 129.0 10.0 Helvetica 21.00%
+T p2 502.2 117.5 10.0 Helvetica € 10.80
+T p2 80.0 147.8 10.0 Helvetica 15
+T p2 97.1 148.1 10.0 Helvetica-Bold STATIEGELD
+T p2 97.1 160.0 10.0 Helvetica-Oblique Item seller's identifier: 999995
+T p2 266.1 147.8 10.0 Helvetica 1 each
+T p2 335.8 147.8 10.0 Helvetica € 3.90
+T p2 396.3 147.8 10.0 Helvetica Standard rate
+T p2 428.6 159.3 10.0 Helvetica 6.00%
+T p2 507.8 147.8 10.0 Helvetica € 3.90
+T p2 80.0 178.1 10.0 Helvetica 16
+T p2 97.1 178.4 10.0 Helvetica-Bold BLEEK 3 X 750 ML
+T p2 97.1 190.3 10.0 Helvetica-Oblique Item seller's identifier: 102172
+T p2 266.1 178.1 10.0 Helvetica 2 each
+T p2 335.8 178.1 10.0 Helvetica € 3.80
+T p2 396.3 178.1 10.0 Helvetica Standard rate
+T p2 423.0 189.6 10.0 Helvetica 21.00%
+T p2 507.8 178.1 10.0 Helvetica € 7.60
+T p2 80.0 208.4 10.0 Helvetica 17
+T p2 97.1 208.7 10.0 Helvetica-Bold WC PAPIER
+T p2 97.1 220.6 10.0 Helvetica-Oblique Item seller's identifier: 999994
+T p2 266.1 208.4 10.0 Helvetica 2 each
+T p2 335.8 208.4 10.0 Helvetica € 4.67
+T p2 396.3 208.4 10.0 Helvetica Standard rate
+T p2 423.0 219.9 10.0 Helvetica 21.00%
+T p2 507.8 208.4 10.0 Helvetica € 9.34
+T p2 80.0 238.7 10.0 Helvetica 18
+T p2 97.1 239.0 10.0 Helvetica-Bold BALPENNEN 50 ST BLAUW
+T p2 97.1 250.9 10.0 Helvetica-Oblique Item seller's identifier: 999993
+T p2 266.1 238.7 10.0 Helvetica 1 each
+T p2 330.2 238.7 10.0 Helvetica € 18.63
+T p2 396.3 238.7 10.0 Helvetica Standard rate
+T p2 423.0 250.2 10.0 Helvetica 21.00%
+T p2 502.2 238.7 10.0 Helvetica € 18.63
+T p2 80.0 269.0 10.0 Helvetica 19
+T p2 97.1 269.3 10.0 Helvetica-Bold EM FRITUURVET
+T p2 97.1 281.2 10.0 Helvetica-Oblique Item seller's identifier: 999992
+T p2 266.1 269.0 10.0 Helvetica 6 each
+T p2 330.2 269.0 10.0 Helvetica € 17.02
+T p2 396.3 269.0 10.0 Helvetica Standard rate
+T p2 428.6 280.5 10.0 Helvetica 6.00%
+T p2 496.7 269.0 10.0 Helvetica € 102.12
+T p2 80.0 299.3 10.0 Helvetica 20
+T p2 97.1 299.6 10.0 Helvetica-Bold FRITUUR VET 10 KG RETOUR
+T p2 97.1 311.5 10.0 Helvetica-Oblique Item seller's identifier: 175137
+T p2 266.1 299.3 10.0 Helvetica 6 each
+T p2 330.2 299.3 10.0 Helvetica € 18.33
+T p2 396.3 299.3 10.0 Helvetica Standard rate
+T p2 428.6 310.8 10.0 Helvetica 6.00%
+T p2 493.3 299.3 10.0 Helvetica -€ 109.98
+T p2 56.7 332.5 8.0 Helvetica-Bold VAT BREAKDOWN
+T p2 59.7 347.5 7.0 Helvetica-Bold VAT CATEGORY
+T p2 165.6 347.5 7.0 Helvetica-Bold TAXABLE
+T p2 168.1 356.4 7.0 Helvetica-Bold AMOUNT
+T p2 219.0 347.5 7.0 Helvetica-Bold VAT RATE
+T p2 269.2 347.5 7.0 Helvetica-Bold VAT AMOUNT
+T p2 59.7 374.9 10.0 Helvetica Standard rate
+T p2 162.1 374.9 10.0 Helvetica € 183.23
+T p2 228.2 374.9 10.0 Helvetica 6.00%
+T p2 285.8 374.9 10.0 Helvetica € 10.99
+T p2 59.7 393.0 10.0 Helvetica Standard rate
+T p2 167.7 393.0 10.0 Helvetica € 46.37
+T p2 222.6 393.0 10.0 Helvetica 21.00%
+T p2 291.4 393.0 10.0 Helvetica € 9.74
+T p2 347.2 337.6 10.0 Helvetica Sum of invoice line net
+T p2 347.2 349.1 10.0 Helvetica amounts
+T p2 488.7 337.6 10.0 Helvetica € 229.60
+T p2 347.2 367.2 10.0 Helvetica Invoice total amount
+T p2 347.2 378.8 10.0 Helvetica without VAT
+T p2 488.7 367.2 10.0 Helvetica € 229.60
+T p2 347.2 396.8 10.0 Helvetica Invoice total VAT
+T p2 347.2 408.4 10.0 Helvetica amount
+T p2 494.2 396.8 10.0 Helvetica € 20.73
+T p2 347.2 426.8 10.0 Helvetica-Bold Invoice total amount
+T p2 347.2 438.7 10.0 Helvetica-Bold with VAT
+T p2 488.7 426.8 10.0 Helvetica-Bold € 250.33
+T p2 347.2 476.7 10.0 Helvetica Amount due
+T p2 488.7 476.7 10.0 Helvetica € 250.33
+T p2 66.7 515.2 7.0 Helvetica-Bold Payment
+T p2 66.7 531.1 10.0 Helvetica-Bold Payment means type code: Credit transfer
+T p2 66.7 543.0 10.0 Helvetica-Oblique Remittance information: Deb. 10202 / Fact. 12115118
+T p2 66.7 555.9 7.0 Helvetica-Bold Credit transfer
+T p2 66.7 568.4 10.0 Symbol •
+T p2 82.7 570.4 10.0 Courier NL57 RABO 0107307510
+T p2 66.7 583.0 10.0 Symbol •
+T p2 82.7 585.0 10.0 Courier NL03 INGB 0004489902
+T p2 56.7 615.7 7.0 Helvetica Specification identifier: urn:cen.eu:en16931:2017
+T p2 363.5 796.1 6.0 Helvetica Generated by phlox · open-source edition · github.com/phax/phlox

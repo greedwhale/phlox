@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="generator" content="phlox @VERSION@" />
+    <meta name="author" content="Seller Ltd" />
+    <meta name="description" content="EN 16931:2026 Invoice" />
+    <meta name="keywords" content="EN 16931, Invoice, phlox" />
+    <title>Invoice: D25A-NEW-ALLOWCHG-INV-1</title>
+    <style type="text/css">:root{--phlox-ink:#1d2433;--phlox-muted:#667085;--phlox-faint:#98a2b3;--phlox-rule:#e4e7ec;--phlox-wash:#f6f7f9;--phlox-accent:#245c64;--phlox-accent-wash:#e8f1f2}
+*{box-sizing:border-box}
+body{margin:0;color:var(--phlox-ink);font:10.5pt/1.45 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+@media screen{body{background:#eceef2}.phlox-page{margin:12mm auto;box-shadow:0 1px 3px rgba(16,24,40,.12)}}
+@page{size:A4;margin:0}
+@media print{.phlox-page{margin:0;box-shadow:none}}
+.phlox-page{width:210mm;max-width:100%;min-height:297mm;background:#fff;padding:16mm 18mm}
+.phlox-logo{max-height:14mm;max-width:50mm}
+a{color:var(--phlox-accent)}
+h1,h2,h3{margin:0}
+.phlox-title{font-size:24pt;font-weight:650;letter-spacing:-.01em;margin:1mm 0 0}
+.phlox-section-title,h2.phlox-section-title{font-size:8pt;letter-spacing:.12em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;margin:6mm 0 2mm;padding:0;border:0}
+.phlox-subsection-title,h3.phlox-subsection-title{font-size:9pt;margin:3mm 0 1.5mm;font-weight:650}
+p{margin:0 0 2mm}
+.phlox-label{font-size:7.5pt;letter-spacing:.12em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;margin:0 0 1.5mm}
+.phlox-kind{font-size:8.5pt;letter-spacing:.14em;text-transform:uppercase;color:var(--phlox-accent);font-weight:600;margin:0}
+.phlox-muted{color:var(--phlox-muted);font-size:9pt}
+.phlox-party-name{font-weight:650;font-size:11.5pt;margin:0 0 1mm}
+.phlox-row>*{min-width:0}
+.phlox-row:empty{display:none}
+.phlox-row{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8mm}
+.phlox-head{grid-template-columns:1fr auto;grid-auto-flow:row}
+hr{border:0;border-top:1px solid var(--phlox-rule);margin:4mm 0}
+hr.phlox-rule{border-top:2px solid var(--phlox-accent);margin:5mm 0 6mm}
+.phlox-head-logo{text-align:right}
+.phlox-parties{margin-bottom:5mm}
+.phlox-secondary{font-size:9pt;margin-bottom:5mm}
+.phlox-table{width:100%;border-collapse:collapse;margin:0 0 3mm}
+.phlox-table th{font-size:7.5pt;letter-spacing:.08em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;text-align:left;padding:2mm;border-bottom:1.5px solid var(--phlox-ink)}
+.phlox-table td{padding:2.4mm 2mm;border-bottom:1px solid var(--phlox-rule);vertical-align:top}
+.phlox-meta{width:auto;margin-top:4mm;font-size:9.5pt}
+.phlox-meta thead,.phlox-totals thead,.phlox-due thead,.phlox-terms thead{display:none}
+.phlox-meta td{border:0;padding:.6mm 6mm .6mm 0}
+.phlox-totals td,.phlox-due td{border:0;padding:1mm 0;font-size:9.5pt}
+.phlox-meta td:first-child{color:var(--phlox-muted)}
+.phlox-meta td:last-child{font-weight:550}
+.phlox-vat .phlox-table th,.phlox-vat .phlox-table td{font-size:8.5pt;padding:1.6mm 2mm}
+.phlox-bottom{margin-top:6mm;grid-auto-flow:row;grid-template-columns:minmax(0,1fr) 78mm;align-items:start}
+.phlox-totals{background:var(--phlox-wash);border-radius:3px;padding:3mm 4mm}
+.phlox-totals .phlox-table,.phlox-due .phlox-table{margin:0}
+.phlox-due{background:var(--phlox-accent);color:#fff;border-radius:3px;padding:3.2mm 4mm;margin-top:2mm;font-size:12pt;font-weight:650}
+.phlox-due td{padding:0;color:#fff;font-size:12pt}
+.phlox-due td:last-child{font-size:15pt}
+.phlox-pay{margin-top:6mm;padding:4mm;background:var(--phlox-accent-wash);border-radius:3px;font-size:9.5pt}
+.phlox-pay .phlox-label{color:var(--phlox-accent)}
+.phlox-pay p{margin:0 0 2mm}
+.phlox-pay code{font-family:ui-monospace,Menlo,monospace}
+code{font-family:ui-monospace,Menlo,monospace}
+blockquote{margin:0 0 2mm;padding-left:3mm;border-left:2px solid var(--phlox-rule);color:var(--phlox-muted);font-size:9pt}
+ul,ol{margin:0 0 2mm;padding-left:5mm}
+li{margin:0 0 1mm}
+.phlox-totals-due td{font-weight:650}
+.phlox-watermark-user{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-45deg);font-size:6em;color:rgba(128,128,128,0.12);pointer-events:none;z-index:9999;user-select:none}
+.phlox-watermark-program{position:fixed;bottom:4mm;right:4mm;font-size:.8em;color:rgba(100,100,100,0.6);z-index:9999}
+.phlox-watermark-program a{color:inherit}
+.phlox-section-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
+.phlox-header-meta{display:grid;grid-template-columns:auto auto;gap:.25rem 1rem}
+.phlox-parties-grid{display:grid;grid-template-columns:1fr 1fr;gap:8mm}
+.phlox-party-title{font-size:7.5pt;letter-spacing:.12em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;margin:0 0 1.5mm}
+.phlox-address div{line-height:1.4}
+.phlox-contact{margin-top:.5rem;font-size:.9rem;color:var(--phlox-muted)}
+.phlox-kv-label{color:var(--phlox-muted);margin-right:.5rem}
+.phlox-kvgrid{display:grid;grid-template-columns:auto 1fr;column-gap:1rem;row-gap:.2rem}
+.phlox-lines-table,.phlox-vat-table,.phlox-ac-table{width:100%;border-collapse:collapse;margin-top:.5rem}
+.phlox-lines-table th,.phlox-vat-table th,.phlox-ac-table th{font-size:7.5pt;letter-spacing:.08em;text-transform:uppercase;color:var(--phlox-muted);font-weight:600;text-align:left;padding:2mm;border-bottom:1.5px solid var(--phlox-ink)}
+.phlox-lines-table td,.phlox-vat-table td,.phlox-ac-table td{padding:2.4mm 2mm;border-bottom:1px solid var(--phlox-rule);vertical-align:top}
+.phlox-lines-table th:nth-child(n+3),.phlox-lines-table td:nth-child(n+3){text-align:right}
+.phlox-ac-table th:nth-child(n+3),.phlox-ac-table td:nth-child(n+3){text-align:right}
+.phlox-vat-table th:nth-child(n+2),.phlox-vat-table td:nth-child(n+2){text-align:right}
+.phlox-item-name{font-weight:650}
+.phlox-item-desc,.phlox-item-attr,.phlox-line-note{color:var(--phlox-muted);font-size:8.5pt}
+.phlox-totals-ladder{display:grid;grid-template-columns:1fr auto;row-gap:.25rem;max-width:78mm;margin-left:auto;background:var(--phlox-wash);border-radius:3px;padding:3mm 4mm}
+.phlox-total-row{display:contents}
+.phlox-total-label{padding-right:1rem}
+.phlox-total-amount{text-align:right}
+.phlox-totals-due .phlox-total-row:last-child .phlox-total-amount{font-weight:650;border-top:2px solid var(--phlox-accent);padding-top:.25rem}
+@media print{.phlox-watermark-user{position:fixed}}
+.phlox-foot{margin-top:10mm;padding-top:3mm;border-top:1px solid var(--phlox-rule);font-size:7.5pt;color:var(--phlox-faint)}
+.phlox-lines td:first-child{width:2em;color:var(--phlox-muted)}
+.phlox-lines td em{font-style:normal;color:var(--phlox-muted);font-size:8.5pt}
+.phlox-lines th:nth-child(n+3),.phlox-lines td:nth-child(n+3){text-align:right}
+</style>
+  </head>
+  <body>
+    <div class="phlox-watermark-program">
+      <a href="https://github.com/phax/phlox" target="phlox">Generated by phlox · open-source edition · github.com/phax/phlox</a>
+    </div>
+    <div class="phlox-page">
+      <div class="phlox-row phlox-head">
+        <div class="phlox-head-main">
+          <p class="phlox-kind">Invoice</p>
+          <h1 class="phlox-title">D25A-NEW-ALLOWCHG-INV-1</h1>
+          <table class="phlox-table phlox-meta">
+            <thead>
+              <tr>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Invoice issue date</td>
+                <td>January 15, 2026</td>
+              </tr>
+              <tr>
+                <td>Payment due date</td>
+                <td>February 14, 2026</td>
+              </tr>
+              <tr>
+                <td>Value added tax point date</td>
+                <td>January 10, 2026</td>
+              </tr>
+              <tr>
+                <td>Invoice currency code</td>
+                <td>EUR</td>
+              </tr>
+              <tr>
+                <td>Buyer reference</td>
+                <td>BUYER-REF-4711 (ADE)</td>
+              </tr>
+              <tr>
+                <td>Invoice type code</td>
+                <td>380 — Commercial invoice</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <hr class="phlox-rule" />
+      <div class="phlox-row phlox-parties">
+        <div class="phlox-party">
+          <p class="phlox-label">Seller</p>
+          <p class="phlox-party-name">Seller Ltd</p>
+          <p class="phlox-muted">Seller Trading Name</p>
+          <p>Main Street 1<br />1010 Vienna<br />Austria</p>
+          <p class="phlox-muted">Seller identifier: 0088:4035811234567<br />Seller VAT identifier: ATU12345678<br />Seller legal registration identifier: 0198:FN123456x</p>
+        </div>
+        <div class="phlox-party">
+          <p class="phlox-label">Buyer</p>
+          <p class="phlox-party-name">Buyer Ltd</p>
+          <p>Buyer Street 2<br />5020 Salzburg<br />Austria</p>
+          <p class="phlox-muted">Buyer VAT identifier: ATU87654321</p>
+        </div>
+      </div>
+      <hr />
+      <div class="phlox-row phlox-secondary">
+        <div class="phlox-secondary-cell">
+          <p class="phlox-label">Delivery</p>
+          <p class="phlox-party-name">Delivery Site</p>
+          <p>Delivery Road 7<br />4020 Linz<br />Austria</p>
+          <p class="phlox-muted">Deliver to location identifier: 0088:4035811111111<br />Actual delivery date: January 12, 2026</p>
+        </div>
+        <div class="phlox-secondary-cell">
+          <p class="phlox-label">Payee</p>
+          <p class="phlox-party-name">Payee Ltd</p>
+          <p class="phlox-muted">Payee identifier: 0088:4035822222222<br />Payee legal registration identifier: 0198:FN999999z</p>
+        </div>
+        <div class="phlox-secondary-cell">
+          <p class="phlox-label">Seller tax representative</p>
+          <p class="phlox-party-name">Tax Rep GmbH</p>
+          <p>Rep Street 3<br />1020 Vienna<br />Austria</p>
+          <p class="phlox-muted">Seller tax representative VAT identifier: ATU11111111</p>
+        </div>
+      </div>
+      <h2 class="phlox-section-title">Invoicing period</h2>
+      <p>January 1, 2026 — January 31, 2026</p>
+      <h2 class="phlox-section-title">References</h2>
+      <ul>
+        <li>
+          <p>
+            <strong>Project reference:</strong> PROJECT-7          </p>
+        </li>
+        <li>
+          <p>
+            <strong>Contract reference:</strong> CONTRACT-42          </p>
+        </li>
+        <li>
+          <p>
+            <strong>Purchase order reference:</strong> PO-2026-0001          </p>
+        </li>
+        <li>
+          <p>
+            <strong>Sales order reference:</strong> SO-2026-9          </p>
+        </li>
+        <li>
+          <p>
+            <strong>Receiving advice reference:</strong> RECEIPT-4          </p>
+        </li>
+        <li>
+          <p>
+            <strong>Despatch advice reference:</strong> DESPATCH-3          </p>
+        </li>
+        <li>
+          <p>
+            <strong>Tender or lot reference:</strong> TENDER-5          </p>
+        </li>
+        <li>
+          <p>
+            <strong>Invoiced object identifier:</strong> AVE:METER-9          </p>
+        </li>
+        <li>
+          <p>
+            <strong>Buyer accounting reference:</strong> COST-CENTRE-1          </p>
+        </li>
+        <li>
+          <p>
+            <strong>Preceding invoice reference:</strong> PREV-INV-1 (Dec 15, 2025)          </p>
+        </li>
+        <li>
+          <p>
+            <strong>Preceding invoice reference:</strong> PREV-INV-2          </p>
+        </li>
+      </ul>
+      <h2 class="phlox-section-title">Notes</h2>
+      <p>
+        <em>[General information]</em> Header note      </p>
+      <h2 class="phlox-section-title">Invoice lines</h2>
+      <table class="phlox-table phlox-lines">
+        <thead>
+          <tr>
+            <th style="text-align:right;">#</th>
+            <th>Description</th>
+            <th style="text-align:right;">Qty</th>
+            <th style="text-align:right;">Unit price</th>
+            <th style="text-align:right;">VAT</th>
+            <th style="text-align:right;">Line total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align:right;">1</td>
+            <td>
+              <strong>Widget</strong>
+              <br />A round widget<br />
+              <em>Item seller&#39;s identifier: SELLER-ART-1</em>
+              <br />
+              <em>Item buyer&#39;s identifier: BUYER-ART-1</em>
+              <br />
+              <em>Item standard identifier: 0160:1234567890128</em>
+              <br />
+              <em>Item classification identifier: TST:CLASS-1</em>
+              <br />
+              <em>Item country of origin: Austria</em>
+              <br />
+              <em>Colour: Blue</em>
+              <br />
+              <em>Weight: 2 kg</em>
+            </td>
+            <td style="text-align:right;">4 one</td>
+            <td style="text-align:right;">€ 25.00<br />
+              <em>Item gross price: € 30.00</em>
+              <br />
+              <em>Item price discount: € 5.00</em>
+</td>
+            <td style="text-align:right;">Standard rate 20.00%</td>
+            <td style="text-align:right;">€ 100.00</td>
+          </tr>
+        </tbody>
+      </table>
+      <h2 class="phlox-section-title">Invoice line allowance</h2>
+      <table class="phlox-table phlox-line-ac">
+        <thead>
+          <tr>
+            <th style="text-align:right;">#</th>
+            <th>Reason</th>
+            <th style="text-align:right;">Base amount</th>
+            <th style="text-align:right;">%</th>
+            <th style="text-align:right;">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align:right;">1</td>
+            <td>
+              <em>(Discount)</em> Line discount            </td>
+            <td style="text-align:right;">€ 100.00</td>
+            <td style="text-align:right;">10.00%</td>
+            <td style="text-align:right;">-€ 10.00</td>
+          </tr>
+        </tbody>
+      </table>
+      <h2 class="phlox-section-title">Invoice line charges and taxes</h2>
+      <table class="phlox-table phlox-line-ac">
+        <thead>
+          <tr>
+            <th style="text-align:right;">#</th>
+            <th>Reason</th>
+            <th style="text-align:right;">Base amount</th>
+            <th style="text-align:right;">%</th>
+            <th style="text-align:right;">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align:right;">1</td>
+            <td>
+              <em>(Freight service)</em> Line freight            </td>
+            <td style="text-align:right;">€ 100.00</td>
+            <td style="text-align:right;"></td>
+            <td style="text-align:right;">+€ 10.00</td>
+          </tr>
+        </tbody>
+      </table>
+      <blockquote>
+        <p>
+          <strong>Invoice line identifier 1 — Invoice line note:</strong> Line one note        </p>
+      </blockquote>
+      <h2 class="phlox-section-title">Allowances and charges</h2>
+      <table class="phlox-table">
+        <thead>
+          <tr>
+            <th>Reason</th>
+            <th style="text-align:right;">Base amount</th>
+            <th style="text-align:right;">%</th>
+            <th style="text-align:right;">Amount</th>
+            <th>VAT category</th>
+            <th style="text-align:right;">VAT rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Volume discount <em>(Discount)</em> — Intra-community supply (VATEX-EU-IC) [SUPPLY-A]</td>
+            <td style="text-align:right;">€ 100.00</td>
+            <td style="text-align:right;">5.00%</td>
+            <td style="text-align:right;">-€ 5.00</td>
+            <td>Standard rate</td>
+            <td style="text-align:right;">20.00%</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="phlox-table">
+        <thead>
+          <tr>
+            <th>Reason</th>
+            <th style="text-align:right;">Base amount</th>
+            <th style="text-align:right;">%</th>
+            <th style="text-align:right;">Amount</th>
+            <th>VAT category</th>
+            <th style="text-align:right;">VAT rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Environmental tax — Not subject to VAT (VATEX-EU-O) (Document level non-VAT tax code: ENV, 5153) [SUPPLY-B]</td>
+            <td style="text-align:right;">€ 100.00</td>
+            <td style="text-align:right;"></td>
+            <td style="text-align:right;">+€ 15.00</td>
+            <td>Standard rate</td>
+            <td style="text-align:right;">20.00%</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="phlox-row phlox-bottom">
+        <div class="phlox-vat">
+          <h2 class="phlox-section-title">VAT breakdown</h2>
+          <table class="phlox-table">
+            <thead>
+              <tr>
+                <th>VAT category</th>
+                <th style="text-align:right;">Taxable amount</th>
+                <th style="text-align:right;">VAT rate</th>
+                <th style="text-align:right;">VAT amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Standard rate</td>
+                <td style="text-align:right;">€ 100.00</td>
+                <td style="text-align:right;">20.00%</td>
+                <td style="text-align:right;">€ 20.00</td>
+              </tr>
+              <tr>
+                <td>VAT Reverse charge <em>(Reverse charge)</em> (USD) [SUPPLY-C]</td>
+                <td style="text-align:right;">€ 50.00</td>
+                <td style="text-align:right;">0.00%</td>
+                <td style="text-align:right;">€ 0.00</td>
+              </tr>
+            </tbody>
+          </table>
+          <blockquote>
+            <p>VAT category code AE: Reverse charge</p>
+          </blockquote>
+        </div>
+        <div class="phlox-totals-col">
+          <div class="phlox-totals">
+            <table class="phlox-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th style="text-align:right;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Sum of invoice line net amounts</td>
+                  <td style="text-align:right;">€ 100.00</td>
+                </tr>
+                <tr>
+                  <td>Sum of allowances on document level</td>
+                  <td style="text-align:right;">-€ 5.00</td>
+                </tr>
+                <tr>
+                  <td>Sum of charges and taxes on document level</td>
+                  <td style="text-align:right;">+€ 15.00</td>
+                </tr>
+                <tr>
+                  <td>Invoice total amount without VAT</td>
+                  <td style="text-align:right;">€ 110.00</td>
+                </tr>
+                <tr>
+                  <td>Invoice total VAT amount</td>
+                  <td style="text-align:right;">€ 22.00</td>
+                </tr>
+                <tr>
+                  <td>Invoice total VAT amount in VAT accounting currency</td>
+                  <td style="text-align:right;">$ 24.20</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Invoice total amount with VAT</strong>
+                  </td>
+                  <td style="text-align:right;">
+                    <strong>€ 132.00</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Paid amount</td>
+                  <td style="text-align:right;">-€ 32.00</td>
+                </tr>
+                <tr>
+                  <td>Rounding amount</td>
+                  <td style="text-align:right;">€ 0.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="phlox-due">
+            <table class="phlox-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th style="text-align:right;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Amount due</td>
+                  <td style="text-align:right;">€ 100.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="phlox-pay">
+        <p class="phlox-label">Payment</p>
+        <p>
+          <strong>Payment means type code:</strong> SEPA credit transfer<br />SEPA credit transfer<br />
+          <em>Remittance information:</em> REMIT-1        </p>
+        <p class="phlox-label">Credit transfer</p>
+        <ul>
+          <li>
+            <p>Seller Account — <code>AT611904300234573201</code> (BIC GIBAATWWXXX)</p>
+          </li>
+        </ul>
+      </div>
+      <h2 class="phlox-section-title">Payment terms</h2>
+      <p>Net 30 days</p>
+      <h2 class="phlox-section-title">Supporting documents</h2>
+      <ul>
+        <li>
+          <p>
+            <strong>DOC-916</strong> — Supporting document (<a href="https://example.org/doc">https://example.org/doc</a>)          </p>
+        </li>
+      </ul>
+      <p class="phlox-foot">Specification identifier: urn:cen.eu:en16931:2026 · Business process type: urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</p>
+    </div>
+  </body>
+</html>

@@ -518,7 +518,7 @@ public final class PdfTemplateEmitter extends
         // Rows may have fewer cells than the table has columns
         while (aCells.size () < nColumns)
           aCells.add (PLTableCell.createEmptyCell ());
-        aTbl.addRow (aCells);
+        aTbl.addAndReturnRow (aCells).setVertSplittable (false);
       }
     }
     aSink.accept (aTbl);

@@ -1,0 +1,738 @@
+pages 3
+page 1 595.3x841.9
+G p1 sc 0.14 0.36 0.39
+G p1 sc 0.00 0.00 0.00
+G p1 SC 0.89 0.91 0.93
+G p1 w 0.50
+G p1 m 56.69 725.85
+G p1 l 288.62 725.85
+G p1 S
+G p1 m 288.62 725.85
+G p1 l 538.58 725.85
+G p1 S
+G p1 m 56.69 707.79
+G p1 l 288.62 707.79
+G p1 S
+G p1 m 288.62 707.79
+G p1 l 538.58 707.79
+G p1 S
+G p1 m 56.69 689.73
+G p1 l 288.62 689.73
+G p1 S
+G p1 m 288.62 689.73
+G p1 l 538.58 689.73
+G p1 S
+G p1 m 56.69 671.67
+G p1 l 288.62 671.67
+G p1 S
+G p1 m 288.62 671.67
+G p1 l 538.58 671.67
+G p1 S
+G p1 m 56.69 653.61
+G p1 l 288.62 653.61
+G p1 S
+G p1 m 288.62 653.61
+G p1 l 538.58 653.61
+G p1 S
+G p1 SC 0.14 0.36 0.39
+G p1 w 1.50
+G p1 m 56.69 644.61
+G p1 l 538.58 644.61
+G p1 S
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 SC 0.50 0.50 0.50
+G p1 w 0.75
+G p1 m 56.69 497.10
+G p1 l 538.58 497.10
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.83 0.83 0.83
+page 2 595.3x841.9
+G p2 SC 0.11 0.14 0.20
+G p2 w 1.00
+G p2 m 56.69 760.85
+G p2 l 75.56 760.85
+G p2 S
+G p2 sc 0.40 0.44 0.52
+G p2 m 75.56 760.85
+G p2 l 209.99 760.85
+G p2 S
+G p2 m 209.99 760.85
+G p2 l 245.36 760.85
+G p2 S
+G p2 m 245.36 760.85
+G p2 l 374.28 760.85
+G p2 S
+G p2 m 374.28 760.85
+G p2 l 464.69 760.85
+G p2 S
+G p2 m 464.69 760.85
+G p2 l 538.58 760.85
+G p2 S
+G p2 SC 0.89 0.91 0.93
+G p2 w 0.50
+G p2 m 56.69 599.40
+G p2 l 75.56 599.40
+G p2 S
+G p2 sc 0.00 0.00 0.00
+G p2 m 75.56 599.40
+G p2 l 209.99 599.40
+G p2 S
+G p2 m 209.99 599.40
+G p2 l 245.36 599.40
+G p2 S
+G p2 m 245.36 599.40
+G p2 l 374.28 599.40
+G p2 S
+G p2 m 374.28 599.40
+G p2 l 464.69 599.40
+G p2 S
+G p2 m 464.69 599.40
+G p2 l 538.58 599.40
+G p2 S
+G p2 m 56.69 497.70
+G p2 l 75.56 497.70
+G p2 S
+G p2 m 75.56 497.70
+G p2 l 209.99 497.70
+G p2 S
+G p2 m 209.99 497.70
+G p2 l 245.36 497.70
+G p2 S
+G p2 m 245.36 497.70
+G p2 l 374.28 497.70
+G p2 S
+G p2 m 374.28 497.70
+G p2 l 464.69 497.70
+G p2 S
+G p2 m 464.69 497.70
+G p2 l 538.58 497.70
+G p2 S
+G p2 m 56.69 396.00
+G p2 l 75.56 396.00
+G p2 S
+G p2 m 75.56 396.00
+G p2 l 209.99 396.00
+G p2 S
+G p2 m 209.99 396.00
+G p2 l 245.36 396.00
+G p2 S
+G p2 m 245.36 396.00
+G p2 l 374.28 396.00
+G p2 S
+G p2 m 374.28 396.00
+G p2 l 464.69 396.00
+G p2 S
+G p2 m 464.69 396.00
+G p2 l 538.58 396.00
+G p2 S
+G p2 m 56.69 294.30
+G p2 l 75.56 294.30
+G p2 S
+G p2 m 75.56 294.30
+G p2 l 209.99 294.30
+G p2 S
+G p2 m 209.99 294.30
+G p2 l 245.36 294.30
+G p2 S
+G p2 m 245.36 294.30
+G p2 l 374.28 294.30
+G p2 S
+G p2 m 374.28 294.30
+G p2 l 464.69 294.30
+G p2 S
+G p2 m 464.69 294.30
+G p2 l 538.58 294.30
+G p2 S
+G p2 m 56.69 192.60
+G p2 l 75.56 192.60
+G p2 S
+G p2 m 75.56 192.60
+G p2 l 209.99 192.60
+G p2 S
+G p2 m 209.99 192.60
+G p2 l 245.36 192.60
+G p2 S
+G p2 m 245.36 192.60
+G p2 l 374.28 192.60
+G p2 S
+G p2 m 374.28 192.60
+G p2 l 464.69 192.60
+G p2 S
+G p2 m 464.69 192.60
+G p2 l 538.58 192.60
+G p2 S
+G p2 sc 0.40 0.44 0.52
+G p2 SC 0.11 0.14 0.20
+G p2 w 1.00
+G p2 m 56.69 156.40
+G p2 l 129.35 156.40
+G p2 S
+G p2 m 129.35 156.40
+G p2 l 224.40 156.40
+G p2 S
+G p2 m 224.40 156.40
+G p2 l 348.13 156.40
+G p2 S
+G p2 m 348.13 156.40
+G p2 l 415.19 156.40
+G p2 S
+G p2 m 415.19 156.40
+G p2 l 538.58 156.40
+G p2 S
+G p2 SC 0.89 0.91 0.93
+G p2 w 0.50
+G p2 m 56.69 138.09
+G p2 l 129.35 138.09
+G p2 S
+G p2 sc 0.00 0.00 0.00
+G p2 m 129.35 138.09
+G p2 l 224.40 138.09
+G p2 S
+G p2 m 224.40 138.09
+G p2 l 348.13 138.09
+G p2 S
+G p2 m 348.13 138.09
+G p2 l 415.19 138.09
+G p2 S
+G p2 m 415.19 138.09
+G p2 l 538.58 138.09
+G p2 S
+G p2 sc 0.40 0.44 0.52
+G p2 SC 0.11 0.14 0.20
+G p2 w 1.00
+G p2 m 56.69 101.90
+G p2 l 128.30 101.90
+G p2 S
+G p2 m 128.30 101.90
+G p2 l 227.90 101.90
+G p2 S
+G p2 m 227.90 101.90
+G p2 l 350.35 101.90
+G p2 S
+G p2 m 350.35 101.90
+G p2 l 416.36 101.90
+G p2 S
+G p2 m 416.36 101.90
+G p2 l 538.58 101.90
+G p2 S
+G p2 SC 0.89 0.91 0.93
+G p2 w 0.50
+G p2 m 56.69 83.59
+G p2 l 128.30 83.59
+G p2 S
+G p2 sc 0.00 0.00 0.00
+G p2 m 128.30 83.59
+G p2 l 227.90 83.59
+G p2 S
+G p2 m 227.90 83.59
+G p2 l 350.35 83.59
+G p2 S
+G p2 m 350.35 83.59
+G p2 l 416.36 83.59
+G p2 S
+G p2 m 416.36 83.59
+G p2 l 538.58 83.59
+G p2 S
+G p2 SC 0.50 0.50 0.50
+G p2 w 2.00
+G p2 m 57.69 83.34
+G p2 l 57.69 67.44
+G p2 S
+G p2 sc 0.83 0.83 0.83
+page 3 595.3x841.9
+G p3 SC 0.50 0.50 0.50
+G p3 w 2.00
+G p3 m 57.69 785.20
+G p3 l 57.69 769.30
+G p3 S
+G p3 sc 0.40 0.44 0.52
+G p3 SC 0.11 0.14 0.20
+G p3 w 1.00
+G p3 m 56.69 729.35
+G p3 l 210.84 729.35
+G p3 S
+G p3 m 210.84 729.35
+G p3 l 278.63 729.35
+G p3 S
+G p3 m 278.63 729.35
+G p3 l 299.91 729.35
+G p3 S
+G p3 m 299.91 729.35
+G p3 l 378.90 729.35
+G p3 S
+G p3 m 378.90 729.35
+G p3 l 483.70 729.35
+G p3 S
+G p3 m 483.70 729.35
+G p3 l 538.58 729.35
+G p3 S
+G p3 SC 0.89 0.91 0.93
+G p3 w 0.50
+G p3 m 56.69 699.48
+G p3 l 210.84 699.48
+G p3 S
+G p3 sc 0.00 0.00 0.00
+G p3 m 210.84 699.48
+G p3 l 278.63 699.48
+G p3 S
+G p3 m 278.63 699.48
+G p3 l 299.91 699.48
+G p3 S
+G p3 m 299.91 699.48
+G p3 l 378.90 699.48
+G p3 S
+G p3 m 378.90 699.48
+G p3 l 483.70 699.48
+G p3 S
+G p3 m 483.70 699.48
+G p3 l 538.58 699.48
+G p3 S
+G p3 SC 0.11 0.14 0.20
+G p3 w 1.00
+G p3 m 56.69 683.81
+G p3 l 125.53 683.81
+G p3 S
+G p3 sc 0.40 0.44 0.52
+G p3 m 125.53 683.81
+G p3 l 210.38 683.81
+G p3 S
+G p3 m 210.38 683.81
+G p3 l 245.62 683.81
+G p3 S
+G p3 m 245.62 683.81
+G p3 l 341.67 683.81
+G p3 S
+G p3 m 341.67 683.81
+G p3 l 469.74 683.81
+G p3 S
+G p3 m 469.74 683.81
+G p3 l 538.58 683.81
+G p3 S
+G p3 SC 0.89 0.91 0.93
+G p3 w 0.50
+G p3 m 56.69 665.50
+G p3 l 125.53 665.50
+G p3 S
+G p3 sc 0.00 0.00 0.00
+G p3 m 125.53 665.50
+G p3 l 210.38 665.50
+G p3 S
+G p3 m 210.38 665.50
+G p3 l 245.62 665.50
+G p3 S
+G p3 m 245.62 665.50
+G p3 l 341.67 665.50
+G p3 S
+G p3 m 341.67 665.50
+G p3 l 469.74 665.50
+G p3 S
+G p3 m 469.74 665.50
+G p3 l 538.58 665.50
+G p3 S
+G p3 sc 0.40 0.44 0.52
+G p3 SC 0.11 0.14 0.20
+G p3 w 1.00
+G p3 m 56.69 629.30
+G p3 l 144.43 629.30
+G p3 S
+G p3 m 144.43 629.30
+G p3 l 216.14 629.30
+G p3 S
+G p3 m 216.14 629.30
+G p3 l 261.16 629.30
+G p3 S
+G p3 m 261.16 629.30
+G p3 l 322.19 629.30
+G p3 S
+G p3 SC 0.89 0.91 0.93
+G p3 w 0.50
+G p3 m 56.69 610.99
+G p3 l 144.43 610.99
+G p3 S
+G p3 sc 0.00 0.00 0.00
+G p3 m 144.43 610.99
+G p3 l 216.14 610.99
+G p3 S
+G p3 m 216.14 610.99
+G p3 l 261.16 610.99
+G p3 S
+G p3 m 261.16 610.99
+G p3 l 322.19 610.99
+G p3 S
+G p3 m 56.69 592.93
+G p3 l 144.43 592.93
+G p3 S
+G p3 m 144.43 592.93
+G p3 l 216.14 592.93
+G p3 S
+G p3 m 216.14 592.93
+G p3 l 261.16 592.93
+G p3 S
+G p3 m 261.16 592.93
+G p3 l 322.19 592.93
+G p3 S
+G p3 m 56.69 574.87
+G p3 l 144.43 574.87
+G p3 S
+G p3 m 144.43 574.87
+G p3 l 216.14 574.87
+G p3 S
+G p3 m 216.14 574.87
+G p3 l 261.16 574.87
+G p3 S
+G p3 m 261.16 574.87
+G p3 l 322.19 574.87
+G p3 S
+G p3 SC 0.50 0.50 0.50
+G p3 w 2.00
+G p3 m 57.69 574.62
+G p3 l 57.69 559.06
+G p3 S
+G p3 sc 0.96 0.97 0.98
+G p3 re 336.19 441.57 202.39 223.68
+G p3 f
+G p3 SC 0.89 0.91 0.93
+G p3 w 0.50
+G p3 m 344.19 627.88
+G p3 l 451.15 627.88
+G p3 S
+G p3 sc 0.00 0.00 0.00
+G p3 m 451.15 627.88
+G p3 l 530.58 627.88
+G p3 S
+G p3 m 344.19 586.70
+G p3 l 451.15 586.70
+G p3 S
+G p3 m 451.15 586.70
+G p3 l 530.58 586.70
+G p3 S
+G p3 m 344.19 533.96
+G p3 l 451.15 533.96
+G p3 S
+G p3 m 451.15 533.96
+G p3 l 530.58 533.96
+G p3 S
+G p3 m 344.19 515.90
+G p3 l 451.15 515.90
+G p3 S
+G p3 m 451.15 515.90
+G p3 l 530.58 515.90
+G p3 S
+G p3 m 344.19 497.84
+G p3 l 451.15 497.84
+G p3 S
+G p3 m 451.15 497.84
+G p3 l 530.58 497.84
+G p3 S
+G p3 m 344.19 479.44
+G p3 l 451.15 479.44
+G p3 S
+G p3 m 451.15 479.44
+G p3 l 530.58 479.44
+G p3 S
+G p3 m 344.19 449.82
+G p3 l 451.15 449.82
+G p3 S
+G p3 m 451.15 449.82
+G p3 l 530.58 449.82
+G p3 S
+G p3 sc 0.14 0.36 0.39
+G p3 re 336.19 403.51 202.39 34.06
+G p3 f
+G p3 m 344.19 411.76
+G p3 l 427.07 411.76
+G p3 S
+G p3 sc 1.00 1.00 1.00
+G p3 m 427.07 411.76
+G p3 l 530.58 411.76
+G p3 S
+G p3 sc 0.91 0.95 0.95
+G p3 re 56.69 302.30 481.89 93.21
+G p3 f
+G p3 sc 0.40 0.44 0.52
+G p3 sc 0.00 0.00 0.00
+G p3 sc 0.40 0.44 0.52
+G p3 sc 0.00 0.00 0.00
+G p3 sc 0.40 0.44 0.52
+G p3 sc 0.00 0.00 0.00
+G p3 sc 0.40 0.44 0.52
+G p3 sc 0.00 0.00 0.00
+G p3 sc 0.40 0.44 0.52
+G p3 sc 0.83 0.83 0.83
+T p1 56.7 66.8 8.0 Helvetica-Bold Rechnung
+T p1 56.7 92.2 18.0 Helvetica-Bold TOSL108
+T p1 59.7 112.8 10.0 Helvetica Rechnungsdatum
+T p1 291.6 112.8 10.0 Helvetica 30. Juni 2013
+T p1 59.7 130.8 10.0 Helvetica Fälligkeitsdatum
+T p1 291.6 130.8 10.0 Helvetica 20. Juli 2013
+T p1 59.7 148.9 10.0 Helvetica USt-Stichtagscode
+T p1 291.6 148.9 10.0 Helvetica 3
+T p1 59.7 167.0 10.0 Helvetica Rechnungswährung
+T p1 291.6 167.0 10.0 Helvetica NOK
+T p1 59.7 185.0 10.0 Helvetica Rechnungstyp
+T p1 291.6 185.0 10.0 Helvetica 380 — Handelsrechnung
+T p1 56.7 212.0 7.0 Helvetica-Bold Verkäufer
+T p1 56.7 229.0 11.0 Helvetica-Bold Salescompany ltd.
+T p1 56.7 244.6 10.0 Helvetica Main street 34
+T p1 56.7 256.2 10.0 Helvetica Suite 123
+T p1 56.7 267.7 10.0 Helvetica 303 Big city, RegionA
+T p1 56.7 279.3 10.0 Helvetica Norwegen
+T p1 56.7 293.1 8.0 Helvetica Kennung Verkäufer: 0088:1238764941386
+T p1 56.7 302.9 8.0 Helvetica USt-IdNr. Verkäufer: NO123456789MVA
+T p1 56.7 312.8 8.0 Helvetica Rechtliche Registrierungs-ID Verkäufer: 123456789
+T p1 56.7 322.6 8.0 Helvetica Antonio Salesmacher · 46211230 · 
+T p1 56.7 332.4 8.0 Helvetica antonio@salescompany.no
+T p1 297.6 212.0 7.0 Helvetica-Bold Käufer
+T p1 297.6 229.0 11.0 Helvetica-Bold The Buyercompany
+T p1 297.6 244.6 10.0 Helvetica Anystreet 8
+T p1 297.6 256.2 10.0 Helvetica Back door
+T p1 297.6 267.7 10.0 Helvetica 101 Anytown, RegionB
+T p1 297.6 279.3 10.0 Helvetica Norwegen
+T p1 297.6 293.1 8.0 Helvetica Kennung Käufer: 0088:3456789012098
+T p1 297.6 302.9 8.0 Helvetica USt-IdNr. Käufer: NO987654321MVA
+T p1 297.6 312.8 8.0 Helvetica Rechtliche Registrierungs-ID Käufer: 987654321
+T p1 297.6 322.6 8.0 Helvetica John Doe · 5121230 · john@buyercompany.no
+T p1 56.7 359.1 7.0 Helvetica-Bold Lieferung
+T p1 56.7 374.6 10.0 Helvetica Deliverystreet 2
+T p1 56.7 386.2 10.0 Helvetica Side door
+T p1 56.7 397.8 10.0 Helvetica 523427 DeliveryCity, RegionD
+T p1 56.7 409.3 10.0 Helvetica Norwegen
+T p1 56.7 423.2 8.0 Helvetica Kennung Lieferort:
+T p1 56.7 433.0 8.0 Helvetica 0088:6754238987643
+T p1 56.7 442.8 8.0 Helvetica Tatsächliches Lieferdatum: 15. Juni
+T p1 56.7 452.6 8.0 Helvetica 2013
+T p1 217.3 359.1 7.0 Helvetica-Bold Zahlungsempfänger
+T p1 217.3 376.2 11.0 Helvetica-Bold Ebeneser Scrooge AS
+T p1 217.3 390.0 8.0 Helvetica Kennung Zahlungsempfänger:
+T p1 217.3 399.8 8.0 Helvetica 0088:2298740918237
+T p1 217.3 409.7 8.0 Helvetica Rechtliche Registrierungs-ID
+T p1 217.3 419.5 8.0 Helvetica Zahlungsempfänger: 989823401
+T p1 378.0 359.1 7.0 Helvetica-Bold Steuervertreter
+T p1 378.0 376.2 11.0 Helvetica-Bold Tax handling company AS
+T p1 378.0 391.7 10.0 Helvetica Regent street
+T p1 378.0 403.3 10.0 Helvetica Front door
+T p1 378.0 414.9 10.0 Helvetica 202 Newtown, RegionC
+T p1 378.0 426.4 10.0 Helvetica Norwegen
+T p1 378.0 440.2 8.0 Helvetica USt-IdNr. Steuervertreter:
+T p1 378.0 450.1 8.0 Helvetica NO967611265MVA
+T p1 56.7 478.2 8.0 Helvetica-Bold RECHNUNGSZEITRAUM
+T p1 56.7 492.7 10.0 Helvetica 1. Juni 2013 — 30. Juni 2013
+T p1 56.7 514.2 8.0 Helvetica-Bold REFERENZEN
+T p1 56.7 525.8 10.0 Symbol •
+T p1 72.7 529.1 10.0 Helvetica-Bold Vertragsreferenz: Contract321
+T p1 56.7 541.7 10.0 Symbol •
+T p1 72.7 545.0 10.0 Helvetica-Bold Bestellreferenz: 123
+T p1 56.7 557.6 10.0 Symbol •
+T p1 72.7 560.9 10.0 Helvetica-Bold Buchungsreferenz Käufer: Project cost code 123
+T p1 56.7 586.5 8.0 Helvetica-Bold ANMERKUNGEN
+T p1 56.7 601.0 10.0 Helvetica Ordered in our booth at the convention
+T p1 56.7 622.5 8.0 Helvetica-Bold RECHNUNGSPOSITIONEN
+T p1 363.5 796.1 6.0 Helvetica Generated by phlox · open-source edition · github.com/phax/phlox
+T p2 61.7 68.6 7.0 Helvetica-Bold NR
+T p2 70.5 77.5 7.0 Helvetica-Bold .
+T p2 78.6 68.6 7.0 Helvetica-Bold BESCHREIBUNG
+T p2 214.9 68.6 7.0 Helvetica-Bold MENGE
+T p2 322.1 68.6 7.0 Helvetica-Bold EINZELPREIS
+T p2 446.7 68.6 7.0 Helvetica-Bold UST
+T p2 481.0 68.6 7.0 Helvetica-Bold ZEILENSUMME
+T p2 67.0 96.1 10.0 Helvetica 1
+T p2 78.6 96.4 10.0 Helvetica-Bold Laptop computer
+T p2 78.6 108.3 10.0 Helvetica Processor: Intel Core 2 Duo
+T p2 78.6 120.2 10.0 Helvetica SU9400 LV (1.4GHz). RAM:
+T p2 78.6 132.1 10.0 Helvetica 3MB. Screen 1440x900
+T p2 78.6 144.0 10.0 Helvetica-Oblique Artikel-ID Verkäufer: JB007
+T p2 78.6 155.9 10.0 Helvetica-Oblique Standardartikelkennung:
+T p2 78.6 167.8 10.0 Helvetica-Oblique 0088:1234567890128
+T p2 78.6 179.7 10.0 Helvetica-Oblique Klassifikationskennung:
+T p2 78.6 191.6 10.0 Helvetica-Oblique ZZZ:12344321,
+T p2 78.6 203.5 10.0 Helvetica-Oblique STI:65434568
+T p2 78.6 215.4 10.0 Helvetica-Oblique Ursprungsland des Artikels:
+T p2 78.6 227.3 10.0 Helvetica-Oblique Deutschland
+T p2 78.6 239.2 10.0 Helvetica-Oblique Color: Black
+T p2 236.8 96.1 10.0 Helvetica 2
+T p2 217.4 107.7 10.0 Helvetica Stück
+T p2 307.9 96.1 10.0 Helvetica 1.273,00 NOK
+T p2 275.2 107.7 10.0 Helvetica-Oblique Artikel-Preisnachlass:
+T p2 316.3 119.2 10.0 Helvetica-Oblique 225,00 NOK
+T p2 389.4 96.1 10.0 Helvetica Regelsteuersatz
+T p2 425.0 107.7 10.0 Helvetica 25,00 %
+T p2 472.2 96.1 10.0 Helvetica 1.273,00 NOK
+T p2 67.0 257.3 10.0 Helvetica 2
+T p2 78.6 257.6 10.0 Helvetica-Bold Returned "Advanced
+T p2 78.6 269.5 10.0 Helvetica-Bold computing" book
+T p2 78.6 281.4 10.0 Helvetica-Oblique Artikel-ID Verkäufer: JB008
+T p2 78.6 293.3 10.0 Helvetica-Oblique Standardartikelkennung:
+T p2 78.6 305.2 10.0 Helvetica-Oblique 0088:1234567890135
+T p2 78.6 317.1 10.0 Helvetica-Oblique Klassifikationskennung:
+T p2 78.6 329.0 10.0 Helvetica-Oblique ZZZ:32344324,
+T p2 78.6 340.9 10.0 Helvetica-Oblique STI:65434567
+T p2 233.5 257.3 10.0 Helvetica -1
+T p2 217.4 268.9 10.0 Helvetica Stück
+T p2 327.4 257.3 10.0 Helvetica 3,96 NOK
+T p2 389.4 257.3 10.0 Helvetica Regelsteuersatz
+T p2 425.0 268.9 10.0 Helvetica 15,00 %
+T p2 488.3 257.3 10.0 Helvetica -3,96 NOK
+T p2 67.0 359.0 10.0 Helvetica 3
+T p2 78.6 359.3 10.0 Helvetica-Bold "Computing for dummies"
+T p2 78.6 371.2 10.0 Helvetica-Bold book
+T p2 78.6 383.1 10.0 Helvetica-Oblique Artikel-ID Verkäufer: JB009
+T p2 78.6 395.0 10.0 Helvetica-Oblique Standardartikelkennung:
+T p2 78.6 406.9 10.0 Helvetica-Oblique 0088:1234567890135
+T p2 78.6 418.8 10.0 Helvetica-Oblique Klassifikationskennung:
+T p2 78.6 430.7 10.0 Helvetica-Oblique ZZZ:32344324,
+T p2 78.6 442.6 10.0 Helvetica-Oblique STI:65434567
+T p2 236.8 359.0 10.0 Helvetica 2
+T p2 217.4 370.6 10.0 Helvetica Stück
+T p2 327.4 359.0 10.0 Helvetica 2,48 NOK
+T p2 294.0 370.6 10.0 Helvetica-Oblique Bruttoeinzelpreis:
+T p2 327.4 382.1 10.0 Helvetica-Oblique 2,70 NOK
+T p2 275.2 393.7 10.0 Helvetica-Oblique Artikel-Preisnachlass:
+T p2 327.4 405.2 10.0 Helvetica-Oblique 0,27 NOK
+T p2 389.4 359.0 10.0 Helvetica Regelsteuersatz
+T p2 425.0 370.6 10.0 Helvetica 15,00 %
+T p2 491.7 359.0 10.0 Helvetica 4,96 NOK
+T p2 67.0 460.7 10.0 Helvetica 4
+T p2 78.6 461.0 10.0 Helvetica-Bold Returned IBM 5150
+T p2 78.6 472.9 10.0 Helvetica-Bold desktop
+T p2 78.6 484.8 10.0 Helvetica-Oblique Artikel-ID Verkäufer: JB010
+T p2 78.6 496.7 10.0 Helvetica-Oblique Standardartikelkennung:
+T p2 78.6 508.6 10.0 Helvetica-Oblique 0088:1234567890159
+T p2 78.6 520.5 10.0 Helvetica-Oblique Klassifikationskennung:
+T p2 78.6 532.4 10.0 Helvetica-Oblique ZZZ:12344322,
+T p2 78.6 544.3 10.0 Helvetica-Oblique STI:65434565
+T p2 233.5 460.7 10.0 Helvetica -1
+T p2 217.4 472.3 10.0 Helvetica Stück
+T p2 321.8 460.7 10.0 Helvetica 25,00 NOK
+T p2 380.0 460.7 10.0 Helvetica USt-befreit 0,00 %
+T p2 482.8 460.7 10.0 Helvetica -25,00 NOK
+T p2 67.0 562.4 10.0 Helvetica 5
+T p2 78.6 562.7 10.0 Helvetica-Bold Network cable
+T p2 78.6 574.6 10.0 Helvetica-Oblique Artikel-ID Verkäufer: JB011
+T p2 78.6 586.5 10.0 Helvetica-Oblique Standardartikelkennung:
+T p2 78.6 598.4 10.0 Helvetica-Oblique 0088:1234567890166
+T p2 78.6 610.3 10.0 Helvetica-Oblique Klassifikationskennung:
+T p2 78.6 622.2 10.0 Helvetica-Oblique ZZZ:12344325,
+T p2 78.6 634.1 10.0 Helvetica-Oblique STI:65434564
+T p2 78.6 646.0 10.0 Helvetica-Oblique Type: Cat5
+T p2 225.7 562.4 10.0 Helvetica 250
+T p2 216.8 574.0 10.0 Helvetica Meter
+T p2 327.4 562.4 10.0 Helvetica 0,75 NOK
+T p2 389.4 562.4 10.0 Helvetica Regelsteuersatz
+T p2 425.0 574.0 10.0 Helvetica 25,00 %
+T p2 480.6 562.4 10.0 Helvetica 187,50 NOK
+T p2 56.7 667.1 8.0 Helvetica-Bold POSITIONS-NACHLASS
+T p2 113.4 682.0 7.0 Helvetica-Bold NR.
+T p2 132.3 682.0 7.0 Helvetica-Bold GRUND
+T p2 290.5 682.0 7.0 Helvetica-Bold BASISBETRAG
+T p2 405.5 682.0 7.0 Helvetica-Bold %
+T p2 503.9 682.0 7.0 Helvetica-Bold BETRAG
+T p2 120.8 700.5 10.0 Helvetica 1
+T p2 132.3 700.5 10.0 Helvetica Damage
+T p2 482.8 700.5 10.0 Helvetica -12,00 NOK
+T p2 56.7 721.6 8.0 Helvetica-Bold ZUSCHLÄGE UND STEUERN DER RECHNUNGSPOSITION
+T p2 112.4 736.5 7.0 Helvetica-Bold NR.
+T p2 131.3 736.5 7.0 Helvetica-Bold GRUND
+T p2 292.8 736.5 7.0 Helvetica-Bold BASISBETRAG
+T p2 406.7 736.5 7.0 Helvetica-Bold %
+T p2 503.9 736.5 7.0 Helvetica-Bold BETRAG
+T p2 119.7 755.1 10.0 Helvetica 1
+T p2 131.3 755.1 10.0 Helvetica Testing
+T p2 480.3 755.1 10.0 Helvetica +12,00 NOK
+T p2 64.7 770.5 10.0 Helvetica-Bold Positionsnummer 1 — Positionshinweis: Scratch on box
+T p2 363.5 796.1 6.0 Helvetica Generated by phlox · open-source edition · github.com/phax/phlox
+T p3 64.7 68.6 10.0 Helvetica-Bold Positionsnummer 2 — Positionshinweis: Cover is slightly damaged.
+T p3 56.7 94.1 8.0 Helvetica-Bold NACHLÄSSE UND GEBÜHREN
+T p3 59.7 109.0 7.0 Helvetica-Bold GRUND
+T p3 221.0 109.0 7.0 Helvetica-Bold BASISBETRAG
+T p3 290.2 109.0 7.0 Helvetica-Bold %
+T p3 344.2 109.0 7.0 Helvetica-Bold BETRAG
+T p3 381.9 109.0 7.0 Helvetica-Bold UST-KATEGORIE
+T p3 498.5 109.0 7.0 Helvetica-Bold UST-SATZ
+T p3 59.7 127.6 10.0 Helvetica Promotion discount (Material
+T p3 59.7 139.2 10.0 Helvetica-Oblique surcharge/deduction)
+T p3 317.5 127.6 10.0 Helvetica -100,00 NOK
+T p3 381.9 127.6 10.0 Helvetica Regelsteuersatz
+T p3 498.9 127.6 10.0 Helvetica 25,00 %
+T p3 59.7 154.6 7.0 Helvetica-Bold GRUND
+T p3 152.8 154.6 7.0 Helvetica-Bold BASISBETRAG
+T p3 236.0 154.6 7.0 Helvetica-Bold %
+T p3 307.0 154.6 7.0 Helvetica-Bold BETRAG
+T p3 344.7 154.6 7.0 Helvetica-Bold UST-KATEGORIE
+T p3 498.5 154.6 7.0 Helvetica-Bold UST-SATZ
+T p3 59.7 173.1 10.0 Helvetica Freight
+T p3 277.8 173.1 10.0 Helvetica +100,00 NOK
+T p3 344.7 173.1 10.0 Helvetica Regelsteuersatz
+T p3 498.9 173.1 10.0 Helvetica 25,00 %
+T p3 56.7 194.2 8.0 Helvetica-Bold STEUERAUFSCHLÜSSELUNG
+T p3 59.7 209.1 7.0 Helvetica-Bold UST-KATEGORIE
+T p3 159.8 209.1 7.0 Helvetica-Bold STEUERBASIS
+T p3 221.1 209.1 7.0 Helvetica-Bold UST-SATZ
+T p3 270.0 209.1 7.0 Helvetica-Bold UST-BETRAG
+T p3 59.7 227.6 10.0 Helvetica Regelsteuersatz
+T p3 149.8 227.6 10.0 Helvetica 1.460,50 NOK
+T p3 221.5 227.6 10.0 Helvetica 25,00 %
+T p3 264.2 227.6 10.0 Helvetica 365,13 NOK
+T p3 59.7 245.7 10.0 Helvetica Regelsteuersatz
+T p3 169.2 245.7 10.0 Helvetica 1,00 NOK
+T p3 221.5 245.7 10.0 Helvetica 15,00 %
+T p3 275.3 245.7 10.0 Helvetica 0,15 NOK
+T p3 59.7 263.8 10.0 Helvetica USt-befreit
+T p3 160.3 263.8 10.0 Helvetica -25,00 NOK
+T p3 227.0 263.8 10.0 Helvetica 0,00 %
+T p3 275.3 263.8 10.0 Helvetica 0,00 NOK
+T p3 64.7 278.8 10.0 Helvetica USt-Kategorie E: Exempt New Means of Transport
+T p3 347.2 199.2 10.0 Helvetica Summe Nettobeträge
+T p3 347.2 210.8 10.0 Helvetica der Positionen
+T p3 464.2 199.2 10.0 Helvetica 1.436,50 NOK
+T p3 347.2 228.8 10.0 Helvetica Summe Nachlässe
+T p3 347.2 240.4 10.0 Helvetica auf
+T p3 347.2 251.9 10.0 Helvetica Dokumentenebene
+T p3 469.2 228.8 10.0 Helvetica -100,00 NOK
+T p3 347.2 270.0 10.0 Helvetica Summe der
+T p3 347.2 281.6 10.0 Helvetica Zuschläge und
+T p3 347.2 293.1 10.0 Helvetica Steuern auf
+T p3 347.2 304.7 10.0 Helvetica Dokumentenebene
+T p3 466.7 270.0 10.0 Helvetica +100,00 NOK
+T p3 347.2 322.7 10.0 Helvetica Nettogesamtbetrag
+T p3 464.2 322.7 10.0 Helvetica 1.436,50 NOK
+T p3 347.2 340.8 10.0 Helvetica USt-Gesamtbetrag
+T p3 472.6 340.8 10.0 Helvetica 365,28 NOK
+T p3 347.2 359.2 10.0 Helvetica-Bold Bruttogesamtbetrag
+T p3 463.7 359.2 10.0 Helvetica-Bold 1.801,78 NOK
+T p3 347.2 377.3 10.0 Helvetica Bereits bezahlter
+T p3 347.2 388.8 10.0 Helvetica Betrag
+T p3 460.9 377.3 10.0 Helvetica -1.000,00 NOK
+T p3 347.2 426.9 10.0 Helvetica Zahlbar
+T p3 472.6 426.9 10.0 Helvetica 801,78 NOK
+T p3 66.7 465.3 7.0 Helvetica-Bold Zahlung
+T p3 66.7 481.2 10.0 Helvetica-Bold Zahlungsart: Überweisung
+T p3 66.7 493.1 10.0 Helvetica-Oblique Verwendungszweck: 0003434323213231
+T p3 66.7 506.0 7.0 Helvetica-Bold Überweisung
+T p3 66.7 518.6 10.0 Symbol •
+T p3 82.7 521.6 10.0 Courier NO9386011117947 (BIC DNBANOKK)
+T p3 56.7 561.1 8.0 Helvetica-Bold ZAHLUNGSBEDINGUNGEN
+T p3 56.7 575.7 10.0 Helvetica 2 % discount if paid within 2 days
+T p3 56.7 587.2 10.0 Helvetica Penalty percentage 10% from due date
+T p3 56.7 608.8 8.0 Helvetica-Bold UNTERSTÜTZENDE DOKUMENTE
+T p3 56.7 620.3 10.0 Symbol •
+T p3 72.7 623.7 10.0 Helvetica-Bold Doc1 — Timesheet (http://www.suppliersite.eu/sheet001.html)
+T p3 56.7 636.2 10.0 Symbol •
+T p3 72.7 639.6 10.0 Helvetica-Bold Doc2 — EHF specification (test.pdf)
+T p3 56.7 656.2 7.0 Helvetica Spezifikationskennung: urn:cen.eu:en16931:2017 · Geschäftsprozesstyp: Invoicing on purchase order
+T p3 363.5 796.1 6.0 Helvetica Generated by phlox · open-source edition · github.com/phax/phlox

@@ -50,6 +50,30 @@ public final class MockPhloxTestFiles
                                                            SYNTHETIC_CYRILLIC_GREEK_INVOICE,
                                                            SYNTHETIC_JPY_INVOICE };
 
+  // The invoices of the reference files (masters) of the writers: the features of the model, both
+  // editions and both syntaxes, credit notes, attachments, allowances and charges, many lines,
+  // another script and a currency without decimals
+  private static final String [] MASTER_FILES = { "2017/ubl/invoice/guide-example1.xml",
+                                                  "2017/ubl/invoice/peppol-Allowance-example.xml",
+                                                  "2017/ubl/invoice/peppol-vat-category-E.xml",
+                                                  "2017/ubl/invoice/ubl-tc434-example1.xml",
+                                                  "2017/ubl/invoice/ubl-tc434-example2.xml",
+                                                  "2017/ubl/creditnote/ubl-tc434-creditnote1.xml",
+                                                  "2017/cii/CII_business_example_01.xml",
+                                                  "2017/cii/CII_example1-CreditNote.xml",
+                                                  "2017/cii/xrechnung/2.0.0/01.15a-INVOICE_uncefact.xml",
+                                                  "2017/cii/xrechnung/3.0.2/01.01a-INVOICE_uncefact.xml",
+                                                  "2026/ubl/invoice/d25a-full-invoice-ubl.xml",
+                                                  "2026/ubl/invoice/d25a-minimal-invoice-ubl.xml",
+                                                  "2026/ubl/invoice/d25a-new-bg34-invoice-ubl.xml",
+                                                  "2026/ubl/invoice/d25a-coverage-invoice-ubl.xml",
+                                                  "2026/ubl/creditnote/d25a-typecode81-creditnote-ubl.xml",
+                                                  "2026/cii/d25a-full-invoice.xml",
+                                                  "2026/cii/d25a-new-allowchg-invoice.xml",
+                                                  SYNTHETIC_LONG_INVOICE,
+                                                  SYNTHETIC_CYRILLIC_GREEK_INVOICE,
+                                                  SYNTHETIC_JPY_INVOICE };
+
   // EN 16931:2017 / UBL 2.1 — Invoices
   private static final String [] UBL21_INVOICE_FILES = { "2017/ubl/invoice/guide-example1.xml",
                                                          "2017/ubl/invoice/guide-example2.xml",
@@ -459,6 +483,18 @@ public final class MockPhloxTestFiles
   public static ICommonsList <ClassPathResource> getSyntheticUbl21Files ()
   {
     return _toResources (SYNTHETIC_UBL21_FILES);
+  }
+
+  /**
+   * Get the invoices that have reference files (masters) in the tests of the writers.
+   *
+   * @return The paths relative to {@link #BASE_PATH}. Never <code>null</code>.
+   */
+  @NonNull
+  @ReturnsMutableCopy
+  public static ICommonsList <String> getMasterFiles ()
+  {
+    return new CommonsArrayList <> (MASTER_FILES);
   }
 
   /**

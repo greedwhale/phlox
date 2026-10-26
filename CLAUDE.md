@@ -51,6 +51,7 @@ Standard Maven (Java 17+, Maven 3.x). The effective compiler release is 17: the 
 - Test fixtures live in `phlox-testfiles/src/main/resources/external/en16931/{2017,2026}/{ubl,cii}/...`.
 - Adding regression coverage usually means adding an XML fixture there, not a new Java test class.
 - JUnit 4 + AssertJ.
+- Reference files: `HtmlMastersTest` (phlox-html) and `PdfMastersTest` (phlox-pdf) compare the output of `MockPhloxTestFiles.getMasterFiles ()` with `src/test/resources/masters`. After an intended change of the output write them again with `-Dphlox.updateMasters=true` and review the `git diff`. The PDF master is a text description of the layout, not the PDF.
 
 ## Localization
 

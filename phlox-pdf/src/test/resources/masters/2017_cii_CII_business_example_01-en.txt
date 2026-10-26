@@ -1,0 +1,303 @@
+pages 2
+page 1 595.3x841.9
+G p1 sc 0.14 0.36 0.39
+G p1 sc 0.00 0.00 0.00
+G p1 SC 0.89 0.91 0.93
+G p1 w 0.50
+G p1 m 56.69 725.85
+G p1 l 279.82 725.85
+G p1 S
+G p1 m 279.82 725.85
+G p1 l 538.58 725.85
+G p1 S
+G p1 m 56.69 707.79
+G p1 l 279.82 707.79
+G p1 S
+G p1 m 279.82 707.79
+G p1 l 538.58 707.79
+G p1 S
+G p1 m 56.69 689.73
+G p1 l 279.82 689.73
+G p1 S
+G p1 m 279.82 689.73
+G p1 l 538.58 689.73
+G p1 S
+G p1 m 56.69 671.67
+G p1 l 279.82 671.67
+G p1 S
+G p1 m 279.82 671.67
+G p1 l 538.58 671.67
+G p1 S
+G p1 SC 0.14 0.36 0.39
+G p1 w 1.50
+G p1 m 56.69 662.67
+G p1 l 538.58 662.67
+G p1 S
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 SC 0.50 0.50 0.50
+G p1 w 0.75
+G p1 m 56.69 556.20
+G p1 l 538.58 556.20
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 sc 0.40 0.44 0.52
+G p1 SC 0.11 0.14 0.20
+G p1 w 1.00
+G p1 m 56.69 374.69
+G p1 l 90.75 374.69
+G p1 S
+G p1 m 90.75 374.69
+G p1 l 226.39 374.69
+G p1 S
+G p1 m 226.39 374.69
+G p1 l 277.24 374.69
+G p1 S
+G p1 m 277.24 374.69
+G p1 l 365.00 374.69
+G p1 S
+G p1 m 365.00 374.69
+G p1 l 450.82 374.69
+G p1 S
+G p1 m 450.82 374.69
+G p1 l 538.58 374.69
+G p1 S
+G p1 SC 0.89 0.91 0.93
+G p1 w 0.50
+G p1 m 56.69 332.24
+G p1 l 90.75 332.24
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 m 90.75 332.24
+G p1 l 226.39 332.24
+G p1 S
+G p1 m 226.39 332.24
+G p1 l 277.24 332.24
+G p1 S
+G p1 m 277.24 332.24
+G p1 l 365.00 332.24
+G p1 S
+G p1 m 365.00 332.24
+G p1 l 450.82 332.24
+G p1 S
+G p1 m 450.82 332.24
+G p1 l 538.58 332.24
+G p1 S
+G p1 m 56.69 301.94
+G p1 l 90.75 301.94
+G p1 S
+G p1 m 90.75 301.94
+G p1 l 226.39 301.94
+G p1 S
+G p1 m 226.39 301.94
+G p1 l 277.24 301.94
+G p1 S
+G p1 m 277.24 301.94
+G p1 l 365.00 301.94
+G p1 S
+G p1 m 365.00 301.94
+G p1 l 450.82 301.94
+G p1 S
+G p1 m 450.82 301.94
+G p1 l 538.58 301.94
+G p1 S
+G p1 m 56.69 271.64
+G p1 l 90.75 271.64
+G p1 S
+G p1 m 90.75 271.64
+G p1 l 226.39 271.64
+G p1 S
+G p1 m 226.39 271.64
+G p1 l 277.24 271.64
+G p1 S
+G p1 m 277.24 271.64
+G p1 l 365.00 271.64
+G p1 S
+G p1 m 365.00 271.64
+G p1 l 450.82 271.64
+G p1 S
+G p1 m 450.82 271.64
+G p1 l 538.58 271.64
+G p1 S
+G p1 sc 0.40 0.44 0.52
+G p1 SC 0.11 0.14 0.20
+G p1 w 1.00
+G p1 m 56.69 226.52
+G p1 l 120.09 226.52
+G p1 S
+G p1 m 120.09 226.52
+G p1 l 201.10 226.52
+G p1 S
+G p1 m 201.10 226.52
+G p1 l 250.04 226.52
+G p1 S
+G p1 m 250.04 226.52
+G p1 l 322.19 226.52
+G p1 S
+G p1 SC 0.89 0.91 0.93
+G p1 w 0.50
+G p1 m 56.69 196.65
+G p1 l 120.09 196.65
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 m 120.09 196.65
+G p1 l 201.10 196.65
+G p1 S
+G p1 m 201.10 196.65
+G p1 l 250.04 196.65
+G p1 S
+G p1 m 250.04 196.65
+G p1 l 322.19 196.65
+G p1 S
+G p1 sc 0.96 0.97 0.98
+G p1 re 336.19 136.23 202.39 135.16
+G p1 f
+G p1 m 344.19 234.02
+G p1 l 443.60 234.02
+G p1 S
+G p1 sc 0.00 0.00 0.00
+G p1 m 443.60 234.02
+G p1 l 530.58 234.02
+G p1 S
+G p1 m 344.19 204.40
+G p1 l 443.60 204.40
+G p1 S
+G p1 m 443.60 204.40
+G p1 l 530.58 204.40
+G p1 S
+G p1 m 344.19 174.78
+G p1 l 443.60 174.78
+G p1 S
+G p1 m 443.60 174.78
+G p1 l 530.58 174.78
+G p1 S
+G p1 m 344.19 144.48
+G p1 l 443.60 144.48
+G p1 S
+G p1 m 443.60 144.48
+G p1 l 530.58 144.48
+G p1 S
+G p1 sc 0.14 0.36 0.39
+G p1 re 336.19 98.17 202.39 34.06
+G p1 f
+G p1 m 344.19 106.42
+G p1 l 421.72 106.42
+G p1 S
+G p1 sc 1.00 1.00 1.00
+G p1 m 421.72 106.42
+G p1 l 530.58 106.42
+G p1 S
+G p1 sc 0.83 0.83 0.83
+page 2 595.3x841.9
+G p2 sc 0.91 0.95 0.95
+G p2 re 56.69 693.00 481.89 92.20
+G p2 f
+G p2 sc 0.40 0.44 0.52
+G p2 sc 0.00 0.00 0.00
+G p2 sc 0.40 0.44 0.52
+G p2 sc 0.00 0.00 0.00
+G p2 sc 0.40 0.44 0.52
+G p2 sc 0.83 0.83 0.83
+T p1 56.7 66.8 8.0 Helvetica-Bold Invoice
+T p1 56.7 92.2 18.0 Helvetica-Bold 2016166
+T p1 59.7 112.8 10.0 Helvetica Invoice issue date
+T p1 282.8 112.8 10.0 Helvetica January 9, 2015
+T p1 59.7 130.8 10.0 Helvetica Payment due date
+T p1 282.8 130.8 10.0 Helvetica January 9, 2015
+T p1 59.7 148.9 10.0 Helvetica Invoice currency code
+T p1 282.8 148.9 10.0 Helvetica EUR
+T p1 59.7 167.0 10.0 Helvetica Invoice type code
+T p1 282.8 167.0 10.0 Helvetica 380 — Commercial invoice
+T p1 56.7 193.9 7.0 Helvetica-Bold Seller
+T p1 56.7 211.0 11.0 Helvetica-Bold XXX AG
+T p1 56.7 226.5 10.0 Helvetica Storkower Straße 207
+T p1 56.7 238.1 10.0 Helvetica 10369 Berlin
+T p1 56.7 249.7 10.0 Helvetica Germany
+T p1 56.7 263.5 8.0 Helvetica Seller VAT identifier: DE37/302/30168
+T p1 56.7 273.3 8.0 Helvetica Seller legal registration identifier: 57151520
+T p1 297.6 193.9 7.0 Helvetica-Bold Buyer
+T p1 297.6 211.0 11.0 Helvetica-Bold XXX AG
+T p1 297.6 226.5 10.0 Helvetica Storkower Straße 207
+T p1 297.6 238.1 10.0 Helvetica 10369 Berlin
+T p1 297.6 249.7 10.0 Helvetica Germany
+T p1 297.6 263.5 8.0 Helvetica Buyer identifier: 10202
+T p1 297.6 273.3 8.0 Helvetica XXXX
+T p1 56.7 300.0 7.0 Helvetica-Bold Delivery
+T p1 56.7 313.8 8.0 Helvetica Actual delivery date: September 6, 2016
+T p1 56.7 339.3 8.0 Helvetica-Bold NOTES
+T p1 56.7 353.9 10.0 Helvetica-Oblique [Terms of delivery] This is an example invoice based on data that is used in real business.Sehr geehrter
+T p1 56.7 365.5 10.0 Helvetica Herr xxx,
+T p1 56.7 377.0 10.0 Helvetica für die Unterstützung im September stellen wir Ihnen gemäß Auftrag foldende Rechnung.
+T p1 56.7 388.6 10.0 Helvetica Für das in uns gesetzte Vertrauen bedanken wir uns auf diesem Wege herzlich.
+T p1 56.7 404.1 10.0 Helvetica Sehr geehrter Herr xxx,
+T p1 56.7 415.7 10.0 Helvetica für die Unterstützung im September stellen wir Ihnen gemäß Auftrag foldende Rechnung.
+T p1 56.7 427.3 10.0 Helvetica Für das in uns gesetzte Vertrauen bedanken wir uns auf diesem Wege herzlich.
+T p1 56.7 448.8 8.0 Helvetica-Bold INVOICE LINES
+T p1 83.6 463.7 7.0 Helvetica-Bold #
+T p1 93.8 463.7 7.0 Helvetica-Bold DESCRIPTION
+T p1 258.8 463.7 7.0 Helvetica-Bold QTY
+T p1 319.5 463.7 7.0 Helvetica-Bold UNIT PRICE
+T p1 432.8 463.7 7.0 Helvetica-Bold VAT
+T p1 491.4 463.7 7.0 Helvetica-Bold LINE TOTAL
+T p1 82.2 482.3 10.0 Helvetica 1
+T p1 93.8 482.6 10.0 Helvetica-Bold Festpreis
+T p1 93.8 494.5 10.0 Helvetica Neues DSL Portfolio 2016
+T p1 93.8 506.4 10.0 Helvetica-Oblique Item seller's identifier: 846
+T p1 229.8 482.3 10.0 Helvetica 1.000 one
+T p1 309.2 482.3 10.0 Helvetica € 12,122.59
+T p1 387.2 482.3 10.0 Helvetica Standard rate
+T p1 413.9 493.8 10.0 Helvetica 19.00%
+T p1 482.8 482.3 10.0 Helvetica € 12,122.59
+T p1 82.2 524.5 10.0 Helvetica 2
+T p1 93.8 524.8 10.0 Helvetica-Bold Abzug
+T p1 93.8 536.7 10.0 Helvetica-Oblique Item seller's identifier: 832
+T p1 245.9 524.5 10.0 Helvetica -1 one
+T p1 323.1 524.5 10.0 Helvetica € 606.13
+T p1 387.2 524.5 10.0 Helvetica Standard rate
+T p1 413.9 536.0 10.0 Helvetica 19.00%
+T p1 493.3 524.5 10.0 Helvetica -€ 606.13
+T p1 76.6 554.8 10.0 Helvetica 16
+T p1 93.8 555.1 10.0 Helvetica-Bold zzgl.
+T p1 93.8 567.0 10.0 Helvetica-Oblique Item seller's identifier: 870
+T p1 229.8 554.8 10.0 Helvetica 1.000 one
+T p1 334.2 554.8 10.0 Helvetica € 1.50
+T p1 387.2 554.8 10.0 Helvetica Standard rate
+T p1 413.9 566.3 10.0 Helvetica 19.00%
+T p1 496.7 554.8 10.0 Helvetica € 177.41
+T p1 56.7 588.0 8.0 Helvetica-Bold VAT BREAKDOWN
+T p1 59.7 602.9 7.0 Helvetica-Bold VAT
+T p1 59.7 611.9 7.0 Helvetica-Bold CATEGORY
+T p1 127.7 602.9 7.0 Helvetica-Bold TAXABLE AMOUNT
+T p1 209.5 602.9 7.0 Helvetica-Bold VAT RATE
+T p1 269.2 602.9 7.0 Helvetica-Bold VAT AMOUNT
+T p1 59.7 630.4 10.0 Helvetica Standard
+T p1 59.7 642.0 10.0 Helvetica rate
+T p1 145.3 630.4 10.0 Helvetica € 11,693.87
+T p1 213.1 630.4 10.0 Helvetica 19.00%
+T p1 271.9 630.4 10.0 Helvetica € 2,221.84
+T p1 347.2 593.1 10.0 Helvetica Sum of invoice line
+T p1 347.2 604.6 10.0 Helvetica net amounts
+T p1 474.8 593.1 10.0 Helvetica € 11,693.87
+T p1 347.2 622.7 10.0 Helvetica Invoice total amount
+T p1 347.2 634.2 10.0 Helvetica without VAT
+T p1 474.8 622.7 10.0 Helvetica € 11,693.87
+T p1 347.2 652.3 10.0 Helvetica Invoice total VAT
+T p1 347.2 663.9 10.0 Helvetica amount
+T p1 480.3 652.3 10.0 Helvetica € 2,221.84
+T p1 347.2 682.3 10.0 Helvetica-Bold Invoice total
+T p1 347.2 694.2 10.0 Helvetica-Bold amount with VAT
+T p1 474.8 682.3 10.0 Helvetica-Bold € 13,915.71
+T p1 347.2 732.2 10.0 Helvetica Amount due
+T p1 474.8 732.2 10.0 Helvetica € 13,915.71
+T p1 363.5 796.1 6.0 Helvetica Generated by phlox · open-source edition · github.com/phax/phlox
+T p2 66.7 75.6 7.0 Helvetica-Bold Payment
+T p2 66.7 91.5 10.0 Helvetica-Bold Payment means type code: Credit transfer
+T p2 66.7 103.4 10.0 Helvetica-Oblique Remittance information: 2016166
+T p2 66.7 116.3 7.0 Helvetica-Bold Credit transfer
+T p2 66.7 128.9 10.0 Symbol •
+T p2 82.7 130.9 10.0 Courier DE12500105170648489890
+T p2 56.7 161.6 7.0 Helvetica Specification identifier: urn:ferd:CrossIndustryDocument:invoice:1p0:comfort
+T p2 363.5 796.1 6.0 Helvetica Generated by phlox · open-source edition · github.com/phax/phlox
