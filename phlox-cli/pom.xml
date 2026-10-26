@@ -82,6 +82,11 @@
       <artifactId>phlox-testfiles</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.helger.font</groupId>
+      <artifactId>ph-fonts-roboto</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

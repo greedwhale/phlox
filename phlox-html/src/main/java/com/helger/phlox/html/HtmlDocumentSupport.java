@@ -152,6 +152,7 @@ final class HtmlDocumentSupport
       final HCStyle aStyle = new HCStyle ();
       aStyle.setStyleContent (defaultCss (sPrefix) +
                               _cssVariables (aCtx) +
+                              (aCtx.getFontFamily () == null ? "" : "\n" + aCtx.getFontFamily ().getCss ()) +
                               (aCtx.getCustomStylesheet () == null ? "" : "\n" + aCtx.getCustomStylesheet ()));
       aHtml.head ().addCSS (aStyle);
     }

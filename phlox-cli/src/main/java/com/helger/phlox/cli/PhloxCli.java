@@ -40,8 +40,10 @@ import com.helger.phlox.api.model.PhloxAttachment;
 import com.helger.phlox.api.model.PhloxInvoice;
 import com.helger.phlox.api.watermark.WatermarkSpec;
 import com.helger.phlox.cii.CiiInvoiceReader;
+import com.helger.phlox.html.HtmlFontFamily;
 import com.helger.phlox.html.HtmlInvoiceWriter;
 import com.helger.phlox.html.HtmlRenderContext;
+import com.helger.phlox.pdf.PdfFontFamily;
 import com.helger.phlox.pdf.PdfInvoiceWriter;
 import com.helger.phlox.pdf.PdfRenderContext;
 import com.helger.phlox.template.PhloxTemplate;
@@ -126,6 +128,19 @@ public class PhloxCli implements Callable <Integer>
            description = "Optional logo image (PNG, JPEG or GIF) that the template shows in the header.")
   Path m_aLogoFile;
 
+  @Option (names = "--font",
+           description = "Regular font file (TTF or OTF; WOFF and WOFF2 for HTML only) that replaces the default fonts in HTML and PDF. Needed for characters outside Western European languages, e.g. Cyrillic or Greek. The font is embedded into the output.")
+  Path m_aFontFile;
+
+  @Option (names = "--font-bold", description = "Bold font file for --font. Default: the regular font.")
+  Path m_aFontBoldFile;
+
+  @Option (names = "--font-italic", description = "Italic font file for --font. Default: the regular font.")
+  Path m_aFontItalicFile;
+
+  @Option (names = "--font-bold-italic", description = "Bold italic font file for --font. Default: the bold font.")
+  Path m_aFontBoldItalicFile;
+
   @Option (names = "--watermark", description = "Optional user watermark text (e.g. 'DRAFT').")
   String m_sWatermark;
 
@@ -138,6 +153,12 @@ public class PhloxCli implements Callable <Integer>
            description = "Watermark rotation in degrees. Default: -45.",
            defaultValue = "-45")
   float m_fWatermarkRotation;
+
+  @FunctionalInterface
+  private interface FontApplier <CTX>
+  {
+    void apply (@NonNull CTX aCtx) throws IOException;
+  }
 
   private static final String TEMPLATE_DEFAULT = "default";
   private static final String TEMPLATE_CLASSPATH_PREFIX = "classpath:";
@@ -175,6 +196,23 @@ public class PhloxCli implements Callable <Integer>
     }
   }
 
+  @Nullable
+  private Integer _checkFonts ()
+  {
+    if (m_aFontFile == null && (m_aFontBoldFile != null || m_aFontItalicFile != null || m_aFontBoldItalicFile != null))
+    {
+      System.err.println ("--font-bold, --font-italic and --font-bold-italic require --font");
+      return Integer.valueOf (2);
+    }
+    for (final Path aFile : new Path [] { m_aFontFile, m_aFontBoldFile, m_aFontItalicFile, m_aFontBoldItalicFile })
+      if (aFile != null && !Files.isRegularFile (aFile))
+      {
+        System.err.println ("Font file '" + aFile + "' does not exist");
+        return Integer.valueOf (2);
+      }
+    return null;
+  }
+
   /**
    * Apply the theme and then the options of the command line, which win over the theme.
    *
@@ -182,12 +220,15 @@ public class PhloxCli implements Callable <Integer>
    */
   @Nullable
   private <CTX extends AbstractRenderContext <CTX>> Integer _prepare (@NonNull final CTX aCtx,
-                                                                      @Nullable final Consumer <CTX> aThemeApplier)
+                                                                      @Nullable final Consumer <CTX> aThemeApplier,
+                                                                      @NonNull final FontApplier <CTX> aFontApplier)
   {
     try
     {
       if (aThemeApplier != null)
         aThemeApplier.accept (aCtx);
+      if (m_aFontFile != null)
+        aFontApplier.apply (aCtx);
       if (m_sLang != null)
         aCtx.setLocale (Locale.forLanguageTag (m_sLang.replace ('_', '-')));
       if (m_sTemplate != null)
@@ -209,7 +250,7 @@ public class PhloxCli implements Callable <Integer>
                                             .setOpacity (m_fWatermarkOpacity)
                                             .setRotation (m_fWatermarkRotation));
     }
-    catch (final PhloxRuntimeException | IOException ex)
+    catch (final PhloxRuntimeException | IOException | IllegalArgumentException ex)
     {
       System.err.println ("Failed to prepare the rendering: " + ex.getMessage ());
       return Integer.valueOf (2);
@@ -247,6 +288,9 @@ public class PhloxCli implements Callable <Integer>
       System.err.println ("Input file '" + m_aInputFile + "' does not exist");
       return Integer.valueOf (2);
     }
+    final Integer aFontError = _checkFonts ();
+    if (aFontError != null)
+      return aFontError;
     final byte [] aBytes = m_aInputFile != null ? Files.readAllBytes (m_aInputFile) : _readAllStdin ();
     final ESourceSyntax eSyntax = m_eSyntax == ESourceSyntax.AUTO ? _sniffSyntax (aBytes) : m_eSyntax;
 
@@ -303,7 +347,11 @@ public class PhloxCli implements Callable <Integer>
         return Integer.valueOf (2);
       }
       final PdfRenderContext aCtx = new PdfRenderContext ();
-      final Integer aError = _prepare (aCtx, aTheme == null ? null : (final PdfRenderContext aTarget) -> aTarget.applyTheme (aTheme));
+      final Integer aError = _prepare (aCtx, aTheme == null ? null : (final PdfRenderContext aTarget) -> aTarget.applyTheme (aTheme),
+                                       aTarget -> aTarget.setFontFamily (PdfFontFamily.ofFiles (m_aFontFile,
+                                                                                                 m_aFontBoldFile,
+                                                                                                 m_aFontItalicFile,
+                                                                                                 m_aFontBoldItalicFile)));
       if (aError != null)
         return aError;
       // Render completely before touching the output file, so a failure leaves no empty file
@@ -326,7 +374,11 @@ public class PhloxCli implements Callable <Integer>
     {
       final HtmlRenderContext aCtx = new HtmlRenderContext ();
       final Integer aError = _prepare (aCtx,
-                                       aTheme == null ? null : (final HtmlRenderContext aTarget) -> aTarget.applyTheme (aTheme));
+                                       aTheme == null ? null : (final HtmlRenderContext aTarget) -> aTarget.applyTheme (aTheme),
+                                       aTarget -> aTarget.setFontFamily (HtmlFontFamily.ofFiles (m_aFontFile,
+                                                                                                  m_aFontBoldFile,
+                                                                                                  m_aFontItalicFile,
+                                                                                                  m_aFontBoldItalicFile)));
       if (aError != null)
         return aError;
       final HtmlInvoiceWriter aHtmlWriter = new HtmlInvoiceWriter ();

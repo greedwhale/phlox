@@ -16,7 +16,12 @@
  */
 package com.helger.phlox.pdf;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import com.helger.annotation.concurrent.Immutable;
 import com.helger.base.enforce.ValueEnforcer;
@@ -200,5 +205,51 @@ public final class PdfFontFamily
                aBold.getFontResource (),
                aItalic.getFontResource (),
                aBoldItalic.getFontResource ());
+  }
+
+  @Nullable
+  private static PreloadFont _loadFile (@Nullable final Path aFile) throws IOException
+  {
+    if (aFile == null)
+      return null;
+    return PreloadFont.createEmbedding (new PdfFontBytesResource (aFile.getFileName ().toString (),
+                                                                  Files.readAllBytes (aFile)));
+  }
+
+  /**
+   * Create a family from TTF or OTF files. A style without a file uses the closest style that has
+   * one. The fonts are embedded into the PDF.
+   *
+   * @param aRegular
+   *        The regular font file. May not be <code>null</code>.
+   * @param aBold
+   *        The bold font file. May be <code>null</code>.
+   * @param aItalic
+   *        The italic font file. May be <code>null</code>.
+   * @param aBoldItalic
+   *        The bold italic font file. May be <code>null</code>.
+   * @return The new family. Never <code>null</code>.
+   * @throws IOException
+   *         If a file cannot be read.
+   * @throws IllegalArgumentException
+   *         If a file is no TTF or OTF file or cannot be loaded.
+   */
+  @NonNull
+  public static PdfFontFamily ofFiles (@NonNull final Path aRegular,
+                                       @Nullable final Path aBold,
+                                       @Nullable final Path aItalic,
+                                       @Nullable final Path aBoldItalic) throws IOException
+  {
+    ValueEnforcer.notNull (aRegular, "Regular");
+    final PreloadFont aRegularFont = _loadFile (aRegular);
+    final PreloadFont aBoldFont = _loadFile (aBold);
+    final PreloadFont aItalicFont = _loadFile (aItalic);
+    final PreloadFont aBoldItalicFont = _loadFile (aBoldItalic);
+    final PreloadFont aRealBold = aBoldFont == null ? aRegularFont : aBoldFont;
+    final PreloadFont aRealItalic = aItalicFont == null ? aRegularFont : aItalicFont;
+    return new PdfFontFamily (aRegularFont,
+                              aRealBold,
+                              aRealItalic,
+                              aBoldItalicFont == null ? aRealBold : aBoldItalicFont);
   }
 }

@@ -25,9 +25,16 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.jspecify.annotations.NonNull;
 import org.junit.Test;
 
+import com.helger.collection.commons.CommonsArrayList;
+import com.helger.collection.commons.ICommonsList;
+import com.helger.font.roboto.EFontResourceRoboto;
 import com.helger.io.resource.ClassPathResource;
 import com.helger.phlox.testfiles.MockPhloxTestFiles;
 
@@ -175,5 +182,80 @@ public final class PhloxCliTest
     Files.deleteIfExists (aOut);
     assertEquals (2, _run ("-i", _copyInvoice ().toString (), "-o", aOut.toString (), "--theme", aTheme.toString ()));
     assertEquals (2, _run ("-i", _copyInvoice ().toString (), "--theme", "does-not-exist.json"));
+  }
+
+  @NonNull
+  private static Path _fontFile (final EFontResourceRoboto eFont, final String sName) throws IOException
+  {
+    final Path aFile = Files.createTempFile ("phlox-cli-font-", "-" + sName);
+    aFile.toFile ().deleteOnExit ();
+    try (final InputStream aIS = eFont.getFontResource ().getInputStream ())
+    {
+      Files.write (aFile, aIS.readAllBytes ());
+    }
+    return aFile;
+  }
+
+  @NonNull
+  private static ICommonsList <String> _getFontNames (@NonNull final Path aPdf) throws IOException
+  {
+    final ICommonsList <String> ret = new CommonsArrayList <> ();
+    try (final PDDocument aDoc = Loader.loadPDF (aPdf.toFile ()))
+    {
+      for (final PDPage aPage : aDoc.getPages ())
+        for (final COSName aName : aPage.getResources ().getFontNames ())
+          ret.add (aPage.getResources ().getFont (aName).getName ());
+    }
+    return ret;
+  }
+
+  @Test
+  public void testFontIsUsedInHtml () throws IOException
+  {
+    final Path aOut = _tempFile (".html");
+    assertEquals (0,
+                  _run ("-i",
+                        _copyInvoice ().toString (),
+                        "--font",
+                        _fontFile (EFontResourceRoboto.ROBOTO_NORMAL, "Regular.ttf").toString (),
+                        "--font-bold",
+                        _fontFile (EFontResourceRoboto.ROBOTO_BOLD, "Bold.ttf").toString (),
+                        "-o",
+                        aOut.toString ()));
+    final String sHtml = Files.readString (aOut, StandardCharsets.UTF_8);
+    assertTrue (sHtml.contains ("@font-face{font-family:\"Phlox Custom\";font-weight:400;font-style:normal;src:url(data:font/ttf;base64,"));
+    assertTrue (sHtml.contains ("font-weight:700;font-style:normal"));
+    assertTrue (sHtml.contains ("body{font-family:\"Phlox Custom\""));
+  }
+
+  @Test
+  public void testFontIsUsedInPdf () throws IOException
+  {
+    final Path aWithout = _tempFile (".pdf");
+    final Path aWith = _tempFile (".pdf");
+    assertEquals (0, _run ("-i", _copyInvoice ().toString (), "-f", "PDF", "-o", aWithout.toString ()));
+    assertEquals (0,
+                  _run ("-i",
+                        _copyInvoice ().toString (),
+                        "-f",
+                        "PDF",
+                        "--font",
+                        _fontFile (EFontResourceRoboto.ROBOTO_NORMAL, "Regular.ttf").toString (),
+                        "-o",
+                        aWith.toString ()));
+    assertTrue (_getFontNames (aWithout).stream ().noneMatch (x -> x.contains ("Roboto")));
+    assertTrue (_getFontNames (aWith).stream ().anyMatch (x -> x.contains ("Roboto")));
+  }
+
+  @Test
+  public void testFontErrors () throws IOException
+  {
+    final Path aOut = _tempFile (".html");
+    final Path aInvoice = _copyInvoice ();
+    assertEquals (2, _run ("-i", aInvoice.toString (), "--font-bold", aInvoice.toString (), "-o", aOut.toString ()));
+    assertEquals (2, _run ("-i", aInvoice.toString (), "--font", "does-not-exist.ttf", "-o", aOut.toString ()));
+    // Not a font file
+    assertEquals (2, _run ("-i", aInvoice.toString (), "--font", aInvoice.toString (), "-o", aOut.toString ()));
+    assertEquals (2, _run ("-i", aInvoice.toString (), "-f", "PDF", "--font", aInvoice.toString (), "-o", aOut.toString ()));
   }
 }

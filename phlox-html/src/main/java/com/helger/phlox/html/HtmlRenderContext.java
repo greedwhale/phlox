@@ -27,6 +27,7 @@ import com.helger.collection.commons.CommonsLinkedHashMap;
 import com.helger.collection.commons.ICommonsOrderedMap;
 import com.helger.phlox.api.AbstractRenderContext;
 import com.helger.phlox.theme.PhloxTheme;
+import com.helger.phlox.theme.PhloxThemeException;
 import com.helger.phlox.theme.PhloxThemeApplier;
 import com.helger.phlox.theme.PhloxThemeObject;
 
@@ -51,6 +52,7 @@ public class HtmlRenderContext extends AbstractRenderContext <HtmlRenderContext>
   private boolean m_bEmbeddedStylesheet = DEFAULT_EMBEDDED_STYLESHEET;
   private String m_sCustomStylesheet;
   private boolean m_bEmitDoctype = DEFAULT_EMIT_DOCTYPE;
+  private HtmlFontFamily m_aFontFamily;
   private final ICommonsOrderedMap <String, String> m_aCssVariables = new CommonsLinkedHashMap <> ();
 
   /** Create a new context with the default HTML settings. */
@@ -145,6 +147,32 @@ public class HtmlRenderContext extends AbstractRenderContext <HtmlRenderContext>
   }
 
   /**
+   * Get the embedded fonts.
+   *
+   * @return The fonts or {@code null} if the fonts of the default stylesheet are used.
+   */
+  @Nullable
+  public HtmlFontFamily getFontFamily ()
+  {
+    return m_aFontFamily;
+  }
+
+  /**
+   * Set the fonts that are embedded into the document. They are part of the embedded stylesheet,
+   * so they are only used if {@link #isEmbeddedStylesheet()} is {@code true}.
+   *
+   * @param aFontFamily
+   *        The new value. May be {@code null} for the fonts of the default stylesheet.
+   * @return this for chaining.
+   */
+  @NonNull
+  public HtmlRenderContext setFontFamily (@Nullable final HtmlFontFamily aFontFamily)
+  {
+    m_aFontFamily = aFontFamily;
+    return this;
+  }
+
+  /**
    * Check if the HTML doctype is emitted.
    *
    * @return {@code true} if the HTML doctype is emitted.
@@ -206,11 +234,40 @@ public class HtmlRenderContext extends AbstractRenderContext <HtmlRenderContext>
     return this;
   }
 
+  @NonNull
+  private static HtmlFontFamily _getFontFamily (@NonNull final PhloxTheme aTheme, @NonNull final PhloxThemeObject aFonts)
+  {
+    aFonts.checkKeys ("regular", "bold", "italic", "boldItalic");
+    final String sRegular = aFonts.getString ("regular");
+    if (sRegular == null)
+      throw new PhloxThemeException ("Theme error at '" + aFonts.getPath () + ".regular': the regular font is required");
+    final String sBold = aFonts.getString ("bold");
+    final String sItalic = aFonts.getString ("italic");
+    final String sBoldItalic = aFonts.getString ("boldItalic");
+    try
+    {
+      return new HtmlFontFamily (sRegular,
+                                 aTheme.readBinary (sRegular),
+                                 sBold,
+                                 sBold == null ? null : aTheme.readBinary (sBold),
+                                 sItalic,
+                                 sItalic == null ? null : aTheme.readBinary (sItalic),
+                                 sBoldItalic,
+                                 sBoldItalic == null ? null : aTheme.readBinary (sBoldItalic));
+    }
+    catch (final IllegalArgumentException | PhloxThemeException ex)
+    {
+      throw new PhloxThemeException ("Theme error at '" + aFonts.getPath () + "': " + ex.getMessage (), ex);
+    }
+  }
+
   /**
    * Apply a theme: its <code>common</code> part, its variables (as CSS custom properties) and the
    * <code>html</code> part with the keys <code>cssClassPrefix</code>, <code>embeddedStylesheet</code>,
    * <code>emitDoctype</code>, <code>customStylesheet</code> (the CSS itself) and
-   * <code>customStylesheetFile</code> (the path of a CSS file). If both stylesheets are given, the
+   * <code>customStylesheetFile</code> (the path of a CSS file) and <code>fonts</code> (the font files
+   * <code>regular</code>, <code>bold</code>, <code>italic</code> and <code>boldItalic</code>, of
+   * which only <code>regular</code> is required). If both stylesheets are given, the
    * file comes first. Only the values that are in the theme are changed.
    *
    * @param aTheme
@@ -226,13 +283,17 @@ public class HtmlRenderContext extends AbstractRenderContext <HtmlRenderContext>
     aTheme.getVariables ().forEach (this::putCssVariable);
 
     final PhloxThemeObject aHtml = aTheme.getHtml ();
-    aHtml.checkKeys ("cssClassPrefix", "embeddedStylesheet", "emitDoctype", "customStylesheet", "customStylesheetFile");
+    aHtml.checkKeys ("cssClassPrefix", "embeddedStylesheet", "emitDoctype", "customStylesheet", "customStylesheetFile", "fonts");
     if (aHtml.getString ("cssClassPrefix") != null)
       setCssClassPrefix (aHtml.getString ("cssClassPrefix"));
     if (aHtml.getBoolean ("embeddedStylesheet") != null)
       setEmbeddedStylesheet (aHtml.getBoolean ("embeddedStylesheet").booleanValue ());
     if (aHtml.getBoolean ("emitDoctype") != null)
       setEmitDoctype (aHtml.getBoolean ("emitDoctype").booleanValue ());
+
+    final PhloxThemeObject aFonts = aHtml.getObject ("fonts");
+    if (aFonts != null)
+      setFontFamily (_getFontFamily (aTheme, aFonts));
 
     final String sFile = aHtml.getString ("customStylesheetFile");
     final String sInline = aHtml.getString ("customStylesheet");

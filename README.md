@@ -19,7 +19,7 @@ Reads invoices in **UBL** or **CII** syntax, lifts them into a syntax-neutral in
 - **Complete model:** every EN 16931 business group and business term is represented; terms that only exist in 2026 stay empty for 2017 documents.
 - **Template driven output:** HTML and PDF are rendered from a `.ptpl` template (JMustache plus CommonMark). The default template ships with phlox; your own replaces it without writing Java.
 - **Themes:** colours, fonts, page layout, block styles, language, logo and watermark come from one JSON file. See [Styling](https://github.com/phax/phlox/wiki/Styling).
-- **Any script in PDF:** embed TTF or OTF fonts (for example Roboto for Cyrillic and Greek) in the theme or the API. The standard PDF fonts only contain Western European characters.
+- **Any script in PDF:** embed TTF or OTF fonts (for example Roboto for Cyrillic and Greek) in HTML and PDF with `--font`, the theme or the API. The standard PDF fonts only contain Western European characters.
 - **Watermarks:** a user watermark such as `DRAFT`, plus the program watermark.
 - **Command line:** `phlox-cli` renders an invoice file to HTML or PDF.
 - **No validation:** phlox only visualizes. Use `phive-rules-en16931` to check business rules.
@@ -65,6 +65,7 @@ java -jar phlox-cli/target/phlox-cli-full.jar -i invoice.xml -f PDF -o invoice.p
 | `-t`, `--template` | `default`, `classpath:<path>` or the path of a `.ptpl` file |
 | `--theme` | JSON theme file |
 | `--logo` | Logo image (PNG, JPEG or GIF) |
+| `--font` | Regular font file (TTF or OTF) for HTML and PDF; also `--font-bold`, `--font-italic` and `--font-bold-italic` |
 | `--watermark` | User watermark text; see also `--watermark-opacity` and `--watermark-rotation` |
 
 ## Documentation
