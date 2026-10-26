@@ -30,6 +30,7 @@ import java.util.Locale;
 import org.jspecify.annotations.NonNull;
 import org.junit.Test;
 
+import com.helger.base.string.StringHelper;
 import com.helger.base.string.StringReplace;
 import com.helger.collection.commons.CommonsArrayList;
 import com.helger.collection.commons.ICommonsList;
@@ -145,7 +146,7 @@ public final class HtmlMastersTest
         }
         catch (final AssertionError ex)
         {
-          aFailures.add (ex.getMessage ().split ("\n")[0]);
+          aFailures.add (StringHelper.getFirstToken (ex.getMessage (), '\n'));
         }
     try
     {
@@ -153,7 +154,7 @@ public final class HtmlMastersTest
     }
     catch (final AssertionError ex)
     {
-      aFailures.add (ex.getMessage ().split ("\n")[0]);
+      aFailures.add (StringHelper.getFirstToken (ex.getMessage (), '\n'));
     }
     assertTrue (aFailures.size () + " of the reference files differ:\n" + String.join ("\n", aFailures),
                 aFailures.isEmpty ());
