@@ -23,6 +23,7 @@ import org.jspecify.annotations.Nullable;
 
 import com.helger.base.io.stream.StreamHelper;
 import com.helger.base.string.StringReplace;
+import com.helger.css.property.CCSSProperties;
 import com.helger.html.css.DefaultCSSClassProvider;
 import com.helger.html.css.ICSSClassProvider;
 import com.helger.html.hc.html.HC_Target;
@@ -117,6 +118,9 @@ final class HtmlDocumentSupport
   {
     final HCDiv aD = new HCDiv ().addClass (cls (sCssClass));
     aD.addChild (aSpec.getText ());
+    // Colour, opacity and rotation come from the spec and override the stylesheet
+    aD.addStyle (CCSSProperties.COLOR.newValue (aSpec.getCssRgba ()));
+    aD.addStyle (CCSSProperties.TRANSFORM.newValue ("translate(-50%,-50%) rotate(" + aSpec.getRotation () + "deg)"));
     aD.customAttrs ().putIn ("aria-hidden", "true");
     return aD;
   }

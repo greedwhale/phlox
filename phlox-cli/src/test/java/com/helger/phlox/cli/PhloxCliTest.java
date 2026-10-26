@@ -17,6 +17,9 @@
 package com.helger.phlox.cli;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -26,10 +29,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.contentstream.operator.Operator;
+import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSNumber;
+import org.apache.pdfbox.cos.COSString;
+import org.apache.pdfbox.pdfparser.PDFStreamParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.junit.Test;
 
 import com.helger.collection.commons.CommonsArrayList;
@@ -257,5 +266,146 @@ public final class PhloxCliTest
     // Not a font file
     assertEquals (2, _run ("-i", aInvoice.toString (), "--font", aInvoice.toString (), "-o", aOut.toString ()));
     assertEquals (2, _run ("-i", aInvoice.toString (), "-f", "PDF", "--font", aInvoice.toString (), "-o", aOut.toString ()));
+  }
+
+  @Test
+  public void testWatermarkInHtml () throws IOException
+  {
+    final Path aWithout = _tempFile (".html");
+    assertEquals (0, _run ("-i", _copyInvoice ().toString (), "-o", aWithout.toString ()));
+    assertFalse (Files.readString (aWithout, StandardCharsets.UTF_8).contains ("<div class=\"phlox-watermark-user\""));
+
+    // Defaults: opacity 0.10, rotation -45
+    final Path aDefault = _tempFile (".html");
+    assertEquals (0, _run ("-i", _copyInvoice ().toString (), "--watermark", "DRAFT", "-o", aDefault.toString ()));
+    assertTrue (Files.readString (aDefault, StandardCharsets.UTF_8)
+                     .contains ("<div class=\"phlox-watermark-user\" style=\"color:rgba(128,128,128,0.1);transform:translate(-50%,-50%) rotate(-45.0deg);\" aria-hidden=\"true\">DRAFT</div>"));
+
+    // Explicit values
+    final Path aExplicit = _tempFile (".html");
+    assertEquals (0,
+                  _run ("-i",
+                        _copyInvoice ().toString (),
+                        "--watermark",
+                        "DRAFT",
+                        "--watermark-opacity",
+                        "0.5",
+                        "--watermark-rotation",
+                        "30",
+                        "-o",
+                        aExplicit.toString ()));
+    assertTrue (Files.readString (aExplicit, StandardCharsets.UTF_8)
+                     .contains ("<div class=\"phlox-watermark-user\" style=\"color:rgba(128,128,128,0.5);transform:translate(-50%,-50%) rotate(30.0deg);\" aria-hidden=\"true\">DRAFT</div>"));
+  }
+
+  /**
+   * Find the operands of the last operator with the given name that precedes the text drawing
+   * operator of the given text on the first page.
+   *
+   * @return <code>null</code> if the text is not drawn on the first page.
+   */
+  @Nullable
+  private static ICommonsList <COSBase> _getOperandsBeforeText (@NonNull final Path aPdf,
+                                                                @NonNull final String sText,
+                                                                @NonNull final String sOperator) throws IOException
+  {
+    try (final PDDocument aDoc = Loader.loadPDF (aPdf.toFile ()))
+    {
+      final ICommonsList <COSBase> aOperands = new CommonsArrayList <> ();
+      ICommonsList <COSBase> aLastMatch = null;
+      for (final Object aToken : new PDFStreamParser (aDoc.getPage (0)).parse ())
+      {
+        if (aToken instanceof final Operator aOp)
+        {
+          if (aOp.getName ().equals (sOperator))
+            aLastMatch = aOperands.getClone ();
+          else
+            if (aOp.getName ().equals ("Tj") &&
+                aOperands.size () == 1 &&
+                aOperands.getFirstOrNull () instanceof final COSString aString &&
+                aString.getString ().equals (sText))
+              return aLastMatch;
+          aOperands.clear ();
+        }
+        else
+          if (aToken instanceof final COSBase aOperand)
+            aOperands.add (aOperand);
+      }
+      return null;
+    }
+  }
+
+  private static float _getFloat (@NonNull final ICommonsList <COSBase> aOperands, final int nIndex)
+  {
+    return ((COSNumber) aOperands.get (nIndex)).floatValue ();
+  }
+
+  @Test
+  public void testWatermarkInPdf () throws IOException
+  {
+    final Path aWithout = _tempFile (".pdf");
+    assertEquals (0, _run ("-i", _copyInvoice ().toString (), "-f", "PDF", "-o", aWithout.toString ()));
+    assertNull (_getOperandsBeforeText (aWithout, "DRAFT", "Tm"));
+
+    // Defaults: opacity 0.10, rotation -45
+    final Path aDefault = _tempFile (".pdf");
+    assertEquals (0,
+                  _run ("-i", _copyInvoice ().toString (), "-f", "PDF", "--watermark", "DRAFT", "-o", aDefault.toString ()));
+    ICommonsList <COSBase> aMatrix = _getOperandsBeforeText (aDefault, "DRAFT", "Tm");
+    assertNotNull (aMatrix);
+    assertEquals (Math.cos (Math.toRadians (-45)), _getFloat (aMatrix, 0), 0.001);
+    assertEquals (Math.sin (Math.toRadians (-45)), _getFloat (aMatrix, 1), 0.001);
+    // The opacity lightens the grey (128) towards white: 255 - 127 * 0.1 = 242
+    ICommonsList <COSBase> aColour = _getOperandsBeforeText (aDefault, "DRAFT", "rg");
+    assertNotNull (aColour);
+    assertEquals (242 / 255f, _getFloat (aColour, 0), 0.001);
+
+    // Explicit values
+    final Path aExplicit = _tempFile (".pdf");
+    assertEquals (0,
+                  _run ("-i",
+                        _copyInvoice ().toString (),
+                        "-f",
+                        "PDF",
+                        "--watermark",
+                        "DRAFT",
+                        "--watermark-opacity",
+                        "1.0",
+                        "--watermark-rotation",
+                        "30",
+                        "-o",
+                        aExplicit.toString ()));
+    aMatrix = _getOperandsBeforeText (aExplicit, "DRAFT", "Tm");
+    assertNotNull (aMatrix);
+    assertEquals (Math.cos (Math.toRadians (30)), _getFloat (aMatrix, 0), 0.001);
+    assertEquals (Math.sin (Math.toRadians (30)), _getFloat (aMatrix, 1), 0.001);
+    aColour = _getOperandsBeforeText (aExplicit, "DRAFT", "rg");
+    assertNotNull (aColour);
+    assertEquals (128 / 255f, _getFloat (aColour, 0), 0.001);
+  }
+
+  @Test
+  public void testWatermarkErrors () throws IOException
+  {
+    final Path aOut = _tempFile (".html");
+    final Path aInvoice = _copyInvoice ();
+    assertEquals (2,
+                  _run ("-i",
+                        aInvoice.toString (),
+                        "--watermark",
+                        "DRAFT",
+                        "--watermark-opacity",
+                        "abc",
+                        "-o",
+                        aOut.toString ()));
+    assertEquals (2,
+                  _run ("-i",
+                        aInvoice.toString (),
+                        "--watermark",
+                        "DRAFT",
+                        "--watermark-rotation",
+                        "abc",
+                        "-o",
+                        aOut.toString ()));
   }
 }
