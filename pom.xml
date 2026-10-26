@@ -66,6 +66,7 @@
     <en16931-basics.version>1.0.3-SNAPSHOT</en16931-basics.version>
     <ph-codelists.version>1.0.0</ph-codelists.version>
     <ph-oton.version>10.7.0</ph-oton.version>
+    <pdfcompare.version>1.2.11</pdfcompare.version>
     <ph-pdf-layout.version>8.3.6</ph-pdf-layout.version>
     <picocli.version>4.7.7</picocli.version>
     <jmustache.version>1.16</jmustache.version>
@@ -127,6 +128,17 @@
         <version>${ph-pdf-layout.version}</version>
       </dependency>
       
+      <dependency>
+        <groupId>de.redsix</groupId>
+        <artifactId>pdfcompare</artifactId>
+        <version>${pdfcompare.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
       <dependency>
         <groupId>info.picocli</groupId>
         <artifactId>picocli</artifactId>

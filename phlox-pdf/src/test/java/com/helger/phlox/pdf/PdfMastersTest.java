@@ -19,6 +19,7 @@ package com.helger.phlox.pdf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,10 +57,13 @@ import com.helger.phlox.cii.CiiInvoiceReader;
 import com.helger.phlox.testfiles.MockPhloxTestFiles;
 import com.helger.phlox.ubl.UblInvoiceReader;
 
+import de.redsix.pdfcompare.CompareResult;
+import de.redsix.pdfcompare.PdfComparator;
+
 /**
  * Compares the PDFs of the invoices of {@link MockPhloxTestFiles#getMasterFiles()} with the
  * reference files in <code>src/test/resources/masters</code>, in English and German. A reference
- * file is the description of the layout of a PDF as text: the pages, every piece of text with its
+ * file is a PDF, and the description of its layout as text next to it: the pages, every piece of text with its
  * position, font and size, and every line, box and colour that is drawn. That makes a difference
  * readable in the version control system, and it does not depend on the date, on the platform or on
  * how a viewer draws the page. If a change is wanted, write the reference files again with
@@ -71,6 +75,8 @@ public final class PdfMastersTest
 {
   private static final String UPDATE_PROPERTY = "phlox.updateMasters";
   private static final File MASTER_DIR = new File ("src/test/resources/masters");
+  // The PDFs of this run and the differences to the reference files
+  private static final File ACTUAL_DIR = new File ("target/masters-actual");
   private static final String LOGO_CASE = "2017/ubl/invoice/ubl-tc434-example1.xml";
   // Drawing operators of the content stream of a page, without the text operators
   private static final Set <String> GRAPHICS_OPERATORS = new CommonsHashSet <> ("re",
@@ -213,8 +219,7 @@ public final class PdfMastersTest
     return sPath.substring (0, sPath.length () - ".xml".length ()).replace ('/', '_') +
            (bLogo ? "-logo" : "") +
            "-" +
-           sLang +
-           ".txt";
+           sLang;
   }
 
   private static void _compare (@NonNull final String sPath,
@@ -239,13 +244,17 @@ public final class PdfMastersTest
     }
     final NonBlockingByteArrayOutputStream aBAOS = new NonBlockingByteArrayOutputStream ();
     new PdfInvoiceWriter ().writeTo (_read (sPath), aCtx, aBAOS);
-    final String sActual = _describe (aBAOS.toByteArray ());
+    final byte [] aPdf = aBAOS.toByteArray ();
+    final String sActual = _describe (aPdf);
 
-    final File aMaster = new File (MASTER_DIR, _masterName (sPath, sLang, bLogo));
+    final String sName = _masterName (sPath, sLang, bLogo);
+    final File aMaster = new File (MASTER_DIR, sName + ".txt");
+    final File aMasterPdf = new File (MASTER_DIR, sName + ".pdf");
     if (Boolean.getBoolean (UPDATE_PROPERTY))
     {
       MASTER_DIR.mkdirs ();
       Files.writeString (aMaster.toPath (), sActual, StandardCharsets.UTF_8);
+      Files.write (aMasterPdf.toPath (), aPdf);
       return;
     }
     assertTrue ("There is no reference file " + aMaster.getPath () + " - create it with -D" + UPDATE_PROPERTY + "=true",
@@ -257,6 +266,25 @@ public final class PdfMastersTest
                   "=true",
                   Files.readString (aMaster.toPath (), StandardCharsets.UTF_8),
                   sActual);
+
+    // The layout is the same, so compare how the pages look
+    assertTrue ("There is no reference file " + aMasterPdf.getPath (), aMasterPdf.isFile ());
+    final File aActualPdf = new File (ACTUAL_DIR, sName + ".pdf");
+    ACTUAL_DIR.mkdirs ();
+    Files.write (aActualPdf.toPath (), aPdf);
+    final CompareResult aResult = new PdfComparator <> (aMasterPdf, aActualPdf).compare ();
+    if (!aResult.isEqual ())
+    {
+      final String sDiff = new File (ACTUAL_DIR, sName + "-diff").getPath ();
+      aResult.writeTo (sDiff);
+      fail ("The pages of " +
+            aActualPdf.getPath () +
+            " look different from the reference file " +
+            aMasterPdf.getPath () +
+            " - see " +
+            sDiff +
+            ".pdf");
+    }
   }
 
   @Test
