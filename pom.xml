@@ -70,7 +70,7 @@
     <ph-pdf-layout.version>8.3.6</ph-pdf-layout.version>
     <picocli.version>4.7.7</picocli.version>
     <jmustache.version>1.16</jmustache.version>
-    <commonmark.version>0.22.0</commonmark.version>
+    <commonmark.version>0.31.0</commonmark.version>
   </properties>
 
   <dependencyManagement>

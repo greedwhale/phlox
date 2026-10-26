@@ -44,6 +44,9 @@ import org.jspecify.annotations.NonNull;
 import org.junit.Test;
 
 import com.helger.base.io.nonblocking.NonBlockingByteArrayOutputStream;
+import com.helger.base.string.StringHelper;
+import com.helger.base.string.StringReplace;
+import com.helger.cache.regex.RegExHelper;
 import com.helger.collection.commons.CommonsArrayList;
 import com.helger.collection.commons.CommonsHashSet;
 import com.helger.collection.commons.ICommonsList;
@@ -63,11 +66,11 @@ import de.redsix.pdfcompare.PdfComparator;
 /**
  * Compares the PDFs of the invoices of {@link MockPhloxTestFiles#getMasterFiles()} with the
  * reference files in <code>src/test/resources/masters</code>, in English and German. A reference
- * file is a PDF, and the description of its layout as text next to it: the pages, every piece of text with its
- * position, font and size, and every line, box and colour that is drawn. That makes a difference
- * readable in the version control system, and it does not depend on the date, on the platform or on
- * how a viewer draws the page. If a change is wanted, write the reference files again with
- * <code>mvn test -Dtest=PdfMastersTest -Dphlox.updateMasters=true</code>.
+ * file is a PDF, and the description of its layout as text next to it: the pages, every piece of
+ * text with its position, font and size, and every line, box and colour that is drawn. That makes a
+ * difference readable in the version control system, and it does not depend on the date, on the
+ * platform or on how a viewer draws the page. If a change is wanted, write the reference files
+ * again with <code>mvn test -Dtest=PdfMastersTest -Dphlox.updateMasters=true</code>.
  *
  * @author Philip Helger
  */
@@ -132,9 +135,9 @@ public final class PdfMastersTest
                       _format (aFirst.getFontSizeInPt ()) +
                       " " +
                       // The prefix of a subset font is not part of the layout
-                      aFirst.getFont ().getName ().replaceFirst ("^[A-Z]{6}\\+", "") +
+                      RegExHelper.stringReplacePattern ("^[A-Z]{6}\\+", aFirst.getFont ().getName (), "") +
                       " " +
-                      sText.replace (CPhloxVersion.BUILD_VERSION, "@VERSION@"));
+                      StringReplace.replaceAll (sText, CPhloxVersion.BUILD_VERSION, "@VERSION@"));
       }
     }
   }
@@ -216,7 +219,7 @@ public final class PdfMastersTest
   @NonNull
   private static String _masterName (@NonNull final String sPath, @NonNull final String sLang, final boolean bLogo)
   {
-    return sPath.substring (0, sPath.length () - ".xml".length ()).replace ('/', '_') +
+    return StringReplace.replaceAll (sPath.substring (0, sPath.length () - ".xml".length ()), '/', '_') +
            (bLogo ? "-logo" : "") +
            "-" +
            sLang;
@@ -299,7 +302,7 @@ public final class PdfMastersTest
         }
         catch (final AssertionError ex)
         {
-          aFailures.add (ex.getMessage ().split ("\n")[0]);
+          aFailures.add (StringHelper.getFirstToken (ex.getMessage (), '\n'));
         }
     try
     {
@@ -307,7 +310,7 @@ public final class PdfMastersTest
     }
     catch (final AssertionError ex)
     {
-      aFailures.add (ex.getMessage ().split ("\n")[0]);
+      aFailures.add (StringHelper.getFirstToken (ex.getMessage (), '\n'));
     }
     assertTrue (aFailures.size () + " of the reference files differ:\n" + String.join ("\n", aFailures),
                 aFailures.isEmpty ());
