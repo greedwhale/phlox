@@ -1,5 +1,12 @@
 # phlox
 
+<!-- ph-badge-start -->
+[![Sonatype Central](https://maven-badges.sml.io/sonatype-central/com.helger.phlox/phlox-parent-pom/badge.svg)](https://maven-badges.sml.io/sonatype-central/com.helger.phlox/phlox-parent-pom/)
+[![javadoc](https://javadoc.io/badge2/com.helger.phlox/phlox-api/javadoc.svg)](https://javadoc.io/doc/com.helger.phlox/phlox-api)
+
+> If this project saved you some time or made your day a little easier, a star would mean a lot — it helps others find it too.
+<!-- ph-badge-end -->
+
 ![Logo](https://github.com/phax/phlox/blob/main/docs/logo/phlox-logo-644-180.png)
 
 Visualizer for EN 16931 electronic invoices.
@@ -80,3 +87,8 @@ See the [wiki](https://github.com/phax/phlox/wiki/Home) for the full documentati
 ## License
 
 Apache License 2.0, see [LICENSE](LICENSE). Third-party notes are in [NOTICE](NOTICE).
+
+---
+
+My personal [Coding Styleguide](https://github.com/phax/meta/blob/master/CodingStyleguide.md) |
+It is appreciated if you star the GitHub project if you like it.
