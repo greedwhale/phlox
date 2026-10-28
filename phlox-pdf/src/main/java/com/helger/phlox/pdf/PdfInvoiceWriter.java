@@ -22,7 +22,6 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 
 import com.helger.annotation.WillClose;
 import com.helger.base.string.StringHelper;
@@ -82,7 +81,8 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
    * that the PDF uses no transparency.
    */
   @NonNull
-  private static PLTextWatermark _createWatermark (@NonNull final PdfFontFamily aFamily, @NonNull final WatermarkSpec aSpec)
+  private static PLTextWatermark _createWatermark (@NonNull final PdfFontFamily aFamily,
+                                                   @NonNull final WatermarkSpec aSpec)
   {
     // Bold for the large centred watermark, regular for the small ones at the edges
     final PreloadFont aFont = aSpec.getPosition () == EWatermarkPosition.CENTER ? aFamily.getBold ()
@@ -93,23 +93,15 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
                                         Math.round (255 - (255 - aRGB.getGreen ()) * fO),
                                         Math.round (255 - (255 - aRGB.getBlue ()) * fO));
     final PLTextWatermark ret = new PLTextWatermark (aSpec.getText (), aFont).setFontSize (aSpec.getFontSizePt ())
-                                                                            .setColor (aColor)
-                                                                            .setRotation (aSpec.getRotation ());
+                                                                             .setColor (aColor)
+                                                                             .setRotation (aSpec.getRotation ());
     switch (aSpec.getPosition ())
     {
-      case CENTER:
-        ret.setPosition (EPLWatermarkPosition.CENTER);
-        break;
-      case TOP:
-        ret.setPosition (EPLWatermarkPosition.TOP).setEdgeDistance (12f);
-        break;
-      case BOTTOM:
-        ret.setPosition (EPLWatermarkPosition.BOTTOM).setEdgeDistance (12f);
-        break;
-      case FOOTER_RIGHT:
-      default:
-        ret.setPosition (EPLWatermarkPosition.BOTTOM_RIGHT).setEdgeDistance (10f);
-        break;
+      case CENTER -> ret.setPosition (EPLWatermarkPosition.CENTER);
+      case TOP -> ret.setPosition (EPLWatermarkPosition.TOP).setEdgeDistance (12f);
+      case BOTTOM -> ret.setPosition (EPLWatermarkPosition.BOTTOM).setEdgeDistance (12f);
+      case FOOTER_RIGHT -> ret.setPosition (EPLWatermarkPosition.BOTTOM_RIGHT).setEdgeDistance (10f);
+      default -> ret.setPosition (EPLWatermarkPosition.BOTTOM_RIGHT).setEdgeDistance (10f);
     }
     return ret;
   }
@@ -158,7 +150,7 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
   private static void _addPlainSource (@NonNull final PageLayoutPDF aPdf, @NonNull final PdfEmbeddedSource aSource)
   {
     final EPdfAFRelationship eRelationship = aSource.getRelationship () != null ? aSource.getRelationship ()
-                                                                                 : EPdfAFRelationship.SOURCE;
+                                                                                : EPdfAFRelationship.SOURCE;
     aPdf.addAssociatedFile (new PdfAssociatedFile (aSource.getContent (),
                                                    aSource.getFileName (),
                                                    PdfEmbeddedSource.MIME_TYPE_XML,
@@ -192,7 +184,7 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
                                          "' is not the one of a ZUGFeRD / Factur-X profile. Set the profile explicitly with PdfEmbeddedSource.withConformanceLevel.");
     }
     final EPdfAFRelationship eRelationship = aSource.getRelationship () != null ? aSource.getRelationship ()
-                                                                                 : eLevel.getDefaultRelationship ();
+                                                                                : eLevel.getDefaultRelationship ();
     final String sFileName = eLevel.getFileName ();
 
     aPdf.addAssociatedFile (new PdfAssociatedFile (aSource.getContent (),

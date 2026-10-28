@@ -37,7 +37,8 @@ import com.helger.pdflayout.pdfa.EPdfAFRelationship;
  * relationship of the profile and the Factur-X XMP metadata. The profile is derived from the
  * specification identifier (BT-24) of the invoice unless it is set explicitly.</li>
  * </ul>
- * Both kinds require PDF/A-3, see {@link PdfRenderContext#setPdfALevel(com.helger.pdflayout.pdfa.EPdfALevel)}.
+ * Both kinds require PDF/A-3, see
+ * {@link PdfRenderContext#setPdfALevel(com.helger.pdflayout.pdfa.EPdfALevel)}.
  *
  * @author Philip Helger
  */

@@ -224,7 +224,10 @@ public final class PdfTemplateEmitter extends
   {
     final PdfFontFamily aFamily = m_aCtx.getFontFamily ();
     if (aBase.getPreloadFont ().equals (aFamily.getBold ()))
-      return new PLFontFamily (aFamily.getBold (), aFamily.getBold (), aFamily.getBoldItalic (), aFamily.getBoldItalic ());
+      return new PLFontFamily (aFamily.getBold (),
+                               aFamily.getBold (),
+                               aFamily.getBoldItalic (),
+                               aFamily.getBoldItalic ());
     return aFamily.getAsPLFontFamily ();
   }
 
@@ -253,7 +256,8 @@ public final class PdfTemplateEmitter extends
       return null;
 
     // Code uses the standard monospace font only with the standard fonts. A custom font family
-    // must be used for everything: the standard fonts lack most scripts and are not embedded (PDF/A)
+    // must be used for everything: the standard fonts lack most scripts and are not embedded
+    // (PDF/A)
     final PLFontFamily aFamily = _fontFamily (aBase);
     final PLFontFamily aCodeFamily = m_aCtx.getFontFamily () == PdfFontFamily.STANDARD ? PLFontFamily.monospace ()
                                                                                        : aFamily;
@@ -447,7 +451,9 @@ public final class PdfTemplateEmitter extends
   {
     final float [] aWeights = new float [nColumns];
     final int [] aLongestWords = new int [nColumns];
-    final float fHeaderScale = m_aCtx.getTableHeaderFont ().getFontSize () * 1.1f / m_aCtx.getBodyFont ().getFontSize ();
+    final float fHeaderScale = m_aCtx.getTableHeaderFont ().getFontSize () *
+                               1.1f /
+                               m_aCtx.getBodyFont ().getFontSize ();
     for (int i = 0; i < nColumns; ++i)
       aWeights[i] = 9f;
     for (Node aPart = aTable.getFirstChild (); aPart != null; aPart = aPart.getNext ())
@@ -663,7 +669,8 @@ public final class PdfTemplateEmitter extends
         aContent = aBlocks;
       }
       // Tagged PDF: a group or row is a division
-      aSink.accept (_decorate (new PLBox (aContent).setMarginBottom (PARAGRAPH_GAP).setStructureRole (EPLStructureRole.DIV),
+      aSink.accept (_decorate (new PLBox (aContent).setMarginBottom (PARAGRAPH_GAP)
+                                                   .setStructureRole (EPLStructureRole.DIV),
                                aGroup.isRow () ? null : aStyle));
     }
     finally
@@ -738,7 +745,9 @@ public final class PdfTemplateEmitter extends
       _appendWrappedRecursive (aAst,
                                aLink,
                                aLines,
-                               "{link[" + PdfTextSupport.escapeMarkup (_encodeLinkDestination (aLink.getDestination ())) + "]}",
+                               "{link[" +
+                                       PdfTextSupport.escapeMarkup (_encodeLinkDestination (aLink.getDestination ())) +
+                                       "]}",
                                "{link}");
     else
     {
@@ -836,8 +845,7 @@ public final class PdfTemplateEmitter extends
     aSink.accept (new PLBox (new PLSpacerY (1f)).setBorderTop (new BorderStyleSpec (bStyled ? aRuleStyle.getBorderTopColor ()
                                                                                             : PLColor.GRAY,
                                                                                     bStyled ? aRuleStyle.getBorderWidth ()
-                                                                                            : 0.75f))
-                                                .setMarginY (4));
+                                                                                            : 0.75f)).setMarginY (4));
   }
 
   @Override

@@ -25,8 +25,8 @@ import com.helger.base.lang.EnumHelper;
 import com.helger.pdflayout.pdfa.EPdfAFRelationship;
 
 /**
- * The Factur-X / ZUGFeRD profile (conformance level) of an embedded CII invoice. The ID is the value
- * of <code>fx:ConformanceLevel</code> in the XMP metadata.
+ * The Factur-X / ZUGFeRD profile (conformance level) of an embedded CII invoice. The ID is the
+ * value of <code>fx:ConformanceLevel</code> in the XMP metadata.
  *
  * @author Philip Helger
  */
@@ -94,8 +94,8 @@ public enum EFacturXConformanceLevel implements IHasID <String>
 
   /**
    * @return The default relationship of the embedded XML to the PDF: <code>Data</code> for MINIMUM
-   *         and BASIC WL, <code>Alternative</code> for all other profiles (the only value allowed in
-   *         Germany).
+   *         and BASIC WL, <code>Alternative</code> for all other profiles (the only value allowed
+   *         in Germany).
    */
   @NonNull
   public EPdfAFRelationship getDefaultRelationship ()

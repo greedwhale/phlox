@@ -54,13 +54,17 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
   /** Default font of the body text. */
   public static final FontSpec DEFAULT_BODY_FONT = new FontSpec (PreloadFont.REGULAR, 10f);
   /** Default font of section headers. */
-  public static final FontSpec DEFAULT_HEADER_FONT = new FontSpec (PreloadFont.REGULAR_BOLD, 8f, PdfPalette.DEFAULT.getMuted ());
+  public static final FontSpec DEFAULT_HEADER_FONT = new FontSpec (PreloadFont.REGULAR_BOLD,
+                                                                   8f,
+                                                                   PdfPalette.DEFAULT.getMuted ());
   /** By default no PDF/UA is created. */
   public static final boolean DEFAULT_PDF_UA = false;
   /** By default the attached documents (BG-24) are not embedded into the PDF. */
   public static final boolean DEFAULT_EMBED_ATTACHMENTS = false;
   /** Default font of table headers. */
-  public static final FontSpec DEFAULT_TABLE_HEADER_FONT = new FontSpec (PreloadFont.REGULAR_BOLD, 7.5f, PdfPalette.DEFAULT.getMuted ());
+  public static final FontSpec DEFAULT_TABLE_HEADER_FONT = new FontSpec (PreloadFont.REGULAR_BOLD,
+                                                                         7.5f,
+                                                                         PdfPalette.DEFAULT.getMuted ());
 
   private PDRectangle m_aPageSize = DEFAULT_PAGE_SIZE;
   private MarginSpec m_aMargins = DEFAULT_MARGINS;
@@ -143,7 +147,8 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     return new FontSpec (aBold == null ? aCurrent.getPreloadFont ()
                                        : aBold.booleanValue () ? m_aFontFamily.getBold () : m_aFontFamily.getRegular (),
                          aSize == null ? aCurrent.getFontSize () : aSize.floatValue (),
-                         aColor == null ? aCurrent.getColor () : new PLColor (aColor.getRed (), aColor.getGreen (), aColor.getBlue ()));
+                         aColor == null ? aCurrent.getColor ()
+                                        : new PLColor (aColor.getRed (), aColor.getGreen (), aColor.getBlue ()));
   }
 
   @NonNull
@@ -168,7 +173,8 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     }
     catch (final IllegalArgumentException | PhloxThemeException ex)
     {
-      throw new PhloxThemeException ("Theme error at '" + aFonts.getPath () + "." + sKey + "': " + ex.getMessage (), ex);
+      throw new PhloxThemeException ("Theme error at '" + aFonts.getPath () + "." + sKey + "': " + ex.getMessage (),
+                                     ex);
     }
   }
 
@@ -178,7 +184,9 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     aFonts.checkKeys ("regular", "bold", "italic", "boldItalic");
     final PreloadFont aRegular = _getFontFile (aTheme, aFonts, "regular");
     if (aRegular == null)
-      throw new PhloxThemeException ("Theme error at '" + aFonts.getPath () + ".regular': the regular font is required");
+      throw new PhloxThemeException ("Theme error at '" +
+                                     aFonts.getPath () +
+                                     ".regular': the regular font is required");
     final PreloadFont aBold = _getFontFile (aTheme, aFonts, "bold");
     final PreloadFont aItalic = _getFontFile (aTheme, aFonts, "italic");
     final PreloadFont aBoldItalic = _getFontFile (aTheme, aFonts, "boldItalic");
@@ -199,7 +207,9 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     aBorder.checkKeys ("color", "width");
     final Color aColor = aBorder.getColor ("color");
     if (aColor == null)
-      throw new PhloxThemeException ("Theme error at '" + aBorder.getPath () + ".color': the colour of the line is required");
+      throw new PhloxThemeException ("Theme error at '" +
+                                     aBorder.getPath () +
+                                     ".color': the colour of the line is required");
     final PLColor aPLColor = new PLColor (aColor.getRed (), aColor.getGreen (), aColor.getBlue ());
     if (bTop)
       aBuilder.borderTopColor (aPLColor);
@@ -285,9 +295,9 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
 
   /**
    * Set the fonts of the output. The body font, the header font and the table header font switch to
-   * the fonts of the new family, so call it before the sizes and colours of these fonts are changed.
-   * The standard fonts of PDF contain only the characters of Western European languages; set a family
-   * with the needed characters to render a text in another script.
+   * the fonts of the new family, so call it before the sizes and colours of these fonts are
+   * changed. The standard fonts of PDF contain only the characters of Western European languages;
+   * set a family with the needed characters to render a text in another script.
    *
    * @param aFontFamily
    *        The new fonts. May not be {@code null}.
@@ -515,8 +525,9 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
   }
 
   /**
-   * Embed the attached documents of the invoice (BT-125 of BG-24) into the PDF, with the relationship
-   * <code>Supplement</code>. Embedding requires PDF/A-3 (see {@link #setPdfALevel(EPdfALevel)}).
+   * Embed the attached documents of the invoice (BT-125 of BG-24) into the PDF, with the
+   * relationship <code>Supplement</code>. Embedding requires PDF/A-3 (see
+   * {@link #setPdfALevel(EPdfALevel)}).
    *
    * @param bEmbedAttachments
    *        {@code true} to embed them.
@@ -535,11 +546,26 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     putBlockStyle ("totals-due", PdfBlockStyle.fill (PLColor.gray (0xe8)));
 
     // The look of the default template
-    putBlockStyle ("kind", PdfBlockStyle.builder ().textColor (m_aPalette.getAccent ()).fontSize (Float.valueOf (8.5f)).bold (true).build ());
-    putBlockStyle ("label", PdfBlockStyle.builder ().textColor (m_aPalette.getMuted ()).fontSize (Float.valueOf (7.5f)).bold (true).build ());
-    putBlockStyle ("muted", PdfBlockStyle.builder ().textColor (m_aPalette.getMuted ()).fontSize (Float.valueOf (8.5f)).build ());
+    putBlockStyle ("kind",
+                   PdfBlockStyle.builder ()
+                                .textColor (m_aPalette.getAccent ())
+                                .fontSize (Float.valueOf (8.5f))
+                                .bold (true)
+                                .build ());
+    putBlockStyle ("label",
+                   PdfBlockStyle.builder ()
+                                .textColor (m_aPalette.getMuted ())
+                                .fontSize (Float.valueOf (7.5f))
+                                .bold (true)
+                                .build ());
+    putBlockStyle ("muted",
+                   PdfBlockStyle.builder ()
+                                .textColor (m_aPalette.getMuted ())
+                                .fontSize (Float.valueOf (8.5f))
+                                .build ());
     putBlockStyle ("party-name", PdfBlockStyle.builder ().fontSize (Float.valueOf (11f)).bold (true).build ());
-    putBlockStyle ("rule", PdfBlockStyle.builder ().borderTopColor (m_aPalette.getAccent ()).borderWidth (1.5f).build ());
+    putBlockStyle ("rule",
+                   PdfBlockStyle.builder ().borderTopColor (m_aPalette.getAccent ()).borderWidth (1.5f).build ());
     putBlockStyle ("head-logo", PdfBlockStyle.builder ().widthPercent (Float.valueOf (25f)).build ());
     putBlockStyle ("totals-col", PdfBlockStyle.builder ().widthPercent (Float.valueOf (42f)).build ());
     putBlockStyle ("totals", PdfBlockStyle.builder ().fillColor (m_aPalette.getWash ()).padding (8f).build ());
@@ -551,8 +577,16 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
                                 .bold (true)
                                 .build ());
     putBlockStyle ("pay",
-                   PdfBlockStyle.builder ().fillColor (m_aPalette.getAccentWash ()).padding (10f).keepTogether (true).build ());
-    putBlockStyle ("foot", PdfBlockStyle.builder ().textColor (m_aPalette.getMuted ()).fontSize (Float.valueOf (7.5f)).build ());
+                   PdfBlockStyle.builder ()
+                                .fillColor (m_aPalette.getAccentWash ())
+                                .padding (10f)
+                                .keepTogether (true)
+                                .build ());
+    putBlockStyle ("foot",
+                   PdfBlockStyle.builder ()
+                                .textColor (m_aPalette.getMuted ())
+                                .fontSize (Float.valueOf (7.5f))
+                                .build ());
   }
 
   /** Create a new context with the default PDF settings. */
@@ -586,8 +620,10 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
   {
     ValueEnforcer.notNull (aPalette, "Palette");
     m_aPalette = aPalette;
-    m_aHeaderFont = _switchFamily (DEFAULT_HEADER_FONT, PdfFontFamily.STANDARD, m_aFontFamily).getCloneWithDifferentColor (aPalette.getMuted ());
-    m_aTableHeaderFont = _switchFamily (DEFAULT_TABLE_HEADER_FONT, PdfFontFamily.STANDARD, m_aFontFamily).getCloneWithDifferentColor (aPalette.getMuted ());
+    m_aHeaderFont = _switchFamily (DEFAULT_HEADER_FONT, PdfFontFamily.STANDARD, m_aFontFamily)
+                                                                                              .getCloneWithDifferentColor (aPalette.getMuted ());
+    m_aTableHeaderFont = _switchFamily (DEFAULT_TABLE_HEADER_FONT, PdfFontFamily.STANDARD, m_aFontFamily)
+                                                                                                         .getCloneWithDifferentColor (aPalette.getMuted ());
     _registerDefaultStyles ();
     return this;
   }
@@ -625,7 +661,11 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     {
       aStart = getBlockStyle (sExtends);
       if (aStart == null)
-        throw new PhloxThemeException ("Theme error at '" + aStyle.getPath () + ".extends': there is no block style '" + sExtends + "'");
+        throw new PhloxThemeException ("Theme error at '" +
+                                       aStyle.getPath () +
+                                       ".extends': there is no block style '" +
+                                       sExtends +
+                                       "'");
     }
     else
       if (!Boolean.TRUE.equals (aStyle.getBoolean ("reset")))
@@ -666,8 +706,8 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
    * <li><code>pageSize</code> - <code>a0</code> to <code>a6</code>, <code>letter</code> or
    * <code>legal</code>; <code>landscape</code> - <code>true</code> or <code>false</code></li>
    * <li><code>margins</code> - a length for all sides or an object with the keys <code>top</code>,
-   * <code>right</code>, <code>bottom</code> and <code>left</code>. A length is a number of points or
-   * a number with <code>mm</code>, <code>cm</code>, <code>in</code>, <code>pt</code> or
+   * <code>right</code>, <code>bottom</code> and <code>left</code>. A length is a number of points
+   * or a number with <code>mm</code>, <code>cm</code>, <code>in</code>, <code>pt</code> or
    * <code>px</code></li>
    * <li><code>fonts</code> - an object with the keys <code>regular</code> (required),
    * <code>bold</code>, <code>italic</code> and <code>boldItalic</code>. Each is the path of a
@@ -730,7 +770,11 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
       {
         final PhloxThemeObject aStyle = aStyles.getObject (sName);
         if (aStyle == null)
-          throw new PhloxThemeException ("Theme error at '" + aStyles.getPath () + "." + sName + "': an object is expected");
+          throw new PhloxThemeException ("Theme error at '" +
+                                         aStyles.getPath () +
+                                         "." +
+                                         sName +
+                                         "': an object is expected");
         _applyBlockStyle (sName, aStyle);
       }
     return this;

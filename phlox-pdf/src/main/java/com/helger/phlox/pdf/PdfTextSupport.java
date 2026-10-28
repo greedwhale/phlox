@@ -77,7 +77,11 @@ final class PdfTextSupport
           aSb.append (')');
         else
         {
-          if (c == '\\' || c == '*' || c == '_' || c == '`' || (c == '~' && i + 1 < aChars.length && aChars[i + 1] == '~'))
+          if (c == '\\' ||
+              c == '*' ||
+              c == '_' ||
+              c == '`' ||
+              (c == '~' && i + 1 < aChars.length && aChars[i + 1] == '~'))
             aSb.append ('\\');
           aSb.append (c);
         }

@@ -87,15 +87,17 @@ public final class PdfPalette
   }
 
   @NonNull
-  private static PLColor _color (@NonNull final PhloxTheme aTheme, @NonNull final String sName, @NonNull final PLColor aDefault)
+  private static PLColor _color (@NonNull final PhloxTheme aTheme,
+                                 @NonNull final String sName,
+                                 @NonNull final PLColor aDefault)
   {
     final Color aColor = aTheme.getColorVariable (sName, null);
     return aColor == null ? aDefault : new PLColor (aColor.getRed (), aColor.getGreen (), aColor.getBlue ());
   }
 
   /**
-   * Create the palette from the variables of a theme. A colour that the theme does not define is the
-   * one of {@link #DEFAULT}.
+   * Create the palette from the variables of a theme. A colour that the theme does not define is
+   * the one of {@link #DEFAULT}.
    *
    * @param aTheme
    *        The theme. May not be <code>null</code>.
