@@ -17,6 +17,7 @@
 package com.helger.phlox.pdf;
 
 import java.awt.Color;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -27,6 +28,7 @@ import com.helger.base.enforce.ValueEnforcer;
 import com.helger.collection.commons.CommonsHashMap;
 import com.helger.collection.commons.ICommonsMap;
 import com.helger.pdflayout.base.PLColor;
+import com.helger.pdflayout.pdfa.EPdfALevel;
 import com.helger.pdflayout.spec.FontSpec;
 import com.helger.pdflayout.spec.MarginSpec;
 import com.helger.pdflayout.spec.PreloadFont;
@@ -52,9 +54,17 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
   /** Default font of the body text. */
   public static final FontSpec DEFAULT_BODY_FONT = new FontSpec (PreloadFont.REGULAR, 10f);
   /** Default font of section headers. */
-  public static final FontSpec DEFAULT_HEADER_FONT = new FontSpec (PreloadFont.REGULAR_BOLD, 8f, PdfPalette.DEFAULT.getMuted ());
+  public static final FontSpec DEFAULT_HEADER_FONT = new FontSpec (PreloadFont.REGULAR_BOLD,
+                                                                   8f,
+                                                                   PdfPalette.DEFAULT.getMuted ());
+  /** By default no PDF/UA is created. */
+  public static final boolean DEFAULT_PDF_UA = false;
+  /** By default the attached documents (BG-24) are not embedded into the PDF. */
+  public static final boolean DEFAULT_EMBED_ATTACHMENTS = false;
   /** Default font of table headers. */
-  public static final FontSpec DEFAULT_TABLE_HEADER_FONT = new FontSpec (PreloadFont.REGULAR_BOLD, 7.5f, PdfPalette.DEFAULT.getMuted ());
+  public static final FontSpec DEFAULT_TABLE_HEADER_FONT = new FontSpec (PreloadFont.REGULAR_BOLD,
+                                                                         7.5f,
+                                                                         PdfPalette.DEFAULT.getMuted ());
 
   private PDRectangle m_aPageSize = DEFAULT_PAGE_SIZE;
   private MarginSpec m_aMargins = DEFAULT_MARGINS;
@@ -64,6 +74,11 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
   private PdfFontFamily m_aFontFamily = PdfFontFamily.STANDARD;
   private PdfPalette m_aPalette = PdfPalette.DEFAULT;
   private final ICommonsMap <String, PdfBlockStyle> m_aBlockStyles = new CommonsHashMap <> ();
+  private EPdfALevel m_ePdfALevel;
+  private ZonedDateTime m_aDocumentCreationDateTime;
+  private PdfEmbeddedSource m_aEmbeddedSource;
+  private boolean m_bEmbedAttachments = DEFAULT_EMBED_ATTACHMENTS;
+  private boolean m_bPdfUA = DEFAULT_PDF_UA;
 
   @NonNull
   private static PDRectangle _getPageSize (@NonNull final PhloxThemeObject aPdf, @NonNull final String sName)
@@ -132,7 +147,8 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     return new FontSpec (aBold == null ? aCurrent.getPreloadFont ()
                                        : aBold.booleanValue () ? m_aFontFamily.getBold () : m_aFontFamily.getRegular (),
                          aSize == null ? aCurrent.getFontSize () : aSize.floatValue (),
-                         aColor == null ? aCurrent.getColor () : new PLColor (aColor.getRed (), aColor.getGreen (), aColor.getBlue ()));
+                         aColor == null ? aCurrent.getColor ()
+                                        : new PLColor (aColor.getRed (), aColor.getGreen (), aColor.getBlue ()));
   }
 
   @NonNull
@@ -157,7 +173,8 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     }
     catch (final IllegalArgumentException | PhloxThemeException ex)
     {
-      throw new PhloxThemeException ("Theme error at '" + aFonts.getPath () + "." + sKey + "': " + ex.getMessage (), ex);
+      throw new PhloxThemeException ("Theme error at '" + aFonts.getPath () + "." + sKey + "': " + ex.getMessage (),
+                                     ex);
     }
   }
 
@@ -167,7 +184,9 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     aFonts.checkKeys ("regular", "bold", "italic", "boldItalic");
     final PreloadFont aRegular = _getFontFile (aTheme, aFonts, "regular");
     if (aRegular == null)
-      throw new PhloxThemeException ("Theme error at '" + aFonts.getPath () + ".regular': the regular font is required");
+      throw new PhloxThemeException ("Theme error at '" +
+                                     aFonts.getPath () +
+                                     ".regular': the regular font is required");
     final PreloadFont aBold = _getFontFile (aTheme, aFonts, "bold");
     final PreloadFont aItalic = _getFontFile (aTheme, aFonts, "italic");
     final PreloadFont aBoldItalic = _getFontFile (aTheme, aFonts, "boldItalic");
@@ -188,7 +207,9 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     aBorder.checkKeys ("color", "width");
     final Color aColor = aBorder.getColor ("color");
     if (aColor == null)
-      throw new PhloxThemeException ("Theme error at '" + aBorder.getPath () + ".color': the colour of the line is required");
+      throw new PhloxThemeException ("Theme error at '" +
+                                     aBorder.getPath () +
+                                     ".color': the colour of the line is required");
     final PLColor aPLColor = new PLColor (aColor.getRed (), aColor.getGreen (), aColor.getBlue ());
     if (bTop)
       aBuilder.borderTopColor (aPLColor);
@@ -274,9 +295,9 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
 
   /**
    * Set the fonts of the output. The body font, the header font and the table header font switch to
-   * the fonts of the new family, so call it before the sizes and colours of these fonts are changed.
-   * The standard fonts of PDF contain only the characters of Western European languages; set a family
-   * with the needed characters to render a text in another script.
+   * the fonts of the new family, so call it before the sizes and colours of these fonts are
+   * changed. The standard fonts of PDF contain only the characters of Western European languages;
+   * set a family with the needed characters to render a text in another script.
    *
    * @param aFontFamily
    *        The new fonts. May not be {@code null}.
@@ -385,17 +406,166 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     return this;
   }
 
+  /**
+   * Get the PDF/A level of the output.
+   *
+   * @return The PDF/A level or {@code null} if no PDF/A is created (the default).
+   */
+  @Nullable
+  public EPdfALevel getPdfALevel ()
+  {
+    return m_ePdfALevel;
+  }
+
+  /**
+   * Set the PDF/A level of the output. PDF/A requires all fonts to be embedded, so the standard
+   * fonts of the default layout cannot be used: set a font family with
+   * {@link #setFontFamily(PdfFontFamily)} (or <code>pdf.fonts</code> in a theme) as well. With the
+   * level <code>3a</code> the PDF is tagged: headings, paragraphs, tables, lists, figures and links
+   * are in the logical structure, decoration is marked as artifact.
+   *
+   * @param ePdfALevel
+   *        The PDF/A level. May be {@code null} to create no PDF/A.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PdfRenderContext setPdfALevel (@Nullable final EPdfALevel ePdfALevel)
+  {
+    m_ePdfALevel = ePdfALevel;
+    return this;
+  }
+
+  /**
+   * Check if a PDF/UA-1 (accessible PDF, ISO 14289-1) is created.
+   *
+   * @return {@code true} if PDF/UA is created. Default is {@link #DEFAULT_PDF_UA}.
+   */
+  public boolean isPdfUA ()
+  {
+    return m_bPdfUA;
+  }
+
+  /**
+   * Create a PDF/UA-1 (accessible PDF, ISO 14289-1): a tagged PDF with the PDF/UA identification in
+   * its metadata. It can be combined with any PDF/A level (see {@link #setPdfALevel(EPdfALevel)}).
+   * Like PDF/A it requires embedded fonts, so set a font family with
+   * {@link #setFontFamily(PdfFontFamily)} as well.
+   *
+   * @param bPdfUA
+   *        {@code true} to create PDF/UA.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PdfRenderContext setPdfUA (final boolean bPdfUA)
+  {
+    m_bPdfUA = bPdfUA;
+    return this;
+  }
+
+  /**
+   * Get the creation date and time written into the PDF metadata.
+   *
+   * @return The creation date and time or {@code null} to use the current time (the default).
+   */
+  @Nullable
+  public ZonedDateTime getDocumentCreationDateTime ()
+  {
+    return m_aDocumentCreationDateTime;
+  }
+
+  /**
+   * Set the creation date and time written into the PDF metadata. A fixed value makes the output
+   * reproducible.
+   *
+   * @param aDocumentCreationDateTime
+   *        The creation date and time. May be {@code null} to use the current time.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PdfRenderContext setDocumentCreationDateTime (@Nullable final ZonedDateTime aDocumentCreationDateTime)
+  {
+    m_aDocumentCreationDateTime = aDocumentCreationDateTime;
+    return this;
+  }
+
+  /**
+   * Get the source XML that is embedded into the PDF.
+   *
+   * @return The embedded source or {@code null} if nothing is embedded (the default).
+   */
+  @Nullable
+  public PdfEmbeddedSource getEmbeddedSource ()
+  {
+    return m_aEmbeddedSource;
+  }
+
+  /**
+   * Set the source XML that is embedded into the PDF, either as plain source or as ZUGFeRD /
+   * Factur-X hybrid invoice. Embedding requires PDF/A-3 (see {@link #setPdfALevel(EPdfALevel)}).
+   *
+   * @param aEmbeddedSource
+   *        The source to embed. May be {@code null} to embed nothing.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PdfRenderContext setEmbeddedSource (@Nullable final PdfEmbeddedSource aEmbeddedSource)
+  {
+    m_aEmbeddedSource = aEmbeddedSource;
+    return this;
+  }
+
+  /**
+   * Check if the attached documents of the invoice (BT-125 of BG-24) are embedded into the PDF.
+   *
+   * @return {@code true} if they are embedded. Default is {@link #DEFAULT_EMBED_ATTACHMENTS}.
+   */
+  public boolean isEmbedAttachments ()
+  {
+    return m_bEmbedAttachments;
+  }
+
+  /**
+   * Embed the attached documents of the invoice (BT-125 of BG-24) into the PDF, with the
+   * relationship <code>Supplement</code>. Embedding requires PDF/A-3 (see
+   * {@link #setPdfALevel(EPdfALevel)}).
+   *
+   * @param bEmbedAttachments
+   *        {@code true} to embed them.
+   * @return this for chaining.
+   */
+  @NonNull
+  public PdfRenderContext setEmbedAttachments (final boolean bEmbedAttachments)
+  {
+    m_bEmbedAttachments = bEmbedAttachments;
+    return this;
+  }
+
   private void _registerDefaultStyles ()
   {
     // The row with the amount due of the template of an earlier version
     putBlockStyle ("totals-due", PdfBlockStyle.fill (PLColor.gray (0xe8)));
 
     // The look of the default template
-    putBlockStyle ("kind", PdfBlockStyle.builder ().textColor (m_aPalette.getAccent ()).fontSize (Float.valueOf (8.5f)).bold (true).build ());
-    putBlockStyle ("label", PdfBlockStyle.builder ().textColor (m_aPalette.getMuted ()).fontSize (Float.valueOf (7.5f)).bold (true).build ());
-    putBlockStyle ("muted", PdfBlockStyle.builder ().textColor (m_aPalette.getMuted ()).fontSize (Float.valueOf (8.5f)).build ());
+    putBlockStyle ("kind",
+                   PdfBlockStyle.builder ()
+                                .textColor (m_aPalette.getAccent ())
+                                .fontSize (Float.valueOf (8.5f))
+                                .bold (true)
+                                .build ());
+    putBlockStyle ("label",
+                   PdfBlockStyle.builder ()
+                                .textColor (m_aPalette.getMuted ())
+                                .fontSize (Float.valueOf (7.5f))
+                                .bold (true)
+                                .build ());
+    putBlockStyle ("muted",
+                   PdfBlockStyle.builder ()
+                                .textColor (m_aPalette.getMuted ())
+                                .fontSize (Float.valueOf (8.5f))
+                                .build ());
     putBlockStyle ("party-name", PdfBlockStyle.builder ().fontSize (Float.valueOf (11f)).bold (true).build ());
-    putBlockStyle ("rule", PdfBlockStyle.builder ().borderTopColor (m_aPalette.getAccent ()).borderWidth (1.5f).build ());
+    putBlockStyle ("rule",
+                   PdfBlockStyle.builder ().borderTopColor (m_aPalette.getAccent ()).borderWidth (1.5f).build ());
     putBlockStyle ("head-logo", PdfBlockStyle.builder ().widthPercent (Float.valueOf (25f)).build ());
     putBlockStyle ("totals-col", PdfBlockStyle.builder ().widthPercent (Float.valueOf (42f)).build ());
     putBlockStyle ("totals", PdfBlockStyle.builder ().fillColor (m_aPalette.getWash ()).padding (8f).build ());
@@ -407,8 +577,16 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
                                 .bold (true)
                                 .build ());
     putBlockStyle ("pay",
-                   PdfBlockStyle.builder ().fillColor (m_aPalette.getAccentWash ()).padding (10f).keepTogether (true).build ());
-    putBlockStyle ("foot", PdfBlockStyle.builder ().textColor (m_aPalette.getMuted ()).fontSize (Float.valueOf (7.5f)).build ());
+                   PdfBlockStyle.builder ()
+                                .fillColor (m_aPalette.getAccentWash ())
+                                .padding (10f)
+                                .keepTogether (true)
+                                .build ());
+    putBlockStyle ("foot",
+                   PdfBlockStyle.builder ()
+                                .textColor (m_aPalette.getMuted ())
+                                .fontSize (Float.valueOf (7.5f))
+                                .build ());
   }
 
   /** Create a new context with the default PDF settings. */
@@ -442,8 +620,10 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
   {
     ValueEnforcer.notNull (aPalette, "Palette");
     m_aPalette = aPalette;
-    m_aHeaderFont = _switchFamily (DEFAULT_HEADER_FONT, PdfFontFamily.STANDARD, m_aFontFamily).getCloneWithDifferentColor (aPalette.getMuted ());
-    m_aTableHeaderFont = _switchFamily (DEFAULT_TABLE_HEADER_FONT, PdfFontFamily.STANDARD, m_aFontFamily).getCloneWithDifferentColor (aPalette.getMuted ());
+    m_aHeaderFont = _switchFamily (DEFAULT_HEADER_FONT, PdfFontFamily.STANDARD, m_aFontFamily)
+                                                                                              .getCloneWithDifferentColor (aPalette.getMuted ());
+    m_aTableHeaderFont = _switchFamily (DEFAULT_TABLE_HEADER_FONT, PdfFontFamily.STANDARD, m_aFontFamily)
+                                                                                                         .getCloneWithDifferentColor (aPalette.getMuted ());
     _registerDefaultStyles ();
     return this;
   }
@@ -481,7 +661,11 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
     {
       aStart = getBlockStyle (sExtends);
       if (aStart == null)
-        throw new PhloxThemeException ("Theme error at '" + aStyle.getPath () + ".extends': there is no block style '" + sExtends + "'");
+        throw new PhloxThemeException ("Theme error at '" +
+                                       aStyle.getPath () +
+                                       ".extends': there is no block style '" +
+                                       sExtends +
+                                       "'");
     }
     else
       if (!Boolean.TRUE.equals (aStyle.getBoolean ("reset")))
@@ -522,8 +706,8 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
    * <li><code>pageSize</code> - <code>a0</code> to <code>a6</code>, <code>letter</code> or
    * <code>legal</code>; <code>landscape</code> - <code>true</code> or <code>false</code></li>
    * <li><code>margins</code> - a length for all sides or an object with the keys <code>top</code>,
-   * <code>right</code>, <code>bottom</code> and <code>left</code>. A length is a number of points or
-   * a number with <code>mm</code>, <code>cm</code>, <code>in</code>, <code>pt</code> or
+   * <code>right</code>, <code>bottom</code> and <code>left</code>. A length is a number of points
+   * or a number with <code>mm</code>, <code>cm</code>, <code>in</code>, <code>pt</code> or
    * <code>px</code></li>
    * <li><code>fonts</code> - an object with the keys <code>regular</code> (required),
    * <code>bold</code>, <code>italic</code> and <code>boldItalic</code>. Each is the path of a
@@ -586,7 +770,11 @@ public class PdfRenderContext extends AbstractRenderContext <PdfRenderContext>
       {
         final PhloxThemeObject aStyle = aStyles.getObject (sName);
         if (aStyle == null)
-          throw new PhloxThemeException ("Theme error at '" + aStyles.getPath () + "." + sName + "': an object is expected");
+          throw new PhloxThemeException ("Theme error at '" +
+                                         aStyles.getPath () +
+                                         "." +
+                                         sName +
+                                         "': an object is expected");
         _applyBlockStyle (sName, aStyle);
       }
     return this;

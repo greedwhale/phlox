@@ -39,6 +39,7 @@ import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdfparser.PDFStreamParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.junit.Test;
@@ -448,5 +449,170 @@ public final class PhloxCliTest
                         "abc",
                         "-o",
                         aOut.toString ()));
+  }
+
+  @NonNull
+  private static Path _copyCiiInvoice () throws IOException
+  {
+    final Path aFile = Files.createTempFile ("phlox-cli-cii-", ".xml");
+    aFile.toFile ().deleteOnExit ();
+    try (final InputStream aIS = new ClassPathResource (MockPhloxTestFiles.BASE_PATH + "2017/cii/CII_example1.xml").getInputStream ())
+    {
+      Files.write (aFile, aIS.readAllBytes ());
+    }
+    return aFile;
+  }
+
+  @Test
+  public void testPdfAEmbedSource () throws IOException
+  {
+    final Path aInvoice = _copyInvoice ();
+    final Path aOut = _tempFile (".pdf");
+    assertEquals (0,
+                  _run ("-i",
+                        aInvoice.toString (),
+                        "-f",
+                        "PDF",
+                        "--font",
+                        _fontFile (EFontResourceRoboto.ROBOTO_NORMAL, "Regular.ttf").toString (),
+                        "--embed-source",
+                        "--embed-attachments",
+                        "-o",
+                        aOut.toString ()));
+    try (final PDDocument aDoc = Loader.loadPDF (aOut.toFile ()))
+    {
+      final String sXmp = new String (aDoc.getDocumentCatalog ().getMetadata ().toByteArray (), StandardCharsets.UTF_8);
+      assertTrue (sXmp, sXmp.contains ("<pdfaid:part>3</pdfaid:part>"));
+      assertTrue (sXmp, sXmp.contains ("<pdfaid:conformance>B</pdfaid:conformance>"));
+      final PDComplexFileSpecification aFileSpec = aDoc.getDocumentCatalog ()
+                                                       .getNames ()
+                                                       .getEmbeddedFiles ()
+                                                       .getNames ()
+                                                       .get (aInvoice.getFileName ().toString ());
+      assertNotNull (aFileSpec);
+      assertEquals ("Source", aFileSpec.getCOSObject ().getNameAsString (COSName.AF_RELATIONSHIP));
+    }
+  }
+
+  @Test
+  public void testZugferd () throws IOException
+  {
+    final Path aOut = _tempFile (".pdf");
+    assertEquals (0,
+                  _run ("-i",
+                        _copyCiiInvoice ().toString (),
+                        "-f",
+                        "PDF",
+                        "--font",
+                        _fontFile (EFontResourceRoboto.ROBOTO_NORMAL, "Regular.ttf").toString (),
+                        "--zugferd",
+                        "-o",
+                        aOut.toString ()));
+    try (final PDDocument aDoc = Loader.loadPDF (aOut.toFile ()))
+    {
+      final String sXmp = new String (aDoc.getDocumentCatalog ().getMetadata ().toByteArray (), StandardCharsets.UTF_8);
+      assertTrue (sXmp, sXmp.contains ("<fx:ConformanceLevel>EN 16931</fx:ConformanceLevel>"));
+      final PDComplexFileSpecification aFileSpec = aDoc.getDocumentCatalog ()
+                                                       .getNames ()
+                                                       .getEmbeddedFiles ()
+                                                       .getNames ()
+                                                       .get ("factur-x.xml");
+      assertNotNull (aFileSpec);
+      assertEquals ("Alternative", aFileSpec.getCOSObject ().getNameAsString (COSName.AF_RELATIONSHIP));
+    }
+
+    // Explicit profile
+    assertEquals (0,
+                  _run ("-i",
+                        _copyCiiInvoice ().toString (),
+                        "-f",
+                        "PDF",
+                        "--font",
+                        _fontFile (EFontResourceRoboto.ROBOTO_NORMAL, "Regular.ttf").toString (),
+                        "--zugferd",
+                        "--zugferd-profile",
+                        "extended",
+                        "-o",
+                        aOut.toString ()));
+    try (final PDDocument aDoc = Loader.loadPDF (aOut.toFile ()))
+    {
+      final String sXmp = new String (aDoc.getDocumentCatalog ().getMetadata ().toByteArray (), StandardCharsets.UTF_8);
+      assertTrue (sXmp, sXmp.contains ("<fx:ConformanceLevel>EXTENDED</fx:ConformanceLevel>"));
+    }
+  }
+
+  @Test
+  public void testPdfAErrors () throws IOException
+  {
+    final Path aOut = _tempFile (".pdf");
+    final String sUbl = _copyInvoice ().toString ();
+    final String sFont = _fontFile (EFontResourceRoboto.ROBOTO_NORMAL, "Regular.ttf").toString ();
+    // Not PDF
+    assertEquals (2, _run ("-i", sUbl, "--pdfa", "3b", "-o", aOut.toString ()));
+    assertEquals (2, _run ("-i", sUbl, "--embed-attachments", "-o", aOut.toString ()));
+    assertEquals (2, _run ("-i", sUbl, "--pdfua", "-o", aOut.toString ()));
+    // PDF/UA requires embedded fonts
+    assertEquals (2, _run ("-i", sUbl, "-f", "PDF", "--pdfua", "-o", aOut.toString ()));
+    // PDF/A-2 does not allow the attachments
+    assertEquals (2,
+                  _run ("-i", sUbl, "-f", "PDF", "--font", sFont, "--pdfa", "2b", "--embed-attachments", "-o", aOut.toString ()));
+    // Unknown or tagged level
+    assertEquals (2, _run ("-i", sUbl, "-f", "PDF", "--font", sFont, "--pdfa", "4x", "-o", aOut.toString ()));
+    // Standard fonts
+    assertEquals (2, _run ("-i", sUbl, "-f", "PDF", "--pdfa", "3b", "-o", aOut.toString ()));
+    // PDF/A-2 does not allow embedded files
+    assertEquals (2, _run ("-i", sUbl, "-f", "PDF", "--font", sFont, "--pdfa", "2b", "--embed-source", "-o", aOut.toString ()));
+    // ZUGFeRD requires CII
+    assertEquals (2, _run ("-i", sUbl, "-f", "PDF", "--font", sFont, "--zugferd", "-o", aOut.toString ()));
+    // Contradicting options
+    assertEquals (2,
+                  _run ("-i",
+                        _copyCiiInvoice ().toString (),
+                        "-f",
+                        "PDF",
+                        "--font",
+                        sFont,
+                        "--zugferd",
+                        "--embed-source",
+                        "-o",
+                        aOut.toString ()));
+    assertEquals (2, _run ("-i", sUbl, "-f", "PDF", "--font", sFont, "--zugferd-profile", "BASIC", "-o", aOut.toString ()));
+    assertEquals (2,
+                  _run ("-i",
+                        _copyCiiInvoice ().toString (),
+                        "-f",
+                        "PDF",
+                        "--font",
+                        sFont,
+                        "--zugferd",
+                        "--zugferd-profile",
+                        "UNKNOWN",
+                        "-o",
+                        aOut.toString ()));
+  }
+
+  @Test
+  public void testPdfUA () throws IOException
+  {
+    final Path aOut = _tempFile (".pdf");
+    assertEquals (0,
+                  _run ("-i",
+                        _copyInvoice ().toString (),
+                        "-f",
+                        "PDF",
+                        "--font",
+                        _fontFile (EFontResourceRoboto.ROBOTO_NORMAL, "Regular.ttf").toString (),
+                        "--pdfua",
+                        "--pdfa",
+                        "3a",
+                        "-o",
+                        aOut.toString ()));
+    try (final PDDocument aDoc = Loader.loadPDF (aOut.toFile ()))
+    {
+      final String sXmp = new String (aDoc.getDocumentCatalog ().getMetadata ().toByteArray (), StandardCharsets.UTF_8);
+      assertTrue (sXmp, sXmp.contains ("<pdfuaid:part>1</pdfuaid:part>"));
+      assertTrue (sXmp, sXmp.contains ("<pdfaid:conformance>A</pdfaid:conformance>"));
+      assertNotNull (aDoc.getDocumentCatalog ().getStructureTreeRoot ());
+    }
   }
 }

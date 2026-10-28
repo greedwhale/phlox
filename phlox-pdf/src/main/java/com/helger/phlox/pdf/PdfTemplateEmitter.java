@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+import java.util.function.IntFunction;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 
@@ -41,6 +42,7 @@ import com.helger.base.string.StringHelper;
 import com.helger.base.string.StringReplace;
 import com.helger.collection.commons.CommonsArrayList;
 import com.helger.collection.commons.ICommonsList;
+import com.helger.pdflayout.base.AbstractPLRenderableObject;
 import com.helger.pdflayout.base.IPLRenderableObject;
 import com.helger.pdflayout.base.PLColor;
 import com.helger.pdflayout.base.PLPageSet;
@@ -48,8 +50,6 @@ import com.helger.pdflayout.element.box.PLBox;
 import com.helger.pdflayout.element.hbox.PLHBox;
 import com.helger.pdflayout.element.image.PLImage;
 import com.helger.pdflayout.element.link.AbstractPLExternalLink;
-import com.helger.pdflayout.element.list.BulletPointCreatorNumeric;
-import com.helger.pdflayout.element.list.BulletPointCreatorSymbol;
 import com.helger.pdflayout.element.list.IBulletPointCreator;
 import com.helger.pdflayout.element.list.PLBulletPointList;
 import com.helger.pdflayout.element.special.PLPageBreak;
@@ -61,12 +61,14 @@ import com.helger.pdflayout.element.text.PLText;
 import com.helger.pdflayout.element.vbox.PLVBox;
 import com.helger.pdflayout.richtext.element.PLRichText;
 import com.helger.pdflayout.richtext.run.PLFontFamily;
+import com.helger.pdflayout.richtext.run.PLRichTextRunBuilder;
 import com.helger.pdflayout.spec.BorderStyleSpec;
 import com.helger.pdflayout.spec.EHorzAlignment;
 import com.helger.pdflayout.spec.FontSpec;
 import com.helger.pdflayout.spec.PaddingSpec;
 import com.helger.pdflayout.spec.PreloadFont;
 import com.helger.pdflayout.spec.WidthSpec;
+import com.helger.pdflayout.tagging.EPLStructureRole;
 import com.helger.phlox.template.ast.AbstractPhloxAstVisitor;
 import com.helger.phlox.template.ast.PhloxGroupNode;
 import com.helger.phlox.template.ast.PhloxPageBreakNode;
@@ -96,6 +98,9 @@ public final class PdfTemplateEmitter extends
   private static final float ROW_GAP = 14f;
   private static final float LOGO_HEIGHT = 40f;
   private static final float MAX_IMAGE_WIDTH = 200f;
+  // Width of the column with the list marker: a bullet, or a number like "10."
+  private static final float BULLET_WIDTH = 10f;
+  private static final float NUMBER_WIDTH = 16f;
 
   private final PdfRenderContext m_aCtx;
 
@@ -219,7 +224,10 @@ public final class PdfTemplateEmitter extends
   {
     final PdfFontFamily aFamily = m_aCtx.getFontFamily ();
     if (aBase.getPreloadFont ().equals (aFamily.getBold ()))
-      return new PLFontFamily (aFamily.getBold (), aFamily.getBold (), aFamily.getBoldItalic (), aFamily.getBoldItalic ());
+      return new PLFontFamily (aFamily.getBold (),
+                               aFamily.getBold (),
+                               aFamily.getBoldItalic (),
+                               aFamily.getBoldItalic ());
     return aFamily.getAsPLFontFamily ();
   }
 
@@ -247,14 +255,35 @@ public final class PdfTemplateEmitter extends
     if (aNonBlank.isEmpty ())
       return null;
 
+    // Code uses the standard monospace font only with the standard fonts. A custom font family
+    // must be used for everything: the standard fonts lack most scripts and are not embedded
+    // (PDF/A)
+    final PLFontFamily aFamily = _fontFamily (aBase);
+    final PLFontFamily aCodeFamily = m_aCtx.getFontFamily () == PdfFontFamily.STANDARD ? PLFontFamily.monospace ()
+                                                                                       : aFamily;
     // A backslash in front of the line ending is a hard line break in the markup
-    final PLRichText aRichText = PLRichText.createFromMarkup (String.join ("\\\n", aNonBlank),
-                                                              _fontFamily (aBase),
-                                                              aBase.getFontSize (),
-                                                              aBase.getColor ());
+    final PLRichText aRichText = new PLRichText (new PLRichTextRunBuilder (aFamily,
+                                                                           aCodeFamily,
+                                                                           aBase.getFontSize (),
+                                                                           aBase.getColor ()).buildFromMarkup (String.join ("\\\n",
+                                                                                                                            aNonBlank)));
     aRichText.setHorzAlign (eAlign);
     aRichText.setVertSplittable (bVertSplittable);
     return aRichText;
+  }
+
+  @NonNull
+  private static EPLStructureRole _getHeadingRole (final int nLevel)
+  {
+    return switch (nLevel)
+    {
+      case 1 -> EPLStructureRole.H1;
+      case 2 -> EPLStructureRole.H2;
+      case 3 -> EPLStructureRole.H3;
+      case 4 -> EPLStructureRole.H4;
+      case 5 -> EPLStructureRole.H5;
+      default -> EPLStructureRole.H6;
+    };
   }
 
   private void _addHeading (@NonNull final PhloxTemplateAst aAst,
@@ -284,6 +313,9 @@ public final class PdfTemplateEmitter extends
     }
     if (aContent == null)
       return;
+    // Tagged PDF: the text of a heading is a heading of the same level
+    if (aContent instanceof final AbstractPLRenderableObject <?> aRealContent)
+      aRealContent.setStructureRole (_getHeadingRole (aHeading.getLevel ()));
     aBox = new PLBox (aContent);
     if (aHeading.getLevel () == 1)
       aBox.setMarginBottom (6);
@@ -334,7 +366,12 @@ public final class PdfTemplateEmitter extends
       fWidth = MAX_IMAGE_WIDTH;
       fHeight = fWidth / fRatio;
     }
-    aSink.accept (new PLImage (aBufferedImage, fWidth, fHeight).setMarginBottom (PARAGRAPH_GAP));
+    // Tagged PDF: a figure needs an alternate text
+    String sAltText = aResolved.getAltText ();
+    if (StringHelper.isEmpty (sAltText))
+      sAltText = LOGO_URL.equals (aImage.getDestination ()) ? "Logo" : "Image";
+    aSink.accept (new PLImage (aBufferedImage, fWidth, fHeight).setMarginBottom (PARAGRAPH_GAP)
+                                                               .setAlternateText (sAltText));
   }
 
   private void _addParagraph (@NonNull final PhloxTemplateAst aAst,
@@ -414,7 +451,9 @@ public final class PdfTemplateEmitter extends
   {
     final float [] aWeights = new float [nColumns];
     final int [] aLongestWords = new int [nColumns];
-    final float fHeaderScale = m_aCtx.getTableHeaderFont ().getFontSize () * 1.1f / m_aCtx.getBodyFont ().getFontSize ();
+    final float fHeaderScale = m_aCtx.getTableHeaderFont ().getFontSize () *
+                               1.1f /
+                               m_aCtx.getBodyFont ().getFontSize ();
     for (int i = 0; i < nColumns; ++i)
       aWeights[i] = 9f;
     for (Node aPart = aTable.getFirstChild (); aPart != null; aPart = aPart.getNext ())
@@ -534,12 +573,28 @@ public final class PdfTemplateEmitter extends
     aSink.accept (new PLBox (aLines).setFillColor (PLColor.gray (0xf5)).setPadding (4).setMarginBottom (PARAGRAPH_GAP));
   }
 
+  /**
+   * Create the creator of the list markers. A marker is rich text in the body font like the text of
+   * the item, so that both have the same baseline.
+   */
+  @NonNull
+  private IBulletPointCreator _createMarkerCreator (@NonNull final IntFunction <String> aMarkerText)
+  {
+    final FontSpec aFont = _styled (m_aCtx.getBodyFont (), null);
+    final PLFontFamily aFamily = m_aCtx.getFontFamily ().getAsPLFontFamily ();
+    return nIndex -> PLRichText.createFromMarkup (PdfTextSupport.escapeMarkup (aMarkerText.apply (nIndex)),
+                                                  aFamily,
+                                                  aFont.getFontSize (),
+                                                  aFont.getColor ());
+  }
+
   private void _addList (@NonNull final PhloxTemplateAst aAst,
                          @NonNull final Node aList,
                          @NonNull final IBulletPointCreator aCreator,
+                         final float fMarkerWidth,
                          @NonNull final Consumer <IPLRenderableObject <?>> aSink)
   {
-    final PLBulletPointList aBullets = new PLBulletPointList (WidthSpec.abs (16f), aCreator);
+    final PLBulletPointList aBullets = new PLBulletPointList (WidthSpec.abs (fMarkerWidth), aCreator);
     for (Node aItem = aList.getFirstChild (); aItem instanceof ListItem; aItem = aItem.getNext ())
     {
       final PLVBox aContent = new PLVBox ();
@@ -613,7 +668,10 @@ public final class PdfTemplateEmitter extends
         visitBlockChildren (aAst, aGroup, aBlocks::addRow);
         aContent = aBlocks;
       }
-      aSink.accept (_decorate (new PLBox (aContent).setMarginBottom (PARAGRAPH_GAP), aGroup.isRow () ? null : aStyle));
+      // Tagged PDF: a group or row is a division
+      aSink.accept (_decorate (new PLBox (aContent).setMarginBottom (PARAGRAPH_GAP)
+                                                   .setStructureRole (EPLStructureRole.DIV),
+                               aGroup.isRow () ? null : aStyle));
     }
     finally
     {
@@ -687,7 +745,9 @@ public final class PdfTemplateEmitter extends
       _appendWrappedRecursive (aAst,
                                aLink,
                                aLines,
-                               "{link[" + PdfTextSupport.escapeMarkup (_encodeLinkDestination (aLink.getDestination ())) + "]}",
+                               "{link[" +
+                                       PdfTextSupport.escapeMarkup (_encodeLinkDestination (aLink.getDestination ())) +
+                                       "]}",
                                "{link}");
     else
     {
@@ -734,7 +794,7 @@ public final class PdfTemplateEmitter extends
                                   @NonNull final BulletList aList,
                                   @NonNull final Consumer <IPLRenderableObject <?>> aSink)
   {
-    _addList (aAst, aList, BulletPointCreatorSymbol.createFilledDot (m_aCtx.getBodyFont ().getFontSize ()), aSink);
+    _addList (aAst, aList, _createMarkerCreator (nIndex -> "\u2022"), BULLET_WIDTH, aSink);
   }
 
   @Override
@@ -743,10 +803,7 @@ public final class PdfTemplateEmitter extends
                                    @NonNull final Consumer <IPLRenderableObject <?>> aSink)
   {
     final int nStart = aList.getMarkerStartNumber () == null ? 1 : aList.getMarkerStartNumber ().intValue ();
-    _addList (aAst,
-              aList,
-              new BulletPointCreatorNumeric (nIndex -> (nStart + nIndex) + ".", m_aCtx.getBodyFont ()),
-              aSink);
+    _addList (aAst, aList, _createMarkerCreator (nIndex -> (nStart + nIndex) + "."), NUMBER_WIDTH, aSink);
   }
 
   @Override
@@ -758,7 +815,8 @@ public final class PdfTemplateEmitter extends
     visitBlockChildren (aAst, aQuote, aContent::addRow);
     aSink.accept (new PLBox (aContent).setBorderLeft (new BorderStyleSpec (PLColor.GRAY, 2f))
                                       .setPaddingLeft (6)
-                                      .setMarginBottom (PARAGRAPH_GAP));
+                                      .setMarginBottom (PARAGRAPH_GAP)
+                                      .setStructureRole (EPLStructureRole.BLOCK_QUOTE));
   }
 
   @Override
@@ -787,8 +845,7 @@ public final class PdfTemplateEmitter extends
     aSink.accept (new PLBox (new PLSpacerY (1f)).setBorderTop (new BorderStyleSpec (bStyled ? aRuleStyle.getBorderTopColor ()
                                                                                             : PLColor.GRAY,
                                                                                     bStyled ? aRuleStyle.getBorderWidth ()
-                                                                                            : 0.75f))
-                                                .setMarginY (4));
+                                                                                            : 0.75f)).setMarginY (4));
   }
 
   @Override

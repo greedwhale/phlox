@@ -31,14 +31,17 @@ import com.helger.pdflayout.richtext.run.PLFontFamily;
 import com.helger.pdflayout.spec.PreloadFont;
 
 /**
- * The fonts of the PDF output: one font for each of the four styles regular, bold, italic and
- * bold italic. The fonts of the default layout are the standard fonts of PDF ({@link #STANDARD}),
- * which only contain the characters of Western European languages. A text in another script, like
- * Cyrillic or Greek, needs a font that contains these characters. Use {@link #of(IHasFontResource,
- * IHasFontResource, IHasFontResource, IHasFontResource)} for the fonts of the ph-fonts project, or
- * the key <code>pdf.fonts</code> of a theme for font files. The fonts are embedded into the PDF.
+ * The fonts of the PDF output: one font for each of the four styles regular, bold, italic and bold
+ * italic. The fonts of the default layout are the standard fonts of PDF ({@link #STANDARD}), which
+ * only contain the characters of Western European languages. A text in another script, like
+ * Cyrillic or Greek, needs a font that contains these characters. Use
+ * {@link #of(IHasFontResource, IHasFontResource, IHasFontResource, IHasFontResource)} for the fonts
+ * of the ph-fonts project, or the key <code>pdf.fonts</code> of a theme for font files. The fonts
+ * are embedded into the PDF.
  * <p>
- * Monospace text (code) always uses the standard monospace font.
+ * With {@link #STANDARD}, monospace text (code) uses the standard monospace font. With any other
+ * family, code uses the regular font of the family, so that no standard font is used at all (PDF/A
+ * requires all fonts to be embedded). List markers always use the regular font of the family.
  *
  * @author Philip Helger
  */

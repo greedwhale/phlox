@@ -3849,8 +3849,8 @@ T p10 66.7 295.8 10.0 Helvetica-Bold Zahlungsart: Überweisung
 T p10 66.7 307.7 10.0 Helvetica Credit transfer
 T p10 66.7 319.6 10.0 Helvetica-Oblique Verwendungszweck: PHLOX-LONG-1
 T p10 66.7 332.6 7.0 Helvetica-Bold Überweisung
-T p10 66.7 345.1 10.0 Symbol •
-T p10 82.7 348.1 10.0 Helvetica Mustermann Industrial Supplies — AT611904300234573201 (BIC BKAUATWW)
+T p10 66.7 348.1 10.0 Helvetica •
+T p10 76.7 348.1 10.0 Helvetica Mustermann Industrial Supplies — AT611904300234573201 (BIC BKAUATWW)
 T p10 56.7 387.6 8.0 Helvetica-Bold ZAHLUNGSBEDINGUNGEN
 T p10 56.7 402.2 10.0 Helvetica Payment within 30 days net.
 T p10 56.7 414.9 7.0 Helvetica Spezifikationskennung: urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0 · Geschäftsprozesstyp:
