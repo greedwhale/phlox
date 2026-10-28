@@ -11,17 +11,21 @@
 
 Visualizer for EN 16931 electronic invoices.
 
-Reads invoices in **UBL** or **CII** syntax, lifts them into a syntax-neutral intermediate model, and renders the result to **HTML**, **PDF** or **plain text** in English or German.
+Reads invoices in **UBL** or **CII** syntax, lifts them into a syntax-neutral intermediate model, and renders the result to **HTML**, **PDF** (optionally as **PDF/A**, **PDF/UA** or **ZUGFeRD / Factur-X** hybrid invoice) or **plain text** in English or German.
 
 ```
-┌────────────────┐     ┌──────────────────┐     ┌──────────────┐
-│ UBL 2.1 / 2.5  │ ──▶ │                  │ ──▶ │ HTML output  │
-│ Invoice and    │     │  PhloxInvoice    │     │              │
-│ CreditNote     │     │  (EN 16931 BGs)  │ ──▶ │ PDF output   │
-│ CII D16B / D25A│ ──▶ │                  │     │              │
-│                │     │                  │ ──▶ │ Plain text   │
-└────────────────┘     └──────────────────┘     └──────────────┘
-  Source readers        Intermediate model          Writers
+┌────────────────┐     ┌──────────────────┐     ┌────────────────┐
+│ UBL 2.1 / 2.5  │ ──▶ │                  │ ──▶ │ HTML output    │
+│ Invoice and    │     │   PhloxInvoice   │     │                │
+│ CreditNote     │     │  (EN 16931 BGs)  │ ──▶ │ PDF output     │
+│ CII D16B / D25A│ ──▶ │                  │     │                │
+│                │     │                  │ ──▶ │ PDF/A output   │
+│                │     │                  │     │ (+ PDF/UA,     │
+│                │     │                  │     │ ZUGFeRD)       │
+│                │     │                  │     │                │
+│                │     │                  │ ──▶ │ Plain text     │
+└────────────────┘     └──────────────────┘     └────────────────┘
+  Source readers        Intermediate model            Writers
 ```
 
 ## Features
@@ -32,8 +36,8 @@ Reads invoices in **UBL** or **CII** syntax, lifts them into a syntax-neutral in
 - **Themes:** colours, fonts, page layout, block styles, language, logo and watermark come from one JSON file. See [Styling](https://github.com/phax/phlox/wiki/Styling).
 - **Any script in PDF:** embed TTF or OTF fonts (for example Roboto for Cyrillic and Greek) in HTML and PDF with `--font`, the theme or the API. The standard PDF fonts only contain Western European characters.
 - **Watermarks:** a user watermark such as `DRAFT`, plus the program watermark.
-- **PDF/A, PDF/UA and ZUGFeRD:** PDF/A-2b, -2u, -3a (tagged), -3b and -3u output, PDF/UA-1 (accessible) output with embedded fonts, optionally with the source XML and the attached documents embedded, and ZUGFeRD / Factur-X hybrid invoices from CII invoices of EN 16931:2017. See [PDF/A and ZUGFeRD](https://github.com/phax/phlox/wiki/PDF-A).
-- **Command line:** `phlox-cli` renders an invoice file to HTML, PDF or plain text.
+- **PDF/A, PDF/UA and ZUGFeRD:** archivable PDF/A-2b, -2u, -3a (tagged), -3b and -3u, accessible PDF/UA-1, optionally with the source XML and the attached documents embedded, and ZUGFeRD / Factur-X hybrid invoices from CII invoices of EN 16931:2017. The output is checked with veraPDF in the tests. See [PDF/A and ZUGFeRD](https://github.com/phax/phlox/wiki/PDF-A).
+- **Command line:** `phlox-cli` renders an invoice file to HTML, PDF (also PDF/A, PDF/UA and ZUGFeRD) or plain text.
 - **No validation:** phlox only visualizes. Use `phive-rules-en16931` to check business rules.
 
 ## Modules
@@ -46,7 +50,7 @@ Reads invoices in **UBL** or **CII** syntax, lifts them into a syntax-neutral in
 | `phlox-template` | Template engine and the default template |
 | `phlox-theme` | JSON theme reader |
 | `phlox-html` | HTML5 writer |
-| `phlox-pdf` | PDF writer |
+| `phlox-pdf` | PDF writer, including PDF/A, PDF/UA and ZUGFeRD / Factur-X |
 | `phlox-text` | Plain-text writer |
 | `phlox-cli` | Command line tool |
 | `phlox-testfiles` | Shared example invoices for tests |
@@ -65,6 +69,12 @@ The command line tool is `phlox-cli/target/phlox-cli-full.jar` (the shaded jar):
 
 ```bash
 java -jar phlox-cli/target/phlox-cli-full.jar -i invoice.xml -f PDF -o invoice.pdf
+```
+
+A ZUGFeRD / Factur-X hybrid invoice from a CII invoice, as tagged PDF/A-3a and PDF/UA-1 (PDF/A and PDF/UA need an embedded font):
+
+```bash
+java -jar phlox-cli/target/phlox-cli-full.jar -i invoice-cii.xml -f PDF -o invoice.pdf --zugferd --pdfa 3a --pdfua --font Roboto-Regular.ttf --font-bold Roboto-Bold.ttf
 ```
 
 | Option | Meaning |
@@ -88,7 +98,7 @@ java -jar phlox-cli/target/phlox-cli-full.jar -i invoice.xml -f PDF -o invoice.p
 
 ## Documentation
 
-See the [wiki](https://github.com/phax/phlox/wiki/Home) for the full documentation, including the [domain model](https://github.com/phax/phlox/wiki/Domain-Model), the [template language](https://github.com/phax/phlox/wiki/Template-Language), [themes](https://github.com/phax/phlox/wiki/Themes), the [maven module structure](https://github.com/phax/phlox/wiki/Maven-Module-Structure), the [roadmap](https://github.com/phax/phlox/wiki/Roadmap) and the [news and noteworthy](https://github.com/phax/phlox/wiki/News-and-noteworthy).
+See the [wiki](https://github.com/phax/phlox/wiki/Home) for the full documentation, including the [domain model](https://github.com/phax/phlox/wiki/Domain-Model), the [template language](https://github.com/phax/phlox/wiki/Template-Language), [themes](https://github.com/phax/phlox/wiki/Themes), [PDF/A and ZUGFeRD](https://github.com/phax/phlox/wiki/PDF-A), the [maven module structure](https://github.com/phax/phlox/wiki/Maven-Module-Structure), the [roadmap](https://github.com/phax/phlox/wiki/Roadmap) and the [news and noteworthy](https://github.com/phax/phlox/wiki/News-and-noteworthy).
 
 ## License
 
