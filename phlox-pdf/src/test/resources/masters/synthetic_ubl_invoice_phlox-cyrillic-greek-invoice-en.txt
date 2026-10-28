@@ -491,8 +491,8 @@ T p2 66.7 598.2 10.0 Roboto-Bold Payment means type code: Credit transfer
 T p2 66.7 611.5 10.0 Roboto-Regular Credit transfer
 T p2 66.7 624.8 10.0 Roboto-Italic Remittance information: ФАКТУРА-2026-0042
 T p2 66.7 638.7 7.0 Roboto-Bold Credit transfer
-T p2 66.7 651.3 10.0 Symbol •
-T p2 82.7 656.0 10.0 Roboto-Regular Фотон Електроникс ООД — BG80BNBG96611020345678 (BIC BNBGBGSD)
+T p2 66.7 656.0 10.0 Roboto-Regular •
+T p2 76.7 656.0 10.0 Roboto-Regular Фотон Електроникс ООД — BG80BNBG96611020345678 (BIC BNBGBGSD)
 T p2 56.7 696.6 8.0 Roboto-Bold PAYMENT TERMS
 T p2 56.7 712.9 10.0 Roboto-Regular Плащане в срок от 30 дни. / Πληρωμή εντός 30 ημερών.
 T p2 56.7 726.9 7.0 Roboto-Regular Specification identifier: urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0 · Business process type:

@@ -34,6 +34,8 @@ import com.helger.base.io.nonblocking.NonBlockingBufferedInputStream;
 import com.helger.base.io.nonblocking.NonBlockingByteArrayInputStream;
 import com.helger.base.io.nonblocking.NonBlockingByteArrayOutputStream;
 import com.helger.diagnostics.error.list.ErrorList;
+import com.helger.pdflayout.PDFCreationException;
+import com.helger.pdflayout.pdfa.EPdfALevel;
 import com.helger.phlox.api.AbstractRenderContext;
 import com.helger.phlox.api.CPhloxVersion;
 import com.helger.phlox.api.PhloxRuntimeException;
@@ -44,6 +46,8 @@ import com.helger.phlox.cii.CiiInvoiceReader;
 import com.helger.phlox.html.HtmlFontFamily;
 import com.helger.phlox.html.HtmlInvoiceWriter;
 import com.helger.phlox.html.HtmlRenderContext;
+import com.helger.phlox.pdf.EFacturXConformanceLevel;
+import com.helger.phlox.pdf.PdfEmbeddedSource;
 import com.helger.phlox.pdf.PdfFontFamily;
 import com.helger.phlox.pdf.PdfInvoiceWriter;
 import com.helger.phlox.pdf.PdfRenderContext;
@@ -175,6 +179,30 @@ public class PhloxCli implements Callable <Integer>
            description = "Watermark rotation in degrees. Default: -45.",
            defaultValue = "-45")
   float m_fWatermarkRotation;
+
+  @Option (names = "--pdfa",
+           description = "PDF only: create PDF/A at the given level: 2b, 2u, 3a, 3b or 3u. 3a is a tagged (accessible) PDF. PDF/A requires embedded fonts (--font or 'pdf.fonts' in the theme).")
+  String m_sPdfALevel;
+
+  @Option (names = "--pdfua",
+           description = "PDF only: create a PDF/UA-1 (accessible, tagged PDF). Can be combined with --pdfa. Requires embedded fonts (--font or 'pdf.fonts' in the theme).")
+  boolean m_bPdfUA;
+
+  @Option (names = "--embed-source",
+           description = "PDF only: embed the input XML into the PDF (relationship 'Source'). Requires PDF/A-3; without --pdfa, 3b is used.")
+  boolean m_bEmbedSource;
+
+  @Option (names = "--embed-attachments",
+           description = "PDF only: embed the attached documents of the invoice (BG-24) into the PDF (relationship 'Supplement'). Requires PDF/A-3; without --pdfa, 3b is used.")
+  boolean m_bEmbedAttachments;
+
+  @Option (names = "--zugferd",
+           description = "PDF only: create a ZUGFeRD / Factur-X hybrid invoice. The CII input is embedded as factur-x.xml (xrechnung.xml for XRechnung) with the Factur-X metadata. Only for CII invoices of EN 16931:2017. Requires PDF/A-3; without --pdfa, 3b is used.")
+  boolean m_bZugferd;
+
+  @Option (names = "--zugferd-profile",
+           description = "The ZUGFeRD / Factur-X profile for --zugferd: MINIMUM, 'BASIC WL', BASIC, 'EN 16931', EXTENDED or XRECHNUNG. Default: derived from BT-24 (Specification identifier).")
+  String m_sZugferdProfile;
 
   @FunctionalInterface
   private interface FontApplier <CTX>
@@ -318,6 +346,71 @@ public class PhloxCli implements Callable <Integer>
     return ESourceSyntax.UBL;
   }
 
+  /**
+   * Apply PDF/A and the embedding of the source XML. The options are checked before.
+   *
+   * @return {@code null} on success or the exit code of the error.
+   */
+  @Nullable
+  private Integer _applyArchiveOptions (@NonNull final PdfRenderContext aCtx,
+                                        final byte @NonNull [] aBytes,
+                                        @NonNull final ESourceSyntax eSyntax)
+  {
+    EPdfALevel ePdfALevel = null;
+    if (m_sPdfALevel != null)
+    {
+      ePdfALevel = EPdfALevel.getFromIDOrNull (m_sPdfALevel.trim ().toLowerCase (Locale.ROOT));
+      if (ePdfALevel == null)
+      {
+        System.err.println ("Unsupported --pdfa '" + m_sPdfALevel + "'. Use 2b, 2u, 3a, 3b or 3u.");
+        return Integer.valueOf (2);
+      }
+    }
+
+    if (m_bEmbedAttachments)
+    {
+      if (ePdfALevel == null)
+        ePdfALevel = EPdfALevel.PDF_A_3B;
+      aCtx.setEmbedAttachments (true);
+    }
+    if (m_bEmbedSource || m_bZugferd)
+    {
+      if (ePdfALevel == null)
+        ePdfALevel = EPdfALevel.PDF_A_3B;
+      if (m_bZugferd)
+      {
+        if (eSyntax != ESourceSyntax.CII)
+        {
+          System.err.println ("--zugferd requires a CII invoice");
+          return Integer.valueOf (2);
+        }
+        PdfEmbeddedSource aSource = PdfEmbeddedSource.ofFacturX (aBytes);
+        if (m_sZugferdProfile != null)
+        {
+          final EFacturXConformanceLevel eLevel = EFacturXConformanceLevel.getFromIDOrNull (m_sZugferdProfile.trim ()
+                                                                                                             .toUpperCase (Locale.ROOT));
+          if (eLevel == null)
+          {
+            System.err.println ("Unsupported --zugferd-profile '" +
+                                m_sZugferdProfile +
+                                "'. Use MINIMUM, 'BASIC WL', BASIC, 'EN 16931', EXTENDED or XRECHNUNG.");
+            return Integer.valueOf (2);
+          }
+          aSource = aSource.withConformanceLevel (eLevel);
+        }
+        aCtx.setEmbeddedSource (aSource);
+      }
+      else
+      {
+        final String sFileName = m_aInputFile != null ? m_aInputFile.getFileName ().toString () : "invoice.xml";
+        aCtx.setEmbeddedSource (PdfEmbeddedSource.ofSource (aBytes, sFileName));
+      }
+    }
+    aCtx.setPdfALevel (ePdfALevel);
+    aCtx.setPdfUA (m_bPdfUA);
+    return null;
+  }
+
   public Integer call () throws Exception
   {
     if (m_aInputFile != null && !Files.isRegularFile (m_aInputFile))
@@ -328,6 +421,26 @@ public class PhloxCli implements Callable <Integer>
     final Integer aFontError = _checkFonts ();
     if (aFontError != null)
       return aFontError;
+    if ((m_sPdfALevel != null ||
+         m_bPdfUA ||
+         m_bEmbedSource ||
+         m_bEmbedAttachments ||
+         m_bZugferd ||
+         m_sZugferdProfile != null) && m_eFormat != EOutputFormat.PDF)
+    {
+      System.err.println ("--pdfa, --pdfua, --embed-source, --embed-attachments, --zugferd and --zugferd-profile require --format PDF");
+      return Integer.valueOf (2);
+    }
+    if (m_bEmbedSource && m_bZugferd)
+    {
+      System.err.println ("Use either --embed-source or --zugferd");
+      return Integer.valueOf (2);
+    }
+    if (m_sZugferdProfile != null && !m_bZugferd)
+    {
+      System.err.println ("--zugferd-profile requires --zugferd");
+      return Integer.valueOf (2);
+    }
     final byte [] aBytes = m_aInputFile != null ? Files.readAllBytes (m_aInputFile) : _readAllStdin ();
     final ESourceSyntax eSyntax = m_eSyntax == ESourceSyntax.AUTO ? _sniffSyntax (aBytes) : m_eSyntax;
 
@@ -391,13 +504,16 @@ public class PhloxCli implements Callable <Integer>
                                                                                                  m_aFontBoldItalicFile)));
       if (aError != null)
         return aError;
+      final Integer aArchiveError = _applyArchiveOptions (aCtx, aBytes, eSyntax);
+      if (aArchiveError != null)
+        return aArchiveError;
       // Render completely before touching the output file, so a failure leaves no empty file
       final NonBlockingByteArrayOutputStream aBuffer = new NonBlockingByteArrayOutputStream ();
       try
       {
         new PdfInvoiceWriter ().writeTo (aInvoice, aCtx, aBuffer);
       }
-      catch (final PhloxRuntimeException ex)
+      catch (final PhloxRuntimeException | PDFCreationException ex)
       {
         System.err.println ("Failed to render the invoice: " + ex.getMessage ());
         return Integer.valueOf (2);

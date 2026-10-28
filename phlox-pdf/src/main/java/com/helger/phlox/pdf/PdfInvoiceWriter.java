@@ -18,33 +18,37 @@ package com.helger.phlox.pdf;
 
 import java.awt.Color;
 import java.io.File;
-import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.util.Matrix;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import com.helger.annotation.WillClose;
-import com.helger.pdflayout.IPDDocumentCustomizer;
+import com.helger.base.string.StringHelper;
+import com.helger.collection.commons.CommonsHashSet;
+import com.helger.collection.commons.ICommonsSet;
+import com.helger.en16931.basics.EEN16931Edition;
 import com.helger.pdflayout.PDFCreationException;
 import com.helger.pdflayout.PageLayoutPDF;
 import com.helger.pdflayout.base.IPLRenderableObject;
 import com.helger.pdflayout.base.PLColor;
 import com.helger.pdflayout.base.PLPageSet;
 import com.helger.pdflayout.element.box.PLBox;
-import com.helger.pdflayout.pdfbox.PDPageContentStreamExt;
+import com.helger.pdflayout.pdfa.EPdfAFRelationship;
+import com.helger.pdflayout.pdfa.EPdfALevel;
+import com.helger.pdflayout.pdfa.PdfAXmpExtensionSchema;
+import com.helger.pdflayout.pdfa.PdfAssociatedFile;
 import com.helger.pdflayout.richtext.element.PLRichText;
 import com.helger.pdflayout.spec.EHorzAlignment;
 import com.helger.pdflayout.spec.PreloadFont;
+import com.helger.pdflayout.watermark.EPLWatermarkPosition;
+import com.helger.pdflayout.watermark.PLTextWatermark;
 import com.helger.phlox.api.PhloxDocumentProperties;
 import com.helger.phlox.api.PhloxRuntimeException;
+import com.helger.phlox.api.model.PhloxAttachment;
 import com.helger.phlox.api.model.PhloxInvoice;
+import com.helger.phlox.api.model.PhloxSupportingDocument;
 import com.helger.phlox.api.template.IPhloxTemplate;
 import com.helger.phlox.api.watermark.EWatermarkPosition;
 import com.helger.phlox.api.watermark.PhloxProgramWatermark;
@@ -60,75 +64,54 @@ import com.helger.phlox.template.PhloxTemplate;
  */
 public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
 {
+  /** The namespace URI of the Factur-X XMP extension schema */
+  public static final String FACTUR_X_XMP_NAMESPACE_URI = "urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#";
+  /** The namespace prefix of the Factur-X XMP extension schema */
+  public static final String FACTUR_X_XMP_PREFIX = "fx";
+  /** The value of <code>fx:Version</code> */
+  public static final String FACTUR_X_VERSION = "1.0";
+  /** The value of <code>fx:DocumentType</code> */
+  public static final String FACTUR_X_DOCUMENT_TYPE = "INVOICE";
+
   /** Create a new PDF invoice writer. */
   public PdfInvoiceWriter ()
   {}
 
-  private static void _drawWatermark (@NonNull final PDDocument aDoc,
-                                      @NonNull final PDPageContentStreamExt aCS,
-                                      @NonNull final PDPage aPage,
-                                      @NonNull final PdfFontFamily aFamily,
-                                      @NonNull final WatermarkSpec aSpec) throws IOException
+  /**
+   * Create the user watermark. The opacity is simulated by lightening the colour towards white, so
+   * that the PDF uses no transparency.
+   */
+  @NonNull
+  private static PLTextWatermark _createWatermark (@NonNull final PdfFontFamily aFamily, @NonNull final WatermarkSpec aSpec)
   {
-    final PDRectangle aPageSize = aPage.getMediaBox ();
-    final float fPageWidth = aPageSize.getWidth ();
-    final float fPageHeight = aPageSize.getHeight ();
-
-    // Font: bold for centered/large watermarks, regular for the small program attribution.
-    final PreloadFont aFontKind = aSpec.getPosition () == EWatermarkPosition.CENTER ? aFamily.getBold ()
-                                                                                    : aFamily.getRegular ();
-    final PDFont aFont = aFontKind.loadPDFont (aDoc);
-    final float fFontSize = aSpec.getFontSizePt ();
-    final String sText = aSpec.getText ();
-    final float fTextWidth = aFont.getStringWidth (sText) / 1000f * fFontSize;
-    // Approximate baseline-to-cap-height ratio for visual centering.
-    final float fTextHeight = fFontSize * 0.72f;
-
-    aCS.saveGraphicsState ();
-    aCS.beginText ();
-    aCS.setFont (aFont, fFontSize);
-
-    // PLColor is RGB-only — approximate opacity by lightening toward white. Pixel-true alpha
-    // would need a PDExtendedGraphicsState, which is heavier and not required for our use.
+    // Bold for the large centred watermark, regular for the small ones at the edges
+    final PreloadFont aFont = aSpec.getPosition () == EWatermarkPosition.CENTER ? aFamily.getBold ()
+                                                                                : aFamily.getRegular ();
     final Color aRGB = aSpec.getColor ();
     final float fO = Math.max (0f, Math.min (1f, aSpec.getOpacity ()));
-    final int nR = Math.round (255 - (255 - aRGB.getRed ()) * fO);
-    final int nG = Math.round (255 - (255 - aRGB.getGreen ()) * fO);
-    final int nB = Math.round (255 - (255 - aRGB.getBlue ()) * fO);
-    aCS.setNonStrokingColor (nR, nG, nB);
-
+    final PLColor aColor = new PLColor (Math.round (255 - (255 - aRGB.getRed ()) * fO),
+                                        Math.round (255 - (255 - aRGB.getGreen ()) * fO),
+                                        Math.round (255 - (255 - aRGB.getBlue ()) * fO));
+    final PLTextWatermark ret = new PLTextWatermark (aSpec.getText (), aFont).setFontSize (aSpec.getFontSizePt ())
+                                                                            .setColor (aColor)
+                                                                            .setRotation (aSpec.getRotation ());
     switch (aSpec.getPosition ())
     {
       case CENTER:
-      {
-        final float fCx = fPageWidth / 2f;
-        final float fCy = fPageHeight / 2f;
-        final double dAngle = Math.toRadians (aSpec.getRotation ());
-        // Anchor: shift back by half-text-width along the rotation direction so the text is
-        // visually centered on (fCx, fCy).
-        final float fAnchorX = fCx -
-                               (float) (Math.cos (dAngle) * fTextWidth / 2f) +
-                               (float) (Math.sin (dAngle) * fTextHeight / 2f);
-        final float fAnchorY = fCy -
-                               (float) (Math.sin (dAngle) * fTextWidth / 2f) -
-                               (float) (Math.cos (dAngle) * fTextHeight / 2f);
-        aCS.setTextMatrix (Matrix.getRotateInstance (dAngle, fAnchorX, fAnchorY));
+        ret.setPosition (EPLWatermarkPosition.CENTER);
         break;
-      }
       case TOP:
-        aCS.setTextMatrix (Matrix.getTranslateInstance ((fPageWidth - fTextWidth) / 2f, fPageHeight - fFontSize - 12f));
+        ret.setPosition (EPLWatermarkPosition.TOP).setEdgeDistance (12f);
         break;
       case BOTTOM:
-        aCS.setTextMatrix (Matrix.getTranslateInstance ((fPageWidth - fTextWidth) / 2f, 12f));
+        ret.setPosition (EPLWatermarkPosition.BOTTOM).setEdgeDistance (12f);
         break;
       case FOOTER_RIGHT:
       default:
-        aCS.setTextMatrix (Matrix.getTranslateInstance (fPageWidth - fTextWidth - 10f, 10f));
+        ret.setPosition (EPLWatermarkPosition.BOTTOM_RIGHT).setEdgeDistance (10f);
         break;
     }
-    aCS.showText (sText);
-    aCS.endText ();
-    aCS.restoreGraphicsState ();
+    return ret;
   }
 
   /**
@@ -156,29 +139,6 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     return new PLBox (aText).setMarginTop (4).setHorzAlign (EHorzAlignment.RIGHT);
   }
 
-  @NonNull
-  private static IPDDocumentCustomizer _buildWatermarkCustomizer (@NonNull final PdfFontFamily aFamily,
-                                                                  @Nullable final WatermarkSpec aUserWM,
-                                                                  @Nullable final WatermarkSpec aProgramWM)
-  {
-    return aDoc -> {
-      for (final PDPage aPage : aDoc.getPages ())
-      {
-        try (final PDPageContentStreamExt aCS = new PDPageContentStreamExt (aDoc,
-                                                                            aPage,
-                                                                            PDPageContentStream.AppendMode.PREPEND,
-                                                                            true,
-                                                                            true))
-        {
-          if (aUserWM != null)
-            _drawWatermark (aDoc, aCS, aPage, aFamily, aUserWM);
-          if (aProgramWM != null)
-            _drawWatermark (aDoc, aCS, aPage, aFamily, aProgramWM);
-        }
-      }
-    };
-  }
-
   /**
    * Set the metadata of the PDF: title, author, subject, keywords, language and the creator
    * (phlox).
@@ -195,11 +155,146 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
     aPdf.setDocumentCreator (PhloxDocumentProperties.getCreator ());
   }
 
+  private static void _addPlainSource (@NonNull final PageLayoutPDF aPdf, @NonNull final PdfEmbeddedSource aSource)
+  {
+    final EPdfAFRelationship eRelationship = aSource.getRelationship () != null ? aSource.getRelationship ()
+                                                                                 : EPdfAFRelationship.SOURCE;
+    aPdf.addAssociatedFile (new PdfAssociatedFile (aSource.getContent (),
+                                                   aSource.getFileName (),
+                                                   PdfEmbeddedSource.MIME_TYPE_XML,
+                                                   "Source of the invoice",
+                                                   eRelationship));
+  }
+
+  /**
+   * Embed a CII invoice as ZUGFeRD / Factur-X hybrid invoice: <code>factur-x.xml</code> (or
+   * <code>xrechnung.xml</code>), the relationship of the profile and the Factur-X XMP extension
+   * schema. Only plausibility checks are done - the XML itself is not validated.
+   */
+  private static void _addFacturX (@NonNull final PageLayoutPDF aPdf,
+                                   @NonNull final PhloxInvoice aInvoice,
+                                   @NonNull final PdfEmbeddedSource aSource)
+  {
+    if (aInvoice.getEdition () == EEN16931Edition.EN2026)
+      throw new PhloxRuntimeException ("ZUGFeRD / Factur-X is only defined for invoices of EN 16931:2017, but the invoice is of EN 16931:2026. Embed it as plain source instead.");
+    // Cheap plausibility check, that the XML is CII and not UBL
+    if (!new String (aSource.getContent (), StandardCharsets.UTF_8).contains ("CrossIndustryInvoice"))
+      throw new PhloxRuntimeException ("ZUGFeRD / Factur-X requires a CII invoice, but the embedded XML is no CrossIndustryInvoice. Embed it as plain source instead.");
+
+    EFacturXConformanceLevel eLevel = aSource.getConformanceLevel ();
+    if (eLevel == null)
+    {
+      final String sBT24 = aInvoice.getProcessControl ().getSpecificationIdentifier ();
+      eLevel = EFacturXConformanceLevel.getFromSpecificationIdentifierOrNull (sBT24);
+      if (eLevel == null)
+        throw new PhloxRuntimeException ("The specification identifier (BT-24) '" +
+                                         sBT24 +
+                                         "' is not the one of a ZUGFeRD / Factur-X profile. Set the profile explicitly with PdfEmbeddedSource.withConformanceLevel.");
+    }
+    final EPdfAFRelationship eRelationship = aSource.getRelationship () != null ? aSource.getRelationship ()
+                                                                                 : eLevel.getDefaultRelationship ();
+    final String sFileName = eLevel.getFileName ();
+
+    aPdf.addAssociatedFile (new PdfAssociatedFile (aSource.getContent (),
+                                                   sFileName,
+                                                   PdfEmbeddedSource.MIME_TYPE_XML,
+                                                   "Factur-X/ZUGFeRD invoice",
+                                                   eRelationship));
+    aPdf.addXmpExtensionSchema (new PdfAXmpExtensionSchema (FACTUR_X_XMP_NAMESPACE_URI,
+                                                            FACTUR_X_XMP_PREFIX,
+                                                            "Factur-X PDFA Extension Schema").addTextProperty ("DocumentFileName",
+                                                                                                               "The name of the embedded XML document",
+                                                                                                               sFileName)
+                                                                                             .addTextProperty ("DocumentType",
+                                                                                                               "The type of the hybrid document in capital letters, e.g. INVOICE or ORDER",
+                                                                                                               FACTUR_X_DOCUMENT_TYPE)
+                                                                                             .addTextProperty ("Version",
+                                                                                                               "The actual version of the standard applying to the embedded XML document",
+                                                                                                               FACTUR_X_VERSION)
+                                                                                             .addTextProperty ("ConformanceLevel",
+                                                                                                               "The conformance level of the embedded XML document",
+                                                                                                               eLevel.getID ()));
+  }
+
+  /**
+   * Embed the attached documents (BT-125 of BG-24) with the relationship <code>Supplement</code>. A
+   * missing or duplicate file name is replaced by a unique one.
+   */
+  private static void _addAttachments (@NonNull final PageLayoutPDF aPdf, @NonNull final PhloxInvoice aInvoice)
+  {
+    final ICommonsSet <String> aUsedNames = new CommonsHashSet <> ();
+    for (final PdfAssociatedFile aFile : aPdf.getAllAssociatedFiles ())
+      aUsedNames.add (aFile.getFileName ());
+
+    int nIndex = 0;
+    for (final PhloxSupportingDocument aDoc : aInvoice.supportingDocuments ())
+    {
+      nIndex++;
+      final PhloxAttachment aAttachment = aDoc.getAttachment ();
+      if (aAttachment == null || aAttachment.getBinary () == null)
+        continue;
+
+      String sFileName = StringHelper.isNotEmpty (aAttachment.getFilename ()) ? aAttachment.getFilename ()
+                                                                              : "attachment-" + nIndex;
+      if (aUsedNames.contains (sFileName))
+        sFileName = nIndex + "-" + sFileName;
+      aUsedNames.add (sFileName);
+
+      final String sMimeType = StringHelper.isNotEmpty (aAttachment.getMimeCode ()) ? aAttachment.getMimeCode ()
+                                                                                    : "application/octet-stream";
+      final String sDescription = StringHelper.isNotEmpty (aDoc.getDescription ()) ? aDoc.getDescription ()
+                                                                                   : aDoc.getReference ();
+      aPdf.addAssociatedFile (new PdfAssociatedFile (aAttachment.getBinary (),
+                                                     sFileName,
+                                                     sMimeType,
+                                                     sDescription,
+                                                     EPdfAFRelationship.SUPPLEMENT));
+    }
+  }
+
+  /**
+   * Set PDF/A, the creation date, the embedded source and the embedded attachments of the render
+   * context.
+   */
+  private static void _applyArchiveOptions (@NonNull final PageLayoutPDF aPdf,
+                                            @NonNull final PhloxInvoice aInvoice,
+                                            @NonNull final PdfRenderContext aCtx)
+  {
+    final EPdfALevel ePdfALevel = aCtx.getPdfALevel ();
+    if ((ePdfALevel != null || aCtx.isPdfUA ()) && aCtx.getFontFamily () == PdfFontFamily.STANDARD)
+      throw new PhloxRuntimeException ("PDF/A and PDF/UA require embedded fonts, but the standard fonts of PDF are used. Set a font family (PdfRenderContext.setFontFamily, 'pdf.fonts' in a theme or --font in the CLI).");
+    if (ePdfALevel != null)
+      aPdf.setPdfALevel (ePdfALevel);
+    if (aCtx.isPdfUA ())
+      aPdf.setCreatePdfUA (true);
+    if (aCtx.getDocumentCreationDateTime () != null)
+      aPdf.setDocumentCreationDateTime (aCtx.getDocumentCreationDateTime ());
+
+    final PdfEmbeddedSource aSource = aCtx.getEmbeddedSource ();
+    if (aSource != null)
+    {
+      if (ePdfALevel == null || !ePdfALevel.isArbitraryEmbeddedFilesAllowed ())
+        throw new PhloxRuntimeException ("Embedding the source XML requires PDF/A-3 (PdfRenderContext.setPdfALevel)");
+      if (aSource.isFacturX ())
+        _addFacturX (aPdf, aInvoice, aSource);
+      else
+        _addPlainSource (aPdf, aSource);
+    }
+
+    if (aCtx.isEmbedAttachments ())
+    {
+      if (ePdfALevel == null || !ePdfALevel.isArbitraryEmbeddedFilesAllowed ())
+        throw new PhloxRuntimeException ("Embedding the attached documents requires PDF/A-3 (PdfRenderContext.setPdfALevel)");
+      _addAttachments (aPdf, aInvoice);
+    }
+  }
+
   @NonNull
   private PageLayoutPDF _build (@NonNull final PhloxInvoice aInvoice, @NonNull final PdfRenderContext aCtx)
   {
     final PageLayoutPDF aPdf = new PageLayoutPDF ();
     _setDocumentProperties (aPdf, aInvoice, aCtx);
+    _applyArchiveOptions (aPdf, aInvoice, aCtx);
 
     final IPhloxTemplate aTemplate = aCtx.getTemplate () != null ? aCtx.getTemplate () : PhloxTemplate.getDefault ();
     if (!(aTemplate instanceof final PhloxTemplate aPhloxTemplate))
@@ -208,12 +303,10 @@ public class PdfInvoiceWriter implements IInvoiceWriter <PdfRenderContext>
 
     aPdf.addPageSet (aPS);
 
-    // Watermarks are drawn after all pages are laid out, via a document customizer that
-    // prepends content (so the watermark appears behind the page text). Pattern lifted from
-    // ph-pdf-layout's PLPageSetTest.testCreateWatermark.
+    // The watermark is drawn behind the page content after all pages are laid out
     final WatermarkSpec aUW = aCtx.getUserWatermark ();
     if (aUW != null)
-      aPdf.setDocumentCustomizer (_buildWatermarkCustomizer (aCtx.getFontFamily (), aUW, null));
+      aPdf.addWatermark (_createWatermark (aCtx.getFontFamily (), aUW));
 
     // The attribution of the program is a link to the project, so it is part of the layout
     final WatermarkSpec aPW = PhloxProgramWatermark.getInstance ();

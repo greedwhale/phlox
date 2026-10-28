@@ -86,6 +86,17 @@
       <artifactId>pdfcompare</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- PDF/A and ZUGFeRD / Factur-X checks of the output, including veraPDF -->
+    <dependency>
+      <groupId>com.helger.kaltblut</groupId>
+      <artifactId>kaltblut-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.helger.kaltblut</groupId>
+      <artifactId>kaltblut-verapdf</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>

@@ -38,7 +38,9 @@ import com.helger.pdflayout.spec.PreloadFont;
  * IHasFontResource, IHasFontResource, IHasFontResource)} for the fonts of the ph-fonts project, or
  * the key <code>pdf.fonts</code> of a theme for font files. The fonts are embedded into the PDF.
  * <p>
- * Monospace text (code) always uses the standard monospace font.
+ * With {@link #STANDARD}, monospace text (code) uses the standard monospace font. With any other
+ * family, code uses the regular font of the family, so that no standard font is used at all (PDF/A
+ * requires all fonts to be embedded). List markers always use the regular font of the family.
  *
  * @author Philip Helger
  */

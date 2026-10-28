@@ -32,6 +32,7 @@ Reads invoices in **UBL** or **CII** syntax, lifts them into a syntax-neutral in
 - **Themes:** colours, fonts, page layout, block styles, language, logo and watermark come from one JSON file. See [Styling](https://github.com/phax/phlox/wiki/Styling).
 - **Any script in PDF:** embed TTF or OTF fonts (for example Roboto for Cyrillic and Greek) in HTML and PDF with `--font`, the theme or the API. The standard PDF fonts only contain Western European characters.
 - **Watermarks:** a user watermark such as `DRAFT`, plus the program watermark.
+- **PDF/A, PDF/UA and ZUGFeRD:** PDF/A-2b, -2u, -3a (tagged), -3b and -3u output, PDF/UA-1 (accessible) output with embedded fonts, optionally with the source XML and the attached documents embedded, and ZUGFeRD / Factur-X hybrid invoices from CII invoices of EN 16931:2017. See [PDF/A and ZUGFeRD](https://github.com/phax/phlox/wiki/PDF-A).
 - **Command line:** `phlox-cli` renders an invoice file to HTML, PDF or plain text.
 - **No validation:** phlox only visualizes. Use `phive-rules-en16931` to check business rules.
 
@@ -79,6 +80,11 @@ java -jar phlox-cli/target/phlox-cli-full.jar -i invoice.xml -f PDF -o invoice.p
 | `--logo` | Logo image (PNG, JPEG or GIF) |
 | `--font` | Regular font file (TTF or OTF) for HTML and PDF; also `--font-bold`, `--font-italic` and `--font-bold-italic` |
 | `--watermark` | User watermark text; see also `--watermark-opacity` and `--watermark-rotation` |
+| `--pdfa` | PDF/A level of the PDF: `2b`, `2u`, `3a` (tagged), `3b` or `3u`; needs `--font` (or fonts in the theme) |
+| `--pdfua` | Create a PDF/UA-1 (accessible, tagged PDF); can be combined with `--pdfa`; needs `--font` (or fonts in the theme) |
+| `--embed-source` | Embed the input XML into the PDF (PDF/A-3, `3b` unless `--pdfa` is given) |
+| `--embed-attachments` | Embed the attached documents of the invoice (BG-24) into the PDF (PDF/A-3, `3b` unless `--pdfa` is given) |
+| `--zugferd` | Create a ZUGFeRD / Factur-X hybrid invoice from a CII invoice of EN 16931:2017 (PDF/A-3); `--zugferd-profile` overrides the profile derived from BT-24 |
 
 ## Documentation
 
